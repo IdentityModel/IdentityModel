@@ -68,9 +68,13 @@ namespace IdentityModel.Client
                 form.Add("token_type_hint", request.TokenTypeHint);
             }
 
-            if (string.IsNullOrWhiteSpace(request.ClientId))
+            if (!string.IsNullOrWhiteSpace(request.ClientId))
             {
                 form.Add("client_id", request.ClientId);
+            }
+
+            if (!string.IsNullOrWhiteSpace(request.ClientSecret))
+            {
                 form.Add("client_secret", request.ClientSecret);
             }
 

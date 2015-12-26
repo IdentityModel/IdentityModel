@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-namespace IdentityModel
+namespace IdentityModel.Constants
 {
     public static class JwtClaimTypes
     {
