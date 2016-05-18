@@ -1,5 +1,5 @@
 {
-  "version": "2.0.0-alpha6",
+  "version": "2.0.0-beta1",
   "authors": [ "Dominick Baier", "Brock Allen" ],
   
   "dependencies": {
