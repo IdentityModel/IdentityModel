@@ -1,18 +1,6 @@
-﻿/*
- * Copyright 2014, 2015 Dominick Baier, Brock Allen
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+﻿// Copyright (c) Brock Allen & Dominick Baier. All rights reserved.
+// Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
+
 
 using System;
 using System.Collections.Generic;
@@ -28,7 +16,7 @@ namespace IdentityModel.Client
         {
             get
             {
-                return TryGet(OAuth2Constants.Code);
+                return TryGet(OidcConstants.AuthorizeResponse.Code);
             }
         }
 
@@ -36,7 +24,7 @@ namespace IdentityModel.Client
         {
             get
             {
-                return TryGet(OAuth2Constants.AccessToken);
+                return TryGet(OidcConstants.AuthorizeResponse.AccessToken);
             }
         }
 
@@ -44,7 +32,7 @@ namespace IdentityModel.Client
         {
             get
             {
-                return TryGet(OAuth2Constants.IdentityToken);
+                return TryGet(OidcConstants.AuthorizeResponse.IdentityToken);
             }
         }
 
@@ -54,7 +42,7 @@ namespace IdentityModel.Client
         {
             get
             {
-                return TryGet(OAuth2Constants.Error);
+                return TryGet(OidcConstants.AuthorizeResponse.Error);
             }
         }
 
@@ -62,7 +50,7 @@ namespace IdentityModel.Client
         {
             get
             {
-                var value = TryGet(OAuth2Constants.ExpiresIn);
+                var value = TryGet(OidcConstants.AuthorizeResponse.ExpiresIn);
 
                 long longValue = 0;
                 long.TryParse(value, out longValue);
@@ -75,7 +63,7 @@ namespace IdentityModel.Client
         {
             get
             {
-                return TryGet(OAuth2Constants.Scope);
+                return TryGet(OidcConstants.AuthorizeResponse.Scope);
             }
         }
 
@@ -83,7 +71,7 @@ namespace IdentityModel.Client
         {
             get
             {
-                return TryGet(OAuth2Constants.TokenType);
+                return TryGet(OidcConstants.AuthorizeResponse.TokenType);
             }
         }
 
@@ -91,7 +79,7 @@ namespace IdentityModel.Client
         {
             get
             {
-                return TryGet(OAuth2Constants.State);
+                return TryGet(OidcConstants.AuthorizeResponse.State);
             }
         }
 
@@ -123,7 +111,7 @@ namespace IdentityModel.Client
                 fragments = new string[] { "", Raw };
             }
 
-            if (Raw.Contains(OAuth2Constants.Error))
+            if (Raw.Contains(OidcConstants.AuthorizeResponse.Error))
             {
                 IsError = true;
             }

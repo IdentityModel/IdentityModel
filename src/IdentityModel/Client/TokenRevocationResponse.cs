@@ -8,7 +8,7 @@ using System.Net;
 
 namespace IdentityModel.Client
 {
-    public class TokenResponse
+    public class TokenRevocationResponse
     {
         public string Raw { get; protected set; }
         public JObject Json { get; protected set; }
@@ -17,7 +17,11 @@ namespace IdentityModel.Client
         private HttpStatusCode _httpErrorstatusCode;
         private string _httpErrorReason;
 
-        public TokenResponse(string raw)
+        public TokenRevocationResponse()
+        {
+        }
+
+        public TokenRevocationResponse(string raw)
         {
             Raw = raw;
 
@@ -31,7 +35,7 @@ namespace IdentityModel.Client
             }
         }
 
-        public TokenResponse(HttpStatusCode statusCode, string reason)
+        public TokenRevocationResponse(HttpStatusCode statusCode, string reason)
         {
             _isHttpError = true;
             _httpErrorstatusCode = statusCode;
@@ -62,27 +66,19 @@ namespace IdentityModel.Client
             }
         }
 
-        public string AccessToken
-        {
-            get
-            {
-                return GetStringOrNull(OidcConstants.TokenResponse.AccessToken);
-            }
-        }
-
-        public string IdentityToken
-        {
-            get
-            {
-                return GetStringOrNull(OidcConstants.TokenResponse.IdentityToken);
-            }
-        }
-
         public string Error
         {
             get
             {
                 return GetStringOrNull(OidcConstants.TokenResponse.Error);
+            }
+        }
+
+        public string ErrorDescription
+        {
+            get
+            {
+                return GetStringOrNull(OidcConstants.TokenResponse.ErrorDescription);
             }
         }
 
@@ -95,30 +91,6 @@ namespace IdentityModel.Client
             }
         }
 
-        public long ExpiresIn
-        {
-            get
-            {
-                return GetLongOrNull(OidcConstants.TokenResponse.ExpiresIn);
-            }
-        }
-
-        public string TokenType
-        {
-            get
-            {
-                return GetStringOrNull(OidcConstants.TokenResponse.TokenType);
-            }
-        }
-
-        public string RefreshToken
-        {
-            get
-            {
-                return GetStringOrNull(OidcConstants.TokenResponse.RefreshToken);
-            }
-        }
-
         protected virtual string GetStringOrNull(string name)
         {
             JToken value;
@@ -128,21 +100,6 @@ namespace IdentityModel.Client
             }
 
             return null;
-        }
-
-        protected virtual long GetLongOrNull(string name)
-        {
-            JToken value;
-            if (Json != null && Json.TryGetValue(name, out value))
-            {
-                long longValue = 0;
-                if (long.TryParse(value.ToString(), out longValue))
-                {
-                    return longValue;
-                }
-            }
-
-            return 0;
         }
     }
 }

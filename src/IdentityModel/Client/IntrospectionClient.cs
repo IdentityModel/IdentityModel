@@ -1,18 +1,6 @@
-﻿/*
- * Copyright 2014, 2015 Dominick Baier, Brock Allen
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+﻿// Copyright (c) Brock Allen & Dominick Baier. All rights reserved.
+// Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
+
 
 using System;
 using System.Collections.Generic;
@@ -26,6 +14,7 @@ namespace IdentityModel.Client
     public class IntrospectionClient
     {
         private readonly HttpClient _client;
+        private readonly string _clientId;
 
         public IntrospectionClient(string endpoint, string clientId = "", string clientSecret = "", HttpMessageHandler innerHttpMessageHandler = null)
         {
@@ -41,9 +30,13 @@ namespace IdentityModel.Client
             _client.DefaultRequestHeaders.Accept.Add(
                 new MediaTypeWithQualityHeaderValue("application/json"));
 
-            if (!string.IsNullOrWhiteSpace(clientId))
+            if (!string.IsNullOrWhiteSpace(clientId) && !string.IsNullOrWhiteSpace(clientSecret))
             {
                 _client.SetBasicAuthentication(clientId, clientSecret);
+            }
+            else if (!string.IsNullOrWhiteSpace(clientId))
+            {
+                _clientId = clientId;
             }
         }
 
@@ -71,6 +64,10 @@ namespace IdentityModel.Client
             if (!string.IsNullOrWhiteSpace(request.ClientId))
             {
                 form.Add("client_id", request.ClientId);
+            }
+            else if (!string.IsNullOrWhiteSpace(_clientId))
+            {
+                form.Add("client_id", _clientId);
             }
 
             if (!string.IsNullOrWhiteSpace(request.ClientSecret))

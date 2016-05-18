@@ -62,6 +62,13 @@ namespace IdentityModel
             public const string Error         = "error";
         }
 
+        public static class EndSessionRequest
+        {
+            public const string IdTokenHint           = "id_token_hint";
+            public const string PostLogoutRedirectUri = "post_logout_redirect_uri";
+            public const string State                 = "state";
+        }
+
         public static class TokenRequest
         {
             public const string GrantType           = "grant_type";
@@ -77,6 +84,15 @@ namespace IdentityModel
             public const string UserName            = "username";
             public const string Password            = "password";
             public const string CodeVerifier        = "code_verifier";
+            public const string TokenType           = "token_type";
+            public const string Algorithm           = "alg";
+            public const string Key                 = "key";
+        }
+
+        public static class TokenRequestTypes
+        {
+            public const string Bearer = "bearer";
+            public const string Pop    = "pop";
         }
 
         public static class TokenErrors
@@ -92,20 +108,32 @@ namespace IdentityModel
 
         public static class TokenResponse
         {
-            public const string AccessToken   = "access_token";
-            public const string ExpiresIn     = "expires_in";
-            public const string TokenType     = "token_type";
-            public const string RefreshToken  = "refresh_token";
-            public const string IdentityToken = "id_token";
-            public const string Error         = "error";
+            public const string AccessToken         = "access_token";
+            public const string ExpiresIn           = "expires_in";
+            public const string TokenType           = "token_type";
+            public const string RefreshToken        = "refresh_token";
+            public const string IdentityToken       = "id_token";
+            public const string Error               = "error";
+            public const string ErrorDescription    = "error_description";
+            public const string BearerTokenType     = "Bearer";
         }
 
         public static class TokenTypes
         {
             public const string AccessToken   = "access_token";
             public const string IdentityToken = "id_token";
-            public const string RefreshToken  = "refresh_token";
-            public const string Bearer        = "Bearer";
+            public const string RefreshToken  = "refresh_token";   
+        }
+
+        public static class AuthenticationSchemes
+        {
+            public const string AuthorizationHeaderBearer = "Bearer";
+            public const string FormPostBearer            = "access_token";
+            public const string QueryStringBearer         = "access_token";
+
+            public const string AuthorizationHeaderPop    = "PoP";
+            public const string FormPostPop               = "pop_access_token";
+            public const string QueryStringPop            = "pop_access_token";
         }
 
         public static class GrantTypes
@@ -195,6 +223,34 @@ namespace IdentityModel
             public const string UserPresenceTest                = "user";
             public const string RiskBasedAuthentication         = "risk";
             public const string MultipleChannelAuthentication   = "mfa";
+        }
+
+        public static class Algorithms
+        {
+            public const string None = "none";
+
+            public static class Symmetric
+            {
+                public const string HS256 = "HS256";
+                public const string HS384 = "HS284";
+                public const string HS512 = "HS512";
+            }
+
+            public static class Asymmetric
+            {
+                public const string RS256 = "RS256";
+                public const string RS384 = "RS384";
+                public const string RS512 = "RS512";
+
+                public const string ES256 = "ES256";
+                public const string ES384 = "ES384";
+                public const string ES512 = "ES512";
+
+                public const string PS256 = "PS256";
+                public const string PS384 = "PS384";
+                public const string PS512 = "PS512";
+
+            }
         }
     }
 }
