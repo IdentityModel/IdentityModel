@@ -16,6 +16,9 @@
 
 using System.Collections.Generic;
 using System.Security.Claims;
+#if NET451
+using System.Security.Cryptography;
+#endif
 using System.Security.Cryptography.X509Certificates;
 
 namespace IdentityModel

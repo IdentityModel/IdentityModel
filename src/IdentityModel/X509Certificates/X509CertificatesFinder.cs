@@ -27,6 +27,14 @@ namespace IdentityModel
         {
             var certs = new List<X509Certificate2>();
 
+#if NET451
+            var store = new X509Store(_name, _location);
+            store.Open(OpenFlags.ReadOnly);
+
+            var certColl = store.Certificates.Find(_findType, findValue, validOnly);
+            store.Close();
+            return certColl.Cast<X509Certificate2>();
+#else
             using (var store = new X509Store(_name, _location))
             {
                 store.Open(OpenFlags.ReadOnly);
@@ -34,6 +42,7 @@ namespace IdentityModel
                 var certColl = store.Certificates.Find(_findType, findValue, validOnly);
                 return certColl.Cast<X509Certificate2>();
             }
+#endif
         }
     }
 }
