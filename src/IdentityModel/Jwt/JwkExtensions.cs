@@ -12,7 +12,7 @@ namespace IdentityModel.Jwt
         public static string ToJwkString(this JsonWebKey key)
         {
             var json = JsonConvert.SerializeObject(key);            
-            return Base64Url.Encode(Encoding.ASCII.GetBytes(json));
+            return Base64Url.Encode(Encoding.UTF8.GetBytes(json));
         }
     }
 }
