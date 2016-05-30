@@ -27,7 +27,7 @@ namespace IdentityModel
         {
             var certs = new List<X509Certificate2>();
 
-#if NET452
+#if NET451
             var store = new X509Store(_name, _location);
             store.Open(OpenFlags.ReadOnly);
 

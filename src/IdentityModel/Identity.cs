@@ -93,27 +93,6 @@ namespace IdentityModel
                 {
                     claims.Add(new Claim(ClaimTypes.Uri, name, ClaimValueTypes.String, issuer));
                 }
-
-#if NET451
-                RSA key = certificate.PublicKey.Key as RSA;
-                if (key != null)
-                {
-                    claims.Add(new Claim(ClaimTypes.Rsa, key.ToXmlString(false), ClaimValueTypes.RsaKeyValue, issuer));
-                }
-
-
-                DSA dsa = certificate.PublicKey.Key as DSA;
-                if (dsa != null)
-                {
-                    claims.Add(new Claim(ClaimTypes.Dsa, dsa.ToXmlString(false), ClaimValueTypes.DsaKeyValue, issuer));
-                }
-
-                var expiration = certificate.GetExpirationDateString();
-                if (!string.IsNullOrEmpty(expiration))
-                {
-                    claims.Add(new Claim(ClaimTypes.Expiration, expiration, ClaimValueTypes.DateTime, issuer));
-                }
-#endif
             }
 
             return new ClaimsIdentity(claims, authenticationType);
