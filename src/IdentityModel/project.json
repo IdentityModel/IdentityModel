@@ -1,5 +1,5 @@
 {
-  "version": "2.0.0-beta4",
+  "version": "2.0.0-beta5",
   "authors": [ "Dominick Baier", "Brock Allen" ],
 
   "packOptions": {
@@ -23,8 +23,7 @@
         "System.Net.Http": "4.1.0",
         "System.Security.Claims": "4.0.1",
         "System.Security.Cryptography.Algorithms": "4.2.0",
-        "System.Security.Cryptography.X509Certificates": "4.1.0",
-        "System.Console": "4.0.0"
+        "System.Security.Cryptography.X509Certificates": "4.1.0"
       }
     },
 
