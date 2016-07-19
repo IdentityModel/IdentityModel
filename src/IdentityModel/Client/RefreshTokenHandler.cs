@@ -2,6 +2,7 @@
 // Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
 
 
+using System;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -15,12 +16,14 @@ namespace IdentityModel.Client
     /// </summary>
     public class RefeshTokenHandler : DelegatingHandler
     {
+        private static readonly TimeSpan _lockTimeout = TimeSpan.FromSeconds(2);
+
+        private readonly SemaphoreSlim _lock = new SemaphoreSlim(1, 1);
+        private readonly TokenClient _tokenClient;
+
         private string _accessToken;
         private string _refreshToken;
-
-        private readonly TokenClient _tokenClient;
-        private ReaderWriterLockSlim _lock;
-        private int _lockTimeout = 2000;
+        private bool _disposed;
 
         /// <summary>
         /// Gets the current access token
@@ -29,12 +32,16 @@ namespace IdentityModel.Client
         {
             get
             {
-                if (_lock.TryEnterReadLock(_lockTimeout))
+                if (_lock.Wait(_lockTimeout))
                 {
-                    var at = _accessToken;
-                    _lock.ExitReadLock();
-
-                    return at;
+                    try
+                    {
+                        return _accessToken;
+                    }
+                    finally
+                    {
+                        _lock.Release();
+                    }
                 }
 
                 return null;
@@ -48,12 +55,16 @@ namespace IdentityModel.Client
         {
             get
             {
-                if (_lock.TryEnterReadLock(_lockTimeout))
+                if (_lock.Wait(_lockTimeout))
                 {
-                    var rt = _refreshToken;
-                    _lock.ExitReadLock();
-
-                    return rt;
+                    try
+                    {
+                        return _refreshToken;
+                    }
+                    finally
+                    {
+                        _lock.Release();
+                    }
                 }
 
                 return null;
@@ -71,7 +82,6 @@ namespace IdentityModel.Client
             _accessToken = accessToken;
 
             InnerHandler = innerHandler ?? new HttpClientHandler();
-            _lock = new ReaderWriterLockSlim();
         }
 
         protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
@@ -102,6 +112,16 @@ namespace IdentityModel.Client
             return await base.SendAsync(request, cancellationToken);
         }
 
+        protected override void Dispose(bool disposing)
+        {
+          if (disposing && !_disposed) {
+              _disposed = true;
+              _lock.Dispose();
+          }
+
+          base.Dispose(disposing);
+        }
+
         private async Task<bool> RefreshTokensAsync(CancellationToken cancellationToken)
         {
             var refreshToken = RefreshToken;
@@ -110,7 +130,7 @@ namespace IdentityModel.Client
                 return false;
             }
 
-            if (_lock.TryEnterWriteLock(_lockTimeout))
+            if (await _lock.WaitAsync(_lockTimeout, cancellationToken).ConfigureAwait(false))
             {
                 try
                 {
@@ -126,7 +146,7 @@ namespace IdentityModel.Client
                 }
                 finally
                 {
-                    _lock.ExitWriteLock();
+                    _lock.Release();
                 }
             }
 
