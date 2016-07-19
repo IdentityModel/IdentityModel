@@ -67,6 +67,7 @@ namespace IdentityModel
             public const string IdTokenHint           = "id_token_hint";
             public const string PostLogoutRedirectUri = "post_logout_redirect_uri";
             public const string State                 = "state";
+            public const string Sid                   = "sid";
         }
 
         public static class TokenRequest
