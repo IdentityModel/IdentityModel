@@ -12,13 +12,11 @@ using System.Threading.Tasks;
 
 namespace IdentityModel.Client
 {
-    public class TokenClient
+    public class TokenClient : IDisposable
     {
         protected HttpClient _client;
-        
-        public AuthenticationStyle AuthenticationStyle { get; set; }
-        public string ClientId { get; set; }
-        public string ClientSecret { get; set; }
+
+        private bool _disposed;
 
         public TokenClient(string address)
             : this(address, new HttpClientHandler())
@@ -28,7 +26,7 @@ namespace IdentityModel.Client
         {
             if (address == null) throw new ArgumentNullException("address");
             if (innerHttpMessageHandler == null) throw new ArgumentNullException("innerHttpMessageHandler");
-            
+
             _client = new HttpClient(innerHttpMessageHandler)
             {
                 BaseAddress = new Uri(address)
@@ -56,7 +54,7 @@ namespace IdentityModel.Client
         public TokenClient(string address, string clientId, string clientSecret, HttpMessageHandler innerHttpMessageHandler, AuthenticationStyle style = AuthenticationStyle.BasicAuthentication)
             : this(address, innerHttpMessageHandler)
         {
-            if (string.IsNullOrEmpty(clientId)) throw new ArgumentNullException("ClientId");
+            if (string.IsNullOrEmpty(clientId)) throw new ArgumentNullException("clientId");
 
             AuthenticationStyle = style;
             ClientId = clientId;
@@ -68,8 +66,14 @@ namespace IdentityModel.Client
             }
         }
 
-        public TimeSpan Timeout 
-        { 
+        public AuthenticationStyle AuthenticationStyle { get; set; }
+
+        public string ClientId { get; set; }
+
+        public string ClientSecret { get; set; }
+
+        public TimeSpan Timeout
+        {
             set
             {
                 _client.Timeout = value;
@@ -88,6 +92,21 @@ namespace IdentityModel.Client
             else
             {
                 return new TokenResponse(response.StatusCode, response.ReasonPhrase);
+            }
+        }
+
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing && !_disposed)
+            {
+                _disposed = true;
+                _client.Dispose();
             }
         }
     }
