@@ -15,7 +15,7 @@ namespace IdentityModel
         StoreLocation _location;
         StoreName _name;
         X509FindType _findType;
-        
+
         public X509CertificatesFinder(StoreLocation location, StoreName name, X509FindType findType)
         {
             _location = location;
@@ -27,7 +27,7 @@ namespace IdentityModel
         {
             var certs = new List<X509Certificate2>();
 
-#if NET452
+#if NET45
             var store = new X509Store(_name, _location);
             store.Open(OpenFlags.ReadOnly);
 

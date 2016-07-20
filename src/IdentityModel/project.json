@@ -27,9 +27,9 @@
       }
     },
 
-    "net452": {
+    "net45": {
       "frameworkAssemblies": {
-        "System.Net.Http": "4.0.0.0"
+        "System.Net.Http": ""
       }
     }
   }
