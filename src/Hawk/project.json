@@ -1,0 +1,62 @@
+{
+  "version": "2.0.0-beta5",
+  "authors": [ "Dominick Baier", "Brock Allen" ],
+
+  "packOptions": {
+    "tags": [ "Hawk", "Security", "Identity", "IdentityServer" ],
+    "projectUrl": "https://github.com/IdentityModel/IdentityModelv2",
+    "licenseUrl": "https://github.com/IdentityModel/IdentityModelv2/blob/master/LICENSE",
+    "iconUrl": "https://identityserver.github.io/Documentation/assets/images/icons/IDmodel_icon128.png",
+    "repository": {
+      "type": "git",
+      "url": "git://github.com/identitymodel/identitymodelv2"
+    }
+  },
+
+  "dependencies": {
+      "Microsoft.AspNetCore.WebUtilities": "1.0.0",
+      "Microsoft.Extensions.Caching.Memory": "1.0.0",
+      "Newtonsoft.Json": "9.0.1"
+  },
+
+  "frameworks": {
+    "netstandard1.6": {
+      "dependencies": {
+        "Microsoft.AspNetCore.Http.Abstractions": "1.0.0",
+        "Microsoft.AspNetCore.Http": "1.0.0",
+        "Microsoft.AspNetCore.Mvc.Core": "1.0.0",
+        "System.Diagnostics.Tracing": "4.1.0",
+        "System.Net.Http": "4.1.0",
+        "System.Security.Claims": "4.0.1",
+        "System.Security.Cryptography.Algorithms": "4.2.0"
+      }
+    },
+
+    "net452": {
+      "frameworkAssemblies": {
+        "System.Net.Http": "",
+        "System.Diagnostics.Tracing": ""
+      },
+      "dependencies": {
+        "Microsoft.AspNet.WebApi.Client": "5.2.3",
+        "Microsoft.AspNet.WebApi.Core": "5.2.3",
+        "Microsoft.Owin": "3.0.0",
+        "Microsoft.Owin.Security": "3.0.0",
+        "Owin": "1.0.0"
+      }
+    }
+  },
+   "configurations": {
+    "Debug": {
+      "buildOptions": {
+        "define": [ "DEBUG", "TRACE" ]
+      }
+    },
+    "Release": {
+      "buildOptions": {
+        "define": [ "RELEASE", "TRACE" ],
+        "optimize": true
+      }
+    }
+   } 
+}
