@@ -3,7 +3,7 @@ branches:
   only:
   - dev
 build_script:
-- ps: build.ps1
+- ps: .\build.ps1
 test: off
 artifacts:
 - path: artifacts/packages/*.nupkg
