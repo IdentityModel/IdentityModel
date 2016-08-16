@@ -15,11 +15,11 @@ namespace IdentityModel.Client
     {
         private readonly HttpClient _client;
 
-        public UserInfoClient(Uri endpoint, string token)
+        public UserInfoClient(string endpoint, string token)
             : this(endpoint, token, new HttpClientHandler())
         { }
 
-        public UserInfoClient(Uri endpoint, string token, HttpMessageHandler innerHttpMessageHandler)
+        public UserInfoClient(string endpoint, string token, HttpMessageHandler innerHttpMessageHandler)
         {
             if (endpoint == null)
                 throw new ArgumentNullException("endpoint");
@@ -32,7 +32,7 @@ namespace IdentityModel.Client
 
             _client = new HttpClient(innerHttpMessageHandler)
             {
-                BaseAddress = endpoint
+                BaseAddress = new Uri(endpoint)
             };
 
             _client.DefaultRequestHeaders.Accept.Clear();
