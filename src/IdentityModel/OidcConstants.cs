@@ -51,15 +51,16 @@ namespace IdentityModel
 
         public static class AuthorizeResponse
         {
-            public const string Scope         = "scope";
-            public const string Code          = "code";
-            public const string AccessToken   = "access_token";
-            public const string ExpiresIn     = "expires_in";
-            public const string TokenType     = "token_type";
-            public const string RefreshToken  = "refresh_token";
-            public const string IdentityToken = "id_token";
-            public const string State         = "state";
-            public const string Error         = "error";
+            public const string Scope            = "scope";
+            public const string Code             = "code";
+            public const string AccessToken      = "access_token";
+            public const string ExpiresIn        = "expires_in";
+            public const string TokenType        = "token_type";
+            public const string RefreshToken     = "refresh_token";
+            public const string IdentityToken    = "id_token";
+            public const string State            = "state";
+            public const string Error            = "error";
+            public const string ErrorDescription = "error_description";
         }
 
         public static class EndSessionRequest

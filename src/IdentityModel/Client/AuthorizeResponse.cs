@@ -1,50 +1,32 @@
 ﻿// Copyright (c) Brock Allen & Dominick Baier. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
 
-
 using System;
 using System.Collections.Generic;
+using System.Net;
 
 namespace IdentityModel.Client
 {
     public class AuthorizeResponse
     {
-        public string Raw { get; protected set; }
-        public Dictionary<string, string> Values { get; protected set; }
-
-        public string Code
+        public AuthorizeResponse(string raw)
         {
-            get
-            {
-                return TryGet(OidcConstants.AuthorizeResponse.Code);
-            }
+            Raw = raw;
+            ParseRaw();
         }
 
-        public string AccessToken
-        {
-            get
-            {
-                return TryGet(OidcConstants.AuthorizeResponse.AccessToken);
-            }
-        }
-
-        public string IdentityToken
-        {
-            get
-            {
-                return TryGet(OidcConstants.AuthorizeResponse.IdentityToken);
-            }
-        }
-
+        public string Raw { get; }
+        public Dictionary<string, string> Values { get; } = new Dictionary<string, string>();
         public bool IsError { get; internal set; }
 
-        public string Error
-        {
-            get
-            {
-                return TryGet(OidcConstants.AuthorizeResponse.Error);
-            }
-        }
+        public string Code             => TryGet(OidcConstants.AuthorizeResponse.Code);
+        public string AccessToken      => TryGet(OidcConstants.AuthorizeResponse.AccessToken);
+        public string IdentityToken    => TryGet(OidcConstants.AuthorizeResponse.IdentityToken);
+        public string Error            => TryGet(OidcConstants.AuthorizeResponse.Error);
+        public string Scope            => TryGet(OidcConstants.AuthorizeResponse.Scope);
+        public string TokenType        => TryGet(OidcConstants.AuthorizeResponse.TokenType);
+        public string State            => TryGet(OidcConstants.AuthorizeResponse.State);
+        public string ErrorDescription => TryGet(OidcConstants.AuthorizeResponse.ErrorDescription);
 
         public long ExpiresIn
         {
@@ -57,37 +39,6 @@ namespace IdentityModel.Client
 
                 return longValue;
             }
-        }
-
-        public string Scope
-        {
-            get
-            {
-                return TryGet(OidcConstants.AuthorizeResponse.Scope);
-            }
-        }
-
-        public string TokenType
-        {
-            get
-            {
-                return TryGet(OidcConstants.AuthorizeResponse.TokenType);
-            }
-        }
-
-        public string State
-        {
-            get
-            {
-                return TryGet(OidcConstants.AuthorizeResponse.State);
-            }
-        }
-
-        public AuthorizeResponse(string raw)
-        {
-            Raw = raw;
-            Values = new Dictionary<string, string>();
-            ParseRaw();
         }
 
         private void ParseRaw()
@@ -133,12 +84,12 @@ namespace IdentityModel.Client
             }
         }
 
-        private string TryGet(string type)
+        public string TryGet(string type)
         {
             string value;
             if (Values.TryGetValue(type, out value))
             {
-                return value;
+                return WebUtility.UrlDecode(value);
             }
 
             return null;
