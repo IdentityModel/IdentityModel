@@ -6,11 +6,23 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Net;
+using System.Security.Claims;
 
 namespace IdentityModel.Client
 {
     public class UserInfoResponse
     {
+        public string Raw { get; }
+        public JObject JsonObject { get; }
+        public IEnumerable<Claim> Claims { get; }
+
+        public bool IsHttpError { get; }
+        public HttpStatusCode HttpErrorStatusCode { get; }
+        public string HttpErrorReason { get; }
+
+        public bool IsError { get; }
+        public string ErrorMessage { get; }
+
         public UserInfoResponse(string raw)
         {
             Raw = raw;
@@ -18,7 +30,7 @@ namespace IdentityModel.Client
             try
             {
                 JsonObject = JObject.Parse(raw);
-                var claims = new List<Tuple<string, string>>();
+                var claims = new List<Claim>();
 
                 foreach (var x in JsonObject)
                 {
@@ -28,12 +40,12 @@ namespace IdentityModel.Client
                     {
                         foreach (var item in array)
                         {
-                            claims.Add(Tuple.Create(x.Key, item.ToString()));
+                            claims.Add(new Claim(x.Key, item.ToString()));
                         }
                     }
                     else
                     {
-                        claims.Add(Tuple.Create(x.Key, x.Value.ToString()));
+                        claims.Add(new Claim(x.Key, x.Value.ToString()));
                     }
                 }
 
@@ -53,16 +65,5 @@ namespace IdentityModel.Client
             HttpErrorStatusCode = statusCode;
             HttpErrorReason = httpErrorReason;
         }
-
-        public string Raw { get; private set; }
-        public JObject JsonObject { get; private set; }
-        public IEnumerable<Tuple<string, string>> Claims { get; set; }
-
-        public bool IsHttpError { get; private set; }
-        public HttpStatusCode HttpErrorStatusCode { get; private set; }
-        public string HttpErrorReason { get; private set; }
-        
-        public bool IsError { get; private set; }
-        public string ErrorMessage { get; set; }
     }
 }

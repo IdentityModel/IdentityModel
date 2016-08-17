@@ -5,18 +5,19 @@
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.Security.Claims;
 
 namespace IdentityModel.Client
 {
     public class IntrospectionResponse
     {
-        public string Raw { get; set; }
+        public string Raw { get; }
 
         public bool IsError { get; set; }
         public string Error { get; set; }
 
-        public bool IsActive { get; set; }
-        public IEnumerable<Tuple<string, string>> Claims { get; set; }
+        public bool IsActive { get; }
+        public IEnumerable<Claim> Claims { get; }
 
         public IntrospectionResponse()
         { }
@@ -30,7 +31,7 @@ namespace IdentityModel.Client
                 var json = JObject.Parse(raw);
                 IsActive = bool.Parse(json["active"].ToString());
 
-                var claims = new List<Tuple<string, string>>();
+                var claims = new List<Claim>();
 
                 foreach (var x in json)
                 {
@@ -40,12 +41,12 @@ namespace IdentityModel.Client
                     {
                         foreach (var item in array)
                         {
-                            claims.Add(Tuple.Create(x.Key, item.ToString()));
+                            claims.Add(new Claim(x.Key, item.ToString()));
                         }
                     }
                     else
                     {
-                        claims.Add(Tuple.Create(x.Key, x.Value.ToString()));
+                        claims.Add(new Claim(x.Key, x.Value.ToString()));
                     }
                 }
 
