@@ -12,57 +12,39 @@ namespace IdentityModel.Client
     public class UserInfoResponse
     {
         public string Raw { get; }
-        public JObject JsonObject { get; }
+        public JObject Json { get; }
         public IEnumerable<Claim> Claims { get; }
 
         public bool IsHttpError { get; }
-        public HttpStatusCode HttpErrorStatusCode { get; }
+        public HttpStatusCode HttpStatusCode { get; }
         public string HttpErrorReason { get; }
 
         public bool IsError { get; }
-        public string ErrorMessage { get; }
+        public string Error { get; }
 
         public UserInfoResponse(string raw)
         {
             Raw = raw;
+            HttpStatusCode = HttpStatusCode.OK;
 
             try
             {
-                JsonObject = JObject.Parse(raw);
-                var claims = new List<Claim>();
-
-                foreach (var x in JsonObject)
-                {
-                    var array = x.Value as JArray;
-
-                    if (array != null)
-                    {
-                        foreach (var item in array)
-                        {
-                            claims.Add(new Claim(x.Key, item.ToString()));
-                        }
-                    }
-                    else
-                    {
-                        claims.Add(new Claim(x.Key, x.Value.ToString()));
-                    }
-                }
-
-                Claims = claims;
+                Json = JObject.Parse(raw);
+                Claims = Json.ToClaims();
             }
             catch (Exception ex)
             {
                 IsError = true;
-                ErrorMessage = ex.Message;
+                Error = ex.Message;
             }
         }
 
         public UserInfoResponse(HttpStatusCode statusCode, string httpErrorReason)
         {
-            IsHttpError = true;
             IsError = true;
-            HttpErrorStatusCode = statusCode;
-            HttpErrorReason = httpErrorReason;
+
+            HttpStatusCode = statusCode;
+            Error = httpErrorReason;
         }
     }
 }

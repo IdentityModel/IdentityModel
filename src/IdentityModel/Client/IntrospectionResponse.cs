@@ -11,6 +11,7 @@ namespace IdentityModel.Client
     public class IntrospectionResponse
     {
         public string Raw { get; }
+        public JObject Json { get; }
 
         public bool IsError { get; set; }
         public string Error { get; set; }
@@ -27,29 +28,9 @@ namespace IdentityModel.Client
 
             try
             {
-                var json = JObject.Parse(raw);
-                IsActive = bool.Parse(json["active"].ToString());
-
-                var claims = new List<Claim>();
-
-                foreach (var x in json)
-                {
-                    var array = x.Value as JArray;
-
-                    if (array != null)
-                    {
-                        foreach (var item in array)
-                        {
-                            claims.Add(new Claim(x.Key, item.ToString()));
-                        }
-                    }
-                    else
-                    {
-                        claims.Add(new Claim(x.Key, x.Value.ToString()));
-                    }
-                }
-
-                Claims = claims;
+                Json = JObject.Parse(raw);
+                IsActive = bool.Parse(Json["active"].ToString());
+                Claims = Json.ToClaims();
             }
             catch (Exception ex)
             {
