@@ -24,8 +24,8 @@ namespace IdentityModel.Client
 
         public TokenClient(string address, HttpMessageHandler innerHttpMessageHandler)
         {
-            if (address == null) throw new ArgumentNullException("address");
-            if (innerHttpMessageHandler == null) throw new ArgumentNullException("innerHttpMessageHandler");
+            if (address == null) throw new ArgumentNullException(nameof(address));
+            if (innerHttpMessageHandler == null) throw new ArgumentNullException(nameof(innerHttpMessageHandler));
 
             _client = new HttpClient(innerHttpMessageHandler)
             {
@@ -39,14 +39,14 @@ namespace IdentityModel.Client
             AuthenticationStyle = AuthenticationStyle.None;
         }
 
-        public TokenClient(string address, string clientId, string clientSecret, AuthenticationStyle style = AuthenticationStyle.BasicAuthentication)
-            : this(address, clientId, clientSecret, new HttpClientHandler(), style)
-        { }
-
-        public TokenClient(string address, string clientId, AuthenticationStyle style = AuthenticationStyle.BasicAuthentication)
+        public TokenClient(string address, string clientId, AuthenticationStyle style = AuthenticationStyle.PostValues)
             : this(address, clientId, string.Empty, new HttpClientHandler(), style)
         { }
 
+        public TokenClient(string address, string clientId, string clientSecret, AuthenticationStyle style = AuthenticationStyle.BasicAuthentication)
+            : this(address, clientId, clientSecret, new HttpClientHandler(), style)
+        { }
+        
         public TokenClient(string address, string clientId, HttpMessageHandler innerHttpMessageHandler)
             : this(address, clientId, string.Empty, innerHttpMessageHandler, AuthenticationStyle.PostValues)
         { }
@@ -54,7 +54,7 @@ namespace IdentityModel.Client
         public TokenClient(string address, string clientId, string clientSecret, HttpMessageHandler innerHttpMessageHandler, AuthenticationStyle style = AuthenticationStyle.BasicAuthentication)
             : this(address, innerHttpMessageHandler)
         {
-            if (string.IsNullOrEmpty(clientId)) throw new ArgumentNullException("clientId");
+            if (string.IsNullOrEmpty(clientId)) throw new ArgumentNullException(nameof(clientId));
 
             AuthenticationStyle = style;
             ClientId = clientId;
