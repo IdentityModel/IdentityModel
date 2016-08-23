@@ -43,7 +43,9 @@ namespace IdentityModel.Client
         public TokenResponse(HttpStatusCode statusCode, string reason)
         {
             IsError = true;
+
             ErrorType = ResponseErrorType.Http;
+            HttpStatusCode = statusCode;
             HttpErrorReason = reason;
         }
 
