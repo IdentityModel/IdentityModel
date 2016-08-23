@@ -14,7 +14,6 @@ namespace IdentityModel.Client
     public class TokenClient : IDisposable
     {
         protected HttpClient _client;
-
         private bool _disposed;
 
         public TokenClient(string address)
@@ -35,7 +34,7 @@ namespace IdentityModel.Client
             _client.DefaultRequestHeaders.Accept.Add(
                 new MediaTypeWithQualityHeaderValue("application/json"));
 
-            AuthenticationStyle = AuthenticationStyle.None;
+            AuthenticationStyle = AuthenticationStyle.Custom;
         }
 
         public TokenClient(string address, string clientId, AuthenticationStyle style = AuthenticationStyle.PostValues)
@@ -65,11 +64,9 @@ namespace IdentityModel.Client
             }
         }
 
-        public AuthenticationStyle AuthenticationStyle { get; set; }
-
         public string ClientId { get; set; }
-
         public string ClientSecret { get; set; }
+        public AuthenticationStyle AuthenticationStyle { get; set; }
 
         public TimeSpan Timeout
         {

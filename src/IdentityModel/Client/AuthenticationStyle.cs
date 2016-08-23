@@ -8,6 +8,6 @@ namespace IdentityModel.Client
     {
         BasicAuthentication,
         PostValues,
-        None
+        Custom
     };
 }

@@ -37,7 +37,7 @@ namespace IdentityModel.Client
             _client.DefaultRequestHeaders.Accept.Add(
                 new MediaTypeWithQualityHeaderValue("application/json"));
 
-            AuthenticationStyle = AuthenticationStyle.None;
+            AuthenticationStyle = AuthenticationStyle.Custom;
         }
 
         public TokenRevocationClient(string address, string clientId, string clientSecret, AuthenticationStyle style = AuthenticationStyle.BasicAuthentication)
