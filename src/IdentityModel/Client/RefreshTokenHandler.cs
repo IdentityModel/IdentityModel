@@ -86,7 +86,7 @@ namespace IdentityModel.Client
 
         protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
-            var accessToken = AccessToken;
+            var accessToken = await GetAccessTokenAsync(cancellationToken);
             if (string.IsNullOrEmpty(accessToken))
             {
                 if (await RefreshTokensAsync(cancellationToken) == false)
@@ -151,6 +151,23 @@ namespace IdentityModel.Client
             }
 
             return false;
+        }
+
+        private async Task<string> GetAccessTokenAsync(CancellationToken cancellationToken)
+        {
+            if (await _lock.WaitAsync(_lockTimeout, cancellationToken).ConfigureAwait(false))
+            {
+                try
+                {
+                    return _accessToken;
+                }
+                finally
+                {
+                    _lock.Release();
+                }
+            }
+
+            return null;
         }
     }
 }
