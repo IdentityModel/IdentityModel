@@ -7,8 +7,9 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading;
 using System.Threading.Tasks;
+using IdentityModel.Client;
 
-namespace IdentityModel.Client
+namespace System.Net.Http
 {
     public class UserInfoClient
     {
@@ -21,13 +22,13 @@ namespace IdentityModel.Client
         public UserInfoClient(string endpoint, string token, HttpMessageHandler innerHttpMessageHandler)
         {
             if (endpoint == null)
-                throw new ArgumentNullException("endpoint");
+                throw new ArgumentNullException(nameof(endpoint));
 
             if (string.IsNullOrEmpty(token))
-                throw new ArgumentNullException("token");
+                throw new ArgumentNullException(nameof(token));
 
             if (innerHttpMessageHandler == null)
-                throw new ArgumentNullException("innerHttpMessageHandler");
+                throw new ArgumentNullException(nameof(innerHttpMessageHandler));
 
             _client = new HttpClient(innerHttpMessageHandler)
             {
@@ -43,10 +44,7 @@ namespace IdentityModel.Client
 
         public TimeSpan Timeout
         {
-            set
-            {
-                _client.Timeout = value;
-            }
+            set { _client.Timeout = value; }
         }
 
         public async Task<UserInfoResponse> GetAsync(CancellationToken cancellationToken = default(CancellationToken))
@@ -55,7 +53,7 @@ namespace IdentityModel.Client
 
             if (response.StatusCode != HttpStatusCode.OK)
             {
-                return new UserInfoResponse(response.StatusCode, response.ReasonPhrase);
+                return new UserInfoResponse((ushort)response.StatusCode, response.ReasonPhrase);
             }
 
             var content = await response.Content.ReadAsStringAsync().ConfigureAwait(false);

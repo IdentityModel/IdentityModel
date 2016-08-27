@@ -6,10 +6,12 @@ using System.Linq;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
+using IdentityModel;
+using IdentityModel.Client;
 
-namespace IdentityModel.Client
+namespace System.Net.Http
 {
-    public static partial class TokenClientExtensions
+    public static class TokenClientExtensions
     {
         public static Task<TokenResponse> RequestClientCredentialsAsync(this TokenClient client, string scope = null, object extra = null, CancellationToken cancellationToken = default(CancellationToken))
         {

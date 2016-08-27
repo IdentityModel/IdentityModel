@@ -24,12 +24,68 @@
         "System.Security.Claims": "4.0.1",
         "System.Security.Cryptography.Algorithms": "4.2.0",
         "System.Security.Cryptography.X509Certificates": "4.1.0"
+      },
+      "buildOptions": {
+        "compile": {
+          "exclude": [
+            "RTClient"
+          ]
+        }
       }
     },
 
     "net45": {
       "frameworkAssemblies": {
         "System.Net.Http": ""
+      },
+      "buildOptions": {
+        "compile": {
+          "exclude": [
+            "RTClient"
+          ]
+        }
+      }
+    },
+
+    ".NETPortable,Version=v4.6,Profile=Profile32": {
+      "imports": [
+        "dotnet5.1",
+        "netstandard1.3"
+      ],
+      "frameworkAssemblies": {
+        "mscorlib": "",
+        "System": "",
+        "System.Core": "",
+        "System.Collections": "",
+        "System.Globalization": "",
+        "System.Linq": "",
+        "System.Linq.Expressions": "",
+        "System.Reflection": "",
+        "System.Reflection.Extensions": "",
+        "System.Runtime": "",
+        "System.Runtime.Extensions": "",
+        "System.Runtime.InteropServices": "",
+        "System.Windows": ""
+      },
+      "dependencies": {
+        "Microsoft.TargetingPack.Private.WinRT": "1.0.1",
+        "System.Runtime.WindowsRuntime": "4.0.11",
+        "System.Net.Http": "4.1.0",
+        "System.Net.Primitives": "4.0.11",
+        "System.Security.Claims": "4.0.1",
+        "System.Security.Cryptography.Algorithms": "4.2.0",
+        "System.Security.Cryptography.X509Certificates": "4.1.0"
+      }
+    },
+    "uap10.0": {
+      "buildOptions": {
+        "define": [ "WINDOWS_UWP" ]
+      },
+      "imports": "dotnet5.4",
+      "dependencies": {
+        "Microsoft.NETCore.UniversalWindowsPlatform": "5.2.0",
+        "Microsoft.TargetingPack.Private.WinRT": "1.0.1",
+        "System.Runtime.WindowsRuntime": "4.0.11"
       }
     }
   }

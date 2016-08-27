@@ -4,11 +4,12 @@
 using System;
 using System.Collections.Generic;
 using System.Net;
-using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Threading;
 using System.Threading.Tasks;
+using IdentityModel.Client;
 
-namespace IdentityModel.Client
+namespace System.Net.Http
 {
     public class IntrospectionClient
     {
@@ -17,7 +18,7 @@ namespace IdentityModel.Client
 
         public IntrospectionClient(string endpoint, string clientId = "", string clientSecret = "", HttpMessageHandler innerHttpMessageHandler = null)
         {
-            if (string.IsNullOrWhiteSpace(endpoint)) throw new ArgumentNullException("endpoint");
+            if (string.IsNullOrWhiteSpace(endpoint)) throw new ArgumentNullException(nameof(endpoint));
             if (innerHttpMessageHandler == null) innerHttpMessageHandler = new HttpClientHandler();
 
             _client = new HttpClient(innerHttpMessageHandler)
@@ -47,10 +48,10 @@ namespace IdentityModel.Client
             }
         }
 
-        public async Task<IntrospectionResponse> SendAsync(IntrospectionRequest request)
+        public async Task<IntrospectionResponse> SendAsync(IntrospectionRequest request, CancellationToken cancellationToken = default(CancellationToken))
         {
-            if (request == null) throw new ArgumentNullException("request");
-            if (string.IsNullOrWhiteSpace(request.Token)) throw new ArgumentNullException("token");
+            if (request == null) throw new ArgumentNullException(nameof(request));
+            if (string.IsNullOrWhiteSpace(request.Token)) throw new ArgumentNullException("Token");
 
             var form = new Dictionary<string, string>();
             form.Add("token", request.Token);
@@ -76,7 +77,7 @@ namespace IdentityModel.Client
 
             try
             {
-                var response = await _client.PostAsync("", new FormUrlEncodedContent(form)).ConfigureAwait(false);
+                var response = await _client.PostAsync("", new FormUrlEncodedContent(form), cancellationToken).ConfigureAwait(false);
                 if (response.StatusCode != HttpStatusCode.OK)
                 {
                     return new IntrospectionResponse

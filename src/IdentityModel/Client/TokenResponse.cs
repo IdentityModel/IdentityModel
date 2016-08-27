@@ -12,7 +12,7 @@ namespace IdentityModel.Client
         public enum ResponseErrorType
         {
             None,
-            Protocol, 
+            Protocol,
             Http
         }
 
@@ -22,15 +22,15 @@ namespace IdentityModel.Client
             {
                 Raw = raw;
                 Json = JObject.Parse(raw);
-                
+
                 if (string.IsNullOrWhiteSpace(Error))
                 {
-                    HttpStatusCode = HttpStatusCode.OK;
+                    HttpStatusCode = 200; // OK
                 }
                 else
                 {
                     IsError = true;
-                    HttpStatusCode = HttpStatusCode.BadRequest;
+                    HttpStatusCode = 400;// BadRequest
                     ErrorType = ResponseErrorType.Protocol;
                 }
             }
@@ -40,7 +40,7 @@ namespace IdentityModel.Client
             }
         }
 
-        public TokenResponse(HttpStatusCode statusCode, string reason)
+        public TokenResponse(ushort statusCode, string reason)
         {
             IsError = true;
 
@@ -54,12 +54,12 @@ namespace IdentityModel.Client
 
         public bool IsError { get; }
         public ResponseErrorType ErrorType { get; } = ResponseErrorType.None;
-        public HttpStatusCode HttpStatusCode { get; }
+        public ushort HttpStatusCode { get; }
         public string HttpErrorReason { get; }
 
+        public string TokenType        => TryGet(OidcConstants.TokenResponse.TokenType);
         public string AccessToken      => TryGet(OidcConstants.TokenResponse.AccessToken);
         public string IdentityToken    => TryGet(OidcConstants.TokenResponse.IdentityToken);
-        public string TokenType        => TryGet(OidcConstants.TokenResponse.TokenType);
         public string RefreshToken     => TryGet(OidcConstants.TokenResponse.RefreshToken);
         public string ErrorDescription => TryGet(OidcConstants.TokenResponse.ErrorDescription);
 

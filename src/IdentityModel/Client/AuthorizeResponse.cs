@@ -19,14 +19,16 @@ namespace IdentityModel.Client
         public Dictionary<string, string> Values { get; } = new Dictionary<string, string>();
         public bool IsError { get; internal set; }
 
-        public string Code             => TryGet(OidcConstants.AuthorizeResponse.Code);
-        public string AccessToken      => TryGet(OidcConstants.AuthorizeResponse.AccessToken);
-        public string IdentityToken    => TryGet(OidcConstants.AuthorizeResponse.IdentityToken);
         public string Error            => TryGet(OidcConstants.AuthorizeResponse.Error);
+        public string ErrorDescription => TryGet(OidcConstants.AuthorizeResponse.ErrorDescription);
+
+        public string Code             => TryGet(OidcConstants.AuthorizeResponse.Code);
         public string Scope            => TryGet(OidcConstants.AuthorizeResponse.Scope);
         public string TokenType        => TryGet(OidcConstants.AuthorizeResponse.TokenType);
         public string State            => TryGet(OidcConstants.AuthorizeResponse.State);
-        public string ErrorDescription => TryGet(OidcConstants.AuthorizeResponse.ErrorDescription);
+
+        public string AccessToken      => TryGet(OidcConstants.AuthorizeResponse.AccessToken);
+        public string IdentityToken    => TryGet(OidcConstants.AuthorizeResponse.IdentityToken);
 
         public long ExpiresIn
         {

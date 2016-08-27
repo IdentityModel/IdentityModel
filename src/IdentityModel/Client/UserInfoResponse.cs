@@ -16,7 +16,7 @@ namespace IdentityModel.Client
         public IEnumerable<Claim> Claims { get; }
 
         public bool IsHttpError { get; }
-        public HttpStatusCode HttpStatusCode { get; }
+        public ushort HttpStatusCode { get; }
         public string HttpErrorReason { get; }
 
         public bool IsError { get; }
@@ -25,7 +25,7 @@ namespace IdentityModel.Client
         public UserInfoResponse(string raw)
         {
             Raw = raw;
-            HttpStatusCode = HttpStatusCode.OK;
+            HttpStatusCode = 200;// OK
 
             try
             {
@@ -39,7 +39,7 @@ namespace IdentityModel.Client
             }
         }
 
-        public UserInfoResponse(HttpStatusCode statusCode, string httpErrorReason)
+        public UserInfoResponse(ushort statusCode, string httpErrorReason)
         {
             IsError = true;
 
