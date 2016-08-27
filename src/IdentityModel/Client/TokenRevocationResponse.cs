@@ -12,9 +12,15 @@ namespace IdentityModel.Client
         public string Raw { get; protected set; }
         public JObject Json { get; protected set; }
 
-        private bool _isHttpError;
-        private HttpStatusCode _httpErrorstatusCode;
-        private string _httpErrorReason;
+        public bool IsHttpError { get; }
+        public ushort HttpErrorStatusCode { get; }
+        public string HttpErrorReason { get; }
+
+        public string Error => GetStringOrNull(OidcConstants.TokenResponse.Error);
+        public string ErrorDescription => GetStringOrNull(OidcConstants.TokenResponse.ErrorDescription);
+        public bool IsError
+            => (IsHttpError ||
+               !string.IsNullOrWhiteSpace(GetStringOrNull(OidcConstants.TokenResponse.Error)));
 
         public TokenRevocationResponse()
         {
@@ -34,61 +40,13 @@ namespace IdentityModel.Client
             }
         }
 
-        public TokenRevocationResponse(HttpStatusCode statusCode, string reason)
+        public TokenRevocationResponse(ushort statusCode, string reason)
         {
-            _isHttpError = true;
-            _httpErrorstatusCode = statusCode;
-            _httpErrorReason = reason;
+            IsHttpError = true;
+            HttpErrorStatusCode = statusCode;
+            HttpErrorReason = reason;
         }
 
-        public bool IsHttpError
-        {
-            get
-            {
-                return _isHttpError;
-            }
-        }
-
-        public HttpStatusCode HttpErrorStatusCode
-        {
-            get
-            {
-                return _httpErrorstatusCode;
-            }
-        }
-
-        public string HttpErrorReason
-        {
-            get
-            {
-                return _httpErrorReason;
-            }
-        }
-
-        public string Error
-        {
-            get
-            {
-                return GetStringOrNull(OidcConstants.TokenResponse.Error);
-            }
-        }
-
-        public string ErrorDescription
-        {
-            get
-            {
-                return GetStringOrNull(OidcConstants.TokenResponse.ErrorDescription);
-            }
-        }
-
-        public bool IsError
-        {
-            get
-            {
-                return (IsHttpError ||
-                        !string.IsNullOrWhiteSpace(GetStringOrNull(OidcConstants.TokenResponse.Error)));
-            }
-        }
 
         protected virtual string GetStringOrNull(string name)
         {

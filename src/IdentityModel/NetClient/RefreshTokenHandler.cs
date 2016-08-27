@@ -8,7 +8,7 @@ using System.Net.Http.Headers;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace IdentityModel.Client
+namespace System.Net.Http
 {
     /// <summary>
     /// HTTP message handler that encapsulates token handling and refresh

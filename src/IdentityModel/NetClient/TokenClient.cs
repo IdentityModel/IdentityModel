@@ -8,8 +8,9 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading;
 using System.Threading.Tasks;
+using IdentityModel.Client;
 
-namespace IdentityModel.Client
+namespace System.Net.Http
 {
     public class TokenClient : IDisposable
     {
@@ -44,7 +45,7 @@ namespace IdentityModel.Client
         public TokenClient(string address, string clientId, string clientSecret, AuthenticationStyle style = AuthenticationStyle.BasicAuthentication)
             : this(address, clientId, clientSecret, new HttpClientHandler(), style)
         { }
-        
+
         public TokenClient(string address, string clientId, HttpMessageHandler innerHttpMessageHandler)
             : this(address, clientId, string.Empty, innerHttpMessageHandler, AuthenticationStyle.PostValues)
         { }
@@ -70,10 +71,7 @@ namespace IdentityModel.Client
 
         public TimeSpan Timeout
         {
-            set
-            {
-                _client.Timeout = value;
-            }
+            set { _client.Timeout = value; }
         }
 
         public virtual async Task<TokenResponse> RequestAsync(IDictionary<string, string> form, CancellationToken cancellationToken = default(CancellationToken))
@@ -87,7 +85,7 @@ namespace IdentityModel.Client
             }
             else
             {
-                return new TokenResponse(response.StatusCode, response.ReasonPhrase);
+                return new TokenResponse((ushort)response.StatusCode, response.ReasonPhrase);
             }
         }
 

@@ -26,9 +26,8 @@ bld/
 tools/Cake/
 tools/packages.config.md5sum
 
-# Visual Studo 2015 cache/options directory
+# Visual Studio 2015 cache/options directory
 .vs/
-project.lock.json
 
 # MSTest test Results
 [Tt]est[Rr]esult*/
@@ -42,6 +41,10 @@ TestResult.xml
 [Dd]ebugPS/
 [Rr]eleasePS/
 dlldata.c
+
+# DNX
+project.lock.json
+artifacts/
 
 *_i.c
 *_p.c
@@ -90,12 +93,15 @@ $tf/
 # Guidance Automation Toolkit
 *.gpState
 
+# CodeRush is a .NET coding add-in
+.cr/
+
 # ReSharper is a .NET coding add-in
 _ReSharper*/
 *.[Rr]e[Ss]harper
 *.DotSettings.user
 
-# JustCode is a .NET coding addin-in
+# JustCode is a .NET coding add-in
 .JustCode
 
 # TeamCity is a build add-in
@@ -134,15 +140,19 @@ publish/
 # Publish Web Output
 *.[Pp]ublish.xml
 *.azurePubxml
-# TODO: Comment the next line if you want to checkin your web deploy settings 
-# but database connection strings (with potential passwords) will be unencrypted
-*.pubxml
+## TODO: Comment the next line if you want to checkin your
+## web deploy settings but do note that will include unencrypted
+## passwords
+#*.pubxml
+
 *.publishproj
 
 # NuGet Packages
 *.nupkg
 # The packages folder can be ignored because of Package Restore
 **/packages/*
+# project.json output for .csproj and .fsproj projects can be ignored because of Package Restore
+*.nuget.targets
 # except build/, which is used as an MSBuild target.
 !**/packages/build/
 # Uncomment if necessary however generally it will be regenerated when needed
@@ -155,8 +165,13 @@ csx/
 # Windows Store app package directory
 AppPackages/
 
-# Others
+# Visual Studio cache files
+# files ending in .cache can be ignored
 *.[Cc]ache
+# but keep track of directories ending in .cache
+!*.[Cc]ache/
+
+# Others
 ClientBin/
 [Ss]tyle[Cc]op.*
 ~$*
@@ -166,7 +181,7 @@ ClientBin/
 *.pfx
 *.publishsettings
 node_modules/
-bower_components/
+orleans.codegen.cs
 
 # RIA/Silverlight projects
 Generated_Code/
@@ -199,3 +214,8 @@ FakesAssemblies/
 
 # Visual Studio 6 workspace options file
 *.opt
+
+# LightSwitch generated files
+GeneratedArtifacts/
+_Pvt_Extensions/
+ModelManifest.xml
