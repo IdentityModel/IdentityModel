@@ -82,7 +82,7 @@ Task("Restore")
     };
 
     DotNetCoreRestore(sourcePath, settings);
-    //DotNetCoreRestore(testsPath, settings);
+    DotNetCoreRestore(testsPath, settings);
 });
 
 Task("Default")
