@@ -17,8 +17,7 @@ namespace IdentityModel.Client
 
         public string Raw { get; }
         public Dictionary<string, string> Values { get; } = new Dictionary<string, string>();
-        public bool IsError { get; internal set; }
-
+        
         public string Code             => TryGet(OidcConstants.AuthorizeResponse.Code);
         public string AccessToken      => TryGet(OidcConstants.AuthorizeResponse.AccessToken);
         public string IdentityToken    => TryGet(OidcConstants.AuthorizeResponse.IdentityToken);
@@ -27,6 +26,7 @@ namespace IdentityModel.Client
         public string TokenType        => TryGet(OidcConstants.AuthorizeResponse.TokenType);
         public string State            => TryGet(OidcConstants.AuthorizeResponse.State);
         public string ErrorDescription => TryGet(OidcConstants.AuthorizeResponse.ErrorDescription);
+        public bool IsError            => !string.IsNullOrEmpty(Error);
 
         public long ExpiresIn
         {
@@ -46,25 +46,26 @@ namespace IdentityModel.Client
             var queryParameters = new Dictionary<string, string>();
             string[] fragments = null;
 
-            // fragment encoded
-            if (Raw.Contains("#"))
-            {
-                fragments = Raw.Split('#');
-            }
             // query string encoded
-            else if (Raw.Contains("?"))
+            if (Raw.Contains("?"))
             {
                 fragments = Raw.Split('?');
+
+                var additionalHashFragment = fragments[1].IndexOf('#');
+                if (additionalHashFragment >= 0)
+                {
+                    fragments[1] = fragments[1].Substring(0, additionalHashFragment);
+                }
+            }
+            // fragment encoded
+            else if (Raw.Contains("#"))
+            {
+                fragments = Raw.Split('#');
             }
             // form encoded
             else
             {
                 fragments = new string[] { "", Raw };
-            }
-
-            if (Raw.Contains(OidcConstants.AuthorizeResponse.Error))
-            {
-                IsError = true;
             }
 
             var qparams = fragments[1].Split('&');
