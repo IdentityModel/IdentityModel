@@ -48,9 +48,15 @@ namespace IdentityModel.Client
                 if (jwkUrl != null)
                 {
                     response = await _client.GetAsync(jwkUrl).ConfigureAwait(false);
-                    var jwk = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-
-                    disco.Keys = new JsonWebKeySet(jwk);
+                    if (response.IsSuccessStatusCode)
+                    {
+                        var jwk = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+                        disco.Keys = new JsonWebKeySet(jwk);
+                    }
+                    else
+                    {
+                        return new DiscoveryResponse(response.StatusCode, response.ReasonPhrase);
+                    }
                 }
 
                 return disco;
