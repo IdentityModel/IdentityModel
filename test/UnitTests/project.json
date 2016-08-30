@@ -7,8 +7,9 @@
     "dotnet-test-xunit": "2.2.0-preview2-build1029",
     "FluentAssertions": "4.13.0",
     "IdentityModel": {
-      "target" : "project"
-    }
+      "target": "project"
+    },
+    "Microsoft.Extensions.PlatformAbstractions": "1.0.0"
   },
 
   "frameworks": {
@@ -20,5 +21,9 @@
         }
       }
     }
+  },
+
+  "buildOptions": {
+    "copyToOutput": [ "documents/identityserver3.json" ]
   }
 }
