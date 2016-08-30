@@ -9,6 +9,8 @@ namespace IdentityModel.Client
     {
         private readonly HttpClient _client;
 
+        public string Url { get; }
+
         public TimeSpan Timeout
         {
             set
@@ -21,11 +23,14 @@ namespace IdentityModel.Client
         {
             var handler = innerHandler ?? new HttpClientHandler();
 
-            url = RemoveTrailingSlash(url);
+            url = url.RemoveTrailingSlash();
             if (!url.EndsWith(OidcConstants.Discovery.DiscoveryEndpoint, StringComparison.OrdinalIgnoreCase))
             {
+                url = url.EnsureTrailingSlash();
                 url = url + OidcConstants.Discovery.DiscoveryEndpoint;
             }
+
+            Url = url;
             
             _client = new HttpClient(handler)
             {
@@ -45,16 +50,6 @@ namespace IdentityModel.Client
             {
                 return new DiscoveryResponse(response.StatusCode, response.ReasonPhrase);
             }
-        }
-
-        private static string RemoveTrailingSlash(string url)
-        {
-            if (url != null && url.EndsWith("/"))
-            {
-                url = url.Substring(0, url.Length - 1);
-            }
-
-            return url;
         }
     }
 }
