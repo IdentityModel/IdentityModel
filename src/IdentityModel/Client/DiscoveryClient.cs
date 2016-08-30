@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
@@ -19,9 +17,12 @@ namespace IdentityModel.Client
             }
         }
 
-        public DiscoveryClient(string url, HttpMessageHandler innerHandler = null)
+        public DiscoveryClient(string baseAddress, HttpMessageHandler innerHandler = null)
         {
             var handler = innerHandler ?? new HttpClientHandler();
+
+            // todo: check slashes
+            var url = baseAddress + OidcConstants.Discovery.DiscoveryEndpoint;
 
             _client = new HttpClient(handler)
             {
