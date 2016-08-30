@@ -17,13 +17,15 @@ namespace IdentityModel.Client
             }
         }
 
-        public DiscoveryClient(string baseAddress, HttpMessageHandler innerHandler = null)
+        public DiscoveryClient(string url, HttpMessageHandler innerHandler = null)
         {
             var handler = innerHandler ?? new HttpClientHandler();
 
-            // todo: check slashes
-            var url = baseAddress + OidcConstants.Discovery.DiscoveryEndpoint;
-
+            if (!url.EndsWith(OidcConstants.Discovery.DiscoveryEndpoint, StringComparison.OrdinalIgnoreCase))
+            {
+                url = url + OidcConstants.Discovery.DiscoveryEndpoint;
+            }
+            
             _client = new HttpClient(handler)
             {
                 BaseAddress = new Uri(url)
