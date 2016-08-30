@@ -25,7 +25,7 @@
 //
 //------------------------------------------------------------------------------
 
-namespace IdentityModel.Jwt
+namespace IdentityModel.Jwk
 {
     /// <summary>
     /// Names for Json Web Key Values

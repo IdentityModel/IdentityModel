@@ -25,47 +25,18 @@
 //
 //------------------------------------------------------------------------------
 
-using System;
-using System.Collections.Generic;
-using Newtonsoft.Json;
-
-namespace IdentityModel.Jwt
+namespace IdentityModel.Jwk
 {
     /// <summary>
-    /// Contains a collection of <see cref="JsonWebKey"/> that can be populated from a json string.
+    /// Constants for JsonWebAlgorithms  "kty" Key Type (sec 6.1)
+    /// http://tools.ietf.org/html/rfc7518#section-6.1
     /// </summary>
-    public class JsonWebKeySet
+    public static class JsonWebAlgorithmsKeyTypes
     {
-        private List<JsonWebKey> _keys = new List<JsonWebKey>();
-
-        /// <summary>
-        /// Initializes an new instance of <see cref="JsonWebKeySet"/>.
-        /// </summary>
-        public JsonWebKeySet()
-        { }
-
-        /// <summary>
-        /// Initializes an new instance of <see cref="JsonWebKeySet"/> from a json string.
-        /// </summary>
-        /// <param name="json">a json string containing values.</param>
-        /// <exception cref="ArgumentNullException">if 'json' is null or whitespace.</exception>
-        public JsonWebKeySet(string json)
-        {
-            if (string.IsNullOrWhiteSpace(json)) throw new ArgumentNullException("json");
-
-            var jwebKeys = JsonConvert.DeserializeObject<JsonWebKeySet>(json);
-            _keys = jwebKeys._keys;
-        }
-
-        /// <summary>
-        /// Gets the <see cref="IList{JsonWebKey}"/>.
-        /// </summary>       
-        public IList<JsonWebKey> Keys
-        {
-            get
-            {
-                return _keys;
-            }
-        }
+#pragma warning disable 1591
+        public const string EllipticCurve = "EC";
+        public const string RSA = "RSA";
+        public const string Octet = "oct";
+#pragma warning restore 1591
     }
 }

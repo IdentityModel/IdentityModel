@@ -5,7 +5,7 @@
 using Newtonsoft.Json;
 using System.Text;
 
-namespace IdentityModel.Jwt
+namespace IdentityModel.Jwk
 {
     public static class JsonWebKeyExtensions
     {

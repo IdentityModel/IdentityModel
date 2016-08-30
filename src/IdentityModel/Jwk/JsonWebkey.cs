@@ -29,7 +29,7 @@ using System.Collections.Generic;
 using Newtonsoft.Json;
 using System;
 
-namespace IdentityModel.Jwt
+namespace IdentityModel.Jwk
 {
     /// <summary>
     /// Represents a Json Web Key as defined in http://tools.ietf.org/html/rfc7517.
