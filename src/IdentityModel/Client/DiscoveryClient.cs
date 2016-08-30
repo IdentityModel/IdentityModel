@@ -21,6 +21,7 @@ namespace IdentityModel.Client
         {
             var handler = innerHandler ?? new HttpClientHandler();
 
+            url = RemoveTrailingSlash(url);
             if (!url.EndsWith(OidcConstants.Discovery.DiscoveryEndpoint, StringComparison.OrdinalIgnoreCase))
             {
                 url = url + OidcConstants.Discovery.DiscoveryEndpoint;
@@ -44,6 +45,16 @@ namespace IdentityModel.Client
             {
                 return new DiscoveryResponse(response.StatusCode, response.ReasonPhrase);
             }
+        }
+
+        private static string RemoveTrailingSlash(string url)
+        {
+            if (url != null && url.EndsWith("/"))
+            {
+                url = url.Substring(0, url.Length - 1);
+            }
+
+            return url;
         }
     }
 }
