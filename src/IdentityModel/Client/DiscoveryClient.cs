@@ -1,4 +1,5 @@
-﻿using System;
+﻿using IdentityModel.Jwk;
+using System;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
@@ -31,20 +32,28 @@ namespace IdentityModel.Client
             }
 
             Url = url;
-            
-            _client = new HttpClient(handler)
-            {
-                BaseAddress = new Uri(url)
-            };
+
+            _client = new HttpClient(handler);
         }
 
         public async Task<DiscoveryResponse> GetAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
-            var response = await _client.GetAsync("", cancellationToken).ConfigureAwait(false);
+            var response = await _client.GetAsync(Url, cancellationToken).ConfigureAwait(false);
             if (response.IsSuccessStatusCode)
             {
                 var json = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-                return new DiscoveryResponse(json);
+                var disco = new DiscoveryResponse(json);
+
+                var jwkUrl = disco.JwksUri;
+                if (jwkUrl != null)
+                {
+                    response = await _client.GetAsync(jwkUrl).ConfigureAwait(false);
+                    var jwk = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+
+                    disco.Keys = new JsonWebKeySet(jwk);
+                }
+
+                return disco;
             }
             else
             {

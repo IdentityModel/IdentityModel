@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json.Linq;
+﻿using IdentityModel.Jwk;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -15,6 +16,8 @@ namespace IdentityModel.Client
         public bool IsError { get; } = false;
         public HttpStatusCode StatusCode { get; }
         public string Error { get; set; }
+
+        public JsonWebKeySet Keys { get; set; }
 
         public DiscoveryResponse(string raw)
         {
