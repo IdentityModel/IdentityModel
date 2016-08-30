@@ -2,9 +2,7 @@
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net;
-using System.Threading.Tasks;
 
 namespace IdentityModel.Client
 {
@@ -36,15 +34,15 @@ namespace IdentityModel.Client
         }
 
         // endpoints
-        public string AuthorizationEndpoint => TryGetString(OidcConstants.Discovery.AuthorizationEndpoint);
-        public string TokenEndpoint         => TryGetString(OidcConstants.Discovery.TokenEndpoint);
-        public string UserInfoEndpoint      => TryGetString(OidcConstants.Discovery.UserInfoEndpoint);
-        public string IntrospectionEndpoint => TryGetString(OidcConstants.Discovery.IntrospectionEndpoint);
-        public string RevocationEndpoint    => TryGetString(OidcConstants.Discovery.RevocationEndpoint);
-        public string JwksUri               => TryGetString(OidcConstants.Discovery.JwksUri);
-        public string EndSessionEndpoint    => TryGetString(OidcConstants.Discovery.EndSessionEndpoint);
-        public string CheckSessionIframe    => TryGetString(OidcConstants.Discovery.CheckSessionIframe);
-        public string RegistrationEndpoint  => TryGetString(OidcConstants.Discovery.RegistrationEndpoint);
+        public string AuthorizationEndpoint                                    => TryGetString(OidcConstants.Discovery.AuthorizationEndpoint);
+        public string TokenEndpoint                                            => TryGetString(OidcConstants.Discovery.TokenEndpoint);
+        public string UserInfoEndpoint                                         => TryGetString(OidcConstants.Discovery.UserInfoEndpoint);
+        public string IntrospectionEndpoint                                    => TryGetString(OidcConstants.Discovery.IntrospectionEndpoint);
+        public string RevocationEndpoint                                       => TryGetString(OidcConstants.Discovery.RevocationEndpoint);
+        public string JwksUri                                                  => TryGetString(OidcConstants.Discovery.JwksUri);
+        public string EndSessionEndpoint                                       => TryGetString(OidcConstants.Discovery.EndSessionEndpoint);
+        public string CheckSessionIframe                                       => TryGetString(OidcConstants.Discovery.CheckSessionIframe);
+        public string RegistrationEndpoint                                     => TryGetString(OidcConstants.Discovery.RegistrationEndpoint);
 
         // common capabilities
         public bool? FrontChannelLogoutSupported                               => TryGetBoolean(OidcConstants.Discovery.FrontChannelLogoutSupported);
@@ -58,8 +56,6 @@ namespace IdentityModel.Client
         public IEnumerable<string> ResponseTypesSupported                      => TryGetStringArray(OidcConstants.Discovery.ResponseTypesSupported);
         public IEnumerable<string> ClaimsSupported                             => TryGetStringArray(OidcConstants.Discovery.ClaimsSupported);
         public IEnumerable<string> TokenEndpointAuthenticationMethodsSupported => TryGetStringArray(OidcConstants.Discovery.TokenEndpointAuthenticationMethodsSupported);
-
-
 
         public string TryGetString(string name)
         {
