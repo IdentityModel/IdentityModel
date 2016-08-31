@@ -8,6 +8,12 @@ namespace IdentityModel.Client
 {
     public class DiscoveryClient
     {
+        public static async Task<DiscoveryResponse> GetAsync(string url)
+        {
+            var client = new DiscoveryClient(url);
+            return await client.GetAsync();
+        }
+
         private readonly HttpClient _client;
 
         public string Url { get; }
