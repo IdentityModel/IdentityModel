@@ -11,7 +11,7 @@ namespace IdentityModel.Client
         public static async Task<DiscoveryResponse> GetAsync(string url)
         {
             var client = new DiscoveryClient(url);
-            return await client.GetAsync();
+            return await client.GetAsync().ConfigureAwait(false);
         }
 
         private readonly HttpClient _client;
