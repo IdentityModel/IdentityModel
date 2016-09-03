@@ -17,6 +17,18 @@ namespace IdentityModel.UnitTests
         }
 
         [Fact]
+        public void ReadValues()
+        {
+            var disco = new DiscoveryResponse(_document);
+
+            disco.TryGetValue(OidcConstants.Discovery.AuthorizationEndpoint).Should().NotBeNull();
+            disco.TryGetValue("unknown").Should().BeNull();
+
+            disco.TryGetString(OidcConstants.Discovery.AuthorizationEndpoint).Should().Be("https://demo.identityserver.io/connect/authorize");
+            disco.TryGetString("unknown").Should().BeNull();
+        }
+
+        [Fact]
         public void ReadStrings()
         {
             var disco = new DiscoveryResponse(_document);
