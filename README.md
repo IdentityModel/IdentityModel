@@ -50,6 +50,9 @@ Helper for comparing strings without leaking timing information
 ### JWT/OpenID Connect Claim Types
 Constants for standard claim types used in JWT, OAuth 2.0 and OpenID Connect
 
+### OpenID Connect Constants
+Constants for the OpenID Connect/OAuth 2 protocol
+
 ### Fluent API to access the X.509 Certificate store  
 e.g. do  
 `var cert = X509.LocalMachine.My.SubjectDistinguishedName.Find("CN=sts").First();`
