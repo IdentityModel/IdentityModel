@@ -15,7 +15,7 @@ namespace IdentityModel.Client
         public HttpStatusCode StatusCode { get; }
         public string Error { get; set; }
 
-        public JsonWebKeySet Keys { get; set; }
+        public JsonWebKeySet KeySet { get; set; }
 
         public DiscoveryResponse(string raw)
         {

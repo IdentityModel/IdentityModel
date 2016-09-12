@@ -57,7 +57,7 @@ namespace IdentityModel.Client
                     if (response.IsSuccessStatusCode)
                     {
                         var jwk = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-                        disco.Keys = new JsonWebKeySet(jwk);
+                        disco.KeySet = new JsonWebKeySet(jwk);
                     }
                     else
                     {
