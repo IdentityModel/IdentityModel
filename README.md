@@ -40,9 +40,9 @@ var token = response.AccessToken;
 Client library for the OpenID Connect user info endpoint
 
 ```csharp
-var userInfoClient = new UserInfoClient(doc.UserInfoEndpoint, token);
+var userInfoClient = new UserInfoClient(doc.UserInfoEndpoint);
 
-var response = await userInfoClient.GetAsync();
+var response = await userInfoClient.GetAsync(token);
 var claims = response.Claims;
 ```
 

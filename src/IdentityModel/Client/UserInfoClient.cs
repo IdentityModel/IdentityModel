@@ -14,17 +14,14 @@ namespace IdentityModel.Client
     {
         private readonly HttpClient _client;
 
-        public UserInfoClient(string endpoint, string token)
-            : this(endpoint, token, new HttpClientHandler())
+        public UserInfoClient(string endpoint)
+            : this(endpoint, new HttpClientHandler())
         { }
 
-        public UserInfoClient(string endpoint, string token, HttpMessageHandler innerHttpMessageHandler)
+        public UserInfoClient(string endpoint, HttpMessageHandler innerHttpMessageHandler)
         {
             if (endpoint == null)
                 throw new ArgumentNullException("endpoint");
-
-            if (string.IsNullOrEmpty(token))
-                throw new ArgumentNullException("token");
 
             if (innerHttpMessageHandler == null)
                 throw new ArgumentNullException("innerHttpMessageHandler");
@@ -37,8 +34,6 @@ namespace IdentityModel.Client
             _client.DefaultRequestHeaders.Accept.Clear();
             _client.DefaultRequestHeaders.Accept.Add(
                 new MediaTypeWithQualityHeaderValue("application/json"));
-
-            _client.SetBearerToken(token);
         }
 
         public TimeSpan Timeout
@@ -49,9 +44,15 @@ namespace IdentityModel.Client
             }
         }
 
-        public async Task<UserInfoResponse> GetAsync(CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<UserInfoResponse> GetAsync(string token, string tokenType = null, CancellationToken cancellationToken = default(CancellationToken))
         {
-            var response = await _client.GetAsync("", cancellationToken).ConfigureAwait(false);
+            if (string.IsNullOrEmpty(token))
+                throw new ArgumentNullException("token");
+
+            var request = new HttpRequestMessage(HttpMethod.Get, "");
+            request.Headers.Authorization = new AuthenticationHeaderValue(tokenType ?? "Bearer", token);
+
+            var response = await _client.SendAsync(request, cancellationToken).ConfigureAwait(false);
 
             if (response.StatusCode != HttpStatusCode.OK)
             {
