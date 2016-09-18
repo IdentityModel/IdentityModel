@@ -13,7 +13,7 @@ namespace IdentityModel.Client
     /// <summary>
     /// HTTP message handler that encapsulates token handling and refresh
     /// </summary>
-    public class RefeshTokenHandler : DelegatingHandler
+    public class RefreshTokenHandler : DelegatingHandler
     {
         private static readonly TimeSpan _lockTimeout = TimeSpan.FromSeconds(2);
 
@@ -70,11 +70,11 @@ namespace IdentityModel.Client
             }
         }
 
-        public RefeshTokenHandler(string tokenEndpoint, string clientId, string clientSecret, string refreshToken, string accessToken = null, HttpMessageHandler innerHandler = null)
+        public RefreshTokenHandler(string tokenEndpoint, string clientId, string clientSecret, string refreshToken, string accessToken = null, HttpMessageHandler innerHandler = null)
             : this(new TokenClient(tokenEndpoint, clientId, clientSecret), refreshToken, accessToken, innerHandler)
         { }
 
-        public RefeshTokenHandler(TokenClient client, string refreshToken, string accessToken = null, HttpMessageHandler innerHandler = null)
+        public RefreshTokenHandler(TokenClient client, string refreshToken, string accessToken = null, HttpMessageHandler innerHandler = null)
         {
             _tokenClient = client;
             _refreshToken = refreshToken;
