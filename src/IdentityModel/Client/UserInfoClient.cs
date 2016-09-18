@@ -47,7 +47,7 @@ namespace IdentityModel.Client
         public async Task<UserInfoResponse> GetAsync(string token, string tokenType = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (string.IsNullOrEmpty(token))
-                throw new ArgumentNullException("token");
+                throw new ArgumentNullException(nameof(token));
 
             var request = new HttpRequestMessage(HttpMethod.Get, "");
             request.Headers.Authorization = new AuthenticationHeaderValue(tokenType ?? "Bearer", token);
