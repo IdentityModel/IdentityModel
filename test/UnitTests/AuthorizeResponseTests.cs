@@ -80,5 +80,18 @@ namespace IdentityModel.UnitTests
             response.Values["sid"].Should().Be("123");
             response.TryGet("sid").Should().Be("123");
         }
+
+        [Fact]
+        public void form_post_format_should_parse()
+        {
+            var form = "id_token=foo&code=bar&scope=baz&session_state=quux";
+            var response = new AuthorizeResponse(form);
+
+            response.IsError.Should().BeFalse();
+            response.IdentityToken.Should().Be("foo");
+            response.Code.Should().Be("bar");
+            response.Scope.Should().Be("baz");
+            response.Values["session_state"].Should().Be("quux");
+        }
     }
 }
