@@ -37,7 +37,7 @@ namespace IdentityModel.Client
         }
 
         public string Issuer                                                   => TryGetString(OidcConstants.Discovery.Issuer);
-        public string AuthorizationEndpoint                                    => TryGetString(OidcConstants.Discovery.AuthorizationEndpoint);
+        public string AuthorizeEndpoint                                        => TryGetString(OidcConstants.Discovery.AuthorizationEndpoint);
         public string TokenEndpoint                                            => TryGetString(OidcConstants.Discovery.TokenEndpoint);
         public string UserInfoEndpoint                                         => TryGetString(OidcConstants.Discovery.UserInfoEndpoint);
         public string IntrospectionEndpoint                                    => TryGetString(OidcConstants.Discovery.IntrospectionEndpoint);
