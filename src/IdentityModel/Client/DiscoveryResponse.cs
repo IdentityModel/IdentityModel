@@ -1,4 +1,7 @@
-﻿using IdentityModel.Jwk;
+﻿// Copyright (c) Brock Allen & Dominick Baier. All rights reserved.
+// Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
+
+using IdentityModel.Jwk;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
@@ -33,6 +36,7 @@ namespace IdentityModel.Client
             Error = error;
         }
 
+        public string Issuer                                                   => TryGetString(OidcConstants.Discovery.Issuer);
         public string AuthorizationEndpoint                                    => TryGetString(OidcConstants.Discovery.AuthorizationEndpoint);
         public string TokenEndpoint                                            => TryGetString(OidcConstants.Discovery.TokenEndpoint);
         public string UserInfoEndpoint                                         => TryGetString(OidcConstants.Discovery.UserInfoEndpoint);
