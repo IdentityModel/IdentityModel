@@ -16,7 +16,9 @@ namespace IdentityModel
             if (x != null && y == null) return false;
 
             return (x.Type == y.Type &&
-                    x.Value == y.Value);
+                    x.Value == y.Value && 
+                    x.Issuer == y.Issuer && 
+                    x.ValueType == y.ValueType);
         }
 
         public int GetHashCode(Claim claim)
