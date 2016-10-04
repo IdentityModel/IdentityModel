@@ -34,7 +34,7 @@ namespace IdentityModel.UnitTests
             var disco = new DiscoveryResponse(_document);
 
             disco.TokenEndpoint.Should().Be("https://demo.identityserver.io/connect/token");
-            disco.AuthorizationEndpoint.Should().Be("https://demo.identityserver.io/connect/authorize");
+            disco.AuthorizeEndpoint.Should().Be("https://demo.identityserver.io/connect/authorize");
             disco.UserInfoEndpoint.Should().Be("https://demo.identityserver.io/connect/userinfo");
         }
 
