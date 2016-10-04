@@ -31,7 +31,7 @@ namespace IdentityModel
             return Convert.ToBase64String(bytes);
         }
 
-        public static string CreateUniqueId(int length = 16)
+        public static string CreateUniqueId(int length = 32)
         {
             var bytes = new byte[length];
             _rng.GetBytes(bytes);
