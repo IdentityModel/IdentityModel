@@ -2,6 +2,7 @@
 // Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
 
 using Newtonsoft.Json.Linq;
+using System;
 using System.Collections.Generic;
 using System.Security.Claims;
 
@@ -31,6 +32,52 @@ namespace IdentityModel.Client
             }
 
             return claims;
+        }
+
+        public static JToken TryGetValue(this JObject json, string name)
+        {
+            JToken value;
+            if (json != null && json.TryGetValue(name, StringComparison.OrdinalIgnoreCase, out value))
+            {
+                return value;
+            }
+
+            return null;
+        }
+
+        public static string TryGetString(this JObject json, string name)
+        {
+            JToken value = json.TryGetValue(name);
+            return value?.ToString() ?? null;
+        }
+
+        public static bool? TryGetBoolean(this JObject json, string name)
+        {
+            var value = json.TryGetString(name);
+
+            bool result;
+            if (bool.TryParse(value, out result))
+            {
+                return result;
+            }
+
+            return null;
+        }
+
+        public static IEnumerable<string> TryGetStringArray(this JObject json, string name)
+        {
+            var values = new List<string>();
+
+            var array = json.TryGetValue(name) as JArray;
+            if (array != null)
+            {
+                foreach (var item in array)
+                {
+                    values.Add(item.ToString());
+                }
+            }
+
+            return values;
         }
     }
 }

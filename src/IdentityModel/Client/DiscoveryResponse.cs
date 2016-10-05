@@ -36,6 +36,7 @@ namespace IdentityModel.Client
             Error = error;
         }
 
+        // strongly typed
         public string Issuer                                                   => TryGetString(OidcConstants.Discovery.Issuer);
         public string AuthorizeEndpoint                                        => TryGetString(OidcConstants.Discovery.AuthorizationEndpoint);
         public string TokenEndpoint                                            => TryGetString(OidcConstants.Discovery.TokenEndpoint);
@@ -57,50 +58,10 @@ namespace IdentityModel.Client
         public IEnumerable<string> ClaimsSupported                             => TryGetStringArray(OidcConstants.Discovery.ClaimsSupported);
         public IEnumerable<string> TokenEndpointAuthenticationMethodsSupported => TryGetStringArray(OidcConstants.Discovery.TokenEndpointAuthenticationMethodsSupported);
 
-        public JToken TryGetValue(string name)
-        {
-            JToken value;
-            if (Json != null && Json.TryGetValue(name, StringComparison.OrdinalIgnoreCase, out value))
-            {
-                return value;
-            }
-
-            return null;
-        }
-
-        public string TryGetString(string name)
-        {
-            JToken value = TryGetValue(name);
-            return value?.ToString() ?? null;
-        }
-
-        public bool? TryGetBoolean(string name)
-        {
-            var value = TryGetString(name);
-
-            bool result;
-            if (bool.TryParse(value, out result))
-            {
-                return result;
-            }
-
-            return null;
-        }
-
-        public IEnumerable<string> TryGetStringArray(string name)
-        {
-            var values = new List<string>();
-
-            var array = TryGetValue(name) as JArray;
-            if (array != null)
-            {
-                foreach (var item in array)
-                {
-                    values.Add(item.ToString());
-                }
-            }
-
-            return values;
-        }
+        // generic
+        public JToken TryGetValue(string name)                    => Json.TryGetValue(name);
+        public string TryGetString(string name)                   => Json.TryGetString(name);
+        public bool? TryGetBoolean(string name)                   => Json.TryGetBoolean(name);
+        public IEnumerable<string> TryGetStringArray(string name) => Json.TryGetStringArray(name);
     }
 }
