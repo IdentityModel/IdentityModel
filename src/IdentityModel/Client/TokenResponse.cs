@@ -9,13 +9,6 @@ namespace IdentityModel.Client
 {
     public class TokenResponse
     {
-        public enum ResponseErrorType
-        {
-            None,
-            Protocol, 
-            Http
-        }
-
         public TokenResponse(string raw)
         {
             try

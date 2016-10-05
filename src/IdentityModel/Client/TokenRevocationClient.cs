@@ -14,54 +14,38 @@ namespace IdentityModel.Client
     public class TokenRevocationClient
     {
         protected HttpClient _client;
-        
+        private string _clientId;
+
         public AuthenticationStyle AuthenticationStyle { get; set; }
         public string ClientId { get; set; }
         public string ClientSecret { get; set; }
 
-        public TokenRevocationClient(string address)
-            : this(address, new HttpClientHandler())
-        { }
-
-        public TokenRevocationClient(string address, HttpMessageHandler innerHttpMessageHandler)
+        public TokenRevocationClient(string endpoint, string clientId = "", string clientSecret = "", HttpMessageHandler innerHttpMessageHandler = null)
         {
-            if (address == null) throw new ArgumentNullException("address");
-            if (innerHttpMessageHandler == null) throw new ArgumentNullException("innerHttpMessageHandler");
-            
+            if (endpoint == null) throw new ArgumentNullException(nameof(endpoint));
+            if (innerHttpMessageHandler == null) innerHttpMessageHandler = new HttpClientHandler();
+
             _client = new HttpClient(innerHttpMessageHandler)
             {
-                BaseAddress = new Uri(address)
+                BaseAddress = new Uri(endpoint)
             };
 
             _client.DefaultRequestHeaders.Accept.Clear();
             _client.DefaultRequestHeaders.Accept.Add(
                 new MediaTypeWithQualityHeaderValue("application/json"));
 
-            AuthenticationStyle = AuthenticationStyle.Custom;
-        }
-
-        public TokenRevocationClient(string address, string clientId, string clientSecret, AuthenticationStyle style = AuthenticationStyle.BasicAuthentication)
-            : this(address, clientId, clientSecret, new HttpClientHandler(), style)
-        { }
-
-        public TokenRevocationClient(string address, string clientId, string clientSecret, HttpMessageHandler innerHttpMessageHandler, AuthenticationStyle style = AuthenticationStyle.BasicAuthentication)
-            : this(address, innerHttpMessageHandler)
-        {
-            if (string.IsNullOrEmpty(clientId)) throw new ArgumentNullException("clientId");
-            if (string.IsNullOrEmpty(clientSecret)) throw new ArgumentNullException("clientSecret");
-
-            AuthenticationStyle = style;
-            ClientId = clientId;
-            ClientSecret = clientSecret;
-
-            if (style == AuthenticationStyle.BasicAuthentication)
+            if (!string.IsNullOrWhiteSpace(clientId) && !string.IsNullOrWhiteSpace(clientSecret))
             {
-                _client.DefaultRequestHeaders.Authorization = new BasicAuthenticationHeaderValue(clientId, clientSecret);
+                _client.SetBasicAuthentication(clientId, clientSecret);
+            }
+            else if (!string.IsNullOrWhiteSpace(clientId))
+            {
+                _clientId = clientId;
             }
         }
 
-        public TimeSpan Timeout 
-        { 
+        public TimeSpan Timeout
+        {
             set
             {
                 _client.Timeout = value;
@@ -69,39 +53,41 @@ namespace IdentityModel.Client
         }
 
         public virtual async Task<TokenRevocationResponse> RevokeAsync(
-            string token, 
-            string token_type_hint = null, 
+            TokenRevocationRequest request,
             CancellationToken cancellationToken = default(CancellationToken))
         {
-            var form = new Dictionary<string, string>
+            if (request == null) throw new ArgumentNullException("request");
+            if (string.IsNullOrWhiteSpace(request.Token)) throw new ArgumentNullException("token");
+
+            var form = new Dictionary<string, string>();
+            form.Add("token", request.Token);
+
+            if (!string.IsNullOrWhiteSpace(request.TokenTypeHint))
             {
-                { "token", token},
-            };
-            if (String.IsNullOrWhiteSpace(token_type_hint) == false)
-            {
-                form.Add("token_type_hint", token_type_hint);
-            }
-            if (AuthenticationStyle == AuthenticationStyle.PostValues)
-            {
-                form.Add("client_id", ClientId);
-                form.Add("client_secret", ClientSecret);
+                form.Add("token_type_hint", request.TokenTypeHint);
             }
 
-            var response = await _client.PostAsync(string.Empty, new FormUrlEncodedContent(form), cancellationToken).ConfigureAwait(false);
+            if (!string.IsNullOrWhiteSpace(request.ClientId))
+            {
+                form.Add("client_id", request.ClientId);
+            }
+            else if (!string.IsNullOrWhiteSpace(_clientId))
+            {
+                form.Add("client_id", _clientId);
+            }
 
-            if (response.StatusCode == HttpStatusCode.OK)
+            if (!string.IsNullOrWhiteSpace(request.ClientSecret))
             {
-                return new TokenRevocationResponse();
+                form.Add("client_secret", request.ClientSecret);
             }
-            else if (response.StatusCode == HttpStatusCode.BadRequest)
-            {
-                var content = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-                return new TokenRevocationResponse(content);
-            }
-            else
+
+            var response = await _client.PostAsync("", new FormUrlEncodedContent(form)).ConfigureAwait(false);
+            if (response.StatusCode != HttpStatusCode.OK)
             {
                 return new TokenRevocationResponse(response.StatusCode, response.ReasonPhrase);
             }
+
+            return new TokenRevocationResponse(await response.Content.ReadAsStringAsync().ConfigureAwait(false));
         }
     }
 }
