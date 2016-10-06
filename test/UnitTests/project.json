@@ -25,8 +25,7 @@
 
   "buildOptions": {
     "copyToOutput": [
-      "documents/identityserver3.json",
-      "documents/identityserver3_jwks.json" 
+      "documents/*"
     ]
   }
 }

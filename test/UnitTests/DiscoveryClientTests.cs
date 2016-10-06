@@ -16,10 +16,10 @@ namespace IdentityModel.UnitTests
 
         public DiscoveryClientTests()
         {
-            var discoFileName = Path.Combine(PlatformServices.Default.Application.ApplicationBasePath, "documents", "identityserver3.json");
+            var discoFileName = Path.Combine(PlatformServices.Default.Application.ApplicationBasePath, "documents", "discovery.json");
             var document = File.ReadAllText(discoFileName);
 
-            var jwksFileName = Path.Combine(PlatformServices.Default.Application.ApplicationBasePath, "documents", "identityserver3_jwks.json");
+            var jwksFileName = Path.Combine(PlatformServices.Default.Application.ApplicationBasePath, "documents", "discovery_jwks.json");
             var jwks = File.ReadAllText(jwksFileName);
 
             _successHandler = new NetworkHandler(request =>
