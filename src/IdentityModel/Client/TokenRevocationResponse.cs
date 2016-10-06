@@ -31,6 +31,11 @@ namespace IdentityModel.Client
             try
             {
                 Json = JObject.Parse(raw);
+
+                if (!string.IsNullOrEmpty(Json.TryGetString(OidcConstants.TokenResponse.Error)))
+                {
+                    IsError = true;
+                }
             }
             catch (Exception ex)
             {
@@ -70,19 +75,8 @@ namespace IdentityModel.Client
                     return Exception.Message;
                 }
 
-                return GetStringOrNull(OidcConstants.TokenResponse.Error);
+                return Json.TryGetString(OidcConstants.TokenResponse.Error);
             }
-        }
-
-        protected virtual string GetStringOrNull(string name)
-        {
-            JToken value;
-            if (Json != null && Json.TryGetValue(name, StringComparison.OrdinalIgnoreCase, out value))
-            {
-                return value.ToString();
-            }
-
-            return null;
         }
     }
 }
