@@ -47,32 +47,42 @@ namespace IdentityModel.Client
 
         public async Task<DiscoveryResponse> GetAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
-            var response = await _client.GetAsync(Url, cancellationToken).ConfigureAwait(false);
-            if (response.IsSuccessStatusCode)
+            HttpResponseMessage response;
+
+            try
             {
-                var json = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-                var disco = new DiscoveryResponse(json);
+                response = await _client.GetAsync(Url, cancellationToken).ConfigureAwait(false);
+
+                if (!response.IsSuccessStatusCode)
+                {
+                    return new DiscoveryResponse(response.StatusCode, response.ReasonPhrase);
+                }
+
+                var disco = new DiscoveryResponse(await response.Content.ReadAsStringAsync().ConfigureAwait(false));
+                if (disco.IsError)
+                {
+                    return disco;
+                }
 
                 var jwkUrl = disco.JwksUri;
                 if (jwkUrl != null)
                 {
                     response = await _client.GetAsync(jwkUrl).ConfigureAwait(false);
-                    if (response.IsSuccessStatusCode)
-                    {
-                        var jwk = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-                        disco.KeySet = new JsonWebKeySet(jwk);
-                    }
-                    else
+
+                    if (!response.IsSuccessStatusCode)
                     {
                         return new DiscoveryResponse(response.StatusCode, response.ReasonPhrase);
                     }
+
+                    var jwk = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+                    disco.KeySet = new JsonWebKeySet(jwk);
                 }
 
                 return disco;
             }
-            else
+            catch (Exception ex)
             {
-                return new DiscoveryResponse(response.StatusCode, response.ReasonPhrase);
+                return new DiscoveryResponse(ex);
             }
         }
     }

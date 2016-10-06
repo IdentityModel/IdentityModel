@@ -78,7 +78,16 @@ namespace IdentityModel.Client
 
         public virtual async Task<TokenResponse> RequestAsync(IDictionary<string, string> form, CancellationToken cancellationToken = default(CancellationToken))
         {
-            var response = await _client.PostAsync(string.Empty, new FormUrlEncodedContent(form), cancellationToken).ConfigureAwait(false);
+            HttpResponseMessage response;
+
+            try
+            {
+                response = await _client.PostAsync(string.Empty, new FormUrlEncodedContent(form), cancellationToken).ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
+                return new TokenResponse(ex);
+            }
 
             if (response.StatusCode == HttpStatusCode.OK || response.StatusCode == HttpStatusCode.BadRequest)
             {

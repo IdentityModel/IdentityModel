@@ -4,6 +4,7 @@
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.Net;
 using System.Security.Claims;
 
 namespace IdentityModel.Client
@@ -13,14 +14,14 @@ namespace IdentityModel.Client
         public string Raw { get; }
         public JObject Json { get; }
 
-        public bool IsError { get; set; }
-        public string Error { get; set; }
+        public bool IsError { get; }
+        public string Error { get; }
+        public ResponseErrorType ErrorType { get; } = ResponseErrorType.None;
+        public Exception Exception { get; }
+        public HttpStatusCode HttpStatusCode { get; }
 
         public bool IsActive { get; }
         public IEnumerable<Claim> Claims { get; }
-
-        public IntrospectionResponse()
-        { }
 
         public IntrospectionResponse(string raw)
         {
@@ -37,6 +38,23 @@ namespace IdentityModel.Client
                 IsError = true;
                 Error = ex.ToString();
             }
+        }
+
+        public IntrospectionResponse(Exception exception)
+        {
+            IsError = true;
+
+            Exception = exception;
+            ErrorType = ResponseErrorType.Exception;
+        }
+
+        public IntrospectionResponse(HttpStatusCode statusCode, string reason)
+        {
+            IsError = true;
+
+            ErrorType = ResponseErrorType.Http;
+            HttpStatusCode = statusCode;
+            Error = reason;
         }
     }
 }

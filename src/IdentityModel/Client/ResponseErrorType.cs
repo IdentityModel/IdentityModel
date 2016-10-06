@@ -7,6 +7,7 @@ namespace IdentityModel.Client
     {
         None,
         Protocol,
-        Http
+        Http,
+        Exception
     }
 }

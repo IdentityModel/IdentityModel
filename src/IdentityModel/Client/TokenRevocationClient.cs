@@ -81,13 +81,20 @@ namespace IdentityModel.Client
                 form.Add("client_secret", request.ClientSecret);
             }
 
-            var response = await _client.PostAsync("", new FormUrlEncodedContent(form)).ConfigureAwait(false);
-            if (response.StatusCode != HttpStatusCode.OK)
+            try
             {
-                return new TokenRevocationResponse(response.StatusCode, response.ReasonPhrase);
-            }
+                var response = await _client.PostAsync("", new FormUrlEncodedContent(form)).ConfigureAwait(false);
+                if (response.StatusCode != HttpStatusCode.OK)
+                {
+                    return new TokenRevocationResponse(response.StatusCode, response.ReasonPhrase);
+                }
 
-            return new TokenRevocationResponse(await response.Content.ReadAsStringAsync().ConfigureAwait(false));
+                return new TokenRevocationResponse(await response.Content.ReadAsStringAsync().ConfigureAwait(false));
+            }
+            catch (Exception ex)
+            {
+                return new TokenRevocationResponse(ex);
+            }
         }
     }
 }

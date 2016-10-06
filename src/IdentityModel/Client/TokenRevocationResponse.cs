@@ -12,9 +12,10 @@ namespace IdentityModel.Client
         public string Raw { get; }
         public JObject Json { get; }
         public bool IsError { get; }
-        public HttpStatusCode HttpStatusCode { get; set; }
-        public string HttpErrorReason { get; set; }
-        public ResponseErrorType ErrorType { get; set; }
+        public HttpStatusCode HttpStatusCode { get; }
+        public string HttpErrorReason { get; }
+        public ResponseErrorType ErrorType { get;  }
+        public Exception Exception { get;  }
 
         public TokenRevocationResponse(string raw)
         {
@@ -28,7 +29,9 @@ namespace IdentityModel.Client
             }
             catch (Exception ex)
             {
-                throw new InvalidOperationException("Invalid JSON response", ex);
+                IsError = true;
+                ErrorType = ResponseErrorType.Exception;
+                Exception = ex;
             }
         }
 
@@ -41,6 +44,14 @@ namespace IdentityModel.Client
             HttpErrorReason = reason;
         }
 
+        public TokenRevocationResponse(Exception exception)
+        {
+            IsError = true;
+
+            Exception = exception;
+            ErrorType = ResponseErrorType.Exception;
+        }
+
         public string Error
         {
             get
@@ -48,6 +59,10 @@ namespace IdentityModel.Client
                 if (ErrorType == ResponseErrorType.Http)
                 {
                     return HttpErrorReason;
+                }
+                else if(ErrorType == ResponseErrorType.Exception)
+                {
+                    return Exception.Message;
                 }
 
                 return GetStringOrNull(OidcConstants.TokenResponse.Error);

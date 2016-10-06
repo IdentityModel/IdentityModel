@@ -16,7 +16,9 @@ namespace IdentityModel.Client
 
         public bool IsError { get; } = false;
         public HttpStatusCode StatusCode { get; }
-        public string Error { get; set; }
+        public string Error { get; }
+        public ResponseErrorType ErrorType { get; set; } = ResponseErrorType.None;
+        public Exception Exception { get; }
 
         public JsonWebKeySet KeySet { get; set; }
 
@@ -26,14 +28,37 @@ namespace IdentityModel.Client
             StatusCode = HttpStatusCode.OK;
 
             Raw = raw;
-            Json = JObject.Parse(raw);
+
+            try
+            {
+                Json = JObject.Parse(raw);
+            }
+            catch (Exception ex)
+            {
+                IsError = true;
+
+                ErrorType = ResponseErrorType.Exception;
+                Error = ex.Message;
+                Exception = ex;
+            }
         }
 
-        public DiscoveryResponse(HttpStatusCode statusCode, string error)
+        public DiscoveryResponse(HttpStatusCode statusCode, string reason)
         {
             IsError = true;
+
+            ErrorType = ResponseErrorType.Http;
             StatusCode = statusCode;
-            Error = error;
+            Error = reason;
+        }
+
+        public DiscoveryResponse(Exception exception)
+        {
+            IsError = true;
+
+            ErrorType = ResponseErrorType.Exception;
+            Exception = exception;
+            Error = exception.Message;
         }
 
         // strongly typed
@@ -59,9 +84,9 @@ namespace IdentityModel.Client
         public IEnumerable<string> TokenEndpointAuthenticationMethodsSupported => TryGetStringArray(OidcConstants.Discovery.TokenEndpointAuthenticationMethodsSupported);
 
         // generic
-        public JToken TryGetValue(string name)                    => Json.TryGetValue(name);
-        public string TryGetString(string name)                   => Json.TryGetString(name);
-        public bool? TryGetBoolean(string name)                   => Json.TryGetBoolean(name);
+        public JToken TryGetValue(string name) => Json.TryGetValue(name);
+        public string TryGetString(string name) => Json.TryGetString(name);
+        public bool? TryGetBoolean(string name) => Json.TryGetBoolean(name);
         public IEnumerable<string> TryGetStringArray(string name) => Json.TryGetStringArray(name);
     }
 }

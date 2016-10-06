@@ -49,8 +49,8 @@ namespace IdentityModel.Client
 
         public async Task<IntrospectionResponse> SendAsync(IntrospectionRequest request)
         {
-            if (request == null) throw new ArgumentNullException("request");
-            if (string.IsNullOrWhiteSpace(request.Token)) throw new ArgumentNullException("token");
+            if (request == null) throw new ArgumentNullException(nameof(request));
+            if (string.IsNullOrWhiteSpace(request.Token)) throw new ArgumentNullException(nameof(request.Token));
 
             var form = new Dictionary<string, string>();
             form.Add("token", request.Token);
@@ -74,27 +74,22 @@ namespace IdentityModel.Client
                 form.Add("client_secret", request.ClientSecret);
             }
 
+            HttpResponseMessage response;
             try
             {
-                var response = await _client.PostAsync("", new FormUrlEncodedContent(form)).ConfigureAwait(false);
-                if (response.StatusCode != HttpStatusCode.OK)
-                {
-                    return new IntrospectionResponse
-                    {
-                        IsError = true,
-                        Error = response.ReasonPhrase
-                    };
-                }
-
-                return new IntrospectionResponse(await response.Content.ReadAsStringAsync().ConfigureAwait(false));
+                response = await _client.PostAsync("", new FormUrlEncodedContent(form)).ConfigureAwait(false);
             }
             catch (Exception ex)
             {
-                return new IntrospectionResponse
-                {
-                    IsError = true,
-                    Error = ex.Message
-                };
+                return new IntrospectionResponse(ex);
+            }
+            if (response.IsSuccessStatusCode)
+            {
+                return new IntrospectionResponse(await response.Content.ReadAsStringAsync().ConfigureAwait(false));
+            }
+            else
+            {
+                return new IntrospectionResponse(response.StatusCode, response.ReasonPhrase);
             }
         }
     }

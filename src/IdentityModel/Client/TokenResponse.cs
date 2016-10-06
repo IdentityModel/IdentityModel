@@ -11,26 +11,40 @@ namespace IdentityModel.Client
     {
         public TokenResponse(string raw)
         {
+            Raw = raw;
+
             try
             {
-                Raw = raw;
                 Json = JObject.Parse(raw);
-                
-                if (string.IsNullOrWhiteSpace(Error))
-                {
-                    HttpStatusCode = HttpStatusCode.OK;
-                }
-                else
-                {
-                    IsError = true;
-                    HttpStatusCode = HttpStatusCode.BadRequest;
-                    ErrorType = ResponseErrorType.Protocol;
-                }
             }
             catch (Exception ex)
             {
-                throw new InvalidOperationException("Invalid JSON response", ex);
+                IsError = true;
+                ErrorType = ResponseErrorType.Exception;
+                Exception = ex;
+
+                return;
             }
+
+            if (string.IsNullOrWhiteSpace(Error))
+            {
+                IsError = false;
+                HttpStatusCode = HttpStatusCode.OK;
+            }
+            else
+            {
+                IsError = true;
+                HttpStatusCode = HttpStatusCode.BadRequest;
+                ErrorType = ResponseErrorType.Protocol;
+            }
+        }
+        
+        public TokenResponse(Exception exception)
+        {
+            IsError = true;
+
+            Exception = exception;
+            ErrorType = ResponseErrorType.Exception;
         }
 
         public TokenResponse(HttpStatusCode statusCode, string reason)
@@ -44,16 +58,17 @@ namespace IdentityModel.Client
 
         public string Raw { get; }
         public JObject Json { get; }
+        public Exception Exception { get; set; }
 
         public bool IsError { get; }
         public ResponseErrorType ErrorType { get; } = ResponseErrorType.None;
         public HttpStatusCode HttpStatusCode { get; }
         public string HttpErrorReason { get; }
 
-        public string AccessToken      => TryGet(OidcConstants.TokenResponse.AccessToken);
-        public string IdentityToken    => TryGet(OidcConstants.TokenResponse.IdentityToken);
-        public string TokenType        => TryGet(OidcConstants.TokenResponse.TokenType);
-        public string RefreshToken     => TryGet(OidcConstants.TokenResponse.RefreshToken);
+        public string AccessToken => TryGet(OidcConstants.TokenResponse.AccessToken);
+        public string IdentityToken => TryGet(OidcConstants.TokenResponse.IdentityToken);
+        public string TokenType => TryGet(OidcConstants.TokenResponse.TokenType);
+        public string RefreshToken => TryGet(OidcConstants.TokenResponse.RefreshToken);
         public string ErrorDescription => TryGet(OidcConstants.TokenResponse.ErrorDescription);
 
         public long ExpiresIn
@@ -83,20 +98,15 @@ namespace IdentityModel.Client
                 {
                     return HttpErrorReason;
                 }
+                else if (ErrorType == ResponseErrorType.Exception)
+                {
+                    return Exception.Message;
+                }
 
                 return TryGet(OidcConstants.TokenResponse.Error);
             }
         }
 
-        public string TryGet(string name)
-        {
-            JToken value;
-            if (Json != null && Json.TryGetValue(name, StringComparison.OrdinalIgnoreCase, out value))
-            {
-                return value.ToString();
-            }
-
-            return null;
-        }
+        public string TryGet(string name) => Json.TryGetString(name);
     }
 }

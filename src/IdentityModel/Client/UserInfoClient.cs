@@ -44,17 +44,24 @@ namespace IdentityModel.Client
             }
         }
 
-        public async Task<UserInfoResponse> GetAsync(string token, string tokenType = null, CancellationToken cancellationToken = default(CancellationToken))
+        public async Task<UserInfoResponse> GetAsync(string token, CancellationToken cancellationToken = default(CancellationToken))
         {
-            if (string.IsNullOrEmpty(token))
-                throw new ArgumentNullException(nameof(token));
+            if (string.IsNullOrEmpty(token)) throw new ArgumentNullException(nameof(token));
 
             var request = new HttpRequestMessage(HttpMethod.Get, "");
-            request.Headers.Authorization = new AuthenticationHeaderValue(tokenType ?? "Bearer", token);
+            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
-            var response = await _client.SendAsync(request, cancellationToken).ConfigureAwait(false);
+            HttpResponseMessage response;
+            try
+            {
+                response = await _client.SendAsync(request, cancellationToken).ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
+                return new UserInfoResponse(ex);
+            }
 
-            if (response.StatusCode != HttpStatusCode.OK)
+            if (!response.IsSuccessStatusCode)
             {
                 return new UserInfoResponse(response.StatusCode, response.ReasonPhrase);
             }
