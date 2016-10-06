@@ -17,6 +17,11 @@ namespace IdentityModel.Client
         public ResponseErrorType ErrorType { get;  }
         public Exception Exception { get;  }
 
+        public TokenRevocationResponse()
+        {
+            IsError = false;
+        }
+
         public TokenRevocationResponse(string raw)
         {
             Raw = raw;

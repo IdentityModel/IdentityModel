@@ -84,12 +84,20 @@ namespace IdentityModel.Client
             try
             {
                 var response = await _client.PostAsync("", new FormUrlEncodedContent(form)).ConfigureAwait(false);
-                if (response.StatusCode != HttpStatusCode.OK)
+
+                if (response.StatusCode == HttpStatusCode.OK)
+                {
+                    return new TokenRevocationResponse();
+                }
+                else if (response.StatusCode == HttpStatusCode.BadRequest)
+                {
+                    var content = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+                    return new TokenRevocationResponse(content);
+                }
+                else
                 {
                     return new TokenRevocationResponse(response.StatusCode, response.ReasonPhrase);
                 }
-
-                return new TokenRevocationResponse(await response.Content.ReadAsStringAsync().ConfigureAwait(false));
             }
             catch (Exception ex)
             {
