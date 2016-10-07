@@ -2,9 +2,7 @@
 using IdentityModel.Client;
 using Microsoft.Extensions.PlatformAbstractions;
 using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using Xunit;
@@ -13,7 +11,7 @@ namespace IdentityModel.UnitTests
 {
     public class TokenClientTests
     {
-        const string TokenEndpoint = "http://server/token";
+        const string Endpoint = "http://server/token";
         
         [Fact]
         public async Task Valid_protocol_response_should_be_handled_correctly()
@@ -22,7 +20,7 @@ namespace IdentityModel.UnitTests
             var handler = new NetworkHandler(document, HttpStatusCode.OK);
 
             var client = new TokenClient(
-                TokenEndpoint,
+                Endpoint,
                 "client",
                 innerHttpMessageHandler: handler);
 
@@ -44,7 +42,7 @@ namespace IdentityModel.UnitTests
             var handler = new NetworkHandler(document, HttpStatusCode.BadRequest);
 
             var client = new TokenClient(
-                TokenEndpoint,
+                Endpoint,
                 "client",
                 innerHttpMessageHandler: handler);
 
@@ -65,7 +63,7 @@ namespace IdentityModel.UnitTests
             var handler = new NetworkHandler(document, HttpStatusCode.OK);
 
             var client = new TokenClient(
-                TokenEndpoint,
+                Endpoint,
                 "client",
                 innerHttpMessageHandler: handler);
 
@@ -83,7 +81,7 @@ namespace IdentityModel.UnitTests
             var handler = new NetworkHandler(new Exception("exception"));
 
             var client = new TokenClient(
-                TokenEndpoint,
+                Endpoint,
                 "client",
                 innerHttpMessageHandler: handler);
 
@@ -101,7 +99,7 @@ namespace IdentityModel.UnitTests
             var handler = new NetworkHandler(HttpStatusCode.NotFound, "not found");
 
             var client = new TokenClient(
-                TokenEndpoint,
+                Endpoint,
                 "client",
                 innerHttpMessageHandler: handler);
 

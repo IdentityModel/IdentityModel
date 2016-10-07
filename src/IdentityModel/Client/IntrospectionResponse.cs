@@ -32,11 +32,17 @@ namespace IdentityModel.Client
                 Json = JObject.Parse(raw);
                 IsActive = bool.Parse(Json["active"].ToString());
                 Claims = Json.ToClaims();
+
+                IsError = false;
+                HttpStatusCode = HttpStatusCode.OK;
             }
             catch (Exception ex)
             {
                 IsError = true;
-                Error = ex.ToString();
+
+                Error = ex.Message;
+                ErrorType = ResponseErrorType.Exception;
+                Exception = ex;
             }
         }
 
@@ -45,6 +51,7 @@ namespace IdentityModel.Client
             IsError = true;
 
             Exception = exception;
+            Error = exception.Message;
             ErrorType = ResponseErrorType.Exception;
         }
 
