@@ -2,6 +2,7 @@
 // Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
 
 using System;
+using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading;
@@ -59,6 +60,11 @@ namespace IdentityModel.Client
             {
                 return new UserInfoResponse(ex);
             }
+
+            //if (response.StatusCode == HttpStatusCode.Unauthorized)
+            //{
+            //    response.Headers.WwwAuthenticate.
+            //}
 
             if (!response.IsSuccessStatusCode)
             {

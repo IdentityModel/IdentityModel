@@ -1,15 +1,15 @@
 {
-  "version": "2.0.0-rc6-*",
+  "version": "2.0.0-*",
   "authors": [ "Dominick Baier", "Brock Allen" ],
 
   "packOptions": {
     "tags": [ "OAuth2", "OAuth 2.0", "OpenID Connect", "Security", "Identity", "IdentityServer" ],
-    "projectUrl": "https://github.com/IdentityModel/IdentityModelv2",
-    "licenseUrl": "https://github.com/IdentityModel/IdentityModelv2/blob/master/LICENSE",
+    "projectUrl": "https://github.com/IdentityModel/IdentityModel2",
+    "licenseUrl": "https://github.com/IdentityModel/IdentityModel2/blob/master/LICENSE",
     "iconUrl": "https://identityserver.github.io/Documentation/assets/images/icons/IDmodel_icon128.png",
     "repository": {
       "type": "git",
-      "url": "git://github.com/identitymodel/identitymodelv2"
+      "url": "git://github.com/identitymodel/identitymodel2"
     }
   },
 

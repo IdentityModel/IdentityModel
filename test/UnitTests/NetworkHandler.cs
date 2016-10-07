@@ -21,6 +21,7 @@ namespace IdentityModel.UnitTests
         private readonly string _reason;
         private readonly string _document;
         private readonly Func<HttpRequestMessage, string> _selector;
+        private readonly Func<HttpRequestMessage, HttpResponseMessage> _action;
 
         public NetworkHandler(Exception exception)
         {
@@ -49,8 +50,18 @@ namespace IdentityModel.UnitTests
             _behavior = Behavior.ReturnDocument;
         }
 
+        public NetworkHandler(Func<HttpRequestMessage, HttpResponseMessage> action)
+        {
+            _action = action;
+        }
+
         protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
+            if (_action != null)
+            {
+                return Task.FromResult(_action(request));
+            }
+
             if (_behavior == Behavior.Throw) throw _exception;
 
             var response = new HttpResponseMessage(_statusCode);

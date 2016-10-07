@@ -37,6 +37,8 @@ namespace IdentityModel.Client
             {
                 IsError = true;
                 Error = ex.Message;
+                Exception = ex;
+                ErrorType = ResponseErrorType.Exception;
             }
         }
 
@@ -55,7 +57,7 @@ namespace IdentityModel.Client
 
             Error = exception.Message;
             Exception = exception;
-            ErrorType = ResponseErrorType.Http;
+            ErrorType = ResponseErrorType.Exception;
         }
     }
 }
