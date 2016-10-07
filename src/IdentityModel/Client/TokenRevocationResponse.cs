@@ -20,6 +20,7 @@ namespace IdentityModel.Client
         public TokenRevocationResponse()
         {
             IsError = false;
+            HttpStatusCode = HttpStatusCode.OK;
         }
 
         public TokenRevocationResponse(string raw)
@@ -35,6 +36,8 @@ namespace IdentityModel.Client
                 if (!string.IsNullOrEmpty(Json.TryGetString(OidcConstants.TokenResponse.Error)))
                 {
                     IsError = true;
+                    ErrorType = ResponseErrorType.Protocol;
+                    HttpStatusCode = HttpStatusCode.BadRequest;
                 }
             }
             catch (Exception ex)
