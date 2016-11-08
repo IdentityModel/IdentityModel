@@ -95,7 +95,7 @@ namespace IdentityModel.Client
             }
 
             request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", AccessToken);
-            var response = await base.SendAsync(request, cancellationToken);
+            var response = await base.SendAsync(request, cancellationToken).ConfigureAwait(false);
 
             if (response.StatusCode != HttpStatusCode.Unauthorized)
             {
@@ -108,7 +108,7 @@ namespace IdentityModel.Client
             }
 
             request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", AccessToken);
-            return await base.SendAsync(request, cancellationToken);
+            return await base.SendAsync(request, cancellationToken).ConfigureAwait(false);
         }
 
         protected override void Dispose(bool disposing)
@@ -133,7 +133,7 @@ namespace IdentityModel.Client
             {
                 try
                 {
-                    var response = await _tokenClient.RequestRefreshTokenAsync(refreshToken, cancellationToken: cancellationToken);
+                    var response = await _tokenClient.RequestRefreshTokenAsync(refreshToken, cancellationToken: cancellationToken).ConfigureAwait(false);
 
                     if (!response.IsError)
                     {
