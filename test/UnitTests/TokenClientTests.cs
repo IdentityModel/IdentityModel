@@ -4,6 +4,7 @@ using Microsoft.Extensions.PlatformAbstractions;
 using System;
 using System.IO;
 using System.Net;
+using System.Text;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -109,6 +110,86 @@ namespace IdentityModel.UnitTests
             response.ErrorType.Should().Be(ResponseErrorType.Http);
             response.HttpStatusCode.Should().Be(HttpStatusCode.NotFound);
             response.Error.Should().Be("not found");
+        }
+
+        [Fact]
+        public async Task Setting_basic_authentication_style_should_send_basic_authentication_header()
+        {
+            var document = File.ReadAllText(Path.Combine(PlatformServices.Default.Application.ApplicationBasePath, "documents", "success_token_response.json"));
+            var handler = new NetworkHandler(document, HttpStatusCode.OK);
+
+            var client = new TokenClient(
+                Endpoint,
+                "client",
+                "secret",
+                innerHttpMessageHandler: handler);
+
+            var response = await client.RequestClientCredentialsAsync();
+            var request = handler.Request;
+
+            request.Headers.Authorization.Should().NotBeNull();
+            request.Headers.Authorization.Scheme.Should().Be("Basic");
+            request.Headers.Authorization.Parameter.Should().Be(Convert.ToBase64String(Encoding.UTF8.GetBytes("client:secret")));
+        }
+
+        [Fact]
+        public async Task Setting_no_client_id_and_secret_should_not_send_credentials()
+        {
+            var document = File.ReadAllText(Path.Combine(PlatformServices.Default.Application.ApplicationBasePath, "documents", "success_token_response.json"));
+            var handler = new NetworkHandler(document, HttpStatusCode.OK);
+
+            var client = new TokenClient(
+                Endpoint,
+                innerHttpMessageHandler: handler);
+
+            var response = await client.RequestClientCredentialsAsync();
+            var request = handler.Request;
+
+            request.Headers.Authorization.Should().BeNull();
+
+            // todo: check body
+        }
+
+        [Fact]
+        public async Task Setting_client_id_only_should_not_send_credentials()
+        {
+            var document = File.ReadAllText(Path.Combine(PlatformServices.Default.Application.ApplicationBasePath, "documents", "success_token_response.json"));
+            var handler = new NetworkHandler(document, HttpStatusCode.OK);
+
+            var client = new TokenClient(
+                Endpoint,
+                "client",
+                innerHttpMessageHandler: handler);
+
+            var response = await client.RequestClientCredentialsAsync();
+            var request = handler.Request;
+
+            request.Headers.Authorization.Should().BeNull();
+
+            // todo: check body
+        }
+
+        [Fact]
+        public async Task Setting_authentication_style_to_basic_explicitly_should_send_header()
+        {
+            var document = File.ReadAllText(Path.Combine(PlatformServices.Default.Application.ApplicationBasePath, "documents", "success_token_response.json"));
+            var handler = new NetworkHandler(document, HttpStatusCode.OK);
+
+            var client = new TokenClient(
+                Endpoint,
+                innerHttpMessageHandler: handler);
+
+            client.ClientId = "client";
+            client.ClientSecret = "secret";
+            client.AuthenticationStyle = AuthenticationStyle.BasicAuthentication;
+
+            var response = await client.RequestClientCredentialsAsync();
+
+            var request = handler.Request;
+
+            request.Headers.Authorization.Should().NotBeNull();
+            request.Headers.Authorization.Scheme.Should().Be("Basic");
+            request.Headers.Authorization.Parameter.Should().Be(Convert.ToBase64String(Encoding.UTF8.GetBytes("client:secret")));
         }
     }
 }

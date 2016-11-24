@@ -25,16 +25,14 @@ namespace IdentityModel.Client
             if (address == null) throw new ArgumentNullException(nameof(address));
             if (innerHttpMessageHandler == null) throw new ArgumentNullException(nameof(innerHttpMessageHandler));
 
-            _client = new HttpClient(innerHttpMessageHandler)
-            {
-                BaseAddress = new Uri(address)
-            };
+            _client = new HttpClient(innerHttpMessageHandler);
 
             _client.DefaultRequestHeaders.Accept.Clear();
             _client.DefaultRequestHeaders.Accept.Add(
                 new MediaTypeWithQualityHeaderValue("application/json"));
 
             AuthenticationStyle = AuthenticationStyle.Custom;
+            Address = address;
         }
 
         public TokenClient(string address, string clientId, AuthenticationStyle style = AuthenticationStyle.PostValues)
@@ -57,15 +55,12 @@ namespace IdentityModel.Client
             AuthenticationStyle = style;
             ClientId = clientId;
             ClientSecret = clientSecret;
-
-            if (style == AuthenticationStyle.BasicAuthentication)
-            {
-                _client.DefaultRequestHeaders.Authorization = new BasicAuthenticationHeaderValue(clientId, clientSecret);
-            }
         }
 
         public string ClientId { get; set; }
         public string ClientSecret { get; set; }
+        public string Address { get; set; }
+
         public AuthenticationStyle AuthenticationStyle { get; set; }
 
         public TimeSpan Timeout
@@ -80,9 +75,17 @@ namespace IdentityModel.Client
         {
             HttpResponseMessage response;
 
+            var request = new HttpRequestMessage(HttpMethod.Post, Address);
+            request.Content = new FormUrlEncodedContent(form);
+
+            if (AuthenticationStyle == AuthenticationStyle.BasicAuthentication)
+            {
+                request.Headers.Authorization = new BasicAuthenticationHeaderValue(ClientId, ClientSecret);
+            }
+
             try
             {
-                response = await _client.PostAsync(string.Empty, new FormUrlEncodedContent(form), cancellationToken).ConfigureAwait(false);
+                response = await _client.SendAsync(request, cancellationToken);
             }
             catch (Exception ex)
             {
