@@ -16,12 +16,14 @@ namespace IdentityModel.UnitTests
         }
 
         private readonly Exception _exception;
-        private Behavior _behavior;
+        private readonly Behavior _behavior;
         private readonly HttpStatusCode _statusCode;
         private readonly string _reason;
         private readonly string _document;
         private readonly Func<HttpRequestMessage, string> _selector;
         private readonly Func<HttpRequestMessage, HttpResponseMessage> _action;
+
+        public HttpRequestMessage Request { get; set; }
 
         public NetworkHandler(Exception exception)
         {
@@ -33,6 +35,7 @@ namespace IdentityModel.UnitTests
         {
             _statusCode = statusCode;
             _reason = reason;
+
             _behavior = Behavior.ReturnError;
         }
 
@@ -57,6 +60,8 @@ namespace IdentityModel.UnitTests
 
         protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
+            Request = request;
+
             if (_action != null)
             {
                 return Task.FromResult(_action(request));
