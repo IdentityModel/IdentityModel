@@ -14,6 +14,9 @@ namespace System.Net.Http
 
         private static string EncodeCredential(string userName, string password)
         {
+            if (string.IsNullOrWhiteSpace(userName)) throw new ArgumentNullException(nameof(userName));
+            if (password == null) password = "";
+
             Encoding encoding = Encoding.UTF8;
             string credential = String.Format("{0}:{1}", userName, password);
 
