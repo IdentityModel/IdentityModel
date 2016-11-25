@@ -3,9 +3,12 @@ using IdentityModel.Client;
 using Microsoft.Extensions.PlatformAbstractions;
 using System;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.Extensions.Primitives;
 using Xunit;
 
 namespace IdentityModel.UnitTests
@@ -133,6 +136,30 @@ namespace IdentityModel.UnitTests
         }
 
         [Fact]
+        public async Task Setting_post_values_authentication_style_should_post_values()
+        {
+            var document = File.ReadAllText(Path.Combine(PlatformServices.Default.Application.ApplicationBasePath, "documents", "success_token_response.json"));
+            var handler = new NetworkHandler(document, HttpStatusCode.OK);
+
+            var client = new TokenClient(
+                Endpoint,
+                "client",
+                "secret",
+                style: AuthenticationStyle.PostValues,
+                innerHttpMessageHandler: handler);
+
+            var response = await client.RequestClientCredentialsAsync();
+            var request = handler.Request;
+
+            request.Headers.Authorization.Should().BeNull();
+
+            var fields = QueryHelpers.ParseQuery(handler.Body);
+            fields["client_id"].First().Should().Be("client");
+            fields["client_secret"].First().Should().Be("secret");
+
+        }
+
+        [Fact]
         public async Task Setting_no_client_id_and_secret_should_not_send_credentials()
         {
             var document = File.ReadAllText(Path.Combine(PlatformServices.Default.Application.ApplicationBasePath, "documents", "success_token_response.json"));
@@ -147,11 +174,15 @@ namespace IdentityModel.UnitTests
 
             request.Headers.Authorization.Should().BeNull();
 
-            // todo: check body
+            var fields = QueryHelpers.ParseQuery(handler.Body);
+            StringValues value;
+
+            fields.TryGetValue("client_secret", out value).Should().BeFalse();
+            fields.TryGetValue("client_id", out value).Should().BeFalse();
         }
 
         [Fact]
-        public async Task Setting_client_id_only_should_not_send_credentials()
+        public async Task Setting_client_id_only_should_put_client_id_in_post_body()
         {
             var document = File.ReadAllText(Path.Combine(PlatformServices.Default.Application.ApplicationBasePath, "documents", "success_token_response.json"));
             var handler = new NetworkHandler(document, HttpStatusCode.OK);
@@ -166,7 +197,8 @@ namespace IdentityModel.UnitTests
 
             request.Headers.Authorization.Should().BeNull();
 
-            // todo: check body
+            var fields = QueryHelpers.ParseQuery(handler.Body);
+            fields["client_id"].First().Should().Be("client");
         }
 
         [Fact]
@@ -190,6 +222,31 @@ namespace IdentityModel.UnitTests
             request.Headers.Authorization.Should().NotBeNull();
             request.Headers.Authorization.Scheme.Should().Be("Basic");
             request.Headers.Authorization.Parameter.Should().Be(Convert.ToBase64String(Encoding.UTF8.GetBytes("client:secret")));
+        }
+
+        [Fact]
+        public async Task Setting_authentication_style_to_post_values_should_post_values()
+        {
+            var document = File.ReadAllText(Path.Combine(PlatformServices.Default.Application.ApplicationBasePath, "documents", "success_token_response.json"));
+            var handler = new NetworkHandler(document, HttpStatusCode.OK);
+
+            var client = new TokenClient(
+                Endpoint,
+                innerHttpMessageHandler: handler);
+
+            client.ClientId = "client";
+            client.ClientSecret = "secret";
+            client.AuthenticationStyle = AuthenticationStyle.PostValues;
+
+            var response = await client.RequestClientCredentialsAsync();
+            var request = handler.Request;
+
+            request.Headers.Authorization.Should().BeNull();
+
+            var fields = QueryHelpers.ParseQuery(handler.Body);
+            fields["client_id"].First().Should().Be("client");
+            fields["client_secret"].First().Should().Be("secret");
+
         }
     }
 }

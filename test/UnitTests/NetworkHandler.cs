@@ -24,6 +24,7 @@ namespace IdentityModel.UnitTests
         private readonly Func<HttpRequestMessage, HttpResponseMessage> _action;
 
         public HttpRequestMessage Request { get; set; }
+        public string Body { get; set; }
 
         public NetworkHandler(Exception exception)
         {
@@ -58,13 +59,14 @@ namespace IdentityModel.UnitTests
             _action = action;
         }
 
-        protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+        protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
             Request = request;
+            Body = await SafeReadContentFrom(request);
 
             if (_action != null)
             {
-                return Task.FromResult(_action(request));
+                return _action(request);
             }
 
             if (_behavior == Behavior.Throw) throw _exception;
@@ -88,7 +90,14 @@ namespace IdentityModel.UnitTests
                 }
             }
 
-            return Task.FromResult(response);
+            return response;
+        }
+
+        private async Task<string> SafeReadContentFrom(HttpRequestMessage request)
+        {
+            if (request.Content == null) return null;
+
+            return await request.Content.ReadAsStringAsync();
         }
     }
 }

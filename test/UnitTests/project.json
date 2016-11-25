@@ -9,7 +9,8 @@
     "IdentityModel": {
       "target": "project"
     },
-    "Microsoft.Extensions.PlatformAbstractions": "1.0.0"
+    "Microsoft.Extensions.PlatformAbstractions": "1.0.0",
+    "Microsoft.AspNetCore.WebUtilities": "1.0.0"
   },
 
   "frameworks": {
