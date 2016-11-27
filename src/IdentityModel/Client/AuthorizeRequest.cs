@@ -24,8 +24,16 @@ namespace IdentityModel.Client
 
         public string Create(IDictionary<string, string> values)
         {
-            var qs = string.Join("&", values.Select(kvp => String.Format("{0}={1}", WebUtility.UrlEncode(kvp.Key), WebUtility.UrlEncode(kvp.Value))).ToArray());
-            return string.Format("{0}?{1}", _authorizeEndpoint.AbsoluteUri, qs);
+            var qs = string.Join("&", values.Select(kvp => string.Format("{0}={1}", WebUtility.UrlEncode(kvp.Key), WebUtility.UrlEncode(kvp.Value))).ToArray());
+
+            if (_authorizeEndpoint.IsAbsoluteUri)
+            {
+                return string.Format("{0}?{1}", _authorizeEndpoint.AbsoluteUri, qs);
+            }
+            else
+            {
+                return string.Format("{0}?{1}", _authorizeEndpoint.OriginalString, qs);
+            }
         }
     }
 }
