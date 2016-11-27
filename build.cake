@@ -43,6 +43,12 @@ Task("RunTests")
             Configuration = configuration
         };
 
+        if (!IsRunningOnWindows())
+        {
+            Information("Not running on Windows - skipping tests for full .NET Framework");
+            settings.Framework = "netcoreapp1.0";
+        }
+
         DotNetCoreTest(project.GetDirectory().FullPath, settings);
     }
 });

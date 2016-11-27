@@ -14,7 +14,8 @@
   },
 
   "frameworks": {
-    "netcoreapp1.0": {
+      "net452": { },
+      "netcoreapp1.0": {
       "dependencies": {
         "Microsoft.NETCore.App": {
           "type": "platform",
