@@ -34,7 +34,7 @@ namespace IdentityModel.Client
             {
                 var value = TryGet(OidcConstants.AuthorizeResponse.ExpiresIn);
 
-                long longValue = 0;
+                long longValue;
                 long.TryParse(value, out longValue);
 
                 return longValue;
@@ -43,8 +43,7 @@ namespace IdentityModel.Client
 
         private void ParseRaw()
         {
-            var queryParameters = new Dictionary<string, string>();
-            string[] fragments = null;
+            string[] fragments;
 
             // query string encoded
             if (Raw.Contains("?"))
@@ -65,7 +64,7 @@ namespace IdentityModel.Client
             // form encoded
             else
             {
-                fragments = new string[] { "", Raw };
+                fragments = new[] { "", Raw };
             }
 
             var qparams = fragments[1].Split('&');

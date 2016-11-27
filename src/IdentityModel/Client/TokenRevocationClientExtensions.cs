@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace IdentityModel.Client
 {
-    public static partial class TokenRevocationClientExtensions
+    public static class TokenRevocationClientExtensions
     {
         public static Task<TokenRevocationResponse> RevokeAccessTokenAsync(this TokenRevocationClient client, string token, CancellationToken cancellationToken = default(CancellationToken))
         {

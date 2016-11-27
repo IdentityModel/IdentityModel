@@ -12,8 +12,8 @@ namespace IdentityModel
     /// </summary>
     public class CryptoRandom : Random
     {
-        private static RandomNumberGenerator _rng = RandomNumberGenerator.Create();
-        private byte[] _uint32Buffer = new byte[4];
+        private static readonly RandomNumberGenerator _rng = RandomNumberGenerator.Create();
+        private readonly byte[] _uint32Buffer = new byte[4];
 
         public static byte[] CreateRandomKey(int length)
         {
@@ -85,7 +85,7 @@ namespace IdentityModel
         /// </exception>
         public override Int32 Next(Int32 maxValue)
         {
-            if (maxValue < 0) throw new ArgumentOutOfRangeException("maxValue");
+            if (maxValue < 0) throw new ArgumentOutOfRangeException(nameof(maxValue));
             return Next(0, maxValue);
         }
 
@@ -102,7 +102,7 @@ namespace IdentityModel
         /// </exception>
         public override Int32 Next(Int32 minValue, Int32 maxValue)
         {
-            if (minValue > maxValue) throw new ArgumentOutOfRangeException("minValue");
+            if (minValue > maxValue) throw new ArgumentOutOfRangeException(nameof(minValue));
             if (minValue == maxValue) return minValue;
             Int64 diff = maxValue - minValue;
 
@@ -142,7 +142,7 @@ namespace IdentityModel
         /// </exception>
         public override void NextBytes(byte[] buffer)
         {
-            if (buffer == null) throw new ArgumentNullException("buffer");
+            if (buffer == null) throw new ArgumentNullException(nameof(buffer));
             _rng.GetBytes(buffer);
         }
     }

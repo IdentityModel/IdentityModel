@@ -2,7 +2,6 @@
 // Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
 
 using System;
-using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading;
@@ -20,11 +19,8 @@ namespace IdentityModel.Client
 
         public UserInfoClient(string endpoint, HttpMessageHandler innerHttpMessageHandler)
         {
-            if (endpoint == null)
-                throw new ArgumentNullException("endpoint");
-
-            if (innerHttpMessageHandler == null)
-                throw new ArgumentNullException("innerHttpMessageHandler");
+            if (endpoint == null) throw new ArgumentNullException(nameof(endpoint));
+            if (innerHttpMessageHandler == null) throw new ArgumentNullException(nameof(innerHttpMessageHandler));
 
             _client = new HttpClient(innerHttpMessageHandler)
             {

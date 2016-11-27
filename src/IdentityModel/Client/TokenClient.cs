@@ -13,7 +13,7 @@ namespace IdentityModel.Client
 {
     public class TokenClient : IDisposable
     {
-        protected HttpClient _client;
+        protected HttpClient Client;
         private bool _disposed;
 
         public TokenClient(string address)
@@ -25,10 +25,10 @@ namespace IdentityModel.Client
             if (address == null) throw new ArgumentNullException(nameof(address));
             if (innerHttpMessageHandler == null) throw new ArgumentNullException(nameof(innerHttpMessageHandler));
 
-            _client = new HttpClient(innerHttpMessageHandler);
+            Client = new HttpClient(innerHttpMessageHandler);
 
-            _client.DefaultRequestHeaders.Accept.Clear();
-            _client.DefaultRequestHeaders.Accept.Add(
+            Client.DefaultRequestHeaders.Accept.Clear();
+            Client.DefaultRequestHeaders.Accept.Add(
                 new MediaTypeWithQualityHeaderValue("application/json"));
 
             AuthenticationStyle = AuthenticationStyle.Custom;
@@ -67,7 +67,7 @@ namespace IdentityModel.Client
         {
             set
             {
-                _client.Timeout = value;
+                Client.Timeout = value;
             }
         }
 
@@ -85,7 +85,7 @@ namespace IdentityModel.Client
 
             try
             {
-                response = await _client.SendAsync(request, cancellationToken);
+                response = await Client.SendAsync(request, cancellationToken);
             }
             catch (Exception ex)
             {
@@ -114,7 +114,7 @@ namespace IdentityModel.Client
             if (disposing && !_disposed)
             {
                 _disposed = true;
-                _client.Dispose();
+                Client.Dispose();
             }
         }
     }

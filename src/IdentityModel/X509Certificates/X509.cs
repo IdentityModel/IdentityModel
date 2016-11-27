@@ -7,20 +7,7 @@ namespace IdentityModel
 {
     public static class X509
     {
-        public static X509CertificatesLocation CurrentUser 
-        { 
-            get
-            {
-                return new X509CertificatesLocation(StoreLocation.CurrentUser);
-            }
-        }
-
-        public static X509CertificatesLocation LocalMachine
-        {
-            get
-            {
-                return new X509CertificatesLocation(StoreLocation.LocalMachine);
-            }
-        }
+        public static X509CertificatesLocation CurrentUser => new X509CertificatesLocation(StoreLocation.CurrentUser);
+        public static X509CertificatesLocation LocalMachine => new X509CertificatesLocation(StoreLocation.LocalMachine);
     }
 }

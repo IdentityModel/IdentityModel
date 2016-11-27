@@ -47,11 +47,9 @@ namespace IdentityModel.Client
 
         public async Task<DiscoveryResponse> GetAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
-            HttpResponseMessage response;
-
             try
             {
-                response = await _client.GetAsync(Url, cancellationToken).ConfigureAwait(false);
+                var response = await _client.GetAsync(Url, cancellationToken).ConfigureAwait(false);
 
                 if (!response.IsSuccessStatusCode)
                 {
@@ -67,7 +65,7 @@ namespace IdentityModel.Client
                 var jwkUrl = disco.JwksUri;
                 if (jwkUrl != null)
                 {
-                    response = await _client.GetAsync(jwkUrl).ConfigureAwait(false);
+                    response = await _client.GetAsync(jwkUrl, cancellationToken).ConfigureAwait(false);
 
                     if (!response.IsSuccessStatusCode)
                     {

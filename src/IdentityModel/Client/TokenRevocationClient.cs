@@ -13,7 +13,7 @@ namespace IdentityModel.Client
 {
     public class TokenRevocationClient
     {
-        protected HttpClient _client;
+        protected HttpClient Client;
         private string _clientId;
 
         public AuthenticationStyle AuthenticationStyle { get; set; }
@@ -25,18 +25,18 @@ namespace IdentityModel.Client
             if (endpoint == null) throw new ArgumentNullException(nameof(endpoint));
             if (innerHttpMessageHandler == null) innerHttpMessageHandler = new HttpClientHandler();
 
-            _client = new HttpClient(innerHttpMessageHandler)
+            Client = new HttpClient(innerHttpMessageHandler)
             {
                 BaseAddress = new Uri(endpoint)
             };
 
-            _client.DefaultRequestHeaders.Accept.Clear();
-            _client.DefaultRequestHeaders.Accept.Add(
+            Client.DefaultRequestHeaders.Accept.Clear();
+            Client.DefaultRequestHeaders.Accept.Add(
                 new MediaTypeWithQualityHeaderValue("application/json"));
 
             if (!string.IsNullOrWhiteSpace(clientId) && !string.IsNullOrWhiteSpace(clientSecret))
             {
-                _client.SetBasicAuthentication(clientId, clientSecret);
+                Client.SetBasicAuthentication(clientId, clientSecret);
             }
             else if (!string.IsNullOrWhiteSpace(clientId))
             {
@@ -48,7 +48,7 @@ namespace IdentityModel.Client
         {
             set
             {
-                _client.Timeout = value;
+                Client.Timeout = value;
             }
         }
 
@@ -56,8 +56,8 @@ namespace IdentityModel.Client
             TokenRevocationRequest request,
             CancellationToken cancellationToken = default(CancellationToken))
         {
-            if (request == null) throw new ArgumentNullException("request");
-            if (string.IsNullOrWhiteSpace(request.Token)) throw new ArgumentNullException("token");
+            if (request == null) throw new ArgumentNullException(nameof(request));
+            if (string.IsNullOrWhiteSpace(request.Token)) throw new ArgumentNullException(nameof(request.Token));
 
             var form = new Dictionary<string, string>();
             form.Add("token", request.Token);
@@ -83,7 +83,7 @@ namespace IdentityModel.Client
 
             try
             {
-                var response = await _client.PostAsync("", new FormUrlEncodedContent(form)).ConfigureAwait(false);
+                var response = await Client.PostAsync("", new FormUrlEncodedContent(form)).ConfigureAwait(false);
 
                 if (response.StatusCode == HttpStatusCode.OK)
                 {

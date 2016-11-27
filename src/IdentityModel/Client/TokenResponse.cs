@@ -79,7 +79,7 @@ namespace IdentityModel.Client
 
                 if (value != null)
                 {
-                    long longValue = 0;
+                    long longValue;
                     if (long.TryParse(value.ToString(), out longValue))
                     {
                         return longValue;

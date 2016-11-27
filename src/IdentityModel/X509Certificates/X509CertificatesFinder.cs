@@ -11,9 +11,9 @@ namespace IdentityModel
     [EditorBrowsable(EditorBrowsableState.Never)]
     public class X509CertificatesFinder
     {
-        StoreLocation _location;
-        StoreName _name;
-        X509FindType _findType;
+        readonly StoreLocation _location;
+        readonly StoreName _name;
+        readonly X509FindType _findType;
 
         public X509CertificatesFinder(StoreLocation location, StoreName name, X509FindType findType)
         {
@@ -24,8 +24,6 @@ namespace IdentityModel
 
         public IEnumerable<X509Certificate2> Find(object findValue, bool validOnly = true)
         {
-            var certs = new List<X509Certificate2>();
-
 #if NET45
             var store = new X509Store(_name, _location);
             store.Open(OpenFlags.ReadOnly);

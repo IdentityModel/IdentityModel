@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace IdentityModel.Client
 {
-    public static partial class TokenClientExtensions
+    public static class TokenClientExtensions
     {
         public static Task<TokenResponse> RequestClientCredentialsAsync(this TokenClient client, string scope = null, object extra = null, CancellationToken cancellationToken = default(CancellationToken))
         {
