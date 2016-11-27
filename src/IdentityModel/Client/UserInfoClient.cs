@@ -61,11 +61,6 @@ namespace IdentityModel.Client
                 return new UserInfoResponse(ex);
             }
 
-            //if (response.StatusCode == HttpStatusCode.Unauthorized)
-            //{
-            //    response.Headers.WwwAuthenticate.
-            //}
-
             if (!response.IsSuccessStatusCode)
             {
                 return new UserInfoResponse(response.StatusCode, response.ReasonPhrase);
