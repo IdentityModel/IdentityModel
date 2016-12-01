@@ -85,7 +85,7 @@ namespace IdentityModel.Client
 
             try
             {
-                response = await Client.SendAsync(request, cancellationToken);
+                response = await Client.SendAsync(request, cancellationToken).ConfigureAwait(false);
             }
             catch (Exception ex)
             {
