@@ -6,6 +6,7 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Net;
+using Newtonsoft.Json.Schema;
 
 namespace IdentityModel.Client
 {
@@ -22,8 +23,10 @@ namespace IdentityModel.Client
 
         public JsonWebKeySet KeySet { get; set; }
 
-        public DiscoveryResponse(string raw)
+        public DiscoveryResponse(string raw, DiscoveryPolicy policy = null)
         {
+            if (policy == null) policy = new DiscoveryPolicy();
+
             IsError = false;
             StatusCode = HttpStatusCode.OK;
 
@@ -32,6 +35,15 @@ namespace IdentityModel.Client
             try
             {
                 Json = JObject.Parse(raw);
+                var validationError = Validate(policy);
+
+                if (!string.IsNullOrEmpty(validationError))
+                {
+                    IsError = true;
+
+                    ErrorType = ResponseErrorType.PolicyViolation;
+                    Error = validationError;
+                }
             }
             catch (Exception ex)
             {
@@ -41,6 +53,11 @@ namespace IdentityModel.Client
                 Error = ex.Message;
                 Exception = ex;
             }
+        }
+
+        private string Validate(DiscoveryPolicy policy)
+        {
+            return "";
         }
 
         public DiscoveryResponse(HttpStatusCode statusCode, string reason)

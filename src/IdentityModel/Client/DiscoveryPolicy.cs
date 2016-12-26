@@ -3,12 +3,11 @@
 
 namespace IdentityModel.Client
 {
-    public enum ResponseErrorType
+    public class DiscoveryPolicy
     {
-        None,
-        Protocol,
-        Http,
-        Exception,
-        PolicyViolation
+        public bool ValidateIssuerName { get; set; } = true;
+        public bool ValidateEndpoints { get; set; } = true;
+
+        public bool RequireHttps { get; set; } = true;
     }
 }

@@ -21,6 +21,8 @@ namespace IdentityModel.Client
 
         public string Url { get; }
 
+        public DiscoveryPolicy Policy { get; set; } = new DiscoveryPolicy();
+
         public TimeSpan Timeout
         {
             set
