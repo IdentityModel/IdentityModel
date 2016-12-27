@@ -11,5 +11,8 @@ namespace IdentityModel.Client
         public bool ValidateEndpoints { get; set; } = true;
 
         public bool RequireHttps { get; set; } = true;
+
+        // todo: implement
+        public bool AllowHttpOnLoopback { get; set; } = true;
     }
 }
