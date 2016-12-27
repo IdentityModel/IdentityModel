@@ -12,7 +12,7 @@ namespace IdentityModel.UnitTests
     public class DiscoveryClientTests
     {
         NetworkHandler _successHandler;
-        string _endpoint = "http://server/.well-known/openid-configuration";
+        string _endpoint = "https://demo.identityserver.io/.well-known/openid-configuration";
 
         public DiscoveryClientTests()
         {
@@ -34,15 +34,27 @@ namespace IdentityModel.UnitTests
         }
 
         [Theory]
-        [InlineData("http://server:123/.well-known/openid-configuration")]
-        [InlineData("http://server:123/.well-known/openid-configuration/")]
-        [InlineData("http://server:123/")]
-        [InlineData("http://server:123")]
+        [InlineData("foo")]
+        [InlineData("file://some_file")]
+        [InlineData("https:something_weird_https://something_other")]
+        public void malformed_authority_url_should_throw(string input)
+        {
+            Action act = () => new DiscoveryClient(input);
+
+            act.ShouldThrow<InvalidOperationException>().Where(e => e.Message.Equals("Malformed authority URL"));
+        }
+
+        [Theory]
+        [InlineData("https://server:123/.well-known/openid-configuration")]
+        [InlineData("https://server:123/.well-known/openid-configuration/")]
+        [InlineData("https://server:123/")]
+        [InlineData("https://server:123")]
         public void various_urls_should_normalize(string input)
         {
             var client = new DiscoveryClient(input);
 
-            client.Url.Should().Be("http://server:123/.well-known/openid-configuration");
+            client.Url.Should().Be("https://server:123/.well-known/openid-configuration");
+            client.Authority.Should().Be("https://server:123");
         }
 
         [Fact]
@@ -78,6 +90,8 @@ namespace IdentityModel.UnitTests
             var client = new DiscoveryClient(_endpoint, _successHandler);
             var disco = await client.GetAsync();
 
+            disco.IsError.Should().BeFalse();
+
             disco.TryGetValue(OidcConstants.Discovery.AuthorizationEndpoint).Should().NotBeNull();
             disco.TryGetValue("unknown").Should().BeNull();
 
@@ -90,6 +104,8 @@ namespace IdentityModel.UnitTests
         {
             var client = new DiscoveryClient(_endpoint, _successHandler);
             var disco = await client.GetAsync();
+
+            disco.IsError.Should().BeFalse();
 
             disco.TokenEndpoint.Should().Be("https://demo.identityserver.io/connect/token");
             disco.AuthorizeEndpoint.Should().Be("https://demo.identityserver.io/connect/authorize");

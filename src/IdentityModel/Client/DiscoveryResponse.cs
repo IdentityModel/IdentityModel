@@ -40,6 +40,7 @@ namespace IdentityModel.Client
                 if (!string.IsNullOrEmpty(validationError))
                 {
                     IsError = true;
+                    Json = null;
 
                     ErrorType = ResponseErrorType.PolicyViolation;
                     Error = validationError;
@@ -53,11 +54,6 @@ namespace IdentityModel.Client
                 Error = ex.Message;
                 Exception = ex;
             }
-        }
-
-        private string Validate(DiscoveryPolicy policy)
-        {
-            return "";
         }
 
         public DiscoveryResponse(HttpStatusCode statusCode, string reason)
@@ -79,25 +75,25 @@ namespace IdentityModel.Client
         }
 
         // strongly typed
-        public string Issuer                                                   => TryGetString(OidcConstants.Discovery.Issuer);
-        public string AuthorizeEndpoint                                        => TryGetString(OidcConstants.Discovery.AuthorizationEndpoint);
-        public string TokenEndpoint                                            => TryGetString(OidcConstants.Discovery.TokenEndpoint);
-        public string UserInfoEndpoint                                         => TryGetString(OidcConstants.Discovery.UserInfoEndpoint);
-        public string IntrospectionEndpoint                                    => TryGetString(OidcConstants.Discovery.IntrospectionEndpoint);
-        public string RevocationEndpoint                                       => TryGetString(OidcConstants.Discovery.RevocationEndpoint);
-        public string JwksUri                                                  => TryGetString(OidcConstants.Discovery.JwksUri);
-        public string EndSessionEndpoint                                       => TryGetString(OidcConstants.Discovery.EndSessionEndpoint);
-        public string CheckSessionIframe                                       => TryGetString(OidcConstants.Discovery.CheckSessionIframe);
-        public string RegistrationEndpoint                                     => TryGetString(OidcConstants.Discovery.RegistrationEndpoint);
-        public bool? FrontChannelLogoutSupported                               => TryGetBoolean(OidcConstants.Discovery.FrontChannelLogoutSupported);
-        public bool? FrontChannelLogoutSessionSupported                        => TryGetBoolean(OidcConstants.Discovery.FrontChannelLogoutSessionSupported);
-        public IEnumerable<string> GrantTypesSupported                         => TryGetStringArray(OidcConstants.Discovery.GrantTypesSupported);
-        public IEnumerable<string> CodeChallengeMethodsSupported               => TryGetStringArray(OidcConstants.Discovery.CodeChallengeMethodsSupported);
-        public IEnumerable<string> ScopesSupported                             => TryGetStringArray(OidcConstants.Discovery.ScopesSupported);
-        public IEnumerable<string> SubjectTypesSupported                       => TryGetStringArray(OidcConstants.Discovery.SubjectTypesSupported);
-        public IEnumerable<string> ResponseModesSupported                      => TryGetStringArray(OidcConstants.Discovery.ResponseModesSupported);
-        public IEnumerable<string> ResponseTypesSupported                      => TryGetStringArray(OidcConstants.Discovery.ResponseTypesSupported);
-        public IEnumerable<string> ClaimsSupported                             => TryGetStringArray(OidcConstants.Discovery.ClaimsSupported);
+        public string Issuer => TryGetString(OidcConstants.Discovery.Issuer);
+        public string AuthorizeEndpoint => TryGetString(OidcConstants.Discovery.AuthorizationEndpoint);
+        public string TokenEndpoint => TryGetString(OidcConstants.Discovery.TokenEndpoint);
+        public string UserInfoEndpoint => TryGetString(OidcConstants.Discovery.UserInfoEndpoint);
+        public string IntrospectionEndpoint => TryGetString(OidcConstants.Discovery.IntrospectionEndpoint);
+        public string RevocationEndpoint => TryGetString(OidcConstants.Discovery.RevocationEndpoint);
+        public string JwksUri => TryGetString(OidcConstants.Discovery.JwksUri);
+        public string EndSessionEndpoint => TryGetString(OidcConstants.Discovery.EndSessionEndpoint);
+        public string CheckSessionIframe => TryGetString(OidcConstants.Discovery.CheckSessionIframe);
+        public string RegistrationEndpoint => TryGetString(OidcConstants.Discovery.RegistrationEndpoint);
+        public bool? FrontChannelLogoutSupported => TryGetBoolean(OidcConstants.Discovery.FrontChannelLogoutSupported);
+        public bool? FrontChannelLogoutSessionSupported => TryGetBoolean(OidcConstants.Discovery.FrontChannelLogoutSessionSupported);
+        public IEnumerable<string> GrantTypesSupported => TryGetStringArray(OidcConstants.Discovery.GrantTypesSupported);
+        public IEnumerable<string> CodeChallengeMethodsSupported => TryGetStringArray(OidcConstants.Discovery.CodeChallengeMethodsSupported);
+        public IEnumerable<string> ScopesSupported => TryGetStringArray(OidcConstants.Discovery.ScopesSupported);
+        public IEnumerable<string> SubjectTypesSupported => TryGetStringArray(OidcConstants.Discovery.SubjectTypesSupported);
+        public IEnumerable<string> ResponseModesSupported => TryGetStringArray(OidcConstants.Discovery.ResponseModesSupported);
+        public IEnumerable<string> ResponseTypesSupported => TryGetStringArray(OidcConstants.Discovery.ResponseTypesSupported);
+        public IEnumerable<string> ClaimsSupported => TryGetStringArray(OidcConstants.Discovery.ClaimsSupported);
         public IEnumerable<string> TokenEndpointAuthenticationMethodsSupported => TryGetStringArray(OidcConstants.Discovery.TokenEndpointAuthenticationMethodsSupported);
 
         // generic
@@ -105,5 +101,68 @@ namespace IdentityModel.Client
         public string TryGetString(string name) => Json.TryGetString(name);
         public bool? TryGetBoolean(string name) => Json.TryGetBoolean(name);
         public IEnumerable<string> TryGetStringArray(string name) => Json.TryGetStringArray(name);
+
+        private string Validate(DiscoveryPolicy policy)
+        {
+            if (policy.ValidateIssuerName)
+            {
+                var isValid = ValidateIssuerName(Issuer.RemoveTrailingSlash(), policy.Authority.RemoveTrailingSlash());
+                if (!isValid) return "Issuer name does not match authority";
+            }
+
+            var error = ValidateEndoints(Json, policy);
+            if (!string.IsNullOrEmpty(error)) return error;
+
+            return string.Empty;
+        }
+
+        public bool ValidateIssuerName(string issuer, string authority)
+        {
+            return string.Equals(issuer, authority, StringComparison.Ordinal);
+        }
+
+        public string ValidateEndoints(JObject json, DiscoveryPolicy policy)
+        {
+            var authorityHost = new Uri(policy.Authority).Authority;
+
+            foreach (var element in json)
+            {
+                if (element.Key.EndsWith("Endpoint", StringComparison.OrdinalIgnoreCase) ||
+                    element.Key.Equals(OidcConstants.Discovery.JwksUri, StringComparison.OrdinalIgnoreCase))
+                {
+                    var endpoint = element.Value.ToString();
+                    Uri uri;
+
+                    var isValidUri = Uri.TryCreate(endpoint, UriKind.Absolute, out uri);
+                    if (!isValidUri)
+                    {
+                        return $"Malformed endpoint: {endpoint}";
+                    }
+
+                    if (policy.RequireHttps)
+                    {
+                        if (!string.Equals(uri.Scheme, "https", StringComparison.OrdinalIgnoreCase))
+                        {
+                            return $"Endpoint does not use HTTPS: {endpoint}";
+                        }
+                    }
+
+                    if (policy.ValidateEndpoints)
+                    {
+                        if (!string.Equals(authorityHost, uri.Host))
+                        {
+                            return $"Endpoint is on a different host than authority: {endpoint}";
+                        }
+
+                        //if (!endpoint.StartsWith(policy.Authority, StringComparison.Ordinal))
+                        //{
+                        //    return $"Endpoint not beneath authority: {endpoint}";
+                        //}
+                    }
+                }
+            }
+
+            return string.Empty;
+        }
     }
 }

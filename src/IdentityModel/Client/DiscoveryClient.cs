@@ -11,14 +11,15 @@ namespace IdentityModel.Client
 {
     public class DiscoveryClient
     {
-        public static async Task<DiscoveryResponse> GetAsync(string url)
+        public static async Task<DiscoveryResponse> GetAsync(string authority)
         {
-            var client = new DiscoveryClient(url);
+            var client = new DiscoveryClient(authority);
             return await client.GetAsync().ConfigureAwait(false);
         }
 
         private readonly HttpClient _client;
 
+        public string Authority { get; }
         public string Url { get; }
 
         public DiscoveryPolicy Policy { get; set; } = new DiscoveryPolicy();
@@ -31,24 +32,50 @@ namespace IdentityModel.Client
             }
         }
 
-        public DiscoveryClient(string url, HttpMessageHandler innerHandler = null)
+        public DiscoveryClient(string authority, HttpMessageHandler innerHandler = null)
         {
             var handler = innerHandler ?? new HttpClientHandler();
 
-            url = url.RemoveTrailingSlash();
-            if (!url.EndsWith(OidcConstants.Discovery.DiscoveryEndpoint, StringComparison.OrdinalIgnoreCase))
+            Uri uri;
+            var success = Uri.TryCreate(authority, UriKind.Absolute, out uri);
+            if (success == false)
             {
-                url = url.EnsureTrailingSlash();
-                url = url + OidcConstants.Discovery.DiscoveryEndpoint;
+                throw new InvalidOperationException("Malformed authority URL");
             }
 
-            Url = url;
+            if (!string.Equals(uri.Scheme, "http", StringComparison.OrdinalIgnoreCase) &&
+                !string.Equals(uri.Scheme, "https", StringComparison.OrdinalIgnoreCase))
+            {
+                throw new InvalidOperationException("Malformed authority URL");
+            }
+
+            var url = authority.RemoveTrailingSlash();
+            if (url.EndsWith(OidcConstants.Discovery.DiscoveryEndpoint, StringComparison.OrdinalIgnoreCase))
+            {
+                Url = url;
+                Authority = url.Substring(0, url.Length - OidcConstants.Discovery.DiscoveryEndpoint.Length - 1);
+            }
+            else
+            {
+                Authority = url;
+                Url = url.EnsureTrailingSlash() + OidcConstants.Discovery.DiscoveryEndpoint;
+            }
 
             _client = new HttpClient(handler);
         }
 
         public async Task<DiscoveryResponse> GetAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
+            Policy.Authority = Authority;
+
+            if (Policy.RequireHttps)
+            {
+                if (!Url.StartsWith("https://", StringComparison.OrdinalIgnoreCase))
+                {
+                    throw new InvalidOperationException($"Policy demands the usage of HTTPS: {Url}");
+                }
+            }
+
             try
             {
                 var response = await _client.GetAsync(Url, cancellationToken).ConfigureAwait(false);
@@ -58,7 +85,7 @@ namespace IdentityModel.Client
                     return new DiscoveryResponse(response.StatusCode, response.ReasonPhrase);
                 }
 
-                var disco = new DiscoveryResponse(await response.Content.ReadAsStringAsync().ConfigureAwait(false));
+                var disco = new DiscoveryResponse(await response.Content.ReadAsStringAsync().ConfigureAwait(false), Policy);
                 if (disco.IsError)
                 {
                     return disco;

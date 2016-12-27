@@ -5,6 +5,8 @@ namespace IdentityModel.Client
 {
     public class DiscoveryPolicy
     {
+        internal string Authority;
+
         public bool ValidateIssuerName { get; set; } = true;
         public bool ValidateEndpoints { get; set; } = true;
 
