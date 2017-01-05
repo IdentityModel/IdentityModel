@@ -43,6 +43,19 @@ namespace IdentityModel.UnitTests
             act.ShouldThrow<InvalidOperationException>().Where(e => e.Message.Equals($"Policy demands the usage of HTTPS: http://authority/.well-known/openid-configuration"));
         }
 
+        [Fact(Skip = "refine")]
+        public async Task authority_can_be_http_if_allowed()
+        {
+            var client = new DiscoveryClient("http://authority");
+            client.Policy.RequireHttps = false;
+            client.Policy.ValidateIssuerName = false;
+            client.Policy.ValidateEndpoints = false;
+
+            var disco = await client.GetAsync();
+
+            disco.IsError.Should().BeFalse();
+        }
+
         [Fact]
         public async Task issuer_must_match_authority()
         {
