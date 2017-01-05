@@ -11,17 +11,19 @@ namespace IdentityModel.UnitTests
 {
     public class DiscoveryPolicyTests
     {
-        NetworkHandler _successHandler;
-        
-        public DiscoveryPolicyTests()
+        private NetworkHandler GetHandler(string issuer, string endpointBase = null)
         {
-            var discoFileName = Path.Combine(PlatformServices.Default.Application.ApplicationBasePath, "documents", "discovery.json");
-            var document = File.ReadAllText(discoFileName);
+            if (endpointBase == null) endpointBase = issuer;
+
+            var discoFileName = Path.Combine(PlatformServices.Default.Application.ApplicationBasePath, "documents", "discovery_variable.json");
+            var raw = File.ReadAllText(discoFileName);
+
+            var document = raw.Replace("{issuer}", issuer).Replace("{endpointBase}", endpointBase);
 
             var jwksFileName = Path.Combine(PlatformServices.Default.Application.ApplicationBasePath, "documents", "discovery_jwks.json");
             var jwks = File.ReadAllText(jwksFileName);
 
-            _successHandler = new NetworkHandler(request =>
+            var handler = new NetworkHandler(request =>
             {
                 if (request.RequestUri.AbsoluteUri.EndsWith("jwks"))
                 {
@@ -30,10 +32,12 @@ namespace IdentityModel.UnitTests
 
                 return document;
             }, HttpStatusCode.OK);
+
+            return handler;
         }
 
         [Fact]
-        public void authority_must_be_https()
+        public void if_policy_requires_https_non_https_must_throw()
         {
             var client = new DiscoveryClient("http://authority");
             client.Policy.RequireHttps = true;
@@ -43,23 +47,46 @@ namespace IdentityModel.UnitTests
             act.ShouldThrow<InvalidOperationException>().Where(e => e.Message.Equals($"Policy demands the usage of HTTPS: http://authority/.well-known/openid-configuration"));
         }
 
-        [Fact(Skip = "refine")]
-        public async Task authority_can_be_http_if_allowed()
+        [Fact]
+        public void if_policy_allows_http_non_http_must_not_throw()
         {
             var client = new DiscoveryClient("http://authority");
             client.Policy.RequireHttps = false;
-            client.Policy.ValidateIssuerName = false;
-            client.Policy.ValidateEndpoints = false;
 
-            var disco = await client.GetAsync();
+            Func<Task> act = async () => { await client.GetAsync(); };
 
-            disco.IsError.Should().BeFalse();
+            act.ShouldNotThrow();
+        }
+
+        [Fact]
+        public void if_policy_requires_https_localhost_http_must_not_throw()
+        {
+            var client = new DiscoveryClient("http://localhost", GetHandler("http://localhost"));
+            client.Policy.RequireHttps = true;
+            client.Policy.AllowHttpOnLoopback = true;
+
+            Func<Task> act = async () => { await client.GetAsync(); };
+
+            act.ShouldNotThrow();
+        }
+
+        [Fact]
+        public void if_policy_requires_https_127_0_0_1_http_must_not_throw()
+        {
+            var client = new DiscoveryClient("http://127.0.0.1", GetHandler("http://127.0.0.1"));
+            client.Policy.RequireHttps = true;
+            client.Policy.AllowHttpOnLoopback = true;
+
+            Func<Task> act = async () => { await client.GetAsync(); };
+
+            act.ShouldNotThrow();
         }
 
         [Fact]
         public async Task issuer_must_match_authority()
         {
-            var client = new DiscoveryClient("https://differentissuer", _successHandler);
+            var handler = GetHandler("https://differentissuer");
+            var client = new DiscoveryClient("https://authority", handler);
             client.Policy.ValidateIssuerName = true;
 
             var disco = await client.GetAsync();
@@ -72,7 +99,9 @@ namespace IdentityModel.UnitTests
         [Fact]
         public async Task issuer_and_endpoint_can_be_unrelated_if_allowed()
         {
-            var client = new DiscoveryClient("https://someotherhost", _successHandler);
+            var handler = GetHandler("https://differentissuer");
+            var client = new DiscoveryClient("https://authority", handler);
+
             client.Policy.RequireHttps = true;
             client.Policy.ValidateIssuerName = false;
             client.Policy.ValidateEndpoints = false;

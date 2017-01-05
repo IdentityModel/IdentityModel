@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Brock Allen & Dominick Baier. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
 
+using IdentityModel.Internal;
 using IdentityModel.Jwk;
 using System;
 using System.Net.Http;
@@ -43,8 +44,7 @@ namespace IdentityModel.Client
                 throw new InvalidOperationException("Malformed authority URL");
             }
 
-            if (!string.Equals(uri.Scheme, "http", StringComparison.OrdinalIgnoreCase) &&
-                !string.Equals(uri.Scheme, "https", StringComparison.OrdinalIgnoreCase))
+            if (!DiscoveryUrlHelper.IsValidScheme(uri, Policy))
             {
                 throw new InvalidOperationException("Malformed authority URL");
             }
@@ -68,12 +68,9 @@ namespace IdentityModel.Client
         {
             Policy.Authority = Authority;
 
-            if (Policy.RequireHttps)
+            if (!DiscoveryUrlHelper.IsSecureScheme(new Uri(Url), Policy))
             {
-                if (!Url.StartsWith("https://", StringComparison.OrdinalIgnoreCase))
-                {
-                    throw new InvalidOperationException($"Policy demands the usage of HTTPS: {Url}");
-                }
+                throw new InvalidOperationException($"Policy demands the usage of HTTPS: {Url}");
             }
 
             try

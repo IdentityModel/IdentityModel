@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Net;
 using Newtonsoft.Json.Schema;
+using IdentityModel.Internal;
 
 namespace IdentityModel.Client
 {
@@ -139,12 +140,9 @@ namespace IdentityModel.Client
                         return $"Malformed endpoint: {endpoint}";
                     }
 
-                    if (policy.RequireHttps)
+                    if (!DiscoveryUrlHelper.IsSecureScheme(uri, policy))
                     {
-                        if (!string.Equals(uri.Scheme, "https", StringComparison.OrdinalIgnoreCase))
-                        {
-                            return $"Endpoint does not use HTTPS: {endpoint}";
-                        }
+                        return $"Endpoint does not use HTTPS: {endpoint}";
                     }
 
                     if (policy.ValidateEndpoints)
