@@ -44,7 +44,7 @@ namespace IdentityModel.Client
                 throw new InvalidOperationException("Malformed authority URL");
             }
 
-            if (!DiscoveryUrlHelper.IsValidScheme(uri, Policy))
+            if (!DiscoveryUrlHelper.IsValidScheme(uri))
             {
                 throw new InvalidOperationException("Malformed authority URL");
             }

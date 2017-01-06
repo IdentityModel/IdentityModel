@@ -8,7 +8,7 @@ namespace IdentityModel.Internal
 {
     internal static class DiscoveryUrlHelper
     {
-        public static bool IsValidScheme(Uri url, DiscoveryPolicy policy)
+        public static bool IsValidScheme(Uri url)
         {
             if (string.Equals(url.Scheme, "http", StringComparison.OrdinalIgnoreCase) ||
                 string.Equals(url.Scheme, "https", StringComparison.OrdinalIgnoreCase))
@@ -25,10 +25,14 @@ namespace IdentityModel.Internal
             {
                 if (policy.AllowHttpOnLoopback == true)
                 {
-                    if (string.Equals(url.DnsSafeHost, "localhost", StringComparison.OrdinalIgnoreCase) ||
-                        string.Equals(url.DnsSafeHost, "127.0.0.1", StringComparison.OrdinalIgnoreCase))
+                    var hostName = url.DnsSafeHost;
+
+                    foreach (var address in policy.LoopbackAddresses)
                     {
-                        return true;
+                        if (string.Equals(hostName, address, StringComparison.OrdinalIgnoreCase))
+                        {
+                            return true;
+                        }
                     }
                 }
 

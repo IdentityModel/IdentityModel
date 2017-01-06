@@ -140,6 +140,11 @@ namespace IdentityModel.Client
                         return $"Malformed endpoint: {endpoint}";
                     }
 
+                    if (!DiscoveryUrlHelper.IsValidScheme(uri))
+                    {
+                        return $"Malformed endpoint: {endpoint}";
+                    }
+
                     if (!DiscoveryUrlHelper.IsSecureScheme(uri, policy))
                     {
                         return $"Endpoint does not use HTTPS: {endpoint}";
@@ -152,10 +157,10 @@ namespace IdentityModel.Client
                             return $"Endpoint is on a different host than authority: {endpoint}";
                         }
 
-                        //if (!endpoint.StartsWith(policy.Authority, StringComparison.Ordinal))
-                        //{
-                        //    return $"Endpoint not beneath authority: {endpoint}";
-                        //}
+                        if (!endpoint.StartsWith(policy.Authority, StringComparison.Ordinal))
+                        {
+                            return $"Endpoint belongs to different authority: {endpoint}";
+                        }
                     }
                 }
             }
