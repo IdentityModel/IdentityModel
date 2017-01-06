@@ -71,7 +71,7 @@ namespace IdentityModel.Client
 
             if (!DiscoveryUrlHelper.IsSecureScheme(new Uri(Url), Policy))
             {
-                throw new InvalidOperationException($"Policy demands the usage of HTTPS: {Url}");
+                return new DiscoveryResponse(new InvalidOperationException("HTTPS required"), $"Error connecting to {Url}");
             }
 
             try

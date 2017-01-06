@@ -37,41 +37,45 @@ namespace IdentityModel.UnitTests
         }
 
         [Fact]
-        public void if_policy_requires_https_non_https_must_throw()
+        public async Task connecting_to_http_should_return_error()
         {
             var client = new DiscoveryClient("http://authority");
             client.Policy.RequireHttps = true;
             client.Policy.AllowHttpOnLoopback = true;
 
-            Func<Task> act = async () => { await client.GetAsync(); };
+            var disco = await client.GetAsync();
 
-            act.ShouldThrow<InvalidOperationException>().Where(e => e.Message.Equals($"Policy demands the usage of HTTPS: http://authority/.well-known/openid-configuration"));
+            disco.IsError.Should().BeTrue();
+            disco.Json.Should().BeNull();
+            disco.ErrorType.Should().Be(ResponseErrorType.Exception);
+            disco.Error.Should().StartWith("Error connecting to");
+            disco.Error.Should().EndWith("HTTPS required");
         }
 
         [Fact]
-        public void if_policy_allows_http_non_http_must_not_throw()
+        public async Task if_policy_allows_http_non_http_must_not_return_error()
         {
-            var client = new DiscoveryClient("http://authority");
+            var client = new DiscoveryClient("http://authority", GetHandler("http://authority"));
             client.Policy.RequireHttps = false;
 
-            Func<Task> act = async () => { await client.GetAsync(); };
+            var disco = await client.GetAsync();
 
-            act.ShouldNotThrow();
+            disco.IsError.Should().BeFalse();
         }
 
         [Theory]
         [InlineData("http://localhost")]
         [InlineData("http://LocalHost")]
         [InlineData("http://127.0.0.1")]
-        public void http_on_loopback_must_not_throw(string input)
+        public async Task http_on_loopback_must_not_return_error(string input)
         {
             var client = new DiscoveryClient(input, GetHandler(input));
             client.Policy.RequireHttps = true;
             client.Policy.AllowHttpOnLoopback = true;
 
-            Func<Task> act = async () => { await client.GetAsync(); };
+            var disco = await client.GetAsync();
 
-            act.ShouldNotThrow();
+            disco.IsError.Should().BeFalse();
         }
 
         
