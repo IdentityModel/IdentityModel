@@ -6,7 +6,6 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Net;
-using Newtonsoft.Json.Schema;
 using IdentityModel.Internal;
 
 namespace IdentityModel.Client
@@ -30,7 +29,6 @@ namespace IdentityModel.Client
 
             IsError = false;
             StatusCode = HttpStatusCode.OK;
-
             Raw = raw;
 
             try
