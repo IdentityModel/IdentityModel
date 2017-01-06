@@ -11,6 +11,7 @@ namespace IdentityModel.Client
 
         public bool ValidateIssuerName { get; set; } = true;
         public bool ValidateEndpoints { get; set; } = true;
+        public bool RequireKeySet { get; set; } = true;
 
         public bool RequireHttps { get; set; } = true;
         public bool AllowHttpOnLoopback { get; set; } = true;

@@ -67,6 +67,7 @@ namespace IdentityModel.Client
         public async Task<DiscoveryResponse> GetAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
             Policy.Authority = Authority;
+            string jwkUrl = "";
 
             if (!DiscoveryUrlHelper.IsSecureScheme(new Uri(Url), Policy))
             {
@@ -79,7 +80,7 @@ namespace IdentityModel.Client
 
                 if (!response.IsSuccessStatusCode)
                 {
-                    return new DiscoveryResponse(response.StatusCode, response.ReasonPhrase);
+                    return new DiscoveryResponse(response.StatusCode, $"Error connecting to {Url}: {response.ReasonPhrase}");
                 }
 
                 var disco = new DiscoveryResponse(await response.Content.ReadAsStringAsync().ConfigureAwait(false), Policy);
@@ -88,25 +89,33 @@ namespace IdentityModel.Client
                     return disco;
                 }
 
-                var jwkUrl = disco.JwksUri;
-                if (jwkUrl != null)
+                
+                try
                 {
-                    response = await _client.GetAsync(jwkUrl, cancellationToken).ConfigureAwait(false);
-
-                    if (!response.IsSuccessStatusCode)
+                    jwkUrl = disco.JwksUri;
+                    if (jwkUrl != null)
                     {
-                        return new DiscoveryResponse(response.StatusCode, response.ReasonPhrase);
+                        response = await _client.GetAsync(jwkUrl, cancellationToken).ConfigureAwait(false);
+
+                        if (!response.IsSuccessStatusCode)
+                        {
+                            return new DiscoveryResponse(response.StatusCode, $"Error connecting to {jwkUrl}: {response.ReasonPhrase}");
+                        }
+
+                        var jwk = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+                        disco.KeySet = new JsonWebKeySet(jwk);
                     }
 
-                    var jwk = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-                    disco.KeySet = new JsonWebKeySet(jwk);
+                    return disco;
                 }
-
-                return disco;
+                catch (Exception ex)
+                {
+                    return new DiscoveryResponse(ex, $"Error connecting to {jwkUrl}");
+                }
             }
             catch (Exception ex)
             {
-                return new DiscoveryResponse(ex);
+                return new DiscoveryResponse(ex, $"Error connecting to {Url}");
             }
         }
     }

@@ -67,7 +67,8 @@ namespace IdentityModel.UnitTests
 
             disco.IsError.Should().BeTrue();
             disco.ErrorType.Should().Be(ResponseErrorType.Http);
-            disco.Error.Should().Be("not found");
+            disco.Error.Should().StartWith("Error connecting to");
+            disco.Error.Should().EndWith("not found");
             disco.StatusCode.Should().Be(HttpStatusCode.NotFound);
         }
 
@@ -81,7 +82,8 @@ namespace IdentityModel.UnitTests
 
             disco.IsError.Should().BeTrue();
             disco.ErrorType.Should().Be(ResponseErrorType.Exception);
-            disco.Error.Should().Be("error");
+            disco.Error.Should().StartWith("Error connecting to");
+            disco.Error.Should().EndWith("error");
         }
 
         [Fact]

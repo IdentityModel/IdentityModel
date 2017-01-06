@@ -66,13 +66,13 @@ namespace IdentityModel.Client
             Error = reason;
         }
 
-        public DiscoveryResponse(Exception exception)
+        public DiscoveryResponse(Exception exception, string errorMessage)
         {
             IsError = true;
 
             ErrorType = ResponseErrorType.Exception;
             Exception = exception;
-            Error = exception.Message;
+            Error = $"{errorMessage}: {exception.Message}";
         }
 
         // strongly typed
@@ -162,6 +162,14 @@ namespace IdentityModel.Client
                             return $"Endpoint belongs to different authority: {endpoint}";
                         }
                     }
+                }
+            }
+
+            if (policy.RequireKeySet)
+            {
+                if (string.IsNullOrWhiteSpace(JwksUri))
+                {
+                    return "Keyset is missing";
                 }
             }
 
