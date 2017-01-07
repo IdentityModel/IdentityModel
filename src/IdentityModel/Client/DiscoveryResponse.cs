@@ -105,8 +105,10 @@ namespace IdentityModel.Client
         {
             if (policy.ValidateIssuerName)
             {
+                if (string.IsNullOrWhiteSpace(Issuer)) return "Issuer name is missing";
+
                 var isValid = ValidateIssuerName(Issuer.RemoveTrailingSlash(), policy.Authority.RemoveTrailingSlash());
-                if (!isValid) return "Issuer name does not match authority";
+                if (!isValid) return "Issuer name does not match authority: " + Issuer;
             }
 
             var error = ValidateEndoints(Json, policy);
