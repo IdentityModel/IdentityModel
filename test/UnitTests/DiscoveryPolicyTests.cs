@@ -121,7 +121,7 @@ namespace IdentityModel.UnitTests
             disco.IsError.Should().BeTrue();
             disco.Json.Should().BeNull();
             disco.ErrorType.Should().Be(ResponseErrorType.PolicyViolation);
-            disco.Error.Should().Be("Issuer name does not match authority");
+            disco.Error.Should().StartWith("Issuer name does not match authority");
         }
 
         [Fact]
