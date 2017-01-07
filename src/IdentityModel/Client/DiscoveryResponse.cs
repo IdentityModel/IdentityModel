@@ -150,7 +150,7 @@ namespace IdentityModel.Client
 
                     if (policy.ValidateEndpoints)
                     {
-                        if (!string.Equals(authorityHost, uri.Host))
+                        if (!string.Equals(authorityHost, uri.Authority))
                         {
                             return $"Endpoint is on a different host than authority: {endpoint}";
                         }

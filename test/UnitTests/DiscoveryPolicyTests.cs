@@ -36,6 +36,31 @@ namespace IdentityModel.UnitTests
             return handler;
         }
 
+        [Theory]
+        [InlineData("http://localhost")]
+        [InlineData("http://LocalHost")]
+        [InlineData("http://127.0.0.1")]
+        [InlineData("http://localhost")]
+        [InlineData("http://LocalHost")]
+        [InlineData("http://127.0.0.1")]
+        [InlineData("http://localhost:5000")]
+        [InlineData("http://LocalHost:5000")]
+        [InlineData("http://127.0.0.1:5000")]
+        [InlineData("https://authority")]
+        [InlineData("https://authority:5000")]
+        [InlineData("https://authority/sub")]
+        [InlineData("https://authority:5000/sub")]
+        public async Task success_with_default_policy(string input)
+        {
+            var client = new DiscoveryClient(input, GetHandler(input));
+            client.Policy.RequireHttps = true;
+            client.Policy.AllowHttpOnLoopback = true;
+
+            var disco = await client.GetAsync();
+
+            disco.IsError.Should().BeFalse();
+        }
+
         [Fact]
         public async Task connecting_to_http_should_return_error()
         {
