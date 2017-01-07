@@ -50,6 +50,11 @@ namespace IdentityModel.UnitTests
         [InlineData("https://authority:5000")]
         [InlineData("https://authority/sub")]
         [InlineData("https://authority:5000/sub")]
+        [InlineData("https://demo.identityserver.io")]
+        [InlineData("https://sub.demo.identityserver.io")]
+        [InlineData("https://demo.identityserver.io/sub")]
+        [InlineData("https://demo.identityserver.io:5000/sub")]
+        [InlineData("https://sub.demo.identityserver.io:5000/sub")]
         public async Task success_with_default_policy(string input)
         {
             var client = new DiscoveryClient(input, GetHandler(input));
