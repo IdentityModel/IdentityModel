@@ -1,5 +1,5 @@
 {
-  "version": "2.2.2-*",
+  "version": "2.3.0-*",
   "authors": [ "Dominick Baier", "Brock Allen" ],
   "description": "OpenID Connect & OAuth 2.0 client library",
 

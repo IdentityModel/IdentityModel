@@ -9,16 +9,31 @@ namespace IdentityModel
 {
     public class ClaimComparer : IEqualityComparer<Claim>
     {
+        private readonly bool _valueAndTypeOnly;
+
+        public ClaimComparer(bool compareValueAndTypeOnly = false)
+        {
+            _valueAndTypeOnly = compareValueAndTypeOnly;
+        }
+
         public bool Equals(Claim x, Claim y)
         {
             if (x == null && y == null) return true;
             if (x == null && y != null) return false;
             if (x != null && y == null) return false;
 
-            return (x.Type == y.Type &&
-                    x.Value == y.Value && 
-                    x.Issuer == y.Issuer && 
-                    x.ValueType == y.ValueType);
+            if (_valueAndTypeOnly)
+            {
+                return (x.Type == y.Type &&
+                        x.Value == y.Value);
+            }
+            else
+            {
+                return (x.Type == y.Type &&
+                        x.Value == y.Value &&
+                        x.Issuer == y.Issuer &&
+                        x.ValueType == y.ValueType);
+            }
         }
 
         public int GetHashCode(Claim claim)
