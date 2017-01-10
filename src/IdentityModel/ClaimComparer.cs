@@ -11,7 +11,12 @@ namespace IdentityModel
     {
         private readonly bool _valueAndTypeOnly;
 
-        public ClaimComparer(bool compareValueAndTypeOnly = false)
+        public ClaimComparer()
+        {
+            _valueAndTypeOnly = false;
+        }
+
+        public ClaimComparer(bool compareValueAndTypeOnly)
         {
             _valueAndTypeOnly = compareValueAndTypeOnly;
         }
