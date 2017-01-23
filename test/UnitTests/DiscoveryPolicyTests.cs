@@ -152,7 +152,7 @@ namespace IdentityModel.UnitTests
                 Policy =
                 {
                     ValidateEndpoints = true,
-                    EndpointValidationExludeList =
+                    EndpointValidationExcludeList =
                     {
                         "jwks_uri",
                         "authorization_endpoint",

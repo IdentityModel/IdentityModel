@@ -155,7 +155,7 @@ namespace IdentityModel.Client
                     if (policy.ValidateEndpoints)
                     {
                         // if endpoint is on exclude list, don't validate
-                        if (policy.EndpointValidationExludeList.Contains(element.Key)) continue;
+                        if (policy.EndpointValidationExcludeList.Contains(element.Key)) continue;
 
                         if (!string.Equals(authorityHost, uri.Authority))
                         {

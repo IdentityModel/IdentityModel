@@ -37,7 +37,7 @@ namespace IdentityModel.Client
         /// <summary>
         /// Specifies a list of endpoints that should be excluded from validation
         /// </summary>
-        public ICollection<string> EndpointValidationExludeList { get; set; } = new HashSet<string>();
+        public ICollection<string> EndpointValidationExcludeList { get; set; } = new HashSet<string>();
 
         /// <summary>
         /// Specifies if a key set is required. Defaults to true.
