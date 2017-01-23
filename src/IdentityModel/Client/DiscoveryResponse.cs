@@ -6,6 +6,7 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Net;
+using System.Security.Cryptography.X509Certificates;
 using IdentityModel.Internal;
 
 namespace IdentityModel.Client
@@ -129,7 +130,8 @@ namespace IdentityModel.Client
             foreach (var element in json)
             {
                 if (element.Key.EndsWith("Endpoint", StringComparison.OrdinalIgnoreCase) ||
-                    element.Key.Equals(OidcConstants.Discovery.JwksUri, StringComparison.OrdinalIgnoreCase))
+                    element.Key.Equals(OidcConstants.Discovery.JwksUri, StringComparison.OrdinalIgnoreCase) ||
+                    element.Key.Equals(OidcConstants.Discovery.CheckSessionIframe, StringComparison.OrdinalIgnoreCase))
                 {
                     var endpoint = element.Value.ToString();
                     Uri uri;
@@ -152,6 +154,9 @@ namespace IdentityModel.Client
 
                     if (policy.ValidateEndpoints)
                     {
+                        // if endpoint is on exclude list, don't validate
+                        if (policy.EndpointValidationExludeList.Contains(element.Key)) continue;
+
                         if (!string.Equals(authorityHost, uri.Authority))
                         {
                             return $"Endpoint is on a different host than authority: {endpoint}";

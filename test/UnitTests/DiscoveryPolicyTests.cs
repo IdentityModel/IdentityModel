@@ -144,6 +144,34 @@ namespace IdentityModel.UnitTests
         }
 
         [Fact]
+        public async Task excluded_endpoints_should_not_fail_validation()
+        {
+            var handler = GetHandler("https://authority", "https://otherserver");
+            var client = new DiscoveryClient("https://authority", handler)
+            {
+                Policy =
+                {
+                    ValidateEndpoints = true,
+                    EndpointValidationExludeList =
+                    {
+                        "jwks_uri",
+                        "authorization_endpoint",
+                        "token_endpoint",
+                        "userinfo_endpoint",
+                        "end_session_endpoint",
+                        "check_session_iframe",
+                        "revocation_endpoint",
+                        "introspection_endpoint",
+                    }
+                }
+            };
+
+            var disco = await client.GetAsync();
+
+            disco.IsError.Should().BeFalse();
+        }
+
+        [Fact]
         public async Task valid_issuer_name_must_return_no_error()
         {
             var handler = GetHandler("https://authority");
