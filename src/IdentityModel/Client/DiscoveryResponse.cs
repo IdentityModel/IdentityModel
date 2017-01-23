@@ -129,7 +129,7 @@ namespace IdentityModel.Client
 
             foreach (var element in json)
             {
-                if (element.Key.EndsWith("Endpoint", StringComparison.OrdinalIgnoreCase) ||
+                if (element.Key.EndsWith("endpoint", StringComparison.OrdinalIgnoreCase) ||
                     element.Key.Equals(OidcConstants.Discovery.JwksUri, StringComparison.OrdinalIgnoreCase) ||
                     element.Key.Equals(OidcConstants.Discovery.CheckSessionIframe, StringComparison.OrdinalIgnoreCase))
                 {
