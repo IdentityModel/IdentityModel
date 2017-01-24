@@ -45,6 +45,22 @@ namespace IdentityModel.Client
             return null;
         }
 
+        public static int? TryGetInt(this JObject json, string name)
+        {
+            var value = json.TryGetString(name);
+
+            if (value != null)
+            {
+                int intValue = 0;
+                if (int.TryParse(value, out intValue))
+                {
+                    return intValue;
+                }
+            }
+
+            return null;
+        }
+
         public static string TryGetString(this JObject json, string name)
         {
             JToken value = json.TryGetValue(name);
