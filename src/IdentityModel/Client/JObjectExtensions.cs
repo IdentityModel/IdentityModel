@@ -51,7 +51,7 @@ namespace IdentityModel.Client
 
             if (value != null)
             {
-                int intValue = 0;
+                int intValue;
                 if (int.TryParse(value, out intValue))
                 {
                     return intValue;
@@ -64,7 +64,7 @@ namespace IdentityModel.Client
         public static string TryGetString(this JObject json, string name)
         {
             JToken value = json.TryGetValue(name);
-            return value?.ToString() ?? null;
+            return value?.ToString();
         }
 
         public static bool? TryGetBoolean(this JObject json, string name)

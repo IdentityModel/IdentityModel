@@ -12,13 +12,13 @@ namespace IdentityModel
     /// </summary>
     public class CryptoRandom : Random
     {
-        private static readonly RandomNumberGenerator _rng = RandomNumberGenerator.Create();
+        private static readonly RandomNumberGenerator Rng = RandomNumberGenerator.Create();
         private readonly byte[] _uint32Buffer = new byte[4];
 
         public static byte[] CreateRandomKey(int length)
         {
             var bytes = new byte[length];
-            _rng.GetBytes(bytes);
+            Rng.GetBytes(bytes);
 
             return bytes;
         }
@@ -26,7 +26,7 @@ namespace IdentityModel
         public static string CreateRandomKeyString(int length)
         {
             var bytes = new byte[length];
-            _rng.GetBytes(bytes);
+            Rng.GetBytes(bytes);
 
             return Convert.ToBase64String(bytes);
         }
@@ -34,7 +34,7 @@ namespace IdentityModel
         public static string CreateUniqueId(int length = 32)
         {
             var bytes = new byte[length];
-            _rng.GetBytes(bytes);
+            Rng.GetBytes(bytes);
 
             return ByteArrayToString(bytes);
         }
@@ -69,7 +69,7 @@ namespace IdentityModel
         /// </returns>
         public override Int32 Next()
         {
-            _rng.GetBytes(_uint32Buffer);
+            Rng.GetBytes(_uint32Buffer);
             return BitConverter.ToInt32(_uint32Buffer, 0) & 0x7FFFFFFF;
         }
 
@@ -108,7 +108,7 @@ namespace IdentityModel
 
             while (true)
             {
-                _rng.GetBytes(_uint32Buffer);
+                Rng.GetBytes(_uint32Buffer);
                 UInt32 rand = BitConverter.ToUInt32(_uint32Buffer, 0);
 
                 Int64 max = (1 + (Int64)UInt32.MaxValue);
@@ -128,7 +128,7 @@ namespace IdentityModel
         /// </returns>
         public override double NextDouble()
         {
-            _rng.GetBytes(_uint32Buffer);
+            Rng.GetBytes(_uint32Buffer);
             UInt32 rand = BitConverter.ToUInt32(_uint32Buffer, 0);
             return rand / (1.0 + UInt32.MaxValue);
         }
@@ -143,7 +143,7 @@ namespace IdentityModel
         public override void NextBytes(byte[] buffer)
         {
             if (buffer == null) throw new ArgumentNullException(nameof(buffer));
-            _rng.GetBytes(buffer);
+            Rng.GetBytes(buffer);
         }
     }
 }

@@ -14,7 +14,7 @@ namespace IdentityModel.Client
     public class TokenRevocationClient
     {
         protected HttpClient Client;
-        private string _clientId;
+        private readonly string _clientId;
 
         public AuthenticationStyle AuthenticationStyle { get; set; }
         public string ClientId { get; set; }
@@ -83,7 +83,7 @@ namespace IdentityModel.Client
 
             try
             {
-                var response = await Client.PostAsync("", new FormUrlEncodedContent(form)).ConfigureAwait(false);
+                var response = await Client.PostAsync("", new FormUrlEncodedContent(form), cancellationToken).ConfigureAwait(false);
 
                 if (response.StatusCode == HttpStatusCode.OK)
                 {

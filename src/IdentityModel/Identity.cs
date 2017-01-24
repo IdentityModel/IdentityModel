@@ -14,9 +14,9 @@ namespace IdentityModel
             get
             {
                 var claims = new List<Claim>
-                    {
-                        new Claim(ClaimTypes.Name, "")
-                    };
+                {
+                    new Claim(ClaimTypes.Name, "")
+                };
 
                 return new ClaimsIdentity(claims);
             }
@@ -37,7 +37,7 @@ namespace IdentityModel
             var thumbprint = certificate.Thumbprint;
             claims.Add(new Claim(ClaimTypes.Thumbprint, thumbprint, ClaimValueTypes.Base64Binary, issuer));
 
-            string name = certificate.SubjectName.Name;
+            var name = certificate.SubjectName.Name;
             if (!string.IsNullOrEmpty(name))
             {
                 claims.Add(new Claim(ClaimTypes.X500DistinguishedName, name, ClaimValueTypes.String, issuer));

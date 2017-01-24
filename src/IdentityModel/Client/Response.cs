@@ -9,7 +9,7 @@ namespace IdentityModel.Client
 {
     public abstract class Response
     {
-        public Response(string raw)
+        protected Response(string raw)
         {
             Raw = raw;
 
@@ -36,13 +36,13 @@ namespace IdentityModel.Client
             }
         }
 
-        public Response(Exception exception)
+        protected Response(Exception exception)
         {
             Exception = exception;
             ErrorType = ResponseErrorType.Exception;
         }
 
-        public Response(HttpStatusCode statusCode, string reason)
+        protected Response(HttpStatusCode statusCode, string reason)
         {
             ErrorType = ResponseErrorType.Http;
             HttpStatusCode = statusCode;

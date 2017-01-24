@@ -8,13 +8,7 @@ namespace IdentityModel
 {
     public static class Principal
     {
-        public static ClaimsPrincipal Anonymous
-        {
-            get
-            {
-                return new ClaimsPrincipal(Identity.Anonymous);
-            }
-        }
+        public static ClaimsPrincipal Anonymous => new ClaimsPrincipal(Identity.Anonymous);
 
         public static ClaimsPrincipal Create(string authenticationType, params Claim[] claims)
         {

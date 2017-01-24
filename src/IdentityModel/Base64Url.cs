@@ -9,7 +9,7 @@ namespace IdentityModel
     {
         public static string Encode(byte[] arg)
         {
-            string s = Convert.ToBase64String(arg); // Standard base64 encoder
+            var s = Convert.ToBase64String(arg); // Standard base64 encoder
             
             s = s.Split('=')[0]; // Remove any trailing '='s
             s = s.Replace('+', '-'); // 62nd char of encoding
@@ -20,7 +20,7 @@ namespace IdentityModel
 
         public static byte[] Decode(string arg)
         {
-            string s = arg;
+            var s = arg;
             s = s.Replace('-', '+'); // 62nd char of encoding
             s = s.Replace('_', '/'); // 63rd char of encoding
             
