@@ -145,10 +145,11 @@ namespace IdentityModel
             public const string PolicyUri                                   = "policy_uri";
             public const string TosUri                                      = "tos_uri";
             public const string JwksUri                                     = "jwks_uri";
+            public const string Jwks                                        = "jwks";
             public const string SectorIdentifierUri                         = "sector_identifier_uri";
             public const string SubjectType                                 = "subject_type";
             public const string TokenEndpointAuthenticationMethod           = "token_endpoint_auth_method";
-            public const string tokenEndpointAuthenticationSigningAlgorithm = "token_endpoint_auth_signing_alg";
+            public const string TokenEndpointAuthenticationSigningAlgorithm = "token_endpoint_auth_signing_alg";
             public const string DefaultMaxAge                               = "default_max_age";
             public const string RequireAuthenticationTime                   = "require_auth_time";
             public const string DefaultAcrValues                            = "default_acr_values";

@@ -1,41 +1,102 @@
 ﻿// Copyright (c) Brock Allen & Dominick Baier. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
 
+using IdentityModel.Jwk;
+using Newtonsoft.Json;
 using System.Collections.Generic;
 
 namespace IdentityModel.Client
 {
     public class RegistrationRequest
     {
-        public ICollection<string> redirect_uris { get; set; } = new HashSet<string>();
-        public ICollection<string> response_types { get; set; } = new HashSet<string>();
-        public ICollection<string> grant_types { get; set; } = new HashSet<string>();
-        public string application_type { get; set; }
-        public ICollection<string> contacts { get; set; } = new HashSet<string>();
-        public string client_name { get; set; }
-        public string logo_uri { get; set; }
-        public string client_uri { get; set; }
-        public string policy_uri { get; set; }
-        public string tos_uri { get; set; }
-        public string jwks_uri { get; set; }
-        public string jwks { get; set; } // correct type?
-        public string sector_identifier_uri { get; set; }
-        public string subject_type { get; set; } // pairwise or public
-        public string id_token_signed_response_alg { get; set; }
-        public string id_token_encrypted_response_alg { get; set; }
-        public string id_token_encrypted_response_enc { get; set; }
-        public string userinfo_signed_response_alg { get; set; }
-        public string userinfo_encrypted_response_alg { get; set; }
-        public string userinfo_encrypted_response_enc { get; set; }
-        public string request_object_signing_alg { get; set; }
-        public string request_object_encryption_alg { get; set; }
-        public string request_object_encryption_enc { get; set; }
-        public string token_endpoint_auth_method { get; set; }
-        public string token_endpoint_auth_signing_alg { get; set; }
-        public int default_max_age { get; set; }
-        public bool require_auth_time { get; set; }
-        public ICollection<string> default_acr_values { get; set; } = new HashSet<string>();
-        public string initiate_login_uri { get; set; }
-        public ICollection<string> request_uris { get; set; } = new HashSet<string>();
+        [JsonProperty(PropertyName = OidcConstants.ClientMetadata.RedirectUris, DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore, Required = Required.Default)]
+        public ICollection<string> RedirectUris { get; set; } = new HashSet<string>();
+
+        [JsonProperty(PropertyName = OidcConstants.ClientMetadata.ResponseTypes, DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore, Required = Required.Default)]
+        public ICollection<string> ResponseTypes { get; set; } = new HashSet<string>();
+
+        [JsonProperty(PropertyName = OidcConstants.ClientMetadata.GrantTypes, DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore, Required = Required.Default)]
+        public ICollection<string> GrantTypes { get; set; } = new HashSet<string>();
+
+        [JsonProperty(PropertyName = OidcConstants.ClientMetadata.ApplicationType, DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore, Required = Required.Default)]
+        public string ApplicationType { get; set; }
+
+        [JsonProperty(PropertyName = OidcConstants.ClientMetadata.Contacts, DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore, Required = Required.Default)]
+        public ICollection<string> Contacts { get; set; } = new HashSet<string>();
+
+        [JsonProperty(PropertyName = OidcConstants.ClientMetadata.ClientName, DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore, Required = Required.Default)]
+        public string ClientName { get; set; }
+
+        [JsonProperty(PropertyName = OidcConstants.ClientMetadata.LogoUri, DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore, Required = Required.Default)]
+        public string LogoUri { get; set; }
+
+        [JsonProperty(PropertyName = OidcConstants.ClientMetadata.ClientUri, DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore, Required = Required.Default)]
+        public string ClientUri { get; set; }
+
+        [JsonProperty(PropertyName = OidcConstants.ClientMetadata.PolicyUri, DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore, Required = Required.Default)]
+        public string PolicyUri { get; set; }
+
+        [JsonProperty(PropertyName = OidcConstants.ClientMetadata.TosUri, DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore, Required = Required.Default)]
+        public string TosUri { get; set; }
+
+        [JsonProperty(PropertyName = OidcConstants.ClientMetadata.JwksUri, DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore, Required = Required.Default)]
+        public string JwksUri { get; set; }
+
+        [JsonProperty(PropertyName = OidcConstants.ClientMetadata.Jwks, DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore, Required = Required.Default)]
+        public JsonWebKeySet Jwks { get; set; }
+
+        [JsonProperty(PropertyName = OidcConstants.ClientMetadata.SectorIdentifierUri, DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore, Required = Required.Default)]
+        public string SectorIdentifierUri { get; set; }
+
+        [JsonProperty(PropertyName = OidcConstants.ClientMetadata.SubjectType, DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore, Required = Required.Default)]
+        public string SubjectType { get; set; }
+
+        [JsonProperty(PropertyName = OidcConstants.ClientMetadata.IdentityTokenSignedResponseAlgorithm, DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore, Required = Required.Default)]
+        public string IdentityTokenSignedResponseAlgorithm { get; set; }
+
+        [JsonProperty(PropertyName = OidcConstants.ClientMetadata.IdentityTokenEncryptedResponseAlgorithm, DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore, Required = Required.Default)]
+        public string IdentityTokenEncryptedResponseAlgorithm { get; set; }
+
+        [JsonProperty(PropertyName = OidcConstants.ClientMetadata.IdentityTokenEncryptedResponseEncryption, DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore, Required = Required.Default)]
+        public string IdentityTokenEncryptedResponseEncryption { get; set; }
+
+        [JsonProperty(PropertyName = OidcConstants.ClientMetadata.UserinfoSignedResponseAlgorithm, DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore, Required = Required.Default)]
+        public string UserinfoSignedResponseAlgorithm { get; set; }
+
+        [JsonProperty(PropertyName = OidcConstants.ClientMetadata.UserInfoEncryptedResponseAlgorithm, DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore, Required = Required.Default)]
+        public string UserInfoEncryptedResponseAlgorithm { get; set; }
+
+        [JsonProperty(PropertyName = OidcConstants.ClientMetadata.UserinfoEncryptedResponseEncryption, DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore, Required = Required.Default)]
+        public string UserinfoEncryptedResponseEncryption { get; set; }
+
+        [JsonProperty(PropertyName = OidcConstants.ClientMetadata.RequestObjectSigningAlgorithm, DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore, Required = Required.Default)]
+        public string RequestObjectSigningAlgorithm { get; set; }
+
+        [JsonProperty(PropertyName = OidcConstants.ClientMetadata.RequestObjectEncryptionAlgorithm, DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore, Required = Required.Default)]
+        public string RequestObjectEncryptionAlgorithm { get; set; }
+
+        [JsonProperty(PropertyName = OidcConstants.ClientMetadata.RequestObjectEncryptionEncryption, DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore, Required = Required.Default)]
+        public string RequestObjectEncryptionEncryption { get; set; }
+
+        [JsonProperty(PropertyName = OidcConstants.ClientMetadata.TokenEndpointAuthenticationMethod, DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore, Required = Required.Default)]
+        public string TokenEndpointAuthenticationMethod { get; set; }
+
+        [JsonProperty(PropertyName = OidcConstants.ClientMetadata.TokenEndpointAuthenticationSigningAlgorithm, DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore, Required = Required.Default)]
+        public string TokenEndpointAuthenticationSigningAlgorithm { get; set; }
+
+        [JsonProperty(PropertyName = OidcConstants.ClientMetadata.DefaultMaxAge, DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore, Required = Required.Default)]
+        public int DefaultMaxAge { get; set; }
+
+        [JsonProperty(PropertyName = OidcConstants.ClientMetadata.RequireAuthenticationTime, DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore, Required = Required.Default)]
+        public bool RequireAuthenticationTime { get; set; }
+
+        [JsonProperty(PropertyName = OidcConstants.ClientMetadata.DefaultAcrValues, DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore, Required = Required.Default)]
+        public ICollection<string> DefaultAcrValues { get; set; } = new HashSet<string>();
+
+        [JsonProperty(PropertyName = OidcConstants.ClientMetadata.InitiateLoginUris, DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore, Required = Required.Default)]
+        public string InitiateLoginUris { get; set; }
+
+        [JsonProperty(PropertyName = OidcConstants.ClientMetadata.RequestUris, DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore, Required = Required.Default)]
+        public ICollection<string> RequestUris { get; set; } = new HashSet<string>();
     }
 }
