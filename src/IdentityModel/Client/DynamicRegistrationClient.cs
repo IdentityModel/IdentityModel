@@ -49,8 +49,10 @@ namespace IdentityModel.Client
         {
             HttpResponseMessage response;
 
-            var requestMessage = new HttpRequestMessage(HttpMethod.Post, Address);
-            requestMessage.Content = new StringContent(JsonConvert.SerializeObject(request), Encoding.UTF8, "application/json");
+            var requestMessage = new HttpRequestMessage(HttpMethod.Post, Address)
+            {
+                Content = new StringContent(JsonConvert.SerializeObject(request), Encoding.UTF8, "application/json")
+            };
 
             if (!string.IsNullOrEmpty(token))
             {
@@ -69,7 +71,6 @@ namespace IdentityModel.Client
             if (response.StatusCode == HttpStatusCode.Created || response.StatusCode == HttpStatusCode.BadRequest)
             {
                 var content = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-
                 return new RegistrationResponse(content);
             }
             else
