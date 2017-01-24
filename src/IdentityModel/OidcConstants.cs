@@ -122,6 +122,8 @@ namespace IdentityModel
 
         public static class RegistrationResponse
         {
+            public const string Error                   = "error";
+            public const string ErrorDescription        = "error_description";
             public const string ClientId                = "client_id";
             public const string ClientSecret            = "client_secret";
             public const string RegistrationAccessToken = "registration_access_token";
