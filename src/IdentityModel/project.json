@@ -21,16 +21,16 @@
   "frameworks": {
     "netstandard1.3": {
       "dependencies": {
-        "System.Net.Http": "4.1.0",
-        "System.Security.Claims": "4.0.1",
-        "System.Security.Cryptography.Algorithms": "4.2.0",
-        "System.Security.Cryptography.X509Certificates": "4.1.0"
+        "System.Net.Http": "4.3.0",
+        "System.Security.Claims": "4.3.0",
+        "System.Security.Cryptography.Algorithms": "4.3.0",
+        "System.Security.Cryptography.X509Certificates": "4.3.0"
       }
     },
 
     "net45": {
-      "frameworkAssemblies": {
-        "System.Net.Http": ""
+      "dependencies": {
+        "System.Net.Http": "4.0.0"
       }
     }
   }
