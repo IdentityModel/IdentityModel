@@ -4,6 +4,7 @@
 using IdentityModel.Jwk;
 using Newtonsoft.Json;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace IdentityModel.Client
 {
@@ -94,9 +95,35 @@ namespace IdentityModel.Client
         public ICollection<string> DefaultAcrValues { get; set; } = new HashSet<string>();
 
         [JsonProperty(PropertyName = OidcConstants.ClientMetadata.InitiateLoginUris, DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore, Required = Required.Default)]
-        public string InitiateLoginUris { get; set; }
+        public string InitiateLoginUri { get; set; }
 
         [JsonProperty(PropertyName = OidcConstants.ClientMetadata.RequestUris, DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore, Required = Required.Default)]
         public ICollection<string> RequestUris { get; set; } = new HashSet<string>();
+
+        // don't serialize empty arrays
+        public bool ShouldSerializeRequestUris()
+        {
+            return RequestUris.Any();
+        }
+
+        public bool ShouldSerializeDefaultAcrValues()
+        {
+            return DefaultAcrValues.Any();
+        }
+
+        public bool ShouldSerializeResponseTypes()
+        {
+            return ResponseTypes.Any();
+        }
+
+        public bool ShouldSerializeGrantTypes()
+        {
+            return GrantTypes.Any();
+        }
+
+        public bool ShouldSerializeContacts()
+        {
+            return Contacts.Any();
+        }
     }
 }
