@@ -11,14 +11,17 @@ namespace IdentityModel.UnitTests
 {
     public class DiscoveryPolicyTests
     {
-        private NetworkHandler GetHandler(string issuer, string endpointBase = null)
+        private NetworkHandler GetHandler(string issuer, string endpointBase = null, string alternateEndpointBase = null)
         {
             if (endpointBase == null) endpointBase = issuer;
+            if (alternateEndpointBase == null) alternateEndpointBase = issuer;
 
             var discoFileName = Path.Combine(PlatformServices.Default.Application.ApplicationBasePath, "documents", "discovery_variable.json");
             var raw = File.ReadAllText(discoFileName);
 
-            var document = raw.Replace("{issuer}", issuer).Replace("{endpointBase}", endpointBase);
+            var document = raw.Replace("{issuer}", issuer)
+                              .Replace("{endpointBase}", endpointBase)
+                              .Replace("{alternateEndpointBase}", alternateEndpointBase);
 
             var jwksFileName = Path.Combine(PlatformServices.Default.Application.ApplicationBasePath, "documents", "discovery_jwks.json");
             var jwks = File.ReadAllText(jwksFileName);
@@ -232,6 +235,32 @@ namespace IdentityModel.UnitTests
         }
 
         [Theory]
+        [InlineData("https://authority/sub", "https://authority")]
+        [InlineData("https://authority/sub1", "https://authority/sub2")]
+        public async Task endpoints_not_beneath_authority_must_be_allowed_if_whitelisted(string authority, string endpointBase)
+        {
+            var handler = GetHandler(authority, endpointBase);
+            var client = new DiscoveryClient(authority, handler)
+            {
+                Policy =
+                {
+                    RequireHttps = true,
+                    ValidateIssuerName = true,
+                    ValidateEndpoints = true,
+
+                    AdditionalEndpointBaseAddresses =
+                    {
+                        endpointBase
+                    }
+                }
+            };
+
+            var disco = await client.GetAsync();
+
+            disco.IsError.Should().BeFalse();
+        }
+
+        [Theory]
         [InlineData("https://authority", "https://differentauthority")]
         [InlineData("https://authority/sub", "https://differentauthority")]
         [InlineData("https://127.0.0.1", "https://differentauthority")]
@@ -256,6 +285,35 @@ namespace IdentityModel.UnitTests
             disco.Json.Should().BeNull();
             disco.ErrorType.Should().Be(ResponseErrorType.PolicyViolation);
             disco.Error.Should().StartWith("Endpoint is on a different host than authority");
+        }
+
+        [Theory]
+        [InlineData("https://authority", "https://differentauthority")]
+        [InlineData("https://authority/sub", "https://differentauthority")]
+        [InlineData("https://127.0.0.1", "https://differentauthority")]
+        [InlineData("https://127.0.0.1", "https://127.0.0.2")]
+        [InlineData("https://127.0.0.1", "https://localhost")]
+        public async Task endpoints_not_belonging_to_authority_host_must_be_allowed_if_whitelisted(string authority, string endpointBase)
+        {
+            var handler = GetHandler(authority, endpointBase);
+            var client = new DiscoveryClient(authority, handler)
+            {
+                Policy =
+                {
+                    RequireHttps = true,
+                    ValidateIssuerName = true,
+                    ValidateEndpoints = true,
+
+                    AdditionalEndpointBaseAddresses =
+                    {
+                        endpointBase
+                    }
+                }
+            };
+
+            var disco = await client.GetAsync();
+
+            disco.IsError.Should().BeFalse();
         }
 
         [Fact]

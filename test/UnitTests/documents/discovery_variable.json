@@ -6,7 +6,7 @@
   "userinfo_endpoint": "{endpointBase}/connect/userinfo",
   "end_session_endpoint": "{endpointBase}/connect/endsession",
   "check_session_iframe": "{endpointBase}/connect/checksession",
-  "revocation_endpoint": "{endpointBase}/connect/revocation",
+  "revocation_endpoint": "{alternateEndpointBase}/connect/revocation",
   "introspection_endpoint": "{endpointBase}/connect/introspect",
   "frontchannel_logout_supported": true,
   "frontchannel_logout_session_supported": true,

@@ -7,6 +7,7 @@ using System;
 using System.Collections.Generic;
 using System.Net;
 using IdentityModel.Internal;
+using System.Linq;
 
 namespace IdentityModel.Client
 {
@@ -124,7 +125,13 @@ namespace IdentityModel.Client
 
         public string ValidateEndoints(JObject json, DiscoveryPolicy policy)
         {
-            var authorityHost = new Uri(policy.Authority).Authority;
+            // allowed hosts
+            var allowedHosts = new HashSet<string>(policy.AdditionalEndpointBaseAddresses.Select(e => new Uri(e).Authority));
+            allowedHosts.Add(new Uri(policy.Authority).Authority);
+
+            // allowed authorities (hosts + base address)
+            var allowedAuthorities = new HashSet<string>(policy.AdditionalEndpointBaseAddresses);
+            allowedAuthorities.Add(policy.Authority);
 
             foreach (var element in json)
             {
@@ -156,12 +163,31 @@ namespace IdentityModel.Client
                         // if endpoint is on exclude list, don't validate
                         if (policy.EndpointValidationExcludeList.Contains(element.Key)) continue;
 
-                        if (!string.Equals(authorityHost, uri.Authority))
+                        bool isAllowed = false;
+                        foreach (var host in allowedHosts)
+                        {
+                            if (string.Equals(host, uri.Authority))
+                            {
+                                isAllowed = true;
+                            }
+                        }
+
+                        if (!isAllowed)
                         {
                             return $"Endpoint is on a different host than authority: {endpoint}";
                         }
 
-                        if (!endpoint.StartsWith(policy.Authority, StringComparison.Ordinal))
+
+                        isAllowed = false;
+                        foreach (var authority in allowedAuthorities)
+                        {
+                            if (endpoint.StartsWith(authority, StringComparison.Ordinal))
+                            {
+                                isAllowed = true;
+                            }
+                        }
+
+                        if (!isAllowed)
                         {
                             return $"Endpoint belongs to different authority: {endpoint}";
                         }
