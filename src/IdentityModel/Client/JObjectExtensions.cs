@@ -4,18 +4,22 @@
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Security.Claims;
 
 namespace IdentityModel.Client
 {
     public static class JObjectExtensions
     {
-        public static IEnumerable<Claim> ToClaims(this JObject json)
+        public static IEnumerable<Claim> ToClaims(this JObject json, params string[] excludeKeys)
         {
             var claims = new List<Claim>();
+            var excludeList = excludeKeys.ToList();
 
             foreach (var x in json)
             {
+                if (excludeList.Contains(x.Key)) continue;
+
                 var array = x.Value as JArray;
 
                 if (array != null)

@@ -9,5 +9,5 @@
   "idp": "local",
   "amr": "password",
   "active": true,
-  "scope": "api1 api2"
+  "scope": [ "api1", "api2" ]
 }

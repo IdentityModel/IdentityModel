@@ -4,64 +4,63 @@
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Security.Claims;
 
 namespace IdentityModel.Client
 {
-    public class IntrospectionResponse
+    public class IntrospectionResponse : Response
     {
-        public string Raw { get; }
-        public JObject Json { get; }
+        public IntrospectionResponse(string raw) : base(raw)
+        {
+            if (!IsError)
+            {
+                var claims = Json.ToClaims(excludeKeys: "scope").ToList();
 
-        public bool IsError { get; }
-        public string Error { get; }
-        public ResponseErrorType ErrorType { get; } = ResponseErrorType.None;
-        public Exception Exception { get; }
-        public HttpStatusCode HttpStatusCode { get; }
+                // due to a bug in identityserver - we need to be able to deal with the scope list both in array as well as space-separated list format
+                var scope = Json.TryGetValue("scope");
 
-        public bool IsActive { get; }
+                // scope element exists
+                if (scope != null)
+                {
+                    // it's an array
+                    var scopeArray = scope as JArray;
+                    if (scopeArray != null)
+                    {
+                        foreach (var item in scopeArray)
+                        {
+                            claims.Add(new Claim("scope", item.ToString()));
+                        }
+                    }
+                    else
+                    {
+                        // it's a string
+                        var scopeString = scope.ToString();
+
+                        var scopes = scopeString.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
+                        foreach (var scopeValue in scopes)
+                        {
+                            claims.Add(new Claim("scope", scopeValue));
+                        }
+                    }
+                }
+
+                Claims = claims;
+            }
+        }
+
+        public IntrospectionResponse(Exception exception) : base(exception)
+        {
+        }
+
+        public IntrospectionResponse(HttpStatusCode statusCode, string reason) : base(statusCode, reason)
+        {
+        }
+
+        public bool IsActive => Json.TryGetBoolean("active").Value;
         public IEnumerable<Claim> Claims { get; }
 
-        public IntrospectionResponse(string raw)
-        {
-            Raw = raw;
 
-            try
-            {
-                Json = JObject.Parse(raw);
-                IsActive = bool.Parse(Json["active"].ToString());
-                Claims = Json.ToClaims();
-
-                IsError = false;
-                HttpStatusCode = HttpStatusCode.OK;
-            }
-            catch (Exception ex)
-            {
-                IsError = true;
-
-                Error = ex.Message;
-                ErrorType = ResponseErrorType.Exception;
-                Exception = ex;
-            }
-        }
-
-        public IntrospectionResponse(Exception exception)
-        {
-            IsError = true;
-
-            Exception = exception;
-            Error = exception.Message;
-            ErrorType = ResponseErrorType.Exception;
-        }
-
-        public IntrospectionResponse(HttpStatusCode statusCode, string reason)
-        {
-            IsError = true;
-
-            ErrorType = ResponseErrorType.Http;
-            HttpStatusCode = statusCode;
-            Error = reason;
-        }
     }
 }
