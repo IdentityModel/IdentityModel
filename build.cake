@@ -15,26 +15,25 @@ Task("Build")
     .IsDependentOn("Restore")
     .Does(() =>
 {
-	var projects = GetFiles("./**/project.json");
+	var projects = GetFiles("./**/*.csproj");
 
 	foreach(var project in projects)
 	{
         var settings = new DotNetCoreBuildSettings 
         {
             Configuration = configuration
-            // Runtime = IsRunningOnWindows() ? null : "unix-x64"
         };
 
 	    DotNetCoreBuild(project.GetDirectory().FullPath, settings); 
     }
 });
 
-Task("RunTests")
+Task("Test")
     .IsDependentOn("Restore")
     .IsDependentOn("Clean")
     .Does(() =>
 {
-    var projects = GetFiles("./test/**/project.json");
+    var projects = GetFiles("./test/**/*.csproj");
 
     foreach(var project in projects)
 	{
@@ -43,13 +42,7 @@ Task("RunTests")
             Configuration = configuration
         };
 
-        if (!IsRunningOnWindows())
-        {
-            Information("Not running on Windows - skipping tests for full .NET Framework");
-            settings.Framework = "netcoreapp1.0";
-        }
-
-        DotNetCoreTest(project.GetDirectory().FullPath, settings);
+        DotNetCoreTest(project.FullPath, settings);
     }
 });
 
@@ -87,13 +80,17 @@ Task("Restore")
         Sources = new [] { "https://api.nuget.org/v3/index.json" }
     };
 
-    DotNetCoreRestore(sourcePath, settings);
-    DotNetCoreRestore(testsPath, settings);
+    var projects = GetFiles("./**/*.csproj");
+
+	foreach(var project in projects)
+	{
+	    DotNetCoreRestore(project.GetDirectory().FullPath, settings);
+    }
 });
 
 Task("Default")
   .IsDependentOn("Build")
-  .IsDependentOn("RunTests")
+  .IsDependentOn("Test")
   .IsDependentOn("Pack");
 
 RunTarget(target);
