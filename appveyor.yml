@@ -15,3 +15,5 @@ deploy:
   skip_symbols: true
   on:
     branch: dev
+
+image: Visual Studio 2017
