@@ -120,6 +120,7 @@ Task("Pack")
     if (!isWindows)
     {
         Information("Not on Windows - skipping pack");
+        return;
     }
 
     var settings = new DotNetCorePackSettings
