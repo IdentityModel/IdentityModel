@@ -7,79 +7,43 @@ using System.Net;
 
 namespace IdentityModel.Client
 {
-    public class TokenRevocationResponse
+    /// <summary>
+    /// Models an OAuth 2.0 token revocation response
+    /// </summary>
+    /// <seealso cref="IdentityModel.Client.Response" />
+    public class TokenRevocationResponse : Response
     {
-        public string Raw { get; }
-        public JObject Json { get; }
-        public bool IsError { get; }
-        public HttpStatusCode HttpStatusCode { get; }
-        public string HttpErrorReason { get; }
-        public ResponseErrorType ErrorType { get;  }
-        public Exception Exception { get;  }
-
+        /// <summary>
+        /// Initializes a new instance of the <see cref="TokenRevocationResponse"/> class.
+        /// </summary>
         public TokenRevocationResponse()
+            : base(HttpStatusCode.OK, "OK")
         {
-            IsError = false;
-            HttpStatusCode = HttpStatusCode.OK;
         }
 
-        public TokenRevocationResponse(string raw)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="TokenRevocationResponse"/> class.
+        /// </summary>
+        /// <param name="raw">The raw response data.</param>
+        public TokenRevocationResponse(string raw) : base(raw)
         {
-            Raw = raw;
-            IsError = false;
-            HttpStatusCode = HttpStatusCode.OK;
-
-            try
-            {
-                Json = JObject.Parse(raw);
-
-                if (!string.IsNullOrEmpty(Json.TryGetString(OidcConstants.TokenResponse.Error)))
-                {
-                    IsError = true;
-                    ErrorType = ResponseErrorType.Protocol;
-                    HttpStatusCode = HttpStatusCode.BadRequest;
-                }
-            }
-            catch (Exception ex)
-            {
-                IsError = true;
-                ErrorType = ResponseErrorType.Exception;
-                Exception = ex;
-            }
         }
 
-        public TokenRevocationResponse(HttpStatusCode statusCode, string reason)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="TokenRevocationResponse"/> class.
+        /// </summary>
+        /// <param name="exception">The exception.</param>
+        public TokenRevocationResponse(Exception exception) : base(exception)
         {
-            IsError = true;
-
-            ErrorType = ResponseErrorType.Http;
-            HttpStatusCode = statusCode;
-            HttpErrorReason = reason;
         }
 
-        public TokenRevocationResponse(Exception exception)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="TokenRevocationResponse"/> class.
+        /// </summary>
+        /// <param name="statusCode">The status code.</param>
+        /// <param name="reason">The reason.</param>
+        public TokenRevocationResponse(HttpStatusCode statusCode, string reason) : base(statusCode, reason)
         {
-            IsError = true;
-
-            Exception = exception;
-            ErrorType = ResponseErrorType.Exception;
-        }
-
-        public string Error
-        {
-            get
-            {
-                if (ErrorType == ResponseErrorType.Http)
-                {
-                    return HttpErrorReason;
-                }
-                else if(ErrorType == ResponseErrorType.Exception)
-                {
-                    return Exception.Message;
-                }
-
-                return Json.TryGetString(OidcConstants.TokenResponse.Error);
-            }
         }
     }
 }

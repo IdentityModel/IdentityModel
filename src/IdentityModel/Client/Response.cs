@@ -60,9 +60,10 @@ namespace IdentityModel.Client
         /// <param name="reason">The reason.</param>
         protected Response(HttpStatusCode statusCode, string reason)
         {
-            ErrorType = ResponseErrorType.Http;
             HttpStatusCode = statusCode;
             HttpErrorReason = reason;
+
+            if (statusCode != HttpStatusCode.OK) ErrorType = ResponseErrorType.Http;
         }
 
         /// <summary>
