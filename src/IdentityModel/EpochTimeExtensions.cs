@@ -5,6 +5,9 @@ using System;
 
 namespace IdentityModel
 {
+    /// <summary>
+    /// Extensions for converting epoch/unix time to DateTime and DateTimeOffset
+    /// </summary>
     public static class EpochTimeExtensions
     {
         /// <summary>

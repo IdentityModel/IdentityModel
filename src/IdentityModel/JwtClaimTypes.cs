@@ -3,6 +3,9 @@
 
 namespace IdentityModel
 {
+    /// <summary>
+    /// Commonly used claim types
+    /// </summary>
     public static class JwtClaimTypes
     {
         /// <summary>Unique Identifier for the End-User at the Issuer.</summary>
@@ -126,10 +129,29 @@ namespace IdentityModel
         /// <summary>OpenID Connect requests MUST contain the "openid" scope value. If the openid scope value is not present, the behavior is entirely unspecified. Other scope values MAY be present. Scope values used that are not understood by an implementation SHOULD be ignored.</summary>
         public const string Scope = "scope";
 
+        /// <summary>
+        /// an identifier
+        /// </summary>
         public const string Id = "id";
+
+        /// <summary>
+        /// The identity provider
+        /// </summary>
         public const string IdentityProvider = "idp";
+
+        /// <summary>
+        /// The role
+        /// </summary>
         public const string Role = "role";
+
+        /// <summary>
+        /// The reference token identifier
+        /// </summary>
         public const string ReferenceTokenId = "reference_token_id";
+
+        /// <summary>
+        /// The confirmation
+        /// </summary>
         public const string Confirmation = "cnf";
     }
 }

@@ -3,6 +3,8 @@
 
 using System.Security.Cryptography.X509Certificates;
 
+#pragma warning disable 1591
+
 namespace IdentityModel
 {
     public static class X509

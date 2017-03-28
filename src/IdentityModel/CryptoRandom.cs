@@ -15,6 +15,11 @@ namespace IdentityModel
         private static readonly RandomNumberGenerator Rng = RandomNumberGenerator.Create();
         private readonly byte[] _uint32Buffer = new byte[4];
 
+        /// <summary>
+        /// Creates a random key byte array.
+        /// </summary>
+        /// <param name="length">The length.</param>
+        /// <returns></returns>
         public static byte[] CreateRandomKey(int length)
         {
             var bytes = new byte[length];
@@ -23,6 +28,11 @@ namespace IdentityModel
             return bytes;
         }
 
+        /// <summary>
+        /// Creates a random key as base64 encoded string.
+        /// </summary>
+        /// <param name="length">The length.</param>
+        /// <returns></returns>
         public static string CreateRandomKeyString(int length)
         {
             var bytes = new byte[length];
@@ -31,6 +41,11 @@ namespace IdentityModel
             return Convert.ToBase64String(bytes);
         }
 
+        /// <summary>
+        /// Creates a URL safe unique identifier.
+        /// </summary>
+        /// <param name="length">The length.</param>
+        /// <returns></returns>
         public static string CreateUniqueId(int length = 32)
         {
             var bytes = new byte[length];

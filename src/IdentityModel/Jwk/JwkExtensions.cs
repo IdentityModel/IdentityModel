@@ -7,8 +7,16 @@ using System.Text;
 
 namespace IdentityModel.Jwk
 {
+    /// <summary>
+    /// Extensions for JsonWebKey
+    /// </summary>
     public static class JsonWebKeyExtensions
     {
+        /// <summary>
+        /// Converts a JSON web key to a URL safe string.
+        /// </summary>
+        /// <param name="key">The key.</param>
+        /// <returns></returns>
         public static string ToJwkString(this JsonWebKey key)
         {
             var json = JsonConvert.SerializeObject(key);            

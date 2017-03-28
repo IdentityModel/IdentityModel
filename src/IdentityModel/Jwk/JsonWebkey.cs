@@ -29,6 +29,8 @@ using System.Collections.Generic;
 using Newtonsoft.Json;
 using System;
 
+#pragma warning disable 1591
+
 namespace IdentityModel.Jwk
 {
     /// <summary>
