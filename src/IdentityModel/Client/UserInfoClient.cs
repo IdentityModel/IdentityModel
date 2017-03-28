@@ -9,14 +9,31 @@ using System.Threading.Tasks;
 
 namespace IdentityModel.Client
 {
+    /// <summary>
+    /// Client for an OpenID Connect userinfo endpoint
+    /// </summary>
     public class UserInfoClient
     {
         private readonly HttpClient _client;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="UserInfoClient"/> class.
+        /// </summary>
+        /// <param name="endpoint">The endpoint address.</param>
         public UserInfoClient(string endpoint)
             : this(endpoint, new HttpClientHandler())
         { }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="UserInfoClient"/> class.
+        /// </summary>
+        /// <param name="endpoint">The endpoint address.</param>
+        /// <param name="innerHttpMessageHandler">The inner HTTP message handler.</param>
+        /// <exception cref="System.ArgumentNullException">
+        /// endpoint
+        /// or
+        /// innerHttpMessageHandler
+        /// </exception>
         public UserInfoClient(string endpoint, HttpMessageHandler innerHttpMessageHandler)
         {
             if (endpoint == null) throw new ArgumentNullException(nameof(endpoint));
@@ -32,6 +49,12 @@ namespace IdentityModel.Client
                 new MediaTypeWithQualityHeaderValue("application/json"));
         }
 
+        /// <summary>
+        /// Sets the timeout.
+        /// </summary>
+        /// <value>
+        /// The timeout.
+        /// </value>
         public TimeSpan Timeout
         {
             set
@@ -40,6 +63,13 @@ namespace IdentityModel.Client
             }
         }
 
+        /// <summary>
+        /// Sends the userinfo request.
+        /// </summary>
+        /// <param name="token">The token.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
+        /// <exception cref="System.ArgumentNullException">token</exception>
         public async Task<UserInfoResponse> GetAsync(string token, CancellationToken cancellationToken = default(CancellationToken))
         {
             if (string.IsNullOrEmpty(token)) throw new ArgumentNullException(nameof(token));

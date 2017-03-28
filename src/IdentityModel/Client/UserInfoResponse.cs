@@ -9,55 +9,44 @@ using System.Security.Claims;
 
 namespace IdentityModel.Client
 {
-    public class UserInfoResponse
+    /// <summary>
+    /// Models an OpenID Connect userinfo response
+    /// </summary>
+    /// <seealso cref="IdentityModel.Client.Response" />
+    public class UserInfoResponse : Response
     {
-        public string Raw { get; }
-        public JObject Json { get; }
+        /// <summary>
+        /// Gets the claims.
+        /// </summary>
+        /// <value>
+        /// The claims.
+        /// </value>
         public IEnumerable<Claim> Claims { get; }
 
-        public bool IsError { get; }
-        public string Error { get; }
-
-        public HttpStatusCode HttpStatusCode { get; }
-        public Exception Exception { get; }
-        public ResponseErrorType ErrorType { get; set; }
-        
-        public UserInfoResponse(string raw)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="UserInfoResponse"/> class.
+        /// </summary>
+        /// <param name="raw">The raw response data.</param>
+        public UserInfoResponse(string raw) : base(raw)
         {
-            Raw = raw;
-            HttpStatusCode = HttpStatusCode.OK;
-            IsError = false;
-
-            try
-            {
-                Json = JObject.Parse(raw);
-                Claims = Json.ToClaims();
-            }
-            catch (Exception ex)
-            {
-                IsError = true;
-                Error = ex.Message;
-                Exception = ex;
-                ErrorType = ResponseErrorType.Exception;
-            }
+            if (!IsError) Claims = Json.ToClaims();
         }
 
-        public UserInfoResponse(HttpStatusCode statusCode, string httpErrorReason)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="UserInfoResponse"/> class.
+        /// </summary>
+        /// <param name="exception">The exception.</param>
+        public UserInfoResponse(Exception exception) : base(exception)
         {
-            IsError = true;
-
-            HttpStatusCode = statusCode;
-            ErrorType = ResponseErrorType.Http;
-            Error = httpErrorReason;
         }
 
-        public UserInfoResponse(Exception exception)
+        /// <summary>
+        /// Initializes a new instance of the <see cref="UserInfoResponse"/> class.
+        /// </summary>
+        /// <param name="statusCode">The status code.</param>
+        /// <param name="reason">The reason.</param>
+        public UserInfoResponse(HttpStatusCode statusCode, string reason) : base(statusCode, reason)
         {
-            IsError = true;
-
-            Error = exception.Message;
-            Exception = exception;
-            ErrorType = ResponseErrorType.Exception;
         }
     }
 }
