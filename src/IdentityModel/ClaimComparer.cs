@@ -7,20 +7,38 @@ using System.Security.Claims;
 
 namespace IdentityModel
 {
+    /// <summary>
+    /// Claim equality comparer
+    /// </summary>
     public class ClaimComparer : IEqualityComparer<Claim>
     {
         private readonly bool _valueAndTypeOnly;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ClaimComparer"/> class.
+        /// </summary>
         public ClaimComparer()
         {
             _valueAndTypeOnly = false;
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ClaimComparer"/> class.
+        /// </summary>
+        /// <param name="compareValueAndTypeOnly">if set to <c>true</c> only type and value are being compared.</param>
         public ClaimComparer(bool compareValueAndTypeOnly)
         {
             _valueAndTypeOnly = compareValueAndTypeOnly;
         }
 
+        /// <summary>
+        /// Determines whether the specified objects are equal.
+        /// </summary>
+        /// <param name="x">The first object to compare.</param>
+        /// <param name="y">The second object to compare.</param>
+        /// <returns>
+        /// true if the specified objects are equal; otherwise, false.
+        /// </returns>
         public bool Equals(Claim x, Claim y)
         {
             if (x == null && y == null) return true;
@@ -41,6 +59,13 @@ namespace IdentityModel
             }
         }
 
+        /// <summary>
+        /// Returns a hash code for this instance.
+        /// </summary>
+        /// <param name="claim">The claim.</param>
+        /// <returns>
+        /// A hash code for this instance, suitable for use in hashing algorithms and data structures like a hash table. 
+        /// </returns>
         public int GetHashCode(Claim claim)
         {
             if (Object.ReferenceEquals(claim, null)) return 0;

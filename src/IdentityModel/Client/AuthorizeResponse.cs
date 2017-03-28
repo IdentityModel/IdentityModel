@@ -7,27 +7,115 @@ using System.Net;
 
 namespace IdentityModel.Client
 {
+    /// <summary>
+    /// Models the response of an authorize request
+    /// </summary>
     public class AuthorizeResponse
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AuthorizeResponse"/> class.
+        /// </summary>
+        /// <param name="raw">The raw response URL.</param>
         public AuthorizeResponse(string raw)
         {
             Raw = raw;
             ParseRaw();
         }
 
+        /// <summary>
+        /// Gets the raw response URL.
+        /// </summary>
+        /// <value>
+        /// The raw.
+        /// </value>
         public string Raw { get; }
-        public Dictionary<string, string> Values { get; } = new Dictionary<string, string>();
-        
-        public string Code             => TryGet(OidcConstants.AuthorizeResponse.Code);
-        public string AccessToken      => TryGet(OidcConstants.AuthorizeResponse.AccessToken);
-        public string IdentityToken    => TryGet(OidcConstants.AuthorizeResponse.IdentityToken);
-        public string Error            => TryGet(OidcConstants.AuthorizeResponse.Error);
-        public string Scope            => TryGet(OidcConstants.AuthorizeResponse.Scope);
-        public string TokenType        => TryGet(OidcConstants.AuthorizeResponse.TokenType);
-        public string State            => TryGet(OidcConstants.AuthorizeResponse.State);
-        public string ErrorDescription => TryGet(OidcConstants.AuthorizeResponse.ErrorDescription);
-        public bool IsError            => !string.IsNullOrEmpty(Error);
 
+        /// <summary>
+        /// Gets the key/value pairs of the response.
+        /// </summary>
+        /// <value>
+        /// The values.
+        /// </value>
+        public Dictionary<string, string> Values { get; } = new Dictionary<string, string>();
+
+        /// <summary>
+        /// Gets the authorization code.
+        /// </summary>
+        /// <value>
+        /// The authorization code.
+        /// </value>
+        public string Code => TryGet(OidcConstants.AuthorizeResponse.Code);
+
+        /// <summary>
+        /// Gets the access token.
+        /// </summary>
+        /// <value>
+        /// The access token.
+        /// </value>
+        public string AccessToken => TryGet(OidcConstants.AuthorizeResponse.AccessToken);
+
+        /// <summary>
+        /// Gets the identity token.
+        /// </summary>
+        /// <value>
+        /// The identity token.
+        /// </value>
+        public string IdentityToken => TryGet(OidcConstants.AuthorizeResponse.IdentityToken);
+
+        /// <summary>
+        /// Gets the error.
+        /// </summary>
+        /// <value>
+        /// The error.
+        /// </value>
+        public string Error => TryGet(OidcConstants.AuthorizeResponse.Error);
+
+        /// <summary>
+        /// Gets the scope.
+        /// </summary>
+        /// <value>
+        /// The scope.
+        /// </value>
+        public string Scope => TryGet(OidcConstants.AuthorizeResponse.Scope);
+
+        /// <summary>
+        /// Gets the type of the token.
+        /// </summary>
+        /// <value>
+        /// The type of the token.
+        /// </value>
+        public string TokenType => TryGet(OidcConstants.AuthorizeResponse.TokenType);
+
+        /// <summary>
+        /// Gets the state.
+        /// </summary>
+        /// <value>
+        /// The state.
+        /// </value>
+        public string State => TryGet(OidcConstants.AuthorizeResponse.State);
+
+        /// <summary>
+        /// Gets the error description.
+        /// </summary>
+        /// <value>
+        /// The error description.
+        /// </value>
+        public string ErrorDescription => TryGet(OidcConstants.AuthorizeResponse.ErrorDescription);
+
+        /// <summary>
+        /// Gets a value indicating whether the response is an error.
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if the response is an error; otherwise, <c>false</c>.
+        /// </value>
+        public bool IsError => !string.IsNullOrEmpty(Error);
+
+        /// <summary>
+        /// Gets the expires in.
+        /// </summary>
+        /// <value>
+        /// The expires in.
+        /// </value>
         public long ExpiresIn
         {
             get
@@ -84,6 +172,11 @@ namespace IdentityModel.Client
             }
         }
 
+        /// <summary>
+        /// Tries the get a value.
+        /// </summary>
+        /// <param name="type">The type.</param>
+        /// <returns></returns>
         public string TryGet(string type)
         {
             string value;

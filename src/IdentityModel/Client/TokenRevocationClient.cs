@@ -11,15 +11,50 @@ using System.Threading.Tasks;
 
 namespace IdentityModel.Client
 {
+    /// <summary>
+    /// Client for an OAuth 2.0 token revocation endpoint
+    /// </summary>
     public class TokenRevocationClient
     {
+        /// <summary>
+        /// The client
+        /// </summary>
         protected HttpClient Client;
+
         private readonly string _clientId;
 
+        /// <summary>
+        /// Gets or sets the authentication style.
+        /// </summary>
+        /// <value>
+        /// The authentication style.
+        /// </value>
         public AuthenticationStyle AuthenticationStyle { get; set; }
+
+        /// <summary>
+        /// Gets or sets the client identifier.
+        /// </summary>
+        /// <value>
+        /// The client identifier.
+        /// </value>
         public string ClientId { get; set; }
+
+        /// <summary>
+        /// Gets or sets the client secret.
+        /// </summary>
+        /// <value>
+        /// The client secret.
+        /// </value>
         public string ClientSecret { get; set; }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="TokenRevocationClient"/> class.
+        /// </summary>
+        /// <param name="endpoint">The endpoint.</param>
+        /// <param name="clientId">The client identifier.</param>
+        /// <param name="clientSecret">The client secret.</param>
+        /// <param name="innerHttpMessageHandler">The inner HTTP message handler.</param>
+        /// <exception cref="System.ArgumentNullException">endpoint</exception>
         public TokenRevocationClient(string endpoint, string clientId = "", string clientSecret = "", HttpMessageHandler innerHttpMessageHandler = null)
         {
             if (endpoint == null) throw new ArgumentNullException(nameof(endpoint));
@@ -44,6 +79,12 @@ namespace IdentityModel.Client
             }
         }
 
+        /// <summary>
+        /// Sets the timeout.
+        /// </summary>
+        /// <value>
+        /// The timeout.
+        /// </value>
         public TimeSpan Timeout
         {
             set
@@ -52,6 +93,17 @@ namespace IdentityModel.Client
             }
         }
 
+        /// <summary>
+        /// Sends a token revocation request
+        /// </summary>
+        /// <param name="request">The request.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
+        /// <exception cref="System.ArgumentNullException">
+        /// request
+        /// or
+        /// Token
+        /// </exception>
         public virtual async Task<TokenRevocationResponse> RevokeAsync(
             TokenRevocationRequest request,
             CancellationToken cancellationToken = default(CancellationToken))

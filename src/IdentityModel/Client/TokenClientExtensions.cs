@@ -9,8 +9,19 @@ using System.Threading.Tasks;
 
 namespace IdentityModel.Client
 {
+    /// <summary>
+    /// Extensions for TokenClient
+    /// </summary>
     public static class TokenClientExtensions
     {
+        /// <summary>
+        /// Requests a token based on client credentials.
+        /// </summary>
+        /// <param name="client">The client.</param>
+        /// <param name="scope">The scope.</param>
+        /// <param name="extra">Eextra parameters.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
         public static Task<TokenResponse> RequestClientCredentialsAsync(this TokenClient client, string scope = null, object extra = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             var fields = new Dictionary<string, string>
@@ -26,6 +37,16 @@ namespace IdentityModel.Client
             return client.RequestAsync(Merge(client, fields, extra), cancellationToken);
         }
 
+        /// <summary>
+        /// Requests a token using the resource owner password credentials.
+        /// </summary>
+        /// <param name="client">The client.</param>
+        /// <param name="userName">Name of the user.</param>
+        /// <param name="password">The password.</param>
+        /// <param name="scope">The scope.</param>
+        /// <param name="extra">Extra parameters.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
         public static Task<TokenResponse> RequestResourceOwnerPasswordAsync(this TokenClient client, string userName, string password, string scope = null, object extra = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             var fields = new Dictionary<string, string>
@@ -43,6 +64,16 @@ namespace IdentityModel.Client
             return client.RequestAsync(Merge(client, fields, extra), cancellationToken);
         }
 
+        /// <summary>
+        /// Requests a token using an authorization code.
+        /// </summary>
+        /// <param name="client">The client.</param>
+        /// <param name="code">The code.</param>
+        /// <param name="redirectUri">The redirect URI.</param>
+        /// <param name="codeVerifier">The code verifier.</param>
+        /// <param name="extra">Extra parameters.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
         public static Task<TokenResponse> RequestAuthorizationCodeAsync(this TokenClient client, string code, string redirectUri, string codeVerifier = null, object extra = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             var fields = new Dictionary<string, string>
@@ -60,6 +91,18 @@ namespace IdentityModel.Client
             return client.RequestAsync(Merge(client, fields, extra), cancellationToken);
         }
 
+        /// <summary>
+        /// Requests a PoP token using an authorization code.
+        /// </summary>
+        /// <param name="client">The client.</param>
+        /// <param name="code">The code.</param>
+        /// <param name="redirectUri">The redirect URI.</param>
+        /// <param name="codeVerifier">The code verifier.</param>
+        /// <param name="algorithm">The algorithm.</param>
+        /// <param name="key">The key.</param>
+        /// <param name="extra">Extra parameters.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
         public static Task<TokenResponse> RequestAuthorizationCodePopAsync(this TokenClient client, string code, string redirectUri, string codeVerifier = null, string algorithm = null, string key = null, object extra = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             var fields = new Dictionary<string, string>
@@ -88,6 +131,14 @@ namespace IdentityModel.Client
             return client.RequestAsync(Merge(client, fields, extra), cancellationToken);
         }
 
+        /// <summary>
+        /// Requests a token using a refresh token.
+        /// </summary>
+        /// <param name="client">The client.</param>
+        /// <param name="refreshToken">The refresh token.</param>
+        /// <param name="extra">Extra parameters.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
         public static Task<TokenResponse> RequestRefreshTokenAsync(this TokenClient client, string refreshToken, object extra = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             var fields = new Dictionary<string, string>
@@ -99,6 +150,16 @@ namespace IdentityModel.Client
             return client.RequestAsync(Merge(client, fields, extra), cancellationToken);
         }
 
+        /// <summary>
+        /// Requests a PoP token using a refresh token.
+        /// </summary>
+        /// <param name="client">The client.</param>
+        /// <param name="refreshToken">The refresh token.</param>
+        /// <param name="algorithm">The algorithm.</param>
+        /// <param name="key">The key.</param>
+        /// <param name="extra">Extra parameters.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
         public static Task<TokenResponse> RequestRefreshTokenPopAsync(this TokenClient client, string refreshToken, string algorithm = null, string key = null, object extra = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             var fields = new Dictionary<string, string>
@@ -121,6 +182,16 @@ namespace IdentityModel.Client
             return client.RequestAsync(Merge(client, fields, extra), cancellationToken);
         }
 
+        /// <summary>
+        /// Requests a token using a an assertion.
+        /// </summary>
+        /// <param name="client">The client.</param>
+        /// <param name="assertionType">Type of the assertion.</param>
+        /// <param name="assertion">The assertion.</param>
+        /// <param name="scope">The scope.</param>
+        /// <param name="extra">Extra parameters.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
         public static Task<TokenResponse> RequestAssertionAsync(this TokenClient client, string assertionType, string assertion, string scope = null, object extra = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             var fields = new Dictionary<string, string>
@@ -137,6 +208,15 @@ namespace IdentityModel.Client
             return client.RequestAsync(Merge(client, fields, extra), cancellationToken);
         }
 
+        /// <summary>
+        /// Requests a token using a custom grant.
+        /// </summary>
+        /// <param name="client">The client.</param>
+        /// <param name="grantType">Type of the grant.</param>
+        /// <param name="scope">The scope.</param>
+        /// <param name="extra">Extra parameters.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
         public static Task<TokenResponse> RequestCustomGrantAsync(this TokenClient client, string grantType, string scope = null, object extra = null, CancellationToken cancellationToken = default(CancellationToken))
         {
             var fields = new Dictionary<string, string>
@@ -152,6 +232,13 @@ namespace IdentityModel.Client
             return client.RequestAsync(Merge(client, fields, extra), cancellationToken);
         }
 
+        /// <summary>
+        /// Requests a token using a custom request
+        /// </summary>
+        /// <param name="client">The client.</param>
+        /// <param name="values">The values.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
         public static Task<TokenResponse> RequestCustomAsync(this TokenClient client, object values, CancellationToken cancellationToken = default(CancellationToken))
         {
             return client.RequestAsync(Merge(client, ObjectToDictionary(values)), cancellationToken);

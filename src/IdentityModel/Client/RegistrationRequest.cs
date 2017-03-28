@@ -6,8 +6,13 @@ using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Linq;
 
+#pragma warning disable 1591
+
 namespace IdentityModel.Client
 {
+    /// <summary>
+    /// Models an OpenID Connect dynamic client registration request
+    /// </summary>
     public class RegistrationRequest
     {
         [JsonProperty(PropertyName = OidcConstants.ClientMetadata.RedirectUris, DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore, Required = Required.Default)]

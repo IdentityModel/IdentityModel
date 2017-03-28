@@ -7,13 +7,40 @@ using System.Reflection;
 
 namespace IdentityModel.Client
 {
+    /// <summary>
+    /// Extensions for AuthorizeRequest
+    /// </summary>
     public static class AuthorizeRequestExtensions
     {
+        /// <summary>
+        /// Creates the authorize URL.
+        /// </summary>
+        /// <param name="request">The request.</param>
+        /// <param name="values">The values (either using a string Dictionary or an object's properties).</param>
+        /// <returns></returns>
         public static string Create(this AuthorizeRequest request, object values)
         {
             return request.Create(ObjectToDictionary(values));
         }
 
+        /// <summary>
+        /// Creates the authorize URL.
+        /// </summary>
+        /// <param name="request">The request.</param>
+        /// <param name="clientId">The client identifier.</param>
+        /// <param name="responseType">The response type.</param>
+        /// <param name="scope">The scope.</param>
+        /// <param name="redirectUri">The redirect URI.</param>
+        /// <param name="state">The state.</param>
+        /// <param name="nonce">The nonce.</param>
+        /// <param name="loginHint">The login hint.</param>
+        /// <param name="acrValues">The acr values.</param>
+        /// <param name="prompt">The prompt.</param>
+        /// <param name="responseMode">The response mode.</param>
+        /// <param name="codeChallenge">The code challenge.</param>
+        /// <param name="codeChallengeMethod">The code challenge method.</param>
+        /// <param name="extra">Extra parameters.</param>
+        /// <returns></returns>
         public static string CreateAuthorizeUrl(this AuthorizeRequest request,
             string clientId,
             string responseType,
@@ -95,8 +122,7 @@ namespace IdentityModel.Client
                 return null;
             }
 
-            var dictionary = values as Dictionary<string, string>;
-            if (dictionary != null) return dictionary;
+            if (values is Dictionary<string, string> dictionary) return dictionary;
 
             dictionary = new Dictionary<string, string>();
 

@@ -3,19 +3,41 @@
 
 namespace IdentityModel.Client
 {
+    /// <summary>
+    /// Models an OAuth 2.0 introspection request
+    /// </summary>
     public class IntrospectionRequest
     {
+        /// <summary>
+        /// Gets or sets the token.
+        /// </summary>
+        /// <value>
+        /// The token.
+        /// </value>
         public string Token { get; set; }
+
+        /// <summary>
+        /// Gets or sets the token type hint.
+        /// </summary>
+        /// <value>
+        /// The token type hint.
+        /// </value>
         public string TokenTypeHint { get; set; }
 
+        /// <summary>
+        /// Gets or sets the client identifier.
+        /// </summary>
+        /// <value>
+        /// The client identifier.
+        /// </value>
         public string ClientId { get; set; }
-        public string ClientSecret { get; set; }
 
-        public IntrospectionRequest()
-        {
-            Token = "";
-            ClientId = "";
-            ClientSecret = "";
-        }
+        /// <summary>
+        /// Gets or sets the client secret.
+        /// </summary>
+        /// <value>
+        /// The client secret.
+        /// </value>
+        public string ClientSecret { get; set; } 
     }
 }

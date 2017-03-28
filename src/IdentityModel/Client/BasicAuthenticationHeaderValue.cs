@@ -6,8 +6,17 @@ using System.Text;
 
 namespace System.Net.Http
 {
+    /// <summary>
+    /// HTTP Basic Authentication authorization header
+    /// </summary>
+    /// <seealso cref="System.Net.Http.Headers.AuthenticationHeaderValue" />
     public class BasicAuthenticationHeaderValue : AuthenticationHeaderValue
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="BasicAuthenticationHeaderValue"/> class.
+        /// </summary>
+        /// <param name="userName">Name of the user.</param>
+        /// <param name="password">The password.</param>
         public BasicAuthenticationHeaderValue(string userName, string password)
             : base("Basic", EncodeCredential(userName, password))
         { }

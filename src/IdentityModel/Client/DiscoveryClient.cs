@@ -10,8 +10,16 @@ using System.Threading.Tasks;
 
 namespace IdentityModel.Client
 {
+    /// <summary>
+    /// Client for retrieving OpenID Connect discovery documents
+    /// </summary>
     public class DiscoveryClient
     {
+        /// <summary>
+        /// Retrieves a discovery document.
+        /// </summary>
+        /// <param name="authority">The authority.</param>
+        /// <returns></returns>
         public static async Task<DiscoveryResponse> GetAsync(string authority)
         {
             var client = new DiscoveryClient(authority);
@@ -20,11 +28,36 @@ namespace IdentityModel.Client
 
         private readonly HttpClient _client;
 
+        /// <summary>
+        /// Gets the authority.
+        /// </summary>
+        /// <value>
+        /// The authority.
+        /// </value>
         public string Authority { get; }
+
+        /// <summary>
+        /// Gets the URL.
+        /// </summary>
+        /// <value>
+        /// The URL.
+        /// </value>
         public string Url { get; }
 
+        /// <summary>
+        /// Gets or sets the policy.
+        /// </summary>
+        /// <value>
+        /// The policy.
+        /// </value>
         public DiscoveryPolicy Policy { get; set; } = new DiscoveryPolicy();
 
+        /// <summary>
+        /// Sets the timeout.
+        /// </summary>
+        /// <value>
+        /// The timeout.
+        /// </value>
         public TimeSpan Timeout
         {
             set
@@ -33,12 +66,21 @@ namespace IdentityModel.Client
             }
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DiscoveryClient"/> class.
+        /// </summary>
+        /// <param name="authority">The authority.</param>
+        /// <param name="innerHandler">The inner handler.</param>
+        /// <exception cref="System.InvalidOperationException">
+        /// Malformed authority URL
+        /// or
+        /// Malformed authority URL
+        /// </exception>
         public DiscoveryClient(string authority, HttpMessageHandler innerHandler = null)
         {
             var handler = innerHandler ?? new HttpClientHandler();
 
-            Uri uri;
-            var success = Uri.TryCreate(authority, UriKind.Absolute, out uri);
+            var success = Uri.TryCreate(authority, UriKind.Absolute, out var uri);
             if (success == false)
             {
                 throw new InvalidOperationException("Malformed authority URL");
@@ -64,6 +106,11 @@ namespace IdentityModel.Client
             _client = new HttpClient(handler);
         }
 
+        /// <summary>
+        /// Retrieves the discovery document.
+        /// </summary>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
         public async Task<DiscoveryResponse> GetAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
             Policy.Authority = Authority;

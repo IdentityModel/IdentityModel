@@ -5,8 +5,16 @@ using System;
 
 namespace IdentityModel
 {
+    /// <summary>
+    /// Base64Url encoder/decoder
+    /// </summary>
     public static class Base64Url
     {
+        /// <summary>
+        /// Encodes the specified byte array.
+        /// </summary>
+        /// <param name="arg">The argument.</param>
+        /// <returns></returns>
         public static string Encode(byte[] arg)
         {
             var s = Convert.ToBase64String(arg); // Standard base64 encoder
@@ -18,6 +26,12 @@ namespace IdentityModel
             return s;
         }
 
+        /// <summary>
+        /// Decodes the specified string.
+        /// </summary>
+        /// <param name="arg">The argument.</param>
+        /// <returns></returns>
+        /// <exception cref="System.Exception">Illegal base64url string!</exception>
         public static byte[] Decode(string arg)
         {
             var s = arg;

@@ -9,8 +9,17 @@ using System.Security.Claims;
 
 namespace IdentityModel.Client
 {
+    /// <summary>
+    /// Extensions for JObject
+    /// </summary>
     public static class JObjectExtensions
     {
+        /// <summary>
+        /// Converts a JSON claims object to a list of Claim
+        /// </summary>
+        /// <param name="json">The json.</param>
+        /// <param name="excludeKeys">Claims that should be excluded.</param>
+        /// <returns></returns>
         public static IEnumerable<Claim> ToClaims(this JObject json, params string[] excludeKeys)
         {
             var claims = new List<Claim>();
@@ -38,6 +47,12 @@ namespace IdentityModel.Client
             return claims;
         }
 
+        /// <summary>
+        /// Tries to get a value from a JObject
+        /// </summary>
+        /// <param name="json">The json.</param>
+        /// <param name="name">The name.</param>
+        /// <returns></returns>
         public static JToken TryGetValue(this JObject json, string name)
         {
             JToken value;
@@ -49,6 +64,12 @@ namespace IdentityModel.Client
             return null;
         }
 
+        /// <summary>
+        /// Tries to get an int from a JObject
+        /// </summary>
+        /// <param name="json">The json.</param>
+        /// <param name="name">The name.</param>
+        /// <returns></returns>
         public static int? TryGetInt(this JObject json, string name)
         {
             var value = json.TryGetString(name);
@@ -65,12 +86,24 @@ namespace IdentityModel.Client
             return null;
         }
 
+        /// <summary>
+        /// Tries to get a string from a JObject
+        /// </summary>
+        /// <param name="json">The json.</param>
+        /// <param name="name">The name.</param>
+        /// <returns></returns>
         public static string TryGetString(this JObject json, string name)
         {
             JToken value = json.TryGetValue(name);
             return value?.ToString();
         }
 
+        /// <summary>
+        /// Tries to get a boolean from a JObject
+        /// </summary>
+        /// <param name="json">The json.</param>
+        /// <param name="name">The name.</param>
+        /// <returns></returns>
         public static bool? TryGetBoolean(this JObject json, string name)
         {
             var value = json.TryGetString(name);
@@ -84,6 +117,12 @@ namespace IdentityModel.Client
             return null;
         }
 
+        /// <summary>
+        /// Tries to get a string array from a JObject
+        /// </summary>
+        /// <param name="json">The json.</param>
+        /// <param name="name">The name.</param>
+        /// <returns></returns>
         public static IEnumerable<string> TryGetStringArray(this JObject json, string name)
         {
             var values = new List<string>();

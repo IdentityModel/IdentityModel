@@ -10,8 +10,16 @@ using System.Security.Claims;
 
 namespace IdentityModel.Client
 {
+    /// <summary>
+    /// Models an OAuth 2.0 introspection response
+    /// </summary>
+    /// <seealso cref="IdentityModel.Client.Response" />
     public class IntrospectionResponse : Response
     {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="IntrospectionResponse"/> class.
+        /// </summary>
+        /// <param name="raw">The raw response data.</param>
         public IntrospectionResponse(string raw) : base(raw)
         {
             if (!IsError)
@@ -25,8 +33,7 @@ namespace IdentityModel.Client
                 if (scope != null)
                 {
                     // it's an array
-                    var scopeArray = scope as JArray;
-                    if (scopeArray != null)
+                    if (scope is JArray scopeArray)
                     {
                         foreach (var item in scopeArray)
                         {
@@ -50,17 +57,37 @@ namespace IdentityModel.Client
             }
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="IntrospectionResponse"/> class.
+        /// </summary>
+        /// <param name="exception">The exception.</param>
         public IntrospectionResponse(Exception exception) : base(exception)
         {
         }
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="IntrospectionResponse"/> class.
+        /// </summary>
+        /// <param name="statusCode">The status code.</param>
+        /// <param name="reason">The reason.</param>
         public IntrospectionResponse(HttpStatusCode statusCode, string reason) : base(statusCode, reason)
         {
         }
 
+        /// <summary>
+        /// Gets a value indicating whether the token is active.
+        /// </summary>
+        /// <value>
+        ///   <c>true</c> if the token is active; otherwise, <c>false</c>.
+        /// </value>
         public bool IsActive => Json.TryGetBoolean("active").Value;
+
+        /// <summary>
+        /// Gets the claims.
+        /// </summary>
+        /// <value>
+        /// The claims.
+        /// </value>
         public IEnumerable<Claim> Claims { get; }
-
-
     }
 }

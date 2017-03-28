@@ -6,8 +6,18 @@ using System.Threading.Tasks;
 
 namespace IdentityModel.Client
 {
+    /// <summary>
+    /// Extensions for TokenRevocationClient
+    /// </summary>
     public static class TokenRevocationClientExtensions
     {
+        /// <summary>
+        /// Revokes an access token.
+        /// </summary>
+        /// <param name="client">The client.</param>
+        /// <param name="token">The token.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
         public static Task<TokenRevocationResponse> RevokeAccessTokenAsync(this TokenRevocationClient client, string token, CancellationToken cancellationToken = default(CancellationToken))
         {
             return client.RevokeAsync(new TokenRevocationRequest
@@ -17,6 +27,13 @@ namespace IdentityModel.Client
             }, cancellationToken);
         }
 
+        /// <summary>
+        /// Revokes a refresh token.
+        /// </summary>
+        /// <param name="client">The client.</param>
+        /// <param name="token">The token.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
         public static Task<TokenRevocationResponse> RevokeRefreshTokenAsync(this TokenRevocationClient client, string token, CancellationToken cancellationToken = default(CancellationToken))
         {
             return client.RevokeAsync(new TokenRevocationRequest
