@@ -13,17 +13,21 @@ namespace IdentityModel.Client
     /// <summary>
     /// Client for retrieving OpenID Connect discovery documents
     /// </summary>
-    public class DiscoveryClient
+    public class DiscoveryClient : IDisposable
     {
+        private bool _disposed;
+
         /// <summary>
-        /// Retrieves a discovery document.
+        /// Retrieves a discovery document using the default policy.
         /// </summary>
         /// <param name="authority">The authority.</param>
         /// <returns></returns>
         public static async Task<DiscoveryResponse> GetAsync(string authority)
         {
-            var client = new DiscoveryClient(authority);
-            return await client.GetAsync().ConfigureAwait(false);
+            using (var client = new DiscoveryClient(authority))
+            {
+                return await client.GetAsync().ConfigureAwait(false);
+            }
         }
 
         private readonly HttpClient _client;
@@ -163,6 +167,28 @@ namespace IdentityModel.Client
             catch (Exception ex)
             {
                 return new DiscoveryResponse(ex, $"Error connecting to {Url}");
+            }
+        }
+
+        /// <summary>
+        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+        /// </summary>
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        /// <summary>
+        /// Releases unmanaged and - optionally - managed resources.
+        /// </summary>
+        /// <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing && !_disposed)
+            {
+                _disposed = true;
+                _client.Dispose();
             }
         }
     }
