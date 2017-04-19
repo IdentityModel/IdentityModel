@@ -30,6 +30,43 @@ namespace IdentityModel.Client
             }
         }
 
+        /// <summary>
+        /// Parses a URL and turns it into authority and discovery endpoint URL.
+        /// </summary>
+        /// <param name="input">The input.</param>
+        /// <returns></returns>
+        public static (string authority, string discoveryEndpoint) ParseUrl(string input)
+        {
+            string discoveryEndpoint = "";
+            string authority = "";
+
+            var success = Uri.TryCreate(input, UriKind.Absolute, out var uri);
+            if (success == false)
+            {
+                return (null, null);
+            }
+
+            if (!DiscoveryUrlHelper.IsValidScheme(uri))
+            {
+                return (null, null);
+            }
+
+            var url = input.RemoveTrailingSlash();
+
+            if (url.EndsWith(OidcConstants.Discovery.DiscoveryEndpoint, StringComparison.OrdinalIgnoreCase))
+            {
+                discoveryEndpoint = url;
+                authority = url.Substring(0, url.Length - OidcConstants.Discovery.DiscoveryEndpoint.Length - 1);
+            }
+            else
+            {
+                authority = url;
+                discoveryEndpoint = url.EnsureTrailingSlash() + OidcConstants.Discovery.DiscoveryEndpoint;
+            }
+
+            return (authority, discoveryEndpoint);
+        }
+
         private readonly HttpClient _client;
 
         /// <summary>
@@ -77,34 +114,16 @@ namespace IdentityModel.Client
         /// <param name="innerHandler">The inner handler.</param>
         /// <exception cref="System.InvalidOperationException">
         /// Malformed authority URL
-        /// or
-        /// Malformed authority URL
         /// </exception>
         public DiscoveryClient(string authority, HttpMessageHandler innerHandler = null)
         {
             var handler = innerHandler ?? new HttpClientHandler();
 
-            var success = Uri.TryCreate(authority, UriKind.Absolute, out var uri);
-            if (success == false)
+            (Authority, Url) = ParseUrl(authority);
+
+            if (Authority == null || Url == null)
             {
                 throw new InvalidOperationException("Malformed authority URL");
-            }
-
-            if (!DiscoveryUrlHelper.IsValidScheme(uri))
-            {
-                throw new InvalidOperationException("Malformed authority URL");
-            }
-
-            var url = authority.RemoveTrailingSlash();
-            if (url.EndsWith(OidcConstants.Discovery.DiscoveryEndpoint, StringComparison.OrdinalIgnoreCase))
-            {
-                Url = url;
-                Authority = url.Substring(0, url.Length - OidcConstants.Discovery.DiscoveryEndpoint.Length - 1);
-            }
-            else
-            {
-                Authority = url;
-                Url = url.EnsureTrailingSlash() + OidcConstants.Discovery.DiscoveryEndpoint;
             }
 
             _client = new HttpClient(handler);
