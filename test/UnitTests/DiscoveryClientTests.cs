@@ -39,9 +39,9 @@ namespace IdentityModel.UnitTests
         [InlineData("https:something_weird_https://something_other")]
         public void malformed_authority_url_should_throw(string input)
         {
-            Action act = () => new DiscoveryClient(input);
+            Action act = () => DiscoveryClient.ParseUrl(input);
 
-            act.ShouldThrow<InvalidOperationException>().Where(e => e.Message.Equals("Malformed authority URL"));
+            act.ShouldThrow<InvalidOperationException>().Where(e => e.Message.Equals("Malformed URL"));
         }
 
         [Theory]
@@ -51,10 +51,16 @@ namespace IdentityModel.UnitTests
         [InlineData("https://server:123")]
         public void various_urls_should_normalize(string input)
         {
-            var client = new DiscoveryClient(input);
+            var result = DiscoveryClient.ParseUrl(input);
 
-            client.Url.Should().Be("https://server:123/.well-known/openid-configuration");
-            client.Authority.Should().Be("https://server:123");
+            // test parse URL logic
+            result.discoveryEndpoint.Should().Be("https://server:123/.well-known/openid-configuration");
+            result.authority.Should().Be("https://server:123");
+
+            // make sure parse URL results are used correctly
+            var client = new DiscoveryClient(input);
+            client.Url.Should().Be(result.discoveryEndpoint);
+            client.Authority.Should().Be(result.authority);
         }
 
         [Fact]

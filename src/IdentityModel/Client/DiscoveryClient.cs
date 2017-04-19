@@ -35,6 +35,9 @@ namespace IdentityModel.Client
         /// </summary>
         /// <param name="input">The input.</param>
         /// <returns></returns>
+        /// <exception cref="System.InvalidOperationException">
+        /// Malformed URL
+        /// </exception>
         public static (string authority, string discoveryEndpoint) ParseUrl(string input)
         {
             string discoveryEndpoint = "";
@@ -43,12 +46,12 @@ namespace IdentityModel.Client
             var success = Uri.TryCreate(input, UriKind.Absolute, out var uri);
             if (success == false)
             {
-                return (null, null);
+                throw new InvalidOperationException("Malformed URL");
             }
 
             if (!DiscoveryUrlHelper.IsValidScheme(uri))
             {
-                return (null, null);
+                throw new InvalidOperationException("Malformed URL");
             }
 
             var url = input.RemoveTrailingSlash();
@@ -112,20 +115,12 @@ namespace IdentityModel.Client
         /// </summary>
         /// <param name="authority">The authority.</param>
         /// <param name="innerHandler">The inner handler.</param>
-        /// <exception cref="System.InvalidOperationException">
-        /// Malformed authority URL
-        /// </exception>
         public DiscoveryClient(string authority, HttpMessageHandler innerHandler = null)
         {
             var handler = innerHandler ?? new HttpClientHandler();
 
             (Authority, Url) = ParseUrl(authority);
-
-            if (Authority == null || Url == null)
-            {
-                throw new InvalidOperationException("Malformed authority URL");
-            }
-
+            
             _client = new HttpClient(handler);
         }
 
