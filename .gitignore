@@ -28,7 +28,6 @@ tools/packages.config.md5sum
 
 # Visual Studo 2015 cache/options directory
 .vs/
-project.lock.json
 
 # MSTest test Results
 [Tt]est[Rr]esult*/
