@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <Description>OpenID Connect &amp; OAuth 2.0 client library</Description>
-    <VersionPrefix>2.8.0</VersionPrefix>
+    <VersionPrefix>2.9.0</VersionPrefix>
     <Authors>Dominick Baier;Brock Allen</Authors>
     <TargetFrameworks>netstandard1.4;net452</TargetFrameworks>
     <AssemblyName>IdentityModel</AssemblyName>
