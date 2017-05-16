@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <Description>OpenID Connect &amp; OAuth 2.0 client library</Description>
-    <VersionPrefix>2.9.0</VersionPrefix>
+    <VersionPrefix>2.9.1</VersionPrefix>
     <Authors>Dominick Baier;Brock Allen</Authors>
     <TargetFrameworks>netstandard1.4;net452</TargetFrameworks>
     <AssemblyName>IdentityModel</AssemblyName>
@@ -37,7 +37,7 @@
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="9.0.1" />
     <PackageReference Include="System.Net.Http" Version="4.3.2" />
-    <PackageReference Include="System.ValueTuple" Version="4.3.0" />
+    <PackageReference Include="System.ValueTuple" Version="4.3.1" />
   </ItemGroup>
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'netstandard1.4' ">
