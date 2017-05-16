@@ -2,6 +2,7 @@
 using IdentityModel.Client;
 using Microsoft.Extensions.PlatformAbstractions;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -148,7 +149,31 @@ namespace IdentityModel.UnitTests
             scopes.Count().Should().Be(2);
             scopes.First().Value.Should().Be("api1");
             scopes.Skip(1).First().Value.Should().Be("api2");
+        }
 
+        [Fact]
+        public async Task Additional_request_parameters_should_be_handled_correctly()
+        {
+            var document = File.ReadAllText(Path.Combine(PlatformServices.Default.Application.ApplicationBasePath, "documents", "success_introspection_response.json"));
+            var handler = new NetworkHandler(document, HttpStatusCode.OK);
+
+            var client = new IntrospectionClient(
+                Endpoint,
+                "client",
+                innerHttpMessageHandler: handler);
+
+            var additionalParams = new Dictionary<string, string>
+            {
+                { "scope", "scope1 scope2" }
+            };
+
+            var response = await client.SendAsync(new IntrospectionRequest { Token = "token", Parameters = additionalParams });
+
+            response.IsError.Should().BeFalse();
+            response.ErrorType.Should().Be(ResponseErrorType.None);
+            response.HttpStatusCode.Should().Be(HttpStatusCode.OK);
+            response.IsActive.Should().BeTrue();
+            response.Claims.Should().NotBeEmpty();
         }
     }
 }
