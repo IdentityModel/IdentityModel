@@ -322,6 +322,8 @@ namespace IdentityModel
             // common capabilities
             public const string FrontChannelLogoutSupported                 = "frontchannel_logout_supported";
             public const string FrontChannelLogoutSessionSupported          = "frontchannel_logout_session_supported";
+            public const string BackChannelLogoutSupported                  = "backchannel_logout_supported";
+            public const string BackChannelLogoutSessionSupported           = "backchannel_logout_session_supported";
             public const string GrantTypesSupported                         = "grant_types_supported";
             public const string CodeChallengeMethodsSupported               = "code_challenge_methods_supported";
             public const string ScopesSupported                             = "scopes_supported";
@@ -354,6 +356,11 @@ namespace IdentityModel
             public const string UserInfoEncryptionAlgorithmsSupported       = "userinfo_encryption_alg_values_supported";
             public const string UserInfoEncryptionEncValuesSupported        = "userinfo_encryption_enc_values_supported";
             public const string UserInfoSigningAlgorithmsSupported          = "userinfo_signing_alg_values_supported";
+        }
+
+        public static class Events
+        {
+            public const string BackChannelLogout = "http://schemas.openid.net/event/backchannel-logout";
         }
     }
 }
