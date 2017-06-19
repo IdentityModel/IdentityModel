@@ -259,20 +259,26 @@ namespace IdentityModel
 
         public static class AuthenticationMethods
         {
-            public const string Password = "pwd";
-            public const string ProofOfPossion = "pop";
-            public const string OneTimePassword = "otp";
+            public const string FacialRecognition = "face";
             public const string FingerprintBiometric = "fpt";
-            public const string RetinaScanBiometric = "eye";
-            public const string VoiceBiometric = "vbm";
-            public const string ConfirmationByTelephone = "tel";
-            public const string ConfirmationBySms = "sms";
+            public const string Geolocation = "geo";
+            public const string ProofOfPossessionHardwareSecuredKey = "hwk";
+            public const string IrisScanBiometric = "iris";
             public const string KnowledgeBasedAuthentication = "kba";
-            public const string WindowsIntegratedAuthentication = "wia";
+            public const string MultipleChannelAuthentication = "mca";
             public const string MultiFactorAuthentication = "mfa";
+            public const string OneTimePassword = "otp";
+            public const string PersonalIdentificationOrPattern = "pin";
+            public const string Password = "pwd";
+            public const string RiskBasedAuthentication = "rba";
+            public const string RetinaScanBiometric = "retina";
+            public const string SmartCard = "sc";
+            public const string ConfirmationBySms = "sms";
+            public const string ProofOfPossessionSoftwareSecuredKey = "swk";
+            public const string ConfirmationByTelephone = "tel";
             public const string UserPresenceTest = "user";
-            public const string RiskBasedAuthentication = "risk";
-            public const string MultipleChannelAuthentication = "mfa";
+            public const string VoiceBiometric = "vbm";
+            public const string WindowsIntegratedAuthentication = "wia";           
         }
 
         public static class Algorithms
