@@ -71,6 +71,7 @@ namespace IdentityModel
             public const string State = "state";
             public const string Sid = "sid";
             public const string Issuer = "iss";
+            public const string UiLocales = "ui_locales";
         }
 
         public static class TokenRequest
@@ -278,7 +279,7 @@ namespace IdentityModel
             public const string ConfirmationByTelephone = "tel";
             public const string UserPresenceTest = "user";
             public const string VoiceBiometric = "vbm";
-            public const string WindowsIntegratedAuthentication = "wia";           
+            public const string WindowsIntegratedAuthentication = "wia";
         }
 
         public static class Algorithms
