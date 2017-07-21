@@ -42,13 +42,20 @@ namespace IdentityModel.Client
         {
             var qs = string.Join("&", values.Select(kvp => string.Format("{0}={1}", WebUtility.UrlEncode(kvp.Key), WebUtility.UrlEncode(kvp.Value))).ToArray());
 
+            var seperator = '?';
+
+            if (!String.IsNullOrEmpty(_authorizeEndpoint.Query))
+            {
+                seperator = '&';
+            }
+
             if (_authorizeEndpoint.IsAbsoluteUri)
             {
-                return string.Format("{0}?{1}", _authorizeEndpoint.AbsoluteUri, qs);
+                return string.Format("{0}{1}{2}", _authorizeEndpoint.AbsoluteUri,seperator, qs);
             }
             else
             {
-                return string.Format("{0}?{1}", _authorizeEndpoint.OriginalString, qs);
+                return string.Format("{0}{1}{2}", _authorizeEndpoint.OriginalString, seperator, qs);
             }
         }
     }
