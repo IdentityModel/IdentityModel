@@ -10,7 +10,10 @@ namespace IdentityModel.Client
     /// </summary>
     public class DiscoveryPolicy
     {
-        internal string Authority;
+        /// <summary>
+        /// Gets or sets the Authority on which the policy checks will be based on
+        /// </summary>
+        public string Authority { get; set; }
 
         /// <summary>
         /// Specifies if HTTPS is enforced on all endpoints. Defaults to true.
