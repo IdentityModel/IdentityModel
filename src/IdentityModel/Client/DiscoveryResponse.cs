@@ -185,7 +185,7 @@ namespace IdentityModel.Client
                 if (!isValid) return "Issuer name does not match authority: " + Issuer;
             }
 
-            var error = ValidateEndoints(Json, policy);
+            var error = ValidateEndpoints(Json, policy);
             if (!string.IsNullOrEmpty(error)) return error;
 
             return string.Empty;
@@ -208,7 +208,7 @@ namespace IdentityModel.Client
         /// <param name="json">The json.</param>
         /// <param name="policy">The policy.</param>
         /// <returns></returns>
-        public string ValidateEndoints(JObject json, DiscoveryPolicy policy)
+        public string ValidateEndpoints(JObject json, DiscoveryPolicy policy)
         {
             // allowed hosts
             var allowedHosts = new HashSet<string>(policy.AdditionalEndpointBaseAddresses.Select(e => new Uri(e).Authority));
