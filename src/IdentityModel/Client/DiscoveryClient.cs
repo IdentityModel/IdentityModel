@@ -120,7 +120,7 @@ namespace IdentityModel.Client
             var handler = innerHandler ?? new HttpClientHandler();
 
             (Authority, Url) = ParseUrl(authority);
-            
+
             _client = new HttpClient(handler);
         }
 
@@ -131,7 +131,11 @@ namespace IdentityModel.Client
         /// <returns></returns>
         public async Task<DiscoveryResponse> GetAsync(CancellationToken cancellationToken = default(CancellationToken))
         {
-            Policy.Authority = Authority;
+            if (string.IsNullOrEmpty(Policy.Authority))
+            {
+                Policy.Authority = Authority;
+            }
+
             string jwkUrl = "";
 
             if (!DiscoveryUrlHelper.IsSecureScheme(new Uri(Url), Policy))
@@ -154,7 +158,7 @@ namespace IdentityModel.Client
                     return disco;
                 }
 
-                
+
                 try
                 {
                     jwkUrl = disco.JwksUri;
