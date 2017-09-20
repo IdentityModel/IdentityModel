@@ -181,7 +181,7 @@ namespace IdentityModel.Client
             {
                 if (string.IsNullOrWhiteSpace(Issuer)) return "Issuer name is missing";
 
-                var isValid = ValidateIssuerName(Issuer.RemoveTrailingSlash(), policy.Authority.RemoveTrailingSlash());
+                var isValid = ValidateIssuerName(Issuer.RemoveTrailingSlash(), policy.Authority.RemoveTrailingSlash(), policy.AuthorityNameComparison);
                 if (!isValid) return "Issuer name does not match authority: " + Issuer;
             }
 
@@ -199,7 +199,19 @@ namespace IdentityModel.Client
         /// <returns></returns>
         public bool ValidateIssuerName(string issuer, string authority)
         {
-            return string.Equals(issuer, authority, StringComparison.Ordinal);
+            return ValidateIssuerName(issuer, authority, StringComparison.Ordinal);
+        }
+
+        /// <summary>
+        /// Checks if the issuer matches the authority.
+        /// </summary>
+        /// <param name="issuer">The issuer.</param>
+        /// <param name="authority">The authority.</param>
+        /// <param name="nameComparison">The comparison mechanism that should be used when performing the match.</param>
+        /// <returns></returns>
+        public bool ValidateIssuerName(string issuer, string authority, StringComparison nameComparison)
+        {
+            return string.Equals(issuer, authority, nameComparison);
         }
 
         /// <summary>
@@ -265,7 +277,7 @@ namespace IdentityModel.Client
                         isAllowed = false;
                         foreach (var authority in allowedAuthorities)
                         {
-                            if (endpoint.StartsWith(authority, StringComparison.Ordinal))
+                            if (endpoint.StartsWith(authority, policy.AuthorityNameComparison))
                             {
                                 isAllowed = true;
                             }

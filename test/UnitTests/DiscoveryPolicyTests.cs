@@ -128,7 +128,7 @@ namespace IdentityModel.UnitTests
             disco.IsError.Should().BeFalse();
         }
 
-        
+
         [Fact]
         public async Task invalid_issuer_name_must_return_policy_error()
         {
@@ -181,6 +181,20 @@ namespace IdentityModel.UnitTests
             var client = new DiscoveryClient("https://authority", handler)
             {
                 Policy = {ValidateIssuerName = true}
+            };
+
+            var disco = await client.GetAsync();
+
+            disco.IsError.Should().BeFalse();
+        }
+
+        [Fact]
+        public async Task authority_comparison_may_be_case_insensitive()
+        {
+            var handler = GetHandler("https://authority/tenantid");
+            var client = new DiscoveryClient("https://authority/TENANTID", handler)
+            {
+                Policy = { ValidateIssuerName = true, AuthorityNameComparison=StringComparison.OrdinalIgnoreCase }
             };
 
             var disco = await client.GetAsync();
