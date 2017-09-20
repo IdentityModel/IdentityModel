@@ -79,6 +79,25 @@ namespace IdentityModel.UnitTests
         }
 
         [Fact]
+        public async Task Policy_authority_does_not_get_overwritten()
+        {
+            var policy = new DiscoveryPolicy
+            {
+                Authority = "https://server:123"
+            };
+
+            var client = new DiscoveryClient(_endpoint, _successHandler)
+            {
+                Policy = policy
+            };
+
+            var disco = await client.GetAsync();
+
+            disco.IsError.Should().BeTrue();
+            policy.Authority.Should().Be("https://server:123");
+        }
+
+        [Fact]
         public async Task Exception_should_be_handled_correctly()
         {
             var handler = new NetworkHandler(new Exception("error"));
