@@ -100,7 +100,10 @@ namespace IdentityModel.UnitTests
         {
             var client = new DiscoveryClient("http://authority", GetHandler("http://authority"))
             {
-                Policy = {RequireHttps = false}
+                Policy =
+                {
+                    RequireHttps = false
+                }
             };
 
             var disco = await client.GetAsync();
@@ -135,7 +138,10 @@ namespace IdentityModel.UnitTests
             var handler = GetHandler("https://differentissuer");
             var client = new DiscoveryClient("https://authority", handler)
             {
-                Policy = {ValidateIssuerName = true}
+                Policy =
+                {
+                    ValidateIssuerName = true
+                }
             };
 
             var disco = await client.GetAsync();
@@ -180,7 +186,10 @@ namespace IdentityModel.UnitTests
             var handler = GetHandler("https://authority");
             var client = new DiscoveryClient("https://authority", handler)
             {
-                Policy = {ValidateIssuerName = true}
+                Policy =
+                {
+                    ValidateIssuerName = true
+                }
             };
 
             var disco = await client.GetAsync();
@@ -194,7 +203,11 @@ namespace IdentityModel.UnitTests
             var handler = GetHandler("https://authority/tenantid");
             var client = new DiscoveryClient("https://authority/TENANTID", handler)
             {
-                Policy = { ValidateIssuerName = true, AuthorityNameComparison=StringComparison.OrdinalIgnoreCase }
+                Policy =
+                {
+                    ValidateIssuerName = true,
+                    AuthorityNameComparison = StringComparison.OrdinalIgnoreCase
+                }
             };
 
             var disco = await client.GetAsync();
