@@ -56,7 +56,7 @@ namespace IdentityModel.Client
 
             var url = input.RemoveTrailingSlash();
 
-            if (url.EndsWith(OidcConstants.Discovery.DiscoveryEndpoint, StringComparison.OrdinalIgnoreCase))
+            if (url.ToLowerInvariant().Contains(OidcConstants.Discovery.DiscoveryEndpoint))
             {
                 discoveryEndpoint = url;
                 authority = url.Substring(0, url.Length - OidcConstants.Discovery.DiscoveryEndpoint.Length - 1);
