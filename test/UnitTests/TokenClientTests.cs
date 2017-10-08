@@ -1,14 +1,17 @@
 ﻿using FluentAssertions;
 using IdentityModel.Client;
+using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.PlatformAbstractions;
+using Microsoft.Extensions.Primitives;
+using Microsoft.IdentityModel.Tokens;
 using System;
+using System.IdentityModel.Tokens.Jwt;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.WebUtilities;
-using Microsoft.Extensions.Primitives;
 using Xunit;
 
 namespace IdentityModel.UnitTests
@@ -156,7 +159,70 @@ namespace IdentityModel.UnitTests
             var fields = QueryHelpers.ParseQuery(handler.Body);
             fields["client_id"].First().Should().Be("client");
             fields["client_secret"].First().Should().Be("secret");
+        }
 
+        [Fact]
+        public async Task Setting_signing_credentials_should_post_assertion()
+        {
+            var document = File.ReadAllText(Path.Combine(PlatformServices.Default.Application.ApplicationBasePath, "documents", "success_token_response.json"));
+            var handler = new NetworkHandler(document, HttpStatusCode.OK);
+
+            var client = new TokenClient(
+                Endpoint,
+                "client",
+                "secret_greater_than_128_bits",
+                "HS256",
+                innerHttpMessageHandler: handler);
+
+            var response = await client.RequestClientCredentialsAsync();
+            var request = handler.Request;
+
+            request.Headers.Authorization.Should().BeNull();
+
+            var fields = QueryHelpers.ParseQuery(handler.Body);
+            StringValues value;
+            fields.TryGetValue("client_assertion", out value).Should().BeTrue();
+            var token = new JwtSecurityToken(value);
+            token.Issuer.Should().Be("client");
+            token.Subject.Should().Be("client");
+            token.Audiences.First().Should().Be(Endpoint);
+            fields["client_assertion_type"].First().Should().Be("urn:ietf:params:oauth:client-assertion-type:jwt-bearer");
+
+            fields.TryGetValue("client_secret", out value).Should().BeFalse();
+            fields.TryGetValue("client_id", out value).Should().BeFalse();
+        }
+
+        [Fact]
+        public async Task Setting_private_key_should_post_assertion()
+        {
+            var document = File.ReadAllText(Path.Combine(PlatformServices.Default.Application.ApplicationBasePath, "documents", "success_token_response.json"));
+            var handler = new NetworkHandler(document, HttpStatusCode.OK);
+
+            var certificate = new X509Certificate2(Path.Combine(PlatformServices.Default.Application.ApplicationBasePath, "documents", "idsvrtest.pfx"), "idsrv3test");
+
+            var client = new TokenClient(
+                Endpoint,
+                "client",
+                new X509SecurityKey(certificate),
+                "RS256",
+                innerHttpMessageHandler: handler);
+
+            var response = await client.RequestClientCredentialsAsync();
+            var request = handler.Request;
+
+            request.Headers.Authorization.Should().BeNull();
+
+            var fields = QueryHelpers.ParseQuery(handler.Body);
+            StringValues value;
+            fields.TryGetValue("client_assertion", out value).Should().BeTrue();
+            var token = new JwtSecurityToken(value);
+            token.Issuer.Should().Be("client");
+            token.Subject.Should().Be("client");
+            token.Audiences.First().Should().Be(Endpoint);
+            fields["client_assertion_type"].First().Should().Be("urn:ietf:params:oauth:client-assertion-type:jwt-bearer");
+
+            fields.TryGetValue("client_secret", out value).Should().BeFalse();
+            fields.TryGetValue("client_id", out value).Should().BeFalse();
         }
 
         [Fact]
