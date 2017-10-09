@@ -19,6 +19,16 @@ namespace IdentityModel.Client
         PostValues,
 
         /// <summary>
+        /// JWT client assertion signed with client_secret
+        /// </summary>
+        ClientSecretJwt,
+
+        /// <summary>
+        /// JWT client assertion signed with a private key
+        /// </summary>
+        ClientPrivateJwt,
+
+        /// <summary>
         /// custom
         /// </summary>
         Custom

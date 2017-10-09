@@ -1,11 +1,15 @@
 ﻿// Copyright (c) Brock Allen & Dominick Baier. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
 
+using Microsoft.IdentityModel.Tokens;
 using System;
 using System.Collections.Generic;
+using System.IdentityModel.Tokens.Jwt;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Security.Claims;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -107,6 +111,38 @@ namespace IdentityModel.Client
         }
 
         /// <summary>
+        /// Initializes a new instance of the <see cref="TokenClient"/> class.
+        /// </summary>
+        /// <param name="address">The address.</param>
+        /// <param name="clientId">The client identifier.</param>
+        /// <param name="clientSecret">The client secret.</param>
+        /// <param name="signingAlgorithm">The signing algorithm.</param>
+        /// <param name="innerHttpMessageHandler">The inner HTTP message handler.</param>
+        /// <exception cref="System.ArgumentNullException">clientId</exception>
+        public TokenClient(string address, string clientId, string clientSecret, string signingAlgorithm, HttpMessageHandler innerHttpMessageHandler)
+            : this(address, clientId, clientSecret, innerHttpMessageHandler, AuthenticationStyle.ClientSecretJwt)
+        {
+            SigningAlgorithm = signingAlgorithm;
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="TokenClient"/> class.
+        /// </summary>
+        /// <param name="address">The address.</param>
+        /// <param name="clientId">The client identifier.</param>
+        /// <param name="privateKey">The client private key.</param>
+        /// <param name="signingAlgorithm">The signing algorithm.</param>
+        /// <param name="innerHttpMessageHandler">The inner HTTP message handler.</param>
+        /// <exception cref="System.ArgumentNullException">clientId</exception>
+        public TokenClient(string address, string clientId, AsymmetricSecurityKey privateKey, string signingAlgorithm, HttpMessageHandler innerHttpMessageHandler)
+            : this(address, clientId, innerHttpMessageHandler)
+        {
+            AuthenticationStyle = AuthenticationStyle.ClientPrivateJwt;
+            SigningAlgorithm = signingAlgorithm;
+            PrivateKey = privateKey;
+        }
+
+        /// <summary>
         /// Gets or sets the client identifier.
         /// </summary>
         /// <value>
@@ -139,6 +175,22 @@ namespace IdentityModel.Client
         public AuthenticationStyle AuthenticationStyle { get; set; }
 
         /// <summary>
+        /// Gets or sets the JWS signing algorithms (alg values) supported by the Token Endpoint for the signature on the JWT.
+        /// </summary>
+        /// <value>
+        /// The JWS signing algorithms.
+        /// </value>
+        public string SigningAlgorithm { get; set; }
+
+        /// <summary>
+        /// Gets or sets the private key for the signature on the JWT.
+        /// </summary>
+        /// <value>
+        /// The private key.
+        /// </value>
+        public AsymmetricSecurityKey PrivateKey { get; set; }
+
+        /// <summary>
         /// Sets the timeout.
         /// </summary>
         /// <value>
@@ -163,12 +215,27 @@ namespace IdentityModel.Client
             HttpResponseMessage response;
 
             var request = new HttpRequestMessage(HttpMethod.Post, Address);
-            request.Content = new FormUrlEncodedContent(form);
 
             if (AuthenticationStyle == AuthenticationStyle.BasicAuthentication)
             {
                 request.Headers.Authorization = new BasicAuthenticationHeaderValue(ClientId, ClientSecret);
             }
+            else if (AuthenticationStyle == AuthenticationStyle.ClientSecretJwt)
+            {
+                var signingCredentials = new SigningCredentials(new SymmetricSecurityKey(Encoding.ASCII.GetBytes(ClientSecret)), SigningAlgorithm);
+                var assertion = GenerateJwt(ClientId, ClientId, Address, Guid.NewGuid().ToString(), DateTime.UtcNow.AddMinutes(5), DateTime.UtcNow, signingCredentials);
+                form.Add(OidcConstants.TokenRequest.ClientAssertion, assertion);
+                form.Add(OidcConstants.TokenRequest.ClientAssertionType, OidcConstants.ClientAssertionTypes.JwtBearer);
+            }
+            if (AuthenticationStyle == AuthenticationStyle.ClientPrivateJwt)
+            {
+                var signingCredentials = new SigningCredentials(PrivateKey, SigningAlgorithm);
+                var assertion = GenerateJwt(ClientId, ClientId, Address, Guid.NewGuid().ToString(), DateTime.UtcNow.AddMinutes(5), DateTime.UtcNow, signingCredentials);
+                form.Add(OidcConstants.TokenRequest.ClientAssertion, assertion);
+                form.Add(OidcConstants.TokenRequest.ClientAssertionType, OidcConstants.ClientAssertionTypes.JwtBearer);
+            }
+
+            request.Content = new FormUrlEncodedContent(form);
 
             try
             {
@@ -210,6 +277,18 @@ namespace IdentityModel.Client
                 _disposed = true;
                 Client.Dispose();
             }
+        }
+
+        private static string GenerateJwt(string issuer, string subject, string audience, string identifier, DateTime expires, DateTime issuedAt, SigningCredentials signingCredentials)
+        {
+            var claims = new Claim[]
+            {
+                new Claim(JwtClaimTypes.Subject, subject),
+                new Claim(JwtClaimTypes.IssuedAt, issuedAt.ToEpochTime().ToString())
+            };
+            JwtSecurityToken jwt = new JwtSecurityToken(issuer, audience, claims, null, expires, signingCredentials);
+            var handler = new JwtSecurityTokenHandler();
+            return handler.WriteToken(jwt);
         }
     }
 }
