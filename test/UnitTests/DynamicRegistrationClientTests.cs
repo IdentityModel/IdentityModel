@@ -1,14 +1,9 @@
 ﻿using FluentAssertions;
 using IdentityModel.Client;
-using Microsoft.Extensions.PlatformAbstractions;
 using System;
 using System.IO;
-using System.Linq;
 using System.Net;
-using System.Text;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.WebUtilities;
-using Microsoft.Extensions.Primitives;
 using Xunit;
 
 namespace IdentityModel.UnitTests
@@ -20,7 +15,7 @@ namespace IdentityModel.UnitTests
         [Fact]
         public async Task Valid_protocol_response_should_be_handled_correctly()
         {
-            var document = File.ReadAllText(Path.Combine(PlatformServices.Default.Application.ApplicationBasePath, "documents", "success_registration_response.json"));
+            var document = File.ReadAllText(FileName.Create("success_registration_response.json"));
             var handler = new NetworkHandler(document, HttpStatusCode.Created);
 
             var client = new DynamicRegistrationClient(
@@ -101,7 +96,7 @@ namespace IdentityModel.UnitTests
         [Fact]
         public async Task Valid_protocol_error_should_be_handled_correctly()
         {
-            var document = File.ReadAllText(Path.Combine(PlatformServices.Default.Application.ApplicationBasePath, "documents", "failure_registration_response.json"));
+            var document = File.ReadAllText(FileName.Create("failure_registration_response.json"));
             var handler = new NetworkHandler(document, HttpStatusCode.BadRequest);
 
             var client = new DynamicRegistrationClient(

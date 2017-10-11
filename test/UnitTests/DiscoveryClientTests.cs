@@ -1,6 +1,5 @@
 ﻿using FluentAssertions;
 using IdentityModel.Client;
-using Microsoft.Extensions.PlatformAbstractions;
 using System;
 using System.IO;
 using System.Net;
@@ -16,10 +15,10 @@ namespace IdentityModel.UnitTests
 
         public DiscoveryClientTests()
         {
-            var discoFileName = Path.Combine(PlatformServices.Default.Application.ApplicationBasePath, "documents", "discovery.json");
+            var discoFileName = FileName.Create("discovery.json");
             var document = File.ReadAllText(discoFileName);
 
-            var jwksFileName = Path.Combine(PlatformServices.Default.Application.ApplicationBasePath, "documents", "discovery_jwks.json");
+            var jwksFileName = FileName.Create("discovery_jwks.json");
             var jwks = File.ReadAllText(jwksFileName);
 
             _successHandler = new NetworkHandler(request =>

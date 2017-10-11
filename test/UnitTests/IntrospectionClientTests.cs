@@ -1,6 +1,5 @@
 ﻿using FluentAssertions;
 using IdentityModel.Client;
-using Microsoft.Extensions.PlatformAbstractions;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -73,7 +72,7 @@ namespace IdentityModel.UnitTests
         [Fact]
         public async Task legacy_protocol_response_should_be_handled_correctly()
         {
-            var document = File.ReadAllText(Path.Combine(PlatformServices.Default.Application.ApplicationBasePath, "documents", "legacy_success_introspection_response.json"));
+            var document = File.ReadAllText(FileName.Create("legacy_success_introspection_response.json"));
             var handler = new NetworkHandler(document, HttpStatusCode.OK);
 
             var client = new IntrospectionClient(
@@ -114,7 +113,7 @@ namespace IdentityModel.UnitTests
         [Fact]
         public async Task success_protocol_response_should_be_handled_correctly()
         {
-            var document = File.ReadAllText(Path.Combine(PlatformServices.Default.Application.ApplicationBasePath, "documents", "success_introspection_response.json"));
+            var document = File.ReadAllText(FileName.Create("success_introspection_response.json"));
             var handler = new NetworkHandler(document, HttpStatusCode.OK);
 
             var client = new IntrospectionClient(
@@ -154,7 +153,7 @@ namespace IdentityModel.UnitTests
         [Fact]
         public async Task Additional_request_parameters_should_be_handled_correctly()
         {
-            var document = File.ReadAllText(Path.Combine(PlatformServices.Default.Application.ApplicationBasePath, "documents", "success_introspection_response.json"));
+            var document = File.ReadAllText(FileName.Create("success_introspection_response.json"));
             var handler = new NetworkHandler(document, HttpStatusCode.OK);
 
             var client = new IntrospectionClient(

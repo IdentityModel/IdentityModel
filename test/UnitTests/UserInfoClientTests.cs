@@ -1,6 +1,5 @@
 ﻿using FluentAssertions;
 using IdentityModel.Client;
-using Microsoft.Extensions.PlatformAbstractions;
 using System;
 using System.IO;
 using System.Net;
@@ -16,7 +15,7 @@ namespace IdentityModel.UnitTests
         [Fact]
         public async Task Valid_protocol_response_should_be_handled_correctly()
         {
-            var document = File.ReadAllText(Path.Combine(PlatformServices.Default.Application.ApplicationBasePath, "documents", "success_userinfo_response.json"));
+            var document = File.ReadAllText(FileName.Create("success_userinfo_response.json"));
             var handler = new NetworkHandler(document, HttpStatusCode.OK);
 
             var client = new UserInfoClient(
@@ -30,27 +29,6 @@ namespace IdentityModel.UnitTests
             response.HttpStatusCode.Should().Be(HttpStatusCode.OK);
             response.Claims.Should().NotBeEmpty();
         }
-
-        //[Fact]
-        //public async Task Valid_protocol_error_should_be_handled_correctly()
-        //{
-        //    var document = File.ReadAllText(Path.Combine(PlatformServices.Default.Application.ApplicationBasePath, "documents", "failure_token_response.json"));
-        //    var handler = new NetworkHandler(document, HttpStatusCode.BadRequest);
-
-        //    var client = new TokenClient(
-        //        Endpoint,
-        //        "client",
-        //        innerHttpMessageHandler: handler);
-
-        //    var response = await client.RequestClientCredentialsAsync();
-
-        //    response.IsError.Should().BeTrue();
-        //    response.ErrorType.Should().Be(ResponseErrorType.Protocol);
-        //    response.HttpStatusCode.Should().Be(HttpStatusCode.BadRequest);
-        //    response.Error.Should().Be("error");
-        //    response.ErrorDescription.Should().Be("error_description");
-        //    response.TryGet("custom").Should().Be("custom");
-        //}
 
         [Fact]
         public async Task Malformed_response_document_should_be_handled_correctly()

@@ -1,6 +1,5 @@
 ﻿using FluentAssertions;
 using IdentityModel.Client;
-using Microsoft.Extensions.PlatformAbstractions;
 using System;
 using System.IO;
 using System.Net;
@@ -16,14 +15,14 @@ namespace IdentityModel.UnitTests
             if (endpointBase == null) endpointBase = issuer;
             if (alternateEndpointBase == null) alternateEndpointBase = issuer;
 
-            var discoFileName = Path.Combine(PlatformServices.Default.Application.ApplicationBasePath, "documents", "discovery_variable.json");
+            var discoFileName = FileName.Create("discovery_variable.json");
             var raw = File.ReadAllText(discoFileName);
 
             var document = raw.Replace("{issuer}", issuer)
                               .Replace("{endpointBase}", endpointBase)
                               .Replace("{alternateEndpointBase}", alternateEndpointBase);
 
-            var jwksFileName = Path.Combine(PlatformServices.Default.Application.ApplicationBasePath, "documents", "discovery_jwks.json");
+            var jwksFileName = FileName.Create("discovery_jwks.json");
             var jwks = File.ReadAllText(jwksFileName);
 
             var handler = new NetworkHandler(request =>
