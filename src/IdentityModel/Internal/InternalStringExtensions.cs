@@ -5,8 +5,14 @@ using System.Diagnostics;
 
 namespace IdentityModel
 {
-    internal static class StringExtensions
+    internal static class InternalStringExtensions
     {
+        [DebuggerStepThrough]
+        public static bool IsMissing(this string value)
+        {
+            return string.IsNullOrWhiteSpace(value);
+        }
+
         [DebuggerStepThrough]
         public static string EnsureTrailingSlash(this string url)
         {
