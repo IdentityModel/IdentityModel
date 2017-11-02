@@ -9,6 +9,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.WebUtilities;
 
 using Xunit;
+using Newtonsoft.Json;
 
 namespace IdentityModel.UnitTests
 {
@@ -112,6 +113,52 @@ namespace IdentityModel.UnitTests
             response.ErrorType.Should().Be(ResponseErrorType.Http);
             response.HttpStatusCode.Should().Be(HttpStatusCode.NotFound);
             response.Error.Should().Be("not found");
+        }
+
+        [Fact]
+        public async Task Http_error_with_non_json_content_should_be_handled_correctly()
+        {
+            var handler = new NetworkHandler("not_json", HttpStatusCode.Unauthorized);
+
+            var client = new TokenClient(
+                Endpoint,
+                "client",
+                innerHttpMessageHandler: handler);
+
+            var response = await client.RequestClientCredentialsAsync();
+
+            response.IsError.Should().BeTrue();
+            response.ErrorType.Should().Be(ResponseErrorType.Http);
+            response.HttpStatusCode.Should().Be(HttpStatusCode.Unauthorized);
+            response.Error.Should().Be("Unauthorized");
+            response.Raw.Should().Be("not_json");
+        }
+
+        [Fact]
+        public async Task Http_error_with_json_content_should_be_handled_correctly()
+        {
+            var content = new
+            {
+                foo = "foo",
+                bar = "bar"
+            };
+
+            var handler = new NetworkHandler(JsonConvert.SerializeObject(content), HttpStatusCode.Unauthorized);
+
+            var client = new TokenClient(
+                Endpoint,
+                "client",
+                innerHttpMessageHandler: handler);
+
+            var response = await client.RequestClientCredentialsAsync();
+
+            response.IsError.Should().BeTrue();
+            response.ErrorType.Should().Be(ResponseErrorType.Http);
+            response.HttpStatusCode.Should().Be(HttpStatusCode.Unauthorized);
+            response.Error.Should().Be("Unauthorized");
+
+            response.Json.TryGetString("foo").Should().Be("foo");
+            response.Json.TryGetString("bar").Should().Be("bar");
         }
 
         [Fact]

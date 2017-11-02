@@ -162,8 +162,10 @@ namespace IdentityModel.Client
         {
             HttpResponseMessage response;
 
-            var request = new HttpRequestMessage(HttpMethod.Post, Address);
-            request.Content = new FormUrlEncodedContent(form);
+            var request = new HttpRequestMessage(HttpMethod.Post, Address)
+            {
+                Content = new FormUrlEncodedContent(form)
+            };
 
             if (AuthenticationStyle == AuthenticationStyle.BasicAuthentication)
             {
@@ -179,14 +181,19 @@ namespace IdentityModel.Client
                 return new TokenResponse(ex);
             }
 
+            string content = null;
+            if (response.Content != null)
+            {
+                content = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+            }
+
             if (response.StatusCode == HttpStatusCode.OK || response.StatusCode == HttpStatusCode.BadRequest)
             {
-                var content = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
                 return new TokenResponse(content);
             }
             else
             {
-                return new TokenResponse(response.StatusCode, response.ReasonPhrase);
+                return new TokenResponse(response.StatusCode, response.ReasonPhrase, content);
             }
         }
 

@@ -58,12 +58,24 @@ namespace IdentityModel.Client
         /// </summary>
         /// <param name="statusCode">The status code.</param>
         /// <param name="reason">The reason.</param>
-        protected Response(HttpStatusCode statusCode, string reason)
+        /// <param name="content">The response body</param>
+        protected Response(HttpStatusCode statusCode, string reason, string content = null)
         {
             HttpStatusCode = statusCode;
             HttpErrorReason = reason;
 
             if (statusCode != HttpStatusCode.OK) ErrorType = ResponseErrorType.Http;
+
+            if (content != null)
+            {
+                Raw = content;
+
+                try
+                {
+                    Json = JObject.Parse(content);
+                }
+                catch { }
+            }
         }
 
         /// <summary>
