@@ -1,9 +1,9 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>net452;netstandard1.4;netstandard2.0</TargetFrameworks>
-    <VersionPrefix>2.14.0</VersionPrefix>
-    <!--<VersionSuffix>preview1</VersionSuffix>-->
+    <TargetFrameworks>net452;net461;netstandard1.4;netstandard2.0</TargetFrameworks>
+    <VersionPrefix>2.15.0</VersionPrefix>
+    <VersionSuffix>preview1</VersionSuffix>
     
     <Authors>Dominick Baier;Brock Allen</Authors>
     <Description>OpenID Connect &amp; OAuth 2.0 client library</Description>
@@ -22,6 +22,14 @@
 
   <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net452|AnyCPU'">
     <DocumentationFile>bin\Release\net452\IdentityModel.xml</DocumentationFile>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net461|AnyCPU'">
+    <DocumentationFile>bin\Debug\net461\IdentityModel.xml</DocumentationFile>
+  </PropertyGroup>
+
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net461|AnyCPU'">
+    <DocumentationFile>bin\Release\net461\IdentityModel.xml</DocumentationFile>
   </PropertyGroup>
   
   <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|netstandard1.4|AnyCPU'">
@@ -53,6 +61,13 @@
   </ItemGroup>
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'net452' ">
+    <Reference Include="System" />
+    <Reference Include="Microsoft.CSharp" />
+    <PackageReference Include="System.Net.Http" Version="4.3.3" />
+    <PackageReference Include="System.ValueTuple" Version="4.4.0" />
+  </ItemGroup>
+
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net461' ">
     <Reference Include="System" />
     <Reference Include="Microsoft.CSharp" />
     <PackageReference Include="System.Net.Http" Version="4.3.3" />
