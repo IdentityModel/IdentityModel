@@ -173,7 +173,12 @@ namespace IdentityModel.Client
                         _accessToken = response.AccessToken;
                         _refreshToken = response.RefreshToken;
 
-                        TokenRefreshed?.Invoke(this, new TokenRefreshedEventArgs(response.AccessToken, response.RefreshToken));
+                        #pragma warning disable 4014
+                        Task.Run(() =>
+                        {
+                            TokenRefreshed?.Invoke(this, new TokenRefreshedEventArgs(response.AccessToken, response.RefreshToken));
+                        }).ConfigureAwait(false);
+                        #pragma warning restore 4014
 
                         return true;
                     }
