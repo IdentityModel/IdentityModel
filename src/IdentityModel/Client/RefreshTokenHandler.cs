@@ -71,6 +71,11 @@ namespace IdentityModel.Client
         }
 
         /// <summary>
+        /// Occurs when the tokens were refreshed successfully
+        /// </summary>
+        public event EventHandler<TokenRefreshedEventArgs> TokenRefreshed;
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="RefreshTokenHandler"/> class.
         /// </summary>
         /// <param name="tokenEndpoint">The token endpoint.</param>
@@ -167,6 +172,13 @@ namespace IdentityModel.Client
                     {
                         _accessToken = response.AccessToken;
                         _refreshToken = response.RefreshToken;
+
+                        #pragma warning disable 4014
+                        Task.Run(() =>
+                        {
+                            TokenRefreshed?.Invoke(this, new TokenRefreshedEventArgs(response.AccessToken, response.RefreshToken));
+                        }).ConfigureAwait(false);
+                        #pragma warning restore 4014
 
                         return true;
                     }
