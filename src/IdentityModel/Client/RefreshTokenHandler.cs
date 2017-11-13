@@ -7,6 +7,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading;
 using System.Threading.Tasks;
+using IdentityModel.Internal;
 
 namespace IdentityModel.Client
 {
@@ -173,13 +174,7 @@ namespace IdentityModel.Client
                         _accessToken = response.AccessToken;
                         _refreshToken = response.RefreshToken;
 
-                        #pragma warning disable 4014
-                        Task.Run(() =>
-                        {
-                            TokenRefreshed?.Invoke(this, new TokenRefreshedEventArgs(response.AccessToken, response.RefreshToken));
-                        }).ConfigureAwait(false);
-                        #pragma warning restore 4014
-
+                        TokenRefreshed?.FireAndForget(new TokenRefreshedEventArgs(response.AccessToken, response.RefreshToken));
                         return true;
                     }
                 }
