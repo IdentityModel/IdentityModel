@@ -19,7 +19,7 @@ namespace IdentityModel.Client
         /// </summary>
         /// <param name="client">The client.</param>
         /// <param name="scope">The scope.</param>
-        /// <param name="extra">Eextra parameters.</param>
+        /// <param name="extra">Extra parameters.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
         public static Task<TokenResponse> RequestClientCredentialsAsync(this TokenClient client, string scope = null, object extra = null, CancellationToken cancellationToken = default(CancellationToken))
