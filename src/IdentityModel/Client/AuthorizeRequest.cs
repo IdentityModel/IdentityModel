@@ -41,15 +41,18 @@ namespace IdentityModel.Client
         public string Create(IDictionary<string, string> values)
         {
             var qs = string.Join("&", values.Select(kvp => string.Format("{0}={1}", WebUtility.UrlEncode(kvp.Key), WebUtility.UrlEncode(kvp.Value))).ToArray());
+            string url;
 
             if (_authorizeEndpoint.IsAbsoluteUri)
             {
-                return string.Format("{0}?{1}", _authorizeEndpoint.AbsoluteUri, qs);
+                url = string.Format("{0}?{1}", _authorizeEndpoint.AbsoluteUri, qs);
             }
             else
             {
-                return string.Format("{0}?{1}", _authorizeEndpoint.OriginalString, qs);
+                url = string.Format("{0}?{1}", _authorizeEndpoint.OriginalString, qs);
             }
+
+            return url.TrimEnd('?');
         }
     }
 }
