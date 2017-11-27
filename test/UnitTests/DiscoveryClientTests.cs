@@ -53,13 +53,13 @@ namespace IdentityModel.UnitTests
             var result = DiscoveryClient.ParseUrl(input);
 
             // test parse URL logic
-            result.discoveryEndpoint.Should().Be("https://server:123/.well-known/openid-configuration");
-            result.authority.Should().Be("https://server:123");
+            result.Url.Should().Be("https://server:123/.well-known/openid-configuration");
+            result.Authority.Should().Be("https://server:123");
 
             // make sure parse URL results are used correctly
             var client = new DiscoveryClient(input);
-            client.Url.Should().Be(result.discoveryEndpoint);
-            client.Authority.Should().Be(result.authority);
+            client.Url.Should().Be(result.Url);
+            client.Authority.Should().Be(result.Authority);
         }
 
         [Fact]

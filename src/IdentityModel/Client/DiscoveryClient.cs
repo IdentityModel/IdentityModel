@@ -38,11 +38,8 @@ namespace IdentityModel.Client
         /// <exception cref="System.InvalidOperationException">
         /// Malformed URL
         /// </exception>
-        public static (string authority, string discoveryEndpoint) ParseUrl(string input)
+        public static DiscoveryEndpoint ParseUrl(string input)
         {
-            string discoveryEndpoint = "";
-            string authority = "";
-
             var success = Uri.TryCreate(input, UriKind.Absolute, out var uri);
             if (success == false)
             {
@@ -58,16 +55,12 @@ namespace IdentityModel.Client
 
             if (url.EndsWith(OidcConstants.Discovery.DiscoveryEndpoint, StringComparison.OrdinalIgnoreCase))
             {
-                discoveryEndpoint = url;
-                authority = url.Substring(0, url.Length - OidcConstants.Discovery.DiscoveryEndpoint.Length - 1);
+                return new DiscoveryEndpoint(url.Substring(0, url.Length - OidcConstants.Discovery.DiscoveryEndpoint.Length - 1), url);
             }
             else
             {
-                authority = url;
-                discoveryEndpoint = url.EnsureTrailingSlash() + OidcConstants.Discovery.DiscoveryEndpoint;
+                return new DiscoveryEndpoint(url, url.EnsureTrailingSlash() + OidcConstants.Discovery.DiscoveryEndpoint);
             }
-
-            return (authority, discoveryEndpoint);
         }
 
         private readonly HttpClient _client;
@@ -119,7 +112,9 @@ namespace IdentityModel.Client
         {
             var handler = innerHandler ?? new HttpClientHandler();
 
-            (Authority, Url) = ParseUrl(authority);
+            var parsed = ParseUrl(authority);
+            Authority = parsed.Authority;
+            Url = parsed.Url;
 
             _client = new HttpClient(handler);
         }
