@@ -2,7 +2,7 @@
 
   <PropertyGroup>
     <TargetFrameworks>net452;net461;netstandard1.4;netstandard2.0</TargetFrameworks>
-    <VersionPrefix>2.16.0</VersionPrefix>
+    <VersionPrefix>2.17.0</VersionPrefix>
     <!--<VersionSuffix>preview1</VersionSuffix>-->
     
     <Authors>Dominick Baier;Brock Allen</Authors>
@@ -14,38 +14,7 @@
     <PackageLicenseUrl>https://github.com/IdentityModel/IdentityModel2/blob/release/LICENSE</PackageLicenseUrl>
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>git://github.com/identitymodel/identitymodel2</RepositoryUrl>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net452|AnyCPU'">
-    <DocumentationFile>bin\Debug\net452\IdentityModel.xml</DocumentationFile>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net452|AnyCPU'">
-    <DocumentationFile>bin\Release\net452\IdentityModel.xml</DocumentationFile>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|net461|AnyCPU'">
-    <DocumentationFile>bin\Debug\net461\IdentityModel.xml</DocumentationFile>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|net461|AnyCPU'">
-    <DocumentationFile>bin\Release\net461\IdentityModel.xml</DocumentationFile>
-  </PropertyGroup>
-  
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|netstandard1.4|AnyCPU'">
-    <DocumentationFile>bin\Debug\netstandard1.4\IdentityModel.xml</DocumentationFile>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|netstandard1.4|AnyCPU'">
-    <DocumentationFile>bin\Release\netstandard1.4\IdentityModel.xml</DocumentationFile>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|netstandard2.0|AnyCPU'">
-    <DocumentationFile>bin\Debug\netstandard2.0\IdentityModel.xml</DocumentationFile>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Release|netstandard2.0|AnyCPU'">
-    <DocumentationFile>bin\Release\netstandard2.0\IdentityModel.xml</DocumentationFile>
+    <GenerateDocumentationFile Condition=" '$(Configuration)' == 'Release' ">true</GenerateDocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>

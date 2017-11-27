@@ -9,8 +9,8 @@ var buildArtifacts      = Directory("./artifacts/packages");
 
 var isAppVeyor          = AppVeyor.IsRunningOnAppVeyor;
 var isWindows           = IsRunningOnWindows();
-var netcore             = "netcoreapp1.1";
-var netstandard         = "netstandard1.3";
+var netcore             = "netcoreapp1.1;netcoreapp2.0";
+var netstandard         = "netstandard1.4;netstandard2.0";
 
 ///////////////////////////////////////////////////////////////////////////////
 // Clean
@@ -22,30 +22,10 @@ Task("Clean")
 });
 
 ///////////////////////////////////////////////////////////////////////////////
-// Restore
-///////////////////////////////////////////////////////////////////////////////
-Task("Restore")
-    .Does(() =>
-{
-    var settings = new DotNetCoreRestoreSettings
-    {
-        Sources = new [] { "https://api.nuget.org/v3/index.json" }
-    };
-
-    var projects = GetFiles("./**/*.csproj");
-
-	foreach(var project in projects)
-	{
-	    DotNetCoreRestore(project.GetDirectory().FullPath, settings);
-    }
-});
-
-///////////////////////////////////////////////////////////////////////////////
 // Build
 ///////////////////////////////////////////////////////////////////////////////
 Task("Build")
     .IsDependentOn("Clean")
-    .IsDependentOn("Restore")
     .Does(() =>
 {
     var settings = new DotNetCoreBuildSettings 
@@ -86,7 +66,6 @@ Task("Build")
 // Test
 ///////////////////////////////////////////////////////////////////////////////
 Task("Test")
-    .IsDependentOn("Restore")
     .IsDependentOn("Clean")
     .Does(() =>
 {
@@ -113,7 +92,6 @@ Task("Test")
 // Pack
 ///////////////////////////////////////////////////////////////////////////////
 Task("Pack")
-    .IsDependentOn("Restore")
     .IsDependentOn("Clean")
     .Does(() =>
 {
