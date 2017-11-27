@@ -1,5 +1,4 @@
-﻿using System;
-using FluentAssertions;
+﻿using FluentAssertions;
 using IdentityModel.Client;
 using Xunit;
 
@@ -10,7 +9,7 @@ namespace IdentityModel.UnitTests
         [Fact]
         public void Create_absolute_url_should_behave_as_expected()
         {
-            var request = new AuthorizeRequest("http://server/authorize");
+            var request = new RequestUrl("http://server/authorize");
 
             var parmeters = new
             {
@@ -26,7 +25,7 @@ namespace IdentityModel.UnitTests
         [Fact]
         public void Create_relative_url_should_behave_as_expected()
         {
-            var request = new AuthorizeRequest(new Uri("/authorize", UriKind.Relative));
+            var request = new RequestUrl("/authorize");
 
             var parmeters = new
             {

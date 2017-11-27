@@ -8,23 +8,23 @@ using System.Reflection;
 namespace IdentityModel.Client
 {
     /// <summary>
-    /// Extensions for AuthorizeRequest
+    /// Extensions for RequestUrl
     /// </summary>
-    public static class AuthorizeRequestExtensions
+    public static class RequestUrlExtensions
     {
         /// <summary>
-        /// Creates the authorize URL.
+        /// Creates an authorize URL.
         /// </summary>
         /// <param name="request">The request.</param>
         /// <param name="values">The values (either using a string Dictionary or an object's properties).</param>
         /// <returns></returns>
-        public static string Create(this AuthorizeRequest request, object values)
+        public static string Create(this RequestUrl request, object values)
         {
             return request.Create(ObjectToDictionary(values));
         }
 
         /// <summary>
-        /// Creates the authorize URL.
+        /// Creates an authorize URL.
         /// </summary>
         /// <param name="request">The request.</param>
         /// <param name="clientId">The client identifier.</param>
@@ -41,7 +41,7 @@ namespace IdentityModel.Client
         /// <param name="codeChallengeMethod">The code challenge method.</param>
         /// <param name="extra">Extra parameters.</param>
         /// <returns></returns>
-        public static string CreateAuthorizeUrl(this AuthorizeRequest request,
+        public static string CreateAuthorizeUrl(this RequestUrl request,
             string clientId,
             string responseType,
             string scope = null,
