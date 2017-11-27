@@ -17,7 +17,7 @@ namespace IdentityModel.Client
         private readonly string _baseUrl;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="AuthorizeRequest"/> class.
+        /// Initializes a new instance of the <see cref="RequestUrl"/> class.
         /// </summary>
         /// <param name="baseUrl">The authorize endpoint.</param>
         public RequestUrl(string baseUrl)
