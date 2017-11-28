@@ -6,7 +6,7 @@
     public class DiscoveryEndpoint
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="Url"/> class.
+        /// Initializes a new instance of the <see cref="DiscoveryEndpoint"/> class.
         /// </summary>
         /// <param name="authority">The authority.</param>
         /// <param name="url">The discovery endpoint URL.</param>
