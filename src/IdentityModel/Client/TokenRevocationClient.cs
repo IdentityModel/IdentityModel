@@ -111,7 +111,16 @@ namespace IdentityModel.Client
             if (request == null) throw new ArgumentNullException(nameof(request));
             if (string.IsNullOrWhiteSpace(request.Token)) throw new ArgumentNullException(nameof(request.Token));
 
-            var form = new Dictionary<string, string>();
+            IDictionary<string, string> form;
+            if (request.Parameters == null)
+            {
+                form = new Dictionary<string, string>();
+            }
+            else
+            {
+                form = request.Parameters;
+            }
+
             form.Add("token", request.Token);
 
             if (!string.IsNullOrWhiteSpace(request.TokenTypeHint))
