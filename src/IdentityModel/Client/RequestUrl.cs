@@ -32,9 +32,13 @@ namespace IdentityModel.Client
         public string Create(object values)
         {
             var dictionary = ObjectToDictionary(values);
+            if (dictionary == null || !dictionary.Any())
+            {
+                return _baseUrl;
+            }
 
             var qs = string.Join("&", dictionary.Select(kvp => string.Format("{0}={1}", WebUtility.UrlEncode(kvp.Key), WebUtility.UrlEncode(kvp.Value))).ToArray());
-            return string.Format("{0}?{1}", _baseUrl, qs).TrimEnd('?'); 
+            return string.Format("{0}?{1}", _baseUrl, qs);
         }
 
         private static Dictionary<string, string> ObjectToDictionary(object values)
