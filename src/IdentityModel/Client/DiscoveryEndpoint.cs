@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace IdentityModel.Client
+﻿namespace IdentityModel.Client
 {
     /// <summary>
     /// Represents a URL to a discovery endpoint - parsed to separate the URL and authority
