@@ -137,6 +137,8 @@ namespace IdentityModel.Client
                 return response;
             }
 
+            response.Dispose(); // This 401 response will not be used for anything so is disposed to unblock the socket.
+
             request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", AccessToken);
             return await base.SendAsync(request, cancellationToken).ConfigureAwait(false);
         }
