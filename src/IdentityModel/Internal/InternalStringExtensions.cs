@@ -14,6 +14,12 @@ namespace IdentityModel
         }
 
         [DebuggerStepThrough]
+        public static bool IsPresent(this string value)
+        {
+            return !(value.IsMissing());
+        }
+
+        [DebuggerStepThrough]
         public static string EnsureTrailingSlash(this string url)
         {
             if (!url.EndsWith("/"))

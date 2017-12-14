@@ -39,7 +39,7 @@ namespace IdentityModel
         /// <returns></returns>
         public static ClaimsIdentity Create(string authenticationType, params Claim[] claims)
         {
-            return new ClaimsIdentity(claims, authenticationType);
+            return new ClaimsIdentity(claims, authenticationType, JwtClaimTypes.Name, JwtClaimTypes.Role);
         }
 
         /// <summary>
@@ -70,35 +70,35 @@ namespace IdentityModel
                 name = certificate.SerialNumber;
                 if (!string.IsNullOrEmpty(name))
                 {
-                    claims.Add(new Claim(ClaimTypes.SerialNumber, name, "http://www.w3.org/2001/XMLSchema#string", issuer));
+                    claims.Add(new Claim(ClaimTypes.SerialNumber, name, ClaimValueTypes.String, issuer));
                 }
 
                 name = certificate.GetNameInfo(X509NameType.DnsName, false);
-                if (!string.IsNullOrEmpty(name))
+                if (name.IsPresent())
                 {
                     claims.Add(new Claim(ClaimTypes.Dns, name, ClaimValueTypes.String, issuer));
                 }
 
                 name = certificate.GetNameInfo(X509NameType.SimpleName, false);
-                if (!string.IsNullOrEmpty(name))
+                if (name.IsPresent())
                 {
                     claims.Add(new Claim(ClaimTypes.Name, name, ClaimValueTypes.String, issuer));
                 }
 
                 name = certificate.GetNameInfo(X509NameType.EmailName, false);
-                if (!string.IsNullOrEmpty(name))
+                if (name.IsPresent())
                 {
                     claims.Add(new Claim(ClaimTypes.Email, name, ClaimValueTypes.String, issuer));
                 }
 
                 name = certificate.GetNameInfo(X509NameType.UpnName, false);
-                if (!string.IsNullOrEmpty(name))
+                if (name.IsPresent())
                 {
                     claims.Add(new Claim(ClaimTypes.Upn, name, ClaimValueTypes.String, issuer));
                 }
 
                 name = certificate.GetNameInfo(X509NameType.UrlName, false);
-                if (!string.IsNullOrEmpty(name))
+                if (name.IsPresent())
                 {
                     claims.Add(new Claim(ClaimTypes.Uri, name, ClaimValueTypes.String, issuer));
                 }
