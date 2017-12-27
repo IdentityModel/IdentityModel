@@ -182,7 +182,7 @@ namespace IdentityModel.Client
                             {
                                 try
                                 {
-                                    del(this, new TokenRefreshedEventArgs(response.AccessToken, response.RefreshToken));
+                                    del(this, new TokenRefreshedEventArgs(response.AccessToken, response.RefreshToken, (int)response.ExpiresIn));
                                 }
                                 catch { }
                             }
