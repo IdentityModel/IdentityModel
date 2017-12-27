@@ -84,7 +84,7 @@ namespace IdentityModel.Client
         /// <value>
         /// The expires in.
         /// </value>
-        public long ExpiresIn
+        public int ExpiresIn
         {
             get
             {
@@ -92,9 +92,9 @@ namespace IdentityModel.Client
 
                 if (value != null)
                 {
-                    if (long.TryParse(value, out long longValue))
+                    if (int.TryParse(value, out var theValue))
                     {
-                        return longValue;
+                        return theValue;
                     }
                 }
 
