@@ -8,14 +8,16 @@ namespace IdentityModel.Client
     public class TokenRefreshedEventArgs : EventArgs
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="TokenRefreshedEventArgs"/> class.
+        /// Initializes a new instance of the <see cref="TokenRefreshedEventArgs" /> class.
         /// </summary>
         /// <param name="accessToken">The access token.</param>
         /// <param name="refreshToken">The refresh token.</param>
-        public TokenRefreshedEventArgs(string accessToken, string refreshToken)
+        /// <param name="expiresIn">The expires in.</param>
+        public TokenRefreshedEventArgs(string accessToken, string refreshToken, int expiresIn)
         {
             AccessToken = accessToken;
             RefreshToken = refreshToken;
+            ExpiresIn = expiresIn;
         }
 
         /// <summary>
@@ -33,5 +35,13 @@ namespace IdentityModel.Client
         /// The refresh token.
         /// </value>
         public string RefreshToken { get; }
+
+        /// <summary>
+        /// Gets or sets the expires in.
+        /// </summary>
+        /// <value>
+        /// The expires in.
+        /// </value>
+        public int ExpiresIn { get; }
     }
 }
