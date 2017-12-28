@@ -29,9 +29,7 @@ namespace IdentityModel.Client
             {
                 if (excludeList.Contains(x.Key)) continue;
 
-                var array = x.Value as JArray;
-
-                if (array != null)
+                if (x.Value is JArray array)
                 {
                     foreach (var item in array)
                     {
@@ -55,8 +53,7 @@ namespace IdentityModel.Client
         /// <returns></returns>
         public static JToken TryGetValue(this JObject json, string name)
         {
-            JToken value;
-            if (json != null && json.TryGetValue(name, StringComparison.OrdinalIgnoreCase, out value))
+            if (json != null && json.TryGetValue(name, StringComparison.OrdinalIgnoreCase, out JToken value))
             {
                 return value;
             }
@@ -76,8 +73,7 @@ namespace IdentityModel.Client
 
             if (value != null)
             {
-                int intValue;
-                if (int.TryParse(value, out intValue))
+                if (int.TryParse(value, out int intValue))
                 {
                     return intValue;
                 }
@@ -108,8 +104,7 @@ namespace IdentityModel.Client
         {
             var value = json.TryGetString(name);
 
-            bool result;
-            if (bool.TryParse(value, out result))
+            if (bool.TryParse(value, out bool result))
             {
                 return result;
             }
@@ -127,8 +122,7 @@ namespace IdentityModel.Client
         {
             var values = new List<string>();
 
-            var array = json.TryGetValue(name) as JArray;
-            if (array != null)
+            if (json.TryGetValue(name) is JArray array)
             {
                 foreach (var item in array)
                 {
