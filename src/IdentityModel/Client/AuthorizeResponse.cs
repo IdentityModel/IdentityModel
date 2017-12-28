@@ -116,16 +116,14 @@ namespace IdentityModel.Client
         /// <value>
         /// The expires in.
         /// </value>
-        public long ExpiresIn
+        public int ExpiresIn
         {
             get
             {
                 var value = TryGet(OidcConstants.AuthorizeResponse.ExpiresIn);
+                int.TryParse(value, out var theValue);
 
-                long longValue;
-                long.TryParse(value, out longValue);
-
-                return longValue;
+                return theValue;
             }
         }
 
@@ -179,8 +177,7 @@ namespace IdentityModel.Client
         /// <returns></returns>
         public string TryGet(string type)
         {
-            string value;
-            if (Values.TryGetValue(type, out value))
+            if (Values.TryGetValue(type, out var value))
             {
                 return WebUtility.UrlDecode(value);
             }
