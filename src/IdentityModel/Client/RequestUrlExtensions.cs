@@ -76,5 +76,29 @@ namespace IdentityModel.Client
 
             return request.Create(ValuesHelper.Merge(values, ValuesHelper.ObjectToDictionary(extra)));
         }
+
+        /// <summary>
+        /// Creates a end_session URL.
+        /// </summary>
+        /// <param name="request">The request.</param>
+        /// <param name="idTokenHint">The id_token hint.</param>
+        /// <param name="postLogoutRedirectUri">The post logout redirect URI.</param>
+        /// <param name="state">The state.</param>
+        /// <param name="extra">The extra parameters.</param>
+        /// <returns></returns>
+        public static string CreateEndSessionUrl(this RequestUrl request,
+            string idTokenHint = null,
+            string postLogoutRedirectUri = null,
+            string state = null,
+            object extra = null)
+        {
+            var values = new Dictionary<string, string>();
+
+            values.AddIfPresent("id_token_hint", idTokenHint);
+            values.AddIfPresent("post_logout_redirect_uri", postLogoutRedirectUri);
+            values.AddIfPresent("state", state);
+
+            return request.Create(ValuesHelper.Merge(values, ValuesHelper.ObjectToDictionary(extra)));
+        }
     }
 }
