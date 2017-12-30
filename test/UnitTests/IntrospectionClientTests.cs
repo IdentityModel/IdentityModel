@@ -3,6 +3,7 @@
 
 using FluentAssertions;
 using IdentityModel.Client;
+using Microsoft.AspNetCore.WebUtilities;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -166,11 +167,22 @@ namespace IdentityModel.UnitTests
 
             var additionalParams = new Dictionary<string, string>
             {
-                { "scope", "scope1 scope2" }
+                { "scope", "scope1 scope2" },
+                { "foo", "bar" }
             };
 
             var response = await client.SendAsync(new IntrospectionRequest { Token = "token", Parameters = additionalParams });
 
+            // check request
+            var fields = QueryHelpers.ParseQuery(handler.Body);
+            fields.Count.Should().Be(4);
+
+            fields["client_id"].First().Should().Be("client");
+            fields["token"].First().Should().Be("token");
+            fields["scope"].First().Should().Be("scope1 scope2");
+            fields["foo"].First().Should().Be("bar");
+
+            // check response
             response.IsError.Should().BeFalse();
             response.ErrorType.Should().Be(ResponseErrorType.None);
             response.HttpStatusCode.Should().Be(HttpStatusCode.OK);

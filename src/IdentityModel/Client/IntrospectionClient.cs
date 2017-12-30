@@ -12,10 +12,11 @@ namespace IdentityModel.Client
     /// <summary>
     /// Client for the OAuth 2.0 introspection endpoint
     /// </summary>
-    public class IntrospectionClient
+    public class IntrospectionClient : IDisposable
     {
         private readonly HttpClient _client;
         private readonly string _clientId;
+        private bool _disposed;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="IntrospectionClient"/> class.
@@ -39,7 +40,7 @@ namespace IdentityModel.Client
             _client.DefaultRequestHeaders.Accept.Add(
                 new MediaTypeWithQualityHeaderValue("application/json"));
 
-            if (!string.IsNullOrWhiteSpace(clientId) && !string.IsNullOrWhiteSpace(clientSecret))
+            if (clientId.IsPresent() && clientSecret.IsPresent())
             {
                 _client.SetBasicAuthentication(clientId, clientSecret);
             }
@@ -90,21 +91,21 @@ namespace IdentityModel.Client
 
             form.Add("token", request.Token);
 
-            if (!string.IsNullOrWhiteSpace(request.TokenTypeHint))
+            if (request.TokenTypeHint.IsPresent())
             {
                 form.Add("token_type_hint", request.TokenTypeHint);
             }
 
-            if (!string.IsNullOrWhiteSpace(request.ClientId))
+            if (request.ClientId.IsPresent())
             {
                 form.Add("client_id", request.ClientId);
             }
-            else if (!string.IsNullOrWhiteSpace(_clientId))
+            else if (_clientId.IsPresent())
             {
                 form.Add("client_id", _clientId);
             }
 
-            if (!string.IsNullOrWhiteSpace(request.ClientSecret))
+            if (request.ClientSecret.IsPresent())
             {
                 form.Add("client_secret", request.ClientSecret);
             }
@@ -125,6 +126,28 @@ namespace IdentityModel.Client
             else
             {
                 return new IntrospectionResponse(response.StatusCode, response.ReasonPhrase);
+            }
+        }
+
+        /// <summary>
+        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+        /// </summary>
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        /// <summary>
+        /// Releases unmanaged and - optionally - managed resources.
+        /// </summary>
+        /// <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing && !_disposed)
+            {
+                _disposed = true;
+                _client.Dispose();
             }
         }
     }
