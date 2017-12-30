@@ -14,13 +14,14 @@ namespace IdentityModel.Client
     /// <summary>
     /// Client for an OAuth 2.0 token revocation endpoint
     /// </summary>
-    public class TokenRevocationClient
+    public class TokenRevocationClient : IDisposable
     {
         /// <summary>
         /// The client
         /// </summary>
         protected HttpClient Client;
 
+        private bool _disposed;
         private readonly string _clientId;
 
         /// <summary>
@@ -69,11 +70,11 @@ namespace IdentityModel.Client
             Client.DefaultRequestHeaders.Accept.Add(
                 new MediaTypeWithQualityHeaderValue("application/json"));
 
-            if (!string.IsNullOrWhiteSpace(clientId) && !string.IsNullOrWhiteSpace(clientSecret))
+            if (clientId.IsPresent() && clientSecret.IsPresent())
             {
                 Client.SetBasicAuthentication(clientId, clientSecret);
             }
-            else if (!string.IsNullOrWhiteSpace(clientId))
+            else if (clientId.IsPresent())
             {
                 _clientId = clientId;
             }
@@ -109,7 +110,7 @@ namespace IdentityModel.Client
             CancellationToken cancellationToken = default(CancellationToken))
         {
             if (request == null) throw new ArgumentNullException(nameof(request));
-            if (string.IsNullOrWhiteSpace(request.Token)) throw new ArgumentNullException(nameof(request.Token));
+            if (request.Token.IsMissing()) throw new ArgumentNullException(nameof(request.Token));
 
             IDictionary<string, string> form;
             if (request.Parameters == null)
@@ -122,25 +123,18 @@ namespace IdentityModel.Client
             }
 
             form.Add("token", request.Token);
-
-            if (!string.IsNullOrWhiteSpace(request.TokenTypeHint))
-            {
-                form.Add("token_type_hint", request.TokenTypeHint);
-            }
-
-            if (!string.IsNullOrWhiteSpace(request.ClientId))
+            
+            if (request.ClientId.IsPresent())
             {
                 form.Add("client_id", request.ClientId);
             }
-            else if (!string.IsNullOrWhiteSpace(_clientId))
+            else if (_clientId.IsPresent())
             {
                 form.Add("client_id", _clientId);
             }
 
-            if (!string.IsNullOrWhiteSpace(request.ClientSecret))
-            {
-                form.Add("client_secret", request.ClientSecret);
-            }
+            form.AddIfPresent("token_type_hint", request.TokenTypeHint);
+            form.AddIfPresent("client_secret", request.ClientSecret);
 
             try
             {
@@ -163,6 +157,28 @@ namespace IdentityModel.Client
             catch (Exception ex)
             {
                 return new TokenRevocationResponse(ex);
+            }
+        }
+
+        /// <summary>
+        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+        /// </summary>
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        /// <summary>
+        /// Releases unmanaged and - optionally - managed resources.
+        /// </summary>
+        /// <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing && !_disposed)
+            {
+                _disposed = true;
+                Client.Dispose();
             }
         }
     }

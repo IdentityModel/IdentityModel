@@ -3,8 +3,10 @@
 
 using FluentAssertions;
 using IdentityModel.Client;
+using Microsoft.AspNetCore.WebUtilities;
 using System;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using Xunit;
@@ -104,6 +106,43 @@ namespace IdentityModel.UnitTests
             response.ErrorType.Should().Be(ResponseErrorType.Http);
             response.HttpStatusCode.Should().Be(HttpStatusCode.NotFound);
             response.Error.Should().Be("not found");
+        }
+
+        [Fact]
+        public async Task Additional_parameters_should_be_sent_correctly()
+        {
+            var handler = new NetworkHandler(HttpStatusCode.OK, "ok");
+
+            var client = new TokenRevocationClient(
+                Endpoint,
+                "client",
+                innerHttpMessageHandler: handler);
+
+            var request = new TokenRevocationRequest
+            {
+                ClientSecret = "secret",
+                Token = "token",
+                Parameters =
+                {
+                    { "foo", "bar" }
+                }
+            };
+
+            var response = await client.RevokeAsync(request);
+
+            // check request
+            var fields = QueryHelpers.ParseQuery(handler.Body);
+            fields.Count.Should().Be(4);
+
+            fields["client_id"].First().Should().Be("client");
+            fields["client_secret"].First().Should().Be("secret");
+            fields["token"].First().Should().Be("token");
+            fields["foo"].First().Should().Be("bar");
+
+            // check response
+            response.IsError.Should().BeFalse();
+            response.ErrorType.Should().Be(ResponseErrorType.None);
+            response.HttpStatusCode.Should().Be(HttpStatusCode.OK);
         }
     }
 }
