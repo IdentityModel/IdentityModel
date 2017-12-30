@@ -3,9 +3,11 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -195,6 +197,67 @@ namespace IdentityModel.Client
             {
                 return new TokenResponse(response.StatusCode, response.ReasonPhrase, content);
             }
+        }
+
+        /// <summary>
+        /// Merges the explicitly provided values with the extra object
+        /// </summary>
+        /// <param name="explicitValues">The explicit values.</param>
+        /// <param name="extra">The extra.</param>
+        /// <returns></returns>
+        public Dictionary<string, string> Merge(Dictionary<string, string> explicitValues, object extra = null)
+        {
+            var merged = explicitValues;
+
+            if (AuthenticationStyle == AuthenticationStyle.PostValues)
+            {
+                merged.Add(OidcConstants.TokenRequest.ClientId, ClientId);
+
+                if (!string.IsNullOrEmpty(ClientSecret))
+                {
+                    merged.Add(OidcConstants.TokenRequest.ClientSecret, ClientSecret);
+                }
+            }
+
+            var additionalValues = ObjectToDictionary(extra);
+
+            if (additionalValues != null)
+            {
+                merged =
+                    explicitValues.Concat(additionalValues.Where(add => !explicitValues.ContainsKey(add.Key)))
+                                         .ToDictionary(final => final.Key, final => final.Value);
+            }
+
+            return merged;
+        }
+
+        /// <summary>
+        /// Helper method to turn an object to a dictionary (key/value pairs)
+        /// </summary>
+        /// <param name="values">The values.</param>
+        /// <returns></returns>
+        public static Dictionary<string, string> ObjectToDictionary(object values)
+        {
+            if (values == null)
+            {
+                return null;
+            }
+
+            var dictionary = values as Dictionary<string, string>;
+            if (dictionary != null) return dictionary;
+
+            dictionary = new Dictionary<string, string>();
+
+            foreach (var prop in values.GetType().GetRuntimeProperties())
+            {
+                var value = prop.GetValue(values) as string;
+                if (!string.IsNullOrEmpty(value))
+                {
+                    dictionary.Add(prop.Name, value);
+                }
+            }
+
+            return dictionary;
         }
 
         /// <summary>

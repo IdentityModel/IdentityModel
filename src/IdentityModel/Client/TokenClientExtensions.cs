@@ -2,8 +2,6 @@
 // Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
 
 using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -34,7 +32,7 @@ namespace IdentityModel.Client
                 fields.Add(OidcConstants.TokenRequest.Scope, scope);
             }
 
-            return client.RequestAsync(Merge(client, fields, extra), cancellationToken);
+            return client.RequestAsync(client.Merge(fields, extra), cancellationToken);
         }
 
         /// <summary>
@@ -61,7 +59,7 @@ namespace IdentityModel.Client
                 fields.Add(OidcConstants.TokenRequest.Scope, scope);
             }
 
-            return client.RequestAsync(Merge(client, fields, extra), cancellationToken);
+            return client.RequestAsync(client.Merge(fields, extra), cancellationToken);
         }
 
         /// <summary>
@@ -88,7 +86,7 @@ namespace IdentityModel.Client
                 fields.Add(OidcConstants.TokenRequest.CodeVerifier, codeVerifier);
             }
 
-            return client.RequestAsync(Merge(client, fields, extra), cancellationToken);
+            return client.RequestAsync(client.Merge(fields, extra), cancellationToken);
         }
 
         /// <summary>
@@ -128,7 +126,7 @@ namespace IdentityModel.Client
                 fields.Add(OidcConstants.TokenRequest.Key, key);
             }
 
-            return client.RequestAsync(Merge(client, fields, extra), cancellationToken);
+            return client.RequestAsync(client.Merge(fields, extra), cancellationToken);
         }
 
         /// <summary>
@@ -147,7 +145,7 @@ namespace IdentityModel.Client
                 { OidcConstants.TokenRequest.RefreshToken, refreshToken }
             };
 
-            return client.RequestAsync(Merge(client, fields, extra), cancellationToken);
+            return client.RequestAsync(client.Merge(fields, extra), cancellationToken);
         }
 
         /// <summary>
@@ -179,7 +177,7 @@ namespace IdentityModel.Client
                 fields.Add(OidcConstants.TokenRequest.Key, key);
             }
 
-            return client.RequestAsync(Merge(client, fields, extra), cancellationToken);
+            return client.RequestAsync(client.Merge(fields, extra), cancellationToken);
         }
 
         /// <summary>
@@ -205,7 +203,7 @@ namespace IdentityModel.Client
                 fields.Add(OidcConstants.TokenRequest.Scope, scope);
             }
 
-            return client.RequestAsync(Merge(client, fields, extra), cancellationToken);
+            return client.RequestAsync(client.Merge(fields, extra), cancellationToken);
         }
 
         /// <summary>
@@ -229,7 +227,7 @@ namespace IdentityModel.Client
                 fields.Add(OidcConstants.TokenRequest.Scope, scope);
             }
 
-            return client.RequestAsync(Merge(client, fields, extra), cancellationToken);
+            return client.RequestAsync(client.Merge(fields, extra), cancellationToken);
         }
 
         /// <summary>
@@ -241,57 +239,7 @@ namespace IdentityModel.Client
         /// <returns></returns>
         public static Task<TokenResponse> RequestCustomAsync(this TokenClient client, object values, CancellationToken cancellationToken = default(CancellationToken))
         {
-            return client.RequestAsync(Merge(client, ObjectToDictionary(values)), cancellationToken);
-        }
-
-        private static Dictionary<string, string> Merge(TokenClient client, Dictionary<string, string> explicitValues, object extra = null)
-        {
-            var merged = explicitValues;
-
-            if (client.AuthenticationStyle == AuthenticationStyle.PostValues)
-            {
-                merged.Add(OidcConstants.TokenRequest.ClientId, client.ClientId);
-
-                if (!string.IsNullOrEmpty(client.ClientSecret))
-                {
-                    merged.Add(OidcConstants.TokenRequest.ClientSecret, client.ClientSecret);
-                }
-            }
-
-            var additionalValues = ObjectToDictionary(extra);
-
-            if (additionalValues != null)
-            {
-                merged =
-                    explicitValues.Concat(additionalValues.Where(add => !explicitValues.ContainsKey(add.Key)))
-                                         .ToDictionary(final => final.Key, final => final.Value);
-            }
-
-            return merged;
-        }
-
-        private static Dictionary<string, string> ObjectToDictionary(object values)
-        {
-            if (values == null)
-            {
-                return null;
-            }
-
-            var dictionary = values as Dictionary<string, string>;
-            if (dictionary != null) return dictionary;
-
-            dictionary = new Dictionary<string, string>();
-
-            foreach (var prop in values.GetType().GetRuntimeProperties())
-            {
-                var value = prop.GetValue(values) as string;
-                if (!string.IsNullOrEmpty(value))
-                {
-                    dictionary.Add(prop.Name, value);
-                }
-            }
-
-            return dictionary;
+            return client.RequestAsync(client.Merge(TokenClient.ObjectToDictionary(values)), cancellationToken);
         }
     }
 }
