@@ -26,7 +26,7 @@ namespace IdentityModel.UnitTests
             var request = new RequestUrl("http://server/authorize");
 
             var values = new Dictionary<string, string>();
-            var url = request.Create(null);
+            var url = request.Create(values);
 
             url.Should().Be("http://server/authorize");
         }
