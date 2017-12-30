@@ -17,13 +17,17 @@ namespace IdentityModel.Client
     /// </summary>
     public class TokenRevocationClient : IDisposable
     {
+        private bool _disposed;
+
         /// <summary>
-        /// The client
+        /// The HTTP client
         /// </summary>
         protected HttpClient Client;
 
-        private bool _disposed;
-        private readonly string _clientId;
+        /// <summary>
+        /// The client identifier
+        /// </summary>
+        protected readonly string ClientId;
 
         /// <summary>
         /// Gets or sets the authentication style.
@@ -32,14 +36,6 @@ namespace IdentityModel.Client
         /// The authentication style.
         /// </value>
         public AuthenticationStyle AuthenticationStyle { get; set; }
-
-        /// <summary>
-        /// Gets or sets the client identifier.
-        /// </summary>
-        /// <value>
-        /// The client identifier.
-        /// </value>
-        public string ClientId { get; set; }
 
         /// <summary>
         /// Gets or sets the client secret.
@@ -77,7 +73,7 @@ namespace IdentityModel.Client
             }
             else if (clientId.IsPresent())
             {
-                _clientId = clientId;
+                ClientId = clientId;
             }
         }
 
@@ -108,7 +104,7 @@ namespace IdentityModel.Client
         /// </exception>
         public virtual async Task<TokenRevocationResponse> RevokeAsync(
             TokenRevocationRequest request,
-            CancellationToken cancellationToken = default(CancellationToken))
+            CancellationToken cancellationToken = default)
         {
             if (request == null) throw new ArgumentNullException(nameof(request));
             if (request.Token.IsMissing()) throw new ArgumentNullException(nameof(request.Token));
@@ -129,9 +125,9 @@ namespace IdentityModel.Client
             {
                 form.Add("client_id", request.ClientId);
             }
-            else if (_clientId.IsPresent())
+            else if (ClientId.IsPresent())
             {
-                form.Add("client_id", _clientId);
+                form.Add("client_id", ClientId);
             }
 
             form.AddIfPresent("token_type_hint", request.TokenTypeHint);

@@ -63,7 +63,10 @@ namespace IdentityModel.Client
             }
         }
 
-        private readonly HttpClient _client;
+        /// <summary>
+        /// The HTTP client
+        /// </summary>
+        protected readonly HttpClient Client;
 
         /// <summary>
         /// Gets the authority.
@@ -99,7 +102,7 @@ namespace IdentityModel.Client
         {
             set
             {
-                _client.Timeout = value;
+                Client.Timeout = value;
             }
         }
 
@@ -116,7 +119,7 @@ namespace IdentityModel.Client
             Authority = parsed.Authority;
             Url = parsed.Url;
 
-            _client = new HttpClient(handler);
+            Client = new HttpClient(handler);
         }
 
         /// <summary>
@@ -124,7 +127,7 @@ namespace IdentityModel.Client
         /// </summary>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
-        public async Task<DiscoveryResponse> GetAsync(CancellationToken cancellationToken = default(CancellationToken))
+        public virtual async Task<DiscoveryResponse> GetAsync(CancellationToken cancellationToken = default)
         {
             if (string.IsNullOrEmpty(Policy.Authority))
             {
@@ -140,7 +143,7 @@ namespace IdentityModel.Client
 
             try
             {
-                var response = await _client.GetAsync(Url, cancellationToken).ConfigureAwait(false);
+                var response = await Client.GetAsync(Url, cancellationToken).ConfigureAwait(false);
 
                 if (!response.IsSuccessStatusCode)
                 {
@@ -153,13 +156,12 @@ namespace IdentityModel.Client
                     return disco;
                 }
 
-
                 try
                 {
                     jwkUrl = disco.JwksUri;
                     if (jwkUrl != null)
                     {
-                        response = await _client.GetAsync(jwkUrl, cancellationToken).ConfigureAwait(false);
+                        response = await Client.GetAsync(jwkUrl, cancellationToken).ConfigureAwait(false);
 
                         if (!response.IsSuccessStatusCode)
                         {
@@ -201,7 +203,7 @@ namespace IdentityModel.Client
             if (disposing && !_disposed)
             {
                 _disposed = true;
-                _client.Dispose();
+                Client.Dispose();
             }
         }
     }

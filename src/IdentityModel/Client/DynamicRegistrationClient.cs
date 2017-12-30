@@ -19,7 +19,7 @@ namespace IdentityModel.Client
     public class DynamicRegistrationClient : IDisposable
     {
         /// <summary>
-        /// The client
+        /// The HTTP client
         /// </summary>
         protected HttpClient Client;
 
@@ -85,7 +85,7 @@ namespace IdentityModel.Client
         /// <param name="token">The token.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
-        public virtual async Task<RegistrationResponse> RegisterAsync(RegistrationRequest request, string token = null, CancellationToken cancellationToken = default(CancellationToken))
+        public virtual async Task<RegistrationResponse> RegisterAsync(RegistrationRequest request, string token = null, CancellationToken cancellationToken = default)
         {
             HttpResponseMessage response;
 

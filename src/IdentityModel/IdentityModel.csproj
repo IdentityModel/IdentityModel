@@ -15,6 +15,7 @@
     <RepositoryType>git</RepositoryType>
     <RepositoryUrl>git://github.com/identitymodel/identitymodel2</RepositoryUrl>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <LangVersion>latest</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>

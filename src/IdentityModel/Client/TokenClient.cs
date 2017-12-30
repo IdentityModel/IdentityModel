@@ -20,13 +20,13 @@ namespace IdentityModel.Client
     /// <seealso cref="System.IDisposable" />
     public class TokenClient : IDisposable
     {
+        private bool _disposed;
+        
         /// <summary>
-        /// The client
+        /// The HTTP client
         /// </summary>
         protected HttpClient Client;
-
-        private bool _disposed;
-
+        
         /// <summary>
         /// Initializes a new instance of the <see cref="TokenClient"/> class.
         /// </summary>
@@ -161,7 +161,7 @@ namespace IdentityModel.Client
         /// <param name="form">The form.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
-        public virtual async Task<TokenResponse> RequestAsync(IDictionary<string, string> form, CancellationToken cancellationToken = default(CancellationToken))
+        public virtual async Task<TokenResponse> RequestAsync(IDictionary<string, string> form, CancellationToken cancellationToken = default)
         {
             HttpResponseMessage response;
 

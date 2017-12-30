@@ -15,9 +15,17 @@ namespace IdentityModel.Client
     /// </summary>
     public class IntrospectionClient : IDisposable
     {
-        private readonly HttpClient _client;
-        private readonly string _clientId;
         private bool _disposed;
+
+        /// <summary>
+        /// The HTTP client
+        /// </summary>
+        protected readonly HttpClient Client;
+
+        /// <summary>
+        /// The client identifier
+        /// </summary>
+        protected readonly string ClientId;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="IntrospectionClient"/> class.
@@ -32,22 +40,22 @@ namespace IdentityModel.Client
             if (string.IsNullOrWhiteSpace(endpoint)) throw new ArgumentNullException(nameof(endpoint));
             if (innerHttpMessageHandler == null) innerHttpMessageHandler = new HttpClientHandler();
 
-            _client = new HttpClient(innerHttpMessageHandler)
+            Client = new HttpClient(innerHttpMessageHandler)
             {
                 BaseAddress = new Uri(endpoint)
             };
 
-            _client.DefaultRequestHeaders.Accept.Clear();
-            _client.DefaultRequestHeaders.Accept.Add(
+            Client.DefaultRequestHeaders.Accept.Clear();
+            Client.DefaultRequestHeaders.Accept.Add(
                 new MediaTypeWithQualityHeaderValue("application/json"));
 
             if (clientId.IsPresent() && clientSecret.IsPresent())
             {
-                _client.SetBasicAuthentication(clientId, clientSecret);
+                Client.SetBasicAuthentication(clientId, clientSecret);
             }
             else if (!string.IsNullOrWhiteSpace(clientId))
             {
-                _clientId = clientId;
+                ClientId = clientId;
             }
         }
 
@@ -61,7 +69,7 @@ namespace IdentityModel.Client
         {
             set
             {
-                _client.Timeout = value;
+                Client.Timeout = value;
             }
         }
 
@@ -75,10 +83,10 @@ namespace IdentityModel.Client
         /// or
         /// Token
         /// </exception>
-        public async Task<IntrospectionResponse> SendAsync(IntrospectionRequest request)
+        public virtual async Task<IntrospectionResponse> SendAsync(IntrospectionRequest request)
         {
             if (request == null) throw new ArgumentNullException(nameof(request));
-            if (string.IsNullOrWhiteSpace(request.Token)) throw new ArgumentNullException(nameof(request.Token));
+            if (request.Token.IsMissing()) throw new ArgumentNullException(nameof(request.Token));
 
             IDictionary<string, string> form;
             if (request.Parameters == null)
@@ -91,30 +99,23 @@ namespace IdentityModel.Client
             }
 
             form.Add("token", request.Token);
-
-            if (request.TokenTypeHint.IsPresent())
-            {
-                form.Add("token_type_hint", request.TokenTypeHint);
-            }
-
+            
             if (request.ClientId.IsPresent())
             {
                 form.Add("client_id", request.ClientId);
             }
-            else if (_clientId.IsPresent())
+            else if (ClientId.IsPresent())
             {
-                form.Add("client_id", _clientId);
+                form.Add("client_id", ClientId);
             }
 
-            if (request.ClientSecret.IsPresent())
-            {
-                form.Add("client_secret", request.ClientSecret);
-            }
+            form.AddIfPresent("token_type_hint", request.TokenTypeHint);
+            form.AddIfPresent("client_secret", request.ClientSecret);
 
             HttpResponseMessage response;
             try
             {
-                response = await _client.PostAsync("", new FormUrlEncodedContent(form)).ConfigureAwait(false);
+                response = await Client.PostAsync("", new FormUrlEncodedContent(form)).ConfigureAwait(false);
             }
             catch (Exception ex)
             {
@@ -148,7 +149,7 @@ namespace IdentityModel.Client
             if (disposing && !_disposed)
             {
                 _disposed = true;
-                _client.Dispose();
+                Client.Dispose();
             }
         }
     }

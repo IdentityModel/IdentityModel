@@ -12,10 +12,15 @@ namespace IdentityModel.Client
     /// <summary>
     /// Client for an OpenID Connect userinfo endpoint
     /// </summary>
-    public class UserInfoClient
+    public class UserInfoClient : IDisposable
     {
-        private readonly HttpClient _client;
+        private bool _disposed;
 
+        /// <summary>
+        /// The HTTP client
+        /// </summary>
+        protected readonly HttpClient Client;
+        
         /// <summary>
         /// Initializes a new instance of the <see cref="UserInfoClient"/> class.
         /// </summary>
@@ -39,13 +44,13 @@ namespace IdentityModel.Client
             if (endpoint == null) throw new ArgumentNullException(nameof(endpoint));
             if (innerHttpMessageHandler == null) throw new ArgumentNullException(nameof(innerHttpMessageHandler));
 
-            _client = new HttpClient(innerHttpMessageHandler)
+            Client = new HttpClient(innerHttpMessageHandler)
             {
                 BaseAddress = new Uri(endpoint)
             };
 
-            _client.DefaultRequestHeaders.Accept.Clear();
-            _client.DefaultRequestHeaders.Accept.Add(
+            Client.DefaultRequestHeaders.Accept.Clear();
+            Client.DefaultRequestHeaders.Accept.Add(
                 new MediaTypeWithQualityHeaderValue("application/json"));
         }
 
@@ -59,7 +64,7 @@ namespace IdentityModel.Client
         {
             set
             {
-                _client.Timeout = value;
+                Client.Timeout = value;
             }
         }
 
@@ -70,7 +75,7 @@ namespace IdentityModel.Client
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
         /// <exception cref="System.ArgumentNullException">token</exception>
-        public async Task<UserInfoResponse> GetAsync(string token, CancellationToken cancellationToken = default(CancellationToken))
+        public virtual async Task<UserInfoResponse> GetAsync(string token, CancellationToken cancellationToken = default)
         {
             if (string.IsNullOrEmpty(token)) throw new ArgumentNullException(nameof(token));
 
@@ -80,7 +85,7 @@ namespace IdentityModel.Client
             HttpResponseMessage response;
             try
             {
-                response = await _client.SendAsync(request, cancellationToken).ConfigureAwait(false);
+                response = await Client.SendAsync(request, cancellationToken).ConfigureAwait(false);
             }
             catch (Exception ex)
             {
@@ -94,6 +99,28 @@ namespace IdentityModel.Client
 
             var content = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
             return new UserInfoResponse(content);
+        }
+
+        /// <summary>
+        /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
+        /// </summary>
+        public void Dispose()
+        {
+            Dispose(true);
+            GC.SuppressFinalize(this);
+        }
+
+        /// <summary>
+        /// Releases unmanaged and - optionally - managed resources.
+        /// </summary>
+        /// <param name="disposing"><c>true</c> to release both managed and unmanaged resources; <c>false</c> to release only unmanaged resources.</param>
+        protected virtual void Dispose(bool disposing)
+        {
+            if (disposing && !_disposed)
+            {
+                _disposed = true;
+                Client.Dispose();
+            }
         }
     }
 }
