@@ -3,7 +3,7 @@
 
 using System.Diagnostics;
 
-namespace IdentityModel
+namespace IdentityModel.Internal
 {
     internal static class InternalStringExtensions
     {

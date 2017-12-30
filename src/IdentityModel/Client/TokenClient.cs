@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Brock Allen & Dominick Baier. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
 
+using IdentityModel.Internal;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -219,7 +220,7 @@ namespace IdentityModel.Client
                 }
             }
 
-            var additionalValues = ObjectToDictionary(extra);
+            var additionalValues = ValuesHelper.ObjectToDictionary(extra);
 
             if (additionalValues != null)
             {
@@ -230,36 +231,7 @@ namespace IdentityModel.Client
 
             return merged;
         }
-
-        /// <summary>
-        /// Helper method to turn an object to a dictionary (key/value pairs)
-        /// </summary>
-        /// <param name="values">The values.</param>
-        /// <returns></returns>
-        public static Dictionary<string, string> ObjectToDictionary(object values)
-        {
-            if (values == null)
-            {
-                return null;
-            }
-
-            var dictionary = values as Dictionary<string, string>;
-            if (dictionary != null) return dictionary;
-
-            dictionary = new Dictionary<string, string>();
-
-            foreach (var prop in values.GetType().GetRuntimeProperties())
-            {
-                var value = prop.GetValue(values) as string;
-                if (!string.IsNullOrEmpty(value))
-                {
-                    dictionary.Add(prop.Name, value);
-                }
-            }
-
-            return dictionary;
-        }
-
+        
         /// <summary>
         /// Performs application-defined tasks associated with freeing, releasing, or resetting unmanaged resources.
         /// </summary>

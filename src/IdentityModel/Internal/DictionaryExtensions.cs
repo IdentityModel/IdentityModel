@@ -3,7 +3,7 @@
 
 using System.Collections.Generic;
 
-namespace IdentityModel
+namespace IdentityModel.Internal
 {
     internal static class DictionaryExtensions
     {

@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Brock Allen & Dominick Baier. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
 
+using IdentityModel.Internal;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -152,7 +153,7 @@ namespace IdentityModel.Client
         /// <returns></returns>
         public static Task<TokenResponse> RequestCustomAsync(this TokenClient client, object values, CancellationToken cancellationToken = default(CancellationToken))
         {
-            return client.RequestAsync(client.Merge(TokenClient.ObjectToDictionary(values)), cancellationToken);
+            return client.RequestAsync(client.Merge(ValuesHelper.ObjectToDictionary(values)), cancellationToken);
         }
     }
 }
