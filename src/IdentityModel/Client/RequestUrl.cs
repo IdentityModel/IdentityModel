@@ -10,7 +10,7 @@ using System.Reflection;
 namespace IdentityModel.Client
 {
     /// <summary>
-    /// Helper class for creating authorize request URLs
+    /// Helper class for creating request URLs
     /// </summary>
     public class RequestUrl
     {

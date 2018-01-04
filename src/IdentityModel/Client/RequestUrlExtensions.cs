@@ -40,6 +40,10 @@ namespace IdentityModel.Client
         /// <param name="responseMode">The response mode.</param>
         /// <param name="codeChallenge">The code challenge.</param>
         /// <param name="codeChallengeMethod">The code challenge method.</param>
+        /// <param name="display">The display option.</param>
+        /// <param name="maxAge">The max age.</param>
+        /// <param name="uiLocales">The ui locales.</param>
+        /// <param name="idTokenHint">The id_token hint.</param>
         /// <param name="extra">Extra parameters.</param>
         /// <returns></returns>
         public static string CreateAuthorizeUrl(this RequestUrl request,
@@ -55,6 +59,10 @@ namespace IdentityModel.Client
             string responseMode = null,
             string codeChallenge = null,
             string codeChallengeMethod = null,
+            string display = null,
+            int? maxAge = null,
+            string uiLocales = null,
+            string idTokenHint = null,
             object extra = null)
         {
             var values = new Dictionary<string, string>
@@ -73,6 +81,10 @@ namespace IdentityModel.Client
             values.AddIfPresent(OidcConstants.AuthorizeRequest.ResponseMode, responseMode);
             values.AddIfPresent(OidcConstants.AuthorizeRequest.CodeChallenge, codeChallenge);
             values.AddIfPresent(OidcConstants.AuthorizeRequest.CodeChallengeMethod, codeChallengeMethod);
+            values.AddIfPresent(OidcConstants.AuthorizeRequest.Display, display);
+            values.AddIfPresent(OidcConstants.AuthorizeRequest.MaxAge, maxAge?.ToString());
+            values.AddIfPresent(OidcConstants.AuthorizeRequest.UiLocales, uiLocales);
+            values.AddIfPresent(OidcConstants.AuthorizeRequest.IdTokenHint, idTokenHint);
 
             return request.Create(ValuesHelper.Merge(values, ValuesHelper.ObjectToDictionary(extra)));
         }
@@ -94,9 +106,9 @@ namespace IdentityModel.Client
         {
             var values = new Dictionary<string, string>();
 
-            values.AddIfPresent("id_token_hint", idTokenHint);
-            values.AddIfPresent("post_logout_redirect_uri", postLogoutRedirectUri);
-            values.AddIfPresent("state", state);
+            values.AddIfPresent(OidcConstants.EndSessionRequest.IdTokenHint, idTokenHint);
+            values.AddIfPresent(OidcConstants.EndSessionRequest.PostLogoutRedirectUri, postLogoutRedirectUri);
+            values.AddIfPresent(OidcConstants.EndSessionRequest.State, state);
 
             return request.Create(ValuesHelper.Merge(values, ValuesHelper.ObjectToDictionary(extra)));
         }

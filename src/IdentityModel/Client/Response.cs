@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Brock Allen & Dominick Baier. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
 
+using IdentityModel.Internal;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Net;
@@ -32,7 +33,7 @@ namespace IdentityModel.Client
                 return;
             }
 
-            if (string.IsNullOrWhiteSpace(Error))
+            if (Error.IsMissing())
             {
                 HttpStatusCode = HttpStatusCode.OK;
             }
