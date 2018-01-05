@@ -8,7 +8,6 @@ using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
-using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -115,7 +114,7 @@ namespace IdentityModel.Client
         /// <value>
         /// The client identifier.
         /// </value>
-        public string ClientId { get; set; }
+        public string ClientId { get; }
 
         /// <summary>
         /// Gets or sets the client secret.
@@ -123,7 +122,7 @@ namespace IdentityModel.Client
         /// <value>
         /// The client secret.
         /// </value>
-        public string ClientSecret { get; set; }
+        public string ClientSecret { get; }
 
         /// <summary>
         /// Gets or sets the address.
@@ -131,7 +130,7 @@ namespace IdentityModel.Client
         /// <value>
         /// The address.
         /// </value>
-        public string Address { get; set; }
+        public string Address { get; }
 
         /// <summary>
         /// Gets or sets the authentication style.
@@ -139,7 +138,7 @@ namespace IdentityModel.Client
         /// <value>
         /// The authentication style.
         /// </value>
-        public AuthenticationStyle AuthenticationStyle { get; set; }
+        public AuthenticationStyle AuthenticationStyle { get; }
 
         /// <summary>
         /// Sets the timeout.

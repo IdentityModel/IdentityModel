@@ -31,7 +31,7 @@ namespace IdentityModel.Client
         /// <value>
         /// The address.
         /// </value>
-        public string Address { get; set; }
+        public string Address { get; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DynamicRegistrationClient"/> class.

@@ -25,17 +25,12 @@ namespace IdentityModel.Client
         protected HttpClient Client;
 
         /// <summary>
-        /// The client identifier
-        /// </summary>
-        protected readonly string ClientId;
-
-        /// <summary>
-        /// Gets or sets the authentication style.
+        /// Gets the client identifier.
         /// </summary>
         /// <value>
-        /// The authentication style.
+        /// The client identifier.
         /// </value>
-        public AuthenticationStyle AuthenticationStyle { get; set; }
+        protected string ClientId { get; }
 
         /// <summary>
         /// Gets or sets the client secret.
@@ -43,7 +38,7 @@ namespace IdentityModel.Client
         /// <value>
         /// The client secret.
         /// </value>
-        public string ClientSecret { get; set; }
+        public string ClientSecret { get; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="TokenRevocationClient"/> class.
