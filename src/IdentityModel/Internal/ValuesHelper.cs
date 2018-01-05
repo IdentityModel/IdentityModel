@@ -31,7 +31,7 @@ namespace IdentityModel.Internal
             foreach (var prop in values.GetType().GetRuntimeProperties())
             {
                 var value = prop.GetValue(values) as string;
-                if (!string.IsNullOrEmpty(value))
+                if (value.IsPresent())
                 {
                     dictionary.Add(prop.Name, value);
                 }

@@ -129,7 +129,7 @@ namespace IdentityModel.Client
         /// <returns></returns>
         public virtual async Task<DiscoveryResponse> GetAsync(CancellationToken cancellationToken = default)
         {
-            if (string.IsNullOrEmpty(Policy.Authority))
+            if (Policy.Authority.IsMissing())
             {
                 Policy.Authority = Authority;
             }

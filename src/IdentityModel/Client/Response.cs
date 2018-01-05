@@ -109,7 +109,7 @@ namespace IdentityModel.Client
         /// <value>
         ///   <c>true</c> if an error occurred; otherwise, <c>false</c>.
         /// </value>
-        public bool IsError => !string.IsNullOrEmpty(Error);
+        public bool IsError => Error.IsPresent();
 
         /// <summary>
         /// Gets the type of the error.

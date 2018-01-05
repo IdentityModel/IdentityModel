@@ -101,7 +101,7 @@ namespace IdentityModel.Client
         public TokenClient(string address, string clientId, string clientSecret, HttpMessageHandler innerHttpMessageHandler, AuthenticationStyle style = AuthenticationStyle.BasicAuthentication)
             : this(address, innerHttpMessageHandler)
         {
-            if (string.IsNullOrEmpty(clientId)) throw new ArgumentNullException(nameof(clientId));
+            if (clientId.IsMissing()) throw new ArgumentNullException(nameof(clientId));
 
             AuthenticationStyle = style;
             ClientId = clientId;
@@ -213,7 +213,7 @@ namespace IdentityModel.Client
             {
                 merged.Add(OidcConstants.TokenRequest.ClientId, ClientId);
 
-                if (!string.IsNullOrEmpty(ClientSecret))
+                if (ClientSecret.IsPresent())
                 {
                     merged.Add(OidcConstants.TokenRequest.ClientSecret, ClientSecret);
                 }

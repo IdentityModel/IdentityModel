@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Brock Allen & Dominick Baier. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
 
+using IdentityModel.Internal;
 using System;
 using System.Net;
 using System.Net.Http;
@@ -115,7 +116,7 @@ namespace IdentityModel.Client
         protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
             var accessToken = await GetAccessTokenAsync(cancellationToken);
-            if (string.IsNullOrEmpty(accessToken))
+            if (accessToken.IsMissing())
             {
                 if (await RefreshTokensAsync(cancellationToken) == false)
                 {
@@ -159,7 +160,7 @@ namespace IdentityModel.Client
         private async Task<bool> RefreshTokensAsync(CancellationToken cancellationToken)
         {
             var refreshToken = RefreshToken;
-            if (string.IsNullOrEmpty(refreshToken))
+            if (refreshToken.IsMissing())
             {
                 return false;
             }

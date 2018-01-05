@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Brock Allen & Dominick Baier. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
 
+using IdentityModel.Internal;
 using System;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -77,7 +78,7 @@ namespace IdentityModel.Client
         /// <exception cref="System.ArgumentNullException">token</exception>
         public virtual async Task<UserInfoResponse> GetAsync(string token, CancellationToken cancellationToken = default)
         {
-            if (string.IsNullOrEmpty(token)) throw new ArgumentNullException(nameof(token));
+            if (token.IsMissing()) throw new ArgumentNullException(nameof(token));
 
             var request = new HttpRequestMessage(HttpMethod.Get, "");
             request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);

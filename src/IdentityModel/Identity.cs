@@ -61,7 +61,7 @@ namespace IdentityModel
             claims.Add(new Claim(ClaimTypes.Thumbprint, thumbprint, ClaimValueTypes.Base64Binary, issuer));
 
             var name = certificate.SubjectName.Name;
-            if (!string.IsNullOrEmpty(name))
+            if (name.IsPresent())
             {
                 claims.Add(new Claim(ClaimTypes.X500DistinguishedName, name, ClaimValueTypes.String, issuer));
             }
@@ -69,7 +69,7 @@ namespace IdentityModel
             if (includeAllClaims)
             {
                 name = certificate.SerialNumber;
-                if (!string.IsNullOrEmpty(name))
+                if (name.IsPresent())
                 {
                     claims.Add(new Claim(ClaimTypes.SerialNumber, name, ClaimValueTypes.String, issuer));
                 }

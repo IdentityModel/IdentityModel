@@ -100,7 +100,7 @@ namespace IdentityModel.Client
                 Json = JObject.Parse(raw);
                 var validationError = Validate(policy);
 
-                if (!string.IsNullOrEmpty(validationError))
+                if (validationError.IsPresent())
                 {
                     IsError = true;
                     Json = null;
@@ -186,7 +186,7 @@ namespace IdentityModel.Client
             }
 
             var error = ValidateEndpoints(Json, policy);
-            if (!string.IsNullOrEmpty(error)) return error;
+            if (error.IsPresent()) return error;
 
             return string.Empty;
         }
@@ -223,12 +223,16 @@ namespace IdentityModel.Client
         public string ValidateEndpoints(JObject json, DiscoveryPolicy policy)
         {
             // allowed hosts
-            var allowedHosts = new HashSet<string>(policy.AdditionalEndpointBaseAddresses.Select(e => new Uri(e).Authority));
-            allowedHosts.Add(new Uri(policy.Authority).Authority);
+            var allowedHosts = new HashSet<string>(policy.AdditionalEndpointBaseAddresses.Select(e => new Uri(e).Authority))
+            {
+                new Uri(policy.Authority).Authority
+            };
 
             // allowed authorities (hosts + base address)
-            var allowedAuthorities = new HashSet<string>(policy.AdditionalEndpointBaseAddresses);
-            allowedAuthorities.Add(policy.Authority);
+            var allowedAuthorities = new HashSet<string>(policy.AdditionalEndpointBaseAddresses)
+            {
+                policy.Authority
+            };
 
             foreach (var element in json)
             {
