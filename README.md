@@ -62,8 +62,8 @@ var isActice = response.IsActive;
 var claims = response.Claims;
 ```
 
-### AuthorizeRequest
-Helper class for creating authorize request URLs (e.g. for code and implicit flow).
+### RequestUrl
+Helper class for creating request URLs (e.g. for authorize and end_session).
 
 ```csharp
 var request = new AuthorizeRequest(doc.AuthorizationEndpoint);
