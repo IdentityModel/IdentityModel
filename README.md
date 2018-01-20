@@ -66,7 +66,7 @@ var claims = response.Claims;
 Helper class for creating request URLs (e.g. for authorize and end_session).
 
 ```csharp
-var request = new AuthorizeRequest(doc.AuthorizationEndpoint);
+var request = new RequestUrl(doc.AuthorizationEndpoint);
 var url = request.CreateAuthorizeUrl(
     clientId:     "client",
     responseType: OidcConstants.ResponseTypes.CodeIdToken,
