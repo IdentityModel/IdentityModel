@@ -81,7 +81,7 @@ namespace IdentityModel.Client
             if (token.IsMissing()) throw new ArgumentNullException(nameof(token));
 
             var request = new HttpRequestMessage(HttpMethod.Get, "");
-            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
+            request.SetBearerToken(token);
 
             HttpResponseMessage response;
             try

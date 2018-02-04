@@ -51,7 +51,7 @@ namespace IdentityModel.Client
 
             if (clientId.IsPresent() && clientSecret.IsPresent())
             {
-                Client.SetBasicAuthentication(clientId, clientSecret);
+                Client.SetBasicAuthenticationOAuth(clientId, clientSecret);
             }
             else if (!string.IsNullOrWhiteSpace(clientId))
             {

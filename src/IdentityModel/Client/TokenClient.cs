@@ -171,7 +171,7 @@ namespace IdentityModel.Client
 
             if (AuthenticationStyle == AuthenticationStyle.BasicAuthentication)
             {
-                request.Headers.Authorization = new BasicAuthenticationHeaderValue(ClientId, ClientSecret);
+                request.Headers.Authorization = new BasicAuthenticationOAuthHeaderValue(ClientId, ClientSecret);
             }
 
             try
