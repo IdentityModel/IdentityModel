@@ -16,8 +16,6 @@ namespace IdentityModel.Client
     /// </summary>
     public class RefreshTokenHandler : DelegatingHandler
     {
-        private static readonly TimeSpan LockTimeout = TimeSpan.FromSeconds(2);
-
         private readonly SemaphoreSlim _lock = new SemaphoreSlim(1, 1);
         private readonly TokenClient _tokenClient;
 
@@ -25,6 +23,8 @@ namespace IdentityModel.Client
         private string _refreshToken;
         private bool _disposed;
 
+        public TimeSpan Timeout { get; set; } = TimeSpan.FromSeconds(5);
+        
         /// <summary>
         /// Gets the current access token
         /// </summary>
@@ -32,7 +32,7 @@ namespace IdentityModel.Client
         {
             get
             {
-                if (_lock.Wait(LockTimeout))
+                if (_lock.Wait(Timeout))
                 {
                     try
                     {
@@ -55,7 +55,7 @@ namespace IdentityModel.Client
         {
             get
             {
-                if (_lock.Wait(LockTimeout))
+                if (_lock.Wait(Timeout))
                 {
                     try
                     {
@@ -165,7 +165,7 @@ namespace IdentityModel.Client
                 return false;
             }
 
-            if (await _lock.WaitAsync(LockTimeout, cancellationToken).ConfigureAwait(false))
+            if (await _lock.WaitAsync(Timeout, cancellationToken).ConfigureAwait(false))
             {
                 try
                 {
@@ -204,7 +204,7 @@ namespace IdentityModel.Client
 
         private async Task<string> GetAccessTokenAsync(CancellationToken cancellationToken)
         {
-            if (await _lock.WaitAsync(LockTimeout, cancellationToken).ConfigureAwait(false))
+            if (await _lock.WaitAsync(Timeout, cancellationToken).ConfigureAwait(false))
             {
                 try
                 {
