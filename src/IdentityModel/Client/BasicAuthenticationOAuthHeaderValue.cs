@@ -27,13 +27,18 @@ namespace System.Net.Http
             if (password == null) password = "";
 
             Encoding encoding = Encoding.UTF8;
-            string credential = String.Format("{0}:{1}", UrlEncode(userName), UrlEncode(password));
+            string credential = $"{UrlEncode(userName)}:{UrlEncode(password)}";
 
             return Convert.ToBase64String(encoding.GetBytes(credential));
         }
 
         private static string UrlEncode(string value)
         {
+            if (String.IsNullOrEmpty(value))
+            {
+                return String.Empty;
+            }
+            
             return Uri.EscapeDataString(value).Replace("%20", "+");
         }
     }
