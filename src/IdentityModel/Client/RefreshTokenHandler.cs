@@ -23,6 +23,9 @@ namespace IdentityModel.Client
         private string _refreshToken;
         private bool _disposed;
 
+        /// <summary>
+        /// Gets or sets the timeout
+        /// </summary>
         public TimeSpan Timeout { get; set; } = TimeSpan.FromSeconds(5);
         
         /// <summary>

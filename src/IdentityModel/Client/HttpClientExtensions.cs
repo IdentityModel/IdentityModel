@@ -22,7 +22,7 @@ namespace System.Net.Http
         }
         
         /// <summary>
-        /// Sets a basic authentication header.
+        /// Sets a basic authentication header for RFC6749 client authentication.
         /// </summary>
         /// <param name="client">The client.</param>
         /// <param name="userName">Name of the user.</param>
