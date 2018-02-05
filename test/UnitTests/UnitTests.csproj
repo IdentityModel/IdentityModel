@@ -1,5 +1,4 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
     <TargetFrameworks>net452;net461;netcoreapp1.1;netcoreapp2.0</TargetFrameworks>
     <AssemblyName>UnitTests</AssemblyName>
@@ -11,48 +10,39 @@
     <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
     <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
   </PropertyGroup>
-
   <ItemGroup>
     <None Update="documents\*">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
   </ItemGroup>
-
   <ItemGroup>
     <ProjectReference Include="..\..\src\IdentityModel\IdentityModel.csproj" />
   </ItemGroup>
-
   <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="15.3.0" />
     <PackageReference Include="xunit.runner.visualstudio" Version="2.3.0" />
     <PackageReference Include="xunit" Version="2.3.0" />
     <PackageReference Include="FluentAssertions" Version="4.19.4" />
   </ItemGroup>
-
   <ItemGroup Condition=" '$(TargetFramework)' == 'netcoreapp1.1' ">
     <PackageReference Include="Microsoft.AspNetCore.WebUtilities" Version="1.1.2" />
   </ItemGroup>
-
   <ItemGroup Condition=" '$(TargetFramework)' == 'netcoreapp2.0' ">
     <PackageReference Include="Microsoft.AspNetCore.WebUtilities" Version="2.0.0" />
   </ItemGroup>
-  
   <ItemGroup Condition=" '$(TargetFramework)' == 'net452' ">
     <Reference Include="System" />
     <Reference Include="Microsoft.CSharp" />
     <PackageReference Include="Microsoft.Extensions.PlatformAbstractions" Version="1.1.0" />
     <PackageReference Include="Microsoft.AspNetCore.WebUtilities" Version="1.1.2" />
   </ItemGroup>
-
   <ItemGroup Condition=" '$(TargetFramework)' == 'net461' ">
     <Reference Include="System" />
     <Reference Include="Microsoft.CSharp" />
     <PackageReference Include="Microsoft.Extensions.PlatformAbstractions" Version="1.1.0" />
     <PackageReference Include="Microsoft.AspNetCore.WebUtilities" Version="1.1.2" />
   </ItemGroup>
-
   <ItemGroup>
     <Service Include="{82a7f48d-3b50-4b1e-b82e-3ada8210c358}" />
   </ItemGroup>
-
 </Project>
