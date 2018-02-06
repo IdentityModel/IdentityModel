@@ -12,7 +12,7 @@ using System.Threading.Tasks;
 namespace IdentityModel.Client
 {
     /// <summary>
-    /// HTTP message handler that encapsulates access token handling and renew
+    /// HTTP message handler that encapsulates access token handling and renewment
     /// </summary>
     public class AccessTokenHandler : DelegatingHandler
     {
@@ -57,7 +57,7 @@ namespace IdentityModel.Client
         public event EventHandler<TokenRenewedEventArgs> TokenRenewed = delegate { };
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="RefreshTokenHandler"/> class.
+        /// Initializes a new instance of the <see cref="AccessTokenHandler"/> class.
         /// </summary>
         /// <param name="tokenEndpoint">The token endpoint.</param>
         /// <param name="clientId">The client identifier.</param>
@@ -70,7 +70,7 @@ namespace IdentityModel.Client
         { }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="RefreshTokenHandler"/> class.
+        /// Initializes a new instance of the <see cref="AccessTokenHandler"/> class.
         /// </summary>
         /// <param name="client">The client.</param>
         /// <param name="scope">The scope.</param>
