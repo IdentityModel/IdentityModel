@@ -63,10 +63,9 @@ namespace IdentityModel.Client
         /// <param name="clientId">The client identifier.</param>
         /// <param name="clientSecret">The client secret.</param>
         /// <param name="scope">The scope.</param>
-        /// <param name="accessToken">The access token.</param>
         /// <param name="innerHandler">The inner handler.</param>
-        public AccessTokenHandler(string tokenEndpoint, string clientId, string clientSecret, string scope, string accessToken = null, HttpMessageHandler innerHandler = null)
-            : this(new TokenClient(tokenEndpoint, clientId, clientSecret), scope, accessToken, innerHandler)
+        public AccessTokenHandler(string tokenEndpoint, string clientId, string clientSecret, string scope, HttpMessageHandler innerHandler = null)
+            : this(new TokenClient(tokenEndpoint, clientId, clientSecret), scope, innerHandler)
         { }
 
         /// <summary>
@@ -74,13 +73,11 @@ namespace IdentityModel.Client
         /// </summary>
         /// <param name="client">The client.</param>
         /// <param name="scope">The scope.</param>
-        /// <param name="accessToken">The access token.</param>
         /// <param name="innerHandler">The inner handler.</param>
-        public AccessTokenHandler(TokenClient client, string scope, string accessToken = null, HttpMessageHandler innerHandler = null)
+        public AccessTokenHandler(TokenClient client, string scope, HttpMessageHandler innerHandler = null)
         {
             _tokenClient = client;
             _scope = scope;
-            _accessToken = accessToken;
 
             InnerHandler = innerHandler ?? new HttpClientHandler();
         }
