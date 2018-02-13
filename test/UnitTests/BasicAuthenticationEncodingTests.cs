@@ -1,10 +1,8 @@
 ﻿// Copyright (c) Brock Allen & Dominick Baier. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
 
-using System;
 using FluentAssertions;
-using IdentityModel.Client;
-using System.Collections.Generic;
+using System;
 using System.Net.Http;
 using System.Text;
 using Xunit;
@@ -15,6 +13,7 @@ namespace IdentityModel.UnitTests
     {
         [Theory]
         [InlineData("foo", "bar")]
+        [InlineData("foo", "very+secret")]
         [InlineData("firstname lastname", "bar")]
         [InlineData("firstname:lastname", "bar")]
         [InlineData("firstname:lastname", "bar:bar2")]
