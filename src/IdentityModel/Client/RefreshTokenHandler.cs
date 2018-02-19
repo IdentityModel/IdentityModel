@@ -177,7 +177,10 @@ namespace IdentityModel.Client
                     if (!response.IsError)
                     {
                         _accessToken = response.AccessToken;
-                        _refreshToken = response.RefreshToken;
+                        if (!response.RefreshToken.IsMissing())
+                        {
+                            _refreshToken = response.RefreshToken;
+                        }
 
 #pragma warning disable 4014
                         Task.Run(() =>
