@@ -78,5 +78,32 @@ namespace IdentityModel.UnitTests
                 .Should()
                 .BeTrue("Unauthorized response should be disposed to avoid socket blocking");
         }
+
+        [Fact]
+        public async Task Refresh_token_should_be_retained_if_token_response_contains_only_access_token()
+        {
+            var document = File.ReadAllText(FileName.Create("success_access_token_response.json"));
+            var handler = new NetworkHandler(document, HttpStatusCode.OK);
+
+            var tokenClient = new TokenClient(
+                "http://server/token",
+                "client",
+                handler);
+
+            var indirectOutputOfHttpResponses = new StubHttpResponsesHandler();
+            var refreshHandler = new RefreshTokenHandler(
+                tokenClient,
+                "refresh_token",
+                "access_token",
+                indirectOutputOfHttpResponses);
+
+            var apiClient = new HttpClient(refreshHandler);
+
+            await apiClient.GetStringAsync("http://someapi/somecall");
+
+            refreshHandler.RefreshToken
+                .Should()
+                .Be("refresh_token", "Refresh token should be retained if token response contains only access token");
+        }
     }
 }
