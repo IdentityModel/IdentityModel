@@ -70,7 +70,7 @@ namespace IdentityModel.Client
         }
 
         /// <summary>
-        /// Sends the userinfo request.
+        /// Sends the userinfo request using the HTTP GET method.
         /// </summary>
         /// <param name="token">The token.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
@@ -81,6 +81,39 @@ namespace IdentityModel.Client
             if (token.IsMissing()) throw new ArgumentNullException(nameof(token));
 
             var request = new HttpRequestMessage(HttpMethod.Get, "");
+            request.SetBearerToken(token);
+
+            HttpResponseMessage response;
+            try
+            {
+                response = await Client.SendAsync(request, cancellationToken).ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
+                return new UserInfoResponse(ex);
+            }
+
+            if (!response.IsSuccessStatusCode)
+            {
+                return new UserInfoResponse(response.StatusCode, response.ReasonPhrase);
+            }
+
+            var content = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+            return new UserInfoResponse(content);
+        }
+
+        /// <summary>
+        /// Sends the userinfo request using HTTP POST method.
+        /// </summary>
+        /// <param name="token">The token.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
+        /// <exception cref="System.ArgumentNullException">token</exception>
+        public virtual async Task<UserInfoResponse> PostAsync(string token, CancellationToken cancellationToken = default)
+        {
+            if (token.IsMissing()) throw new ArgumentNullException(nameof(token));
+
+            var request = new HttpRequestMessage(HttpMethod.Post, "");
             request.SetBearerToken(token);
 
             HttpResponseMessage response;
