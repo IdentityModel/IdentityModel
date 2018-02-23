@@ -19,6 +19,7 @@ namespace IdentityModel.UnitTests
         [InlineData("firstname:lastname", "bar:bar2")]
         [InlineData("sören:müller", "bar:bar2")]
         [InlineData(":/&%%(/(&/) %&%&/%/&", ")(/)(/&  /%/&%$&$$&")]
+        [InlineData("R413926C", "YDN4ZPE9oRszY+0Ks7J=kdoiiMgMDT4ppWw4ZNYLbag=")]
         public void oauth_values_should_decode_correctly(string id, string secret)
         {
             var header = new BasicAuthenticationOAuthHeaderValue(id, secret);
@@ -33,8 +34,8 @@ namespace IdentityModel.UnitTests
             var unbased = Unbase64(value);
             var items = unbased.Split(':');
 
-            id = Uri.UnescapeDataString(items[0].Replace("+", "%20"));
-            secret = Uri.UnescapeDataString(items[1].Replace("+", "%20"));
+            id = items[0];
+            secret = items[1];
         }
 
         private string Unbase64(string value)
