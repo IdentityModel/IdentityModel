@@ -65,7 +65,7 @@ namespace IdentityModel.Client
         /// <param name="scope">The scope.</param>
         /// <param name="innerHandler">The inner handler.</param>
         public AccessTokenHandler(string tokenEndpoint, string clientId, string clientSecret, string scope, HttpMessageHandler innerHandler = null)
-            : this(new TokenClient(tokenEndpoint, clientId, clientSecret), scope, innerHandler)
+            : this(new TokenClient(tokenEndpoint, clientId, clientSecret, innerHandler), scope, innerHandler)
         { }
 
         /// <summary>
