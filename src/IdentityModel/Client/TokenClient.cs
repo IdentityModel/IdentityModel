@@ -44,9 +44,9 @@ namespace IdentityModel.Client
         /// or
         /// innerHttpMessageHandler
         /// </exception>
-        public TokenClient(string address, HttpMessageHandler innerHttpMessageHandler)
+        public TokenClient(string address, HttpMessageHandler innerHttpMessageHandler = null)
         {
-            if (innerHttpMessageHandler == null) throw new ArgumentNullException(nameof(innerHttpMessageHandler));
+            innerHttpMessageHandler = innerHttpMessageHandler ?? new HttpClientHandler();
 
             Client = new HttpClient(innerHttpMessageHandler);
 
@@ -65,19 +65,9 @@ namespace IdentityModel.Client
         /// <param name="clientId">The client identifier.</param>
         /// <param name="style">The authentication style.</param>
         public TokenClient(string address, string clientId, AuthenticationStyle style = AuthenticationStyle.PostValues)
-            : this(address, clientId, string.Empty, new HttpClientHandler(), style)
+            : this(address, clientId, string.Empty, style: style)
         { }
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="TokenClient"/> class.
-        /// </summary>
-        /// <param name="address">The address.</param>
-        /// <param name="clientId">The client identifier.</param>
-        /// <param name="clientSecret">The client secret.</param>
-        /// <param name="style">The authentication style.</param>
-        public TokenClient(string address, string clientId, string clientSecret, AuthenticationStyle style = AuthenticationStyle.BasicAuthentication)
-            : this(address, clientId, clientSecret, new HttpClientHandler(), style)
-        { }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="TokenClient"/> class.
@@ -85,7 +75,7 @@ namespace IdentityModel.Client
         /// <param name="address">The address.</param>
         /// <param name="clientId">The client identifier.</param>
         /// <param name="innerHttpMessageHandler">The inner HTTP message handler.</param>
-        public TokenClient(string address, string clientId, HttpMessageHandler innerHttpMessageHandler)
+        public TokenClient(string address, string clientId, HttpMessageHandler innerHttpMessageHandler = null)
             : this(address, clientId, string.Empty, innerHttpMessageHandler, AuthenticationStyle.PostValues)
         { }
 
@@ -98,7 +88,7 @@ namespace IdentityModel.Client
         /// <param name="innerHttpMessageHandler">The inner HTTP message handler.</param>
         /// <param name="style">The authentication style.</param>
         /// <exception cref="System.ArgumentNullException">clientId</exception>
-        public TokenClient(string address, string clientId, string clientSecret, HttpMessageHandler innerHttpMessageHandler, AuthenticationStyle style = AuthenticationStyle.BasicAuthentication)
+        public TokenClient(string address, string clientId, string clientSecret, HttpMessageHandler innerHttpMessageHandler = null, AuthenticationStyle style = AuthenticationStyle.BasicAuthentication)
             : this(address, innerHttpMessageHandler)
         {
             if (clientId.IsMissing()) throw new ArgumentNullException(nameof(clientId));
