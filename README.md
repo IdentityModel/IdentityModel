@@ -58,7 +58,7 @@ var introspectionClient = new IntrospectionClient(
 var response = await introspectionClient.SendAsync(
     new IntrospectionRequest { Token = token });
 
-var isActice = response.IsActive;
+var isActive = response.IsActive;
 var claims = response.Claims;
 ```
 
