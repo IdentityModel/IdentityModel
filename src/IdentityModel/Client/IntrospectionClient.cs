@@ -28,14 +28,16 @@ namespace IdentityModel.Client
         protected readonly string ClientId;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="IntrospectionClient"/> class.
+        /// Initializes a new instance of the <see cref="IntrospectionClient" /> class.
         /// </summary>
         /// <param name="endpoint">The endpoint.</param>
         /// <param name="clientId">The client identifier.</param>
         /// <param name="clientSecret">The client secret.</param>
         /// <param name="innerHttpMessageHandler">The inner HTTP message handler.</param>
-        /// <exception cref="System.ArgumentNullException">endpoint</exception>
-        public IntrospectionClient(string endpoint, string clientId = "", string clientSecret = "", HttpMessageHandler innerHttpMessageHandler = null)
+        /// <param name="headerStyle">The header style.</param>
+        /// <exception cref="ArgumentNullException">endpoint</exception>
+        /// <exception cref="ArgumentException">Invalid header style - headerStyle</exception>
+        public IntrospectionClient(string endpoint, string clientId = "", string clientSecret = "", HttpMessageHandler innerHttpMessageHandler = null, BasicAuthenticationHeaderStyle headerStyle = BasicAuthenticationHeaderStyle.Rfc6749)
         {
             if (string.IsNullOrWhiteSpace(endpoint)) throw new ArgumentNullException(nameof(endpoint));
             if (innerHttpMessageHandler == null) innerHttpMessageHandler = new HttpClientHandler();
@@ -51,7 +53,19 @@ namespace IdentityModel.Client
 
             if (clientId.IsPresent() && clientSecret.IsPresent())
             {
-                Client.SetBasicAuthenticationOAuth(clientId, clientSecret);
+                if (headerStyle == BasicAuthenticationHeaderStyle.Rfc6749)
+                {
+                    Client.SetBasicAuthenticationOAuth(clientId, clientSecret);
+                }
+                else if (headerStyle == BasicAuthenticationHeaderStyle.Rfc2617)
+                {
+                    Client.SetBasicAuthentication(clientId, clientSecret);
+                }
+                else
+                {
+                    throw new ArgumentException("Invalid header style", nameof(headerStyle));
+                }
+                
             }
             else if (!string.IsNullOrWhiteSpace(clientId))
             {
