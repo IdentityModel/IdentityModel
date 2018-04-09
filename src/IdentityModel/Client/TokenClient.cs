@@ -59,24 +59,14 @@ namespace IdentityModel.Client
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="TokenClient"/> class.
+        /// Initializes a new instance of the <see cref="TokenClient" /> class.
         /// </summary>
         /// <param name="address">The address.</param>
         /// <param name="clientId">The client identifier.</param>
         /// <param name="style">The authentication style.</param>
-        public TokenClient(string address, string clientId, AuthenticationStyle style = AuthenticationStyle.PostValues)
-            : this(address, clientId, string.Empty, style: style)
-        { }
-
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="TokenClient"/> class.
-        /// </summary>
-        /// <param name="address">The address.</param>
-        /// <param name="clientId">The client identifier.</param>
         /// <param name="innerHttpMessageHandler">The inner HTTP message handler.</param>
-        public TokenClient(string address, string clientId, HttpMessageHandler innerHttpMessageHandler = null)
-            : this(address, clientId, string.Empty, innerHttpMessageHandler, AuthenticationStyle.PostValues)
+        public TokenClient(string address, string clientId, HttpMessageHandler innerHttpMessageHandler = null, AuthenticationStyle style = AuthenticationStyle.PostValues)
+            : this(address, clientId, string.Empty, style: style, innerHttpMessageHandler: innerHttpMessageHandler)
         { }
 
         /// <summary>
