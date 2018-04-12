@@ -3,9 +3,11 @@
 
 using FluentAssertions;
 using IdentityModel.Client;
+using Newtonsoft.Json;
 using System;
 using System.IO;
 using System.Net;
+using System.Net.Http;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -148,6 +150,130 @@ namespace IdentityModel.UnitTests
             responseModes.Should().Contain("form_post");
             responseModes.Should().Contain("query");
             responseModes.Should().Contain("fragment");
+        }
+
+        [Fact]
+        public async Task Http_error_with_non_json_content_should_be_handled_correctly()
+        {
+            var handler = new NetworkHandler("not_json", HttpStatusCode.InternalServerError);
+
+            var client = new DiscoveryClient(_endpoint, handler);
+            var disco = await client.GetAsync();
+
+            disco.IsError.Should().BeTrue();
+            disco.ErrorType.Should().Be(ResponseErrorType.Http);
+            disco.StatusCode.Should().Be(HttpStatusCode.InternalServerError);
+            disco.Error.Should().Contain("Internal Server Error");
+            disco.Raw.Should().Be("not_json");
+            disco.Json.Should().BeNull();
+        }
+
+        [Fact]
+        public async Task Http_error_with_json_content_should_be_handled_correctly()
+        {
+            var content = new
+            {
+                foo = "foo",
+                bar = "bar"
+            };
+
+            var handler = new NetworkHandler(JsonConvert.SerializeObject(content), HttpStatusCode.InternalServerError);
+
+            var client = new DiscoveryClient(_endpoint, handler);
+            var disco = await client.GetAsync();
+
+            disco.IsError.Should().BeTrue();
+            disco.ErrorType.Should().Be(ResponseErrorType.Http);
+            disco.StatusCode.Should().Be(HttpStatusCode.InternalServerError);
+            disco.Error.Should().Contain("Internal Server Error");
+
+            disco.Json.TryGetString("foo").Should().Be("foo");
+            disco.Json.TryGetString("bar").Should().Be("bar");
+        }
+
+        [Fact]
+        public async Task Http_error_at_jwk_with_non_json_content_should_be_handled_correctly()
+        {
+            var handler = new NetworkHandler(request =>
+            {
+                HttpResponseMessage response;
+
+                if (!request.RequestUri.AbsoluteUri.Contains("jwk"))
+                {
+                    var discoFileName = FileName.Create("discovery.json");
+                    var document = File.ReadAllText(discoFileName);
+
+                    response = new HttpResponseMessage(HttpStatusCode.OK)
+                    {
+                        Content = new StringContent(document)
+                    };
+                }
+                else
+                {
+                    response = new HttpResponseMessage(HttpStatusCode.InternalServerError)
+                    {
+                        Content = new StringContent("not_json")
+                    };
+                }
+
+                return response;
+            });
+
+            var client = new DiscoveryClient(_endpoint, handler);
+            var disco = await client.GetAsync();
+
+            disco.IsError.Should().BeTrue();
+            disco.ErrorType.Should().Be(ResponseErrorType.Http);
+            disco.StatusCode.Should().Be(HttpStatusCode.InternalServerError);
+            disco.Error.Should().Contain("Internal Server Error");
+            disco.Raw.Should().Be("not_json");
+            disco.Json.Should().BeNull();
+        }
+
+        [Fact]
+        public async Task Http_error_at_jwk_with_json_content_should_be_handled_correctly()
+        {
+            var handler = new NetworkHandler(request =>
+            {
+                HttpResponseMessage response;
+
+                if (!request.RequestUri.AbsoluteUri.Contains("jwk"))
+                {
+                    var discoFileName = FileName.Create("discovery.json");
+                    var document = File.ReadAllText(discoFileName);
+
+                    response = new HttpResponseMessage(HttpStatusCode.OK)
+                    {
+                        Content = new StringContent(document)
+                    };
+                }
+                else
+                {
+                    var content = new
+                    {
+                        foo = "foo",
+                        bar = "bar"
+                    };
+
+                    response = new HttpResponseMessage(HttpStatusCode.InternalServerError)
+                    {
+                        Content = new StringContent(JsonConvert.SerializeObject(content))
+                    }; 
+                }
+
+                return response;
+            });
+
+            var client = new DiscoveryClient(_endpoint, handler);
+            var disco = await client.GetAsync();
+
+            disco.IsError.Should().BeTrue();
+            disco.ErrorType.Should().Be(ResponseErrorType.Http);
+            disco.StatusCode.Should().Be(HttpStatusCode.InternalServerError);
+            disco.Error.Should().Contain("Internal Server Error");
+
+            disco.Json.TryGetString("foo").Should().Be("foo");
+            disco.Json.TryGetString("bar").Should().Be("bar");
         }
     }
 }

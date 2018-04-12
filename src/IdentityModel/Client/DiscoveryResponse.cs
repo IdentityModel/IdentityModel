@@ -134,6 +134,28 @@ namespace IdentityModel.Client
         }
 
         /// <summary>
+        /// Initializes a new instance of the <see cref="DiscoveryResponse" /> class.
+        /// </summary>
+        /// <param name="statusCode">The status code.</param>
+        /// <param name="reason">The reason.</param>
+        /// <param name="content">The content.</param>
+        public DiscoveryResponse(HttpStatusCode statusCode, string reason, string content)
+        {
+            IsError = true;
+
+            ErrorType = ResponseErrorType.Http;
+            StatusCode = statusCode;
+            Error = reason;
+            Raw = content;
+
+            try
+            {
+                Json = JObject.Parse(content);
+            }
+            catch { }
+        }
+
+        /// <summary>
         /// Initializes a new instance of the <see cref="DiscoveryResponse"/> class.
         /// </summary>
         /// <param name="exception">The exception.</param>

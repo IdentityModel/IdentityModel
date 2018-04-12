@@ -144,13 +144,19 @@ namespace IdentityModel.Client
             try
             {
                 var response = await Client.GetAsync(Url, cancellationToken).ConfigureAwait(false);
+                string responseContent = null;
+
+                if (response.Content != null)
+                {
+                    responseContent = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+                }
 
                 if (!response.IsSuccessStatusCode)
                 {
-                    return new DiscoveryResponse(response.StatusCode, $"Error connecting to {Url}: {response.ReasonPhrase}");
+                    return new DiscoveryResponse(response.StatusCode, $"Error connecting to {Url}: {response.ReasonPhrase}", responseContent);
                 }
 
-                var disco = new DiscoveryResponse(await response.Content.ReadAsStringAsync().ConfigureAwait(false), Policy);
+                var disco = new DiscoveryResponse(responseContent, Policy);
                 if (disco.IsError)
                 {
                     return disco;
@@ -162,14 +168,18 @@ namespace IdentityModel.Client
                     if (jwkUrl != null)
                     {
                         response = await Client.GetAsync(jwkUrl, cancellationToken).ConfigureAwait(false);
-
+                        
+                        if (response.Content != null)
+                        {
+                            responseContent = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+                        }
+                        
                         if (!response.IsSuccessStatusCode)
                         {
-                            return new DiscoveryResponse(response.StatusCode, $"Error connecting to {jwkUrl}: {response.ReasonPhrase}");
+                            return new DiscoveryResponse(response.StatusCode, $"Error connecting to {jwkUrl}: {response.ReasonPhrase}", responseContent);
                         }
 
-                        var jwk = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-                        disco.KeySet = new JsonWebKeySet(jwk);
+                        disco.KeySet = new JsonWebKeySet(responseContent);
                     }
 
                     return disco;
