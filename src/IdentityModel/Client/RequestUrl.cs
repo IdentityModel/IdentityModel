@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Reflection;
+using System.Text.Encodings.Web;
 
 namespace IdentityModel.Client
 {
@@ -38,7 +39,9 @@ namespace IdentityModel.Client
                 return _baseUrl;
             }
 
-            var qs = string.Join("&", dictionary.Select(kvp => string.Format("{0}={1}", WebUtility.UrlEncode(kvp.Key), WebUtility.UrlEncode(kvp.Value))).ToArray());
+            var encoder = UrlEncoder.Default;
+
+            var qs = string.Join("&", dictionary.Select(kvp => string.Format("{0}={1}", encoder.Encode(kvp.Key), encoder.Encode(kvp.Value))).ToArray());
             return string.Format("{0}?{1}", _baseUrl, qs);
         }
     }

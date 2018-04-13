@@ -48,6 +48,22 @@ namespace IdentityModel.UnitTests
         }
 
         [Fact]
+        public void Special_characters_in_query_param_should_be_encoded_correctly()
+        {
+            var request = new RequestUrl("http://server/authorize");
+
+            var parmeters = new
+            {
+                scope = "a b c",
+                clientId = "a+b+c"
+            };
+
+            var url = request.Create(parmeters);
+
+            url.Should().Be("http://server/authorize?scope=a%20b%20c&clientId=a%2Bb%2Bc");
+        }
+
+        [Fact]
         public void Create_relative_url_should_behave_as_expected()
         {
             var request = new RequestUrl("/authorize");
