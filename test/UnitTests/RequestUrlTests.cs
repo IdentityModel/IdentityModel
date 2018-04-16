@@ -78,5 +78,21 @@ namespace IdentityModel.UnitTests
 
             url.Should().Be("/authorize?foo=foo&bar=bar");
         }
+
+        [Fact]
+        public void Null_values_should_be_skipped()
+        {
+            var request = new RequestUrl("/authorize");
+
+            var parameters = new Dictionary<string, string>
+            {
+                { "foo", "foo" },
+                { "bar", null }
+            };
+
+            var url = request.Create(parameters);
+
+            url.Should().Be("/authorize?foo=foo");
+        }
     }
 }

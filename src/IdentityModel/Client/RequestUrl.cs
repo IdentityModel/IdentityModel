@@ -41,7 +41,7 @@ namespace IdentityModel.Client
 
             var encoder = UrlEncoder.Default;
 
-            var qs = string.Join("&", dictionary.Select(kvp => string.Format("{0}={1}", encoder.Encode(kvp.Key), encoder.Encode(kvp.Value))).ToArray());
+            var qs = string.Join("&", dictionary.Where(d => d.Value != null).Select(kvp => string.Format("{0}={1}", encoder.Encode(kvp.Key), encoder.Encode(kvp.Value))).ToArray());
             return string.Format("{0}?{1}", _baseUrl, qs);
         }
     }
