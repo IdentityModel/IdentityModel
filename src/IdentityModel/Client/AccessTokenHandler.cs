@@ -79,7 +79,7 @@ namespace IdentityModel.Client
             _tokenClient = client;
             _scope = scope;
 
-            InnerHandler = innerHandler ?? new HttpClientHandler();
+            InnerHandler = innerHandler;
         }
 
         /// <summary>
