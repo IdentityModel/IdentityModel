@@ -105,7 +105,7 @@ namespace IdentityModel.Client
             _refreshToken = refreshToken;
             _accessToken = accessToken;
 
-            InnerHandler = innerHandler;
+            InnerHandler = innerHandler ?? new HttpClientHandler();
         }
 
         /// <summary>
