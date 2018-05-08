@@ -8,7 +8,7 @@ using Xunit;
 
 namespace IdentityModel.UnitTests
 {
-    public class AccessTokenHandlerTests
+    public class AccessTokenDelegatingHandlerTests
     {
         [Fact]
         public async Task The_401_response_that_causes_token_refresh_and_retry_should_be_disposed_to_unblock_socket()
@@ -22,7 +22,7 @@ namespace IdentityModel.UnitTests
                 handler))
             {
                 var indirectOutputOfHttpResponses = new StubHttpResponsesHandler();
-                var accessTokenHandler = new AccessTokenHandler(
+                var accessTokenHandler = new AccessTokenDelegatingHandler(
                     tokenClient,
                     "scope",
                     innerHandler: indirectOutputOfHttpResponses);

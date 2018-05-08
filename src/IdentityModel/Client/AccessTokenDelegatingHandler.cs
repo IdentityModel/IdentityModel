@@ -12,12 +12,9 @@ using System.Threading.Tasks;
 namespace IdentityModel.Client
 {
     /// <summary>
-    /// HTTP message handler that encapsulates access token handling and renewment
+    /// HTTP message delegating handler that encapsulates access token handling and renewment
     /// </summary>
-    [Obsolete("Use AccesTokenDelegatingHandler (that does not create a default " +
-              "inner handler) instead. See " +
-              "https://github.com/IdentityModel/IdentityModel2/pull/110", false)]
-    public class AccessTokenHandler : DelegatingHandler
+    public class AccessTokenDelegatingHandler : DelegatingHandler
     {
         private readonly SemaphoreSlim _lock = new SemaphoreSlim(1, 1);
         private readonly TokenClient _tokenClient;
@@ -60,29 +57,28 @@ namespace IdentityModel.Client
         public event EventHandler<TokenRenewedEventArgs> TokenRenewed = delegate { };
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="AccessTokenHandler"/> class.
+        /// Initializes a new instance of the <see cref="AccessTokenDelegatingHandler"/> class.
         /// </summary>
         /// <param name="tokenEndpoint">The token endpoint.</param>
         /// <param name="clientId">The client identifier.</param>
         /// <param name="clientSecret">The client secret.</param>
         /// <param name="scope">The scope.</param>
         /// <param name="innerHandler">The inner handler.</param>
-        public AccessTokenHandler(string tokenEndpoint, string clientId, string clientSecret, string scope, HttpMessageHandler innerHandler = null)
+        public AccessTokenDelegatingHandler(string tokenEndpoint, string clientId, string clientSecret, string scope, HttpMessageHandler innerHandler = null)
             : this(new TokenClient(tokenEndpoint, clientId, clientSecret, innerHandler), scope, innerHandler)
         { }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="AccessTokenHandler"/> class.
+        /// Initializes a new instance of the <see cref="AccessTokenDelegatingHandler"/> class.
         /// </summary>
         /// <param name="client">The client.</param>
         /// <param name="scope">The scope.</param>
         /// <param name="innerHandler">The inner handler.</param>
-        public AccessTokenHandler(TokenClient client, string scope, HttpMessageHandler innerHandler = null)
+        public AccessTokenDelegatingHandler(TokenClient client, string scope, HttpMessageHandler innerHandler = null)
+            : base(innerHandler)
         {
             _tokenClient = client;
             _scope = scope;
-
-            InnerHandler = innerHandler ?? new HttpClientHandler();
         }
 
         /// <summary>

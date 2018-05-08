@@ -12,18 +12,15 @@ using System.Threading.Tasks;
 namespace IdentityModel.Client
 {
     /// <summary>
-    /// HTTP message handler that encapsulates access token handling and renewment
+    /// HTTP message delegating handler that encapsulates token handling and refresh
     /// </summary>
-    [Obsolete("Use AccesTokenDelegatingHandler (that does not create a default " +
-              "inner handler) instead. See " +
-              "https://github.com/IdentityModel/IdentityModel2/pull/110", false)]
-    public class AccessTokenHandler : DelegatingHandler
+    public class RefreshTokenDelegatingHandler : DelegatingHandler
     {
         private readonly SemaphoreSlim _lock = new SemaphoreSlim(1, 1);
         private readonly TokenClient _tokenClient;
-        private readonly string _scope;
 
         private string _accessToken;
+        private string _refreshToken;
         private bool _disposed;
 
         /// <summary>
@@ -55,34 +52,59 @@ namespace IdentityModel.Client
         }
 
         /// <summary>
-        /// Occurs when the tokens were renewed successfully
+        /// Gets the current refresh token
         /// </summary>
-        public event EventHandler<TokenRenewedEventArgs> TokenRenewed = delegate { };
+        public string RefreshToken
+        {
+            get
+            {
+                if (_lock.Wait(Timeout))
+                {
+                    try
+                    {
+                        return _refreshToken;
+                    }
+                    finally
+                    {
+                        _lock.Release();
+                    }
+                }
+
+                return null;
+            }
+        }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="AccessTokenHandler"/> class.
+        /// Occurs when the tokens were refreshed successfully
+        /// </summary>
+        public event EventHandler<TokenRefreshedEventArgs> TokenRefreshed = delegate { };
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="RefreshTokenDelegatingHandler"/> class.
         /// </summary>
         /// <param name="tokenEndpoint">The token endpoint.</param>
         /// <param name="clientId">The client identifier.</param>
         /// <param name="clientSecret">The client secret.</param>
-        /// <param name="scope">The scope.</param>
+        /// <param name="refreshToken">The refresh token.</param>
+        /// <param name="accessToken">The access token.</param>
         /// <param name="innerHandler">The inner handler.</param>
-        public AccessTokenHandler(string tokenEndpoint, string clientId, string clientSecret, string scope, HttpMessageHandler innerHandler = null)
-            : this(new TokenClient(tokenEndpoint, clientId, clientSecret, innerHandler), scope, innerHandler)
+        public RefreshTokenDelegatingHandler(string tokenEndpoint, string clientId, string clientSecret, string refreshToken, string accessToken = null, HttpMessageHandler innerHandler = null)
+            : this(new TokenClient(tokenEndpoint, clientId, clientSecret), refreshToken, accessToken, innerHandler)
         { }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="AccessTokenHandler"/> class.
+        /// Initializes a new instance of the <see cref="RefreshTokenDelegatingHandler"/> class.
         /// </summary>
         /// <param name="client">The client.</param>
-        /// <param name="scope">The scope.</param>
+        /// <param name="refreshToken">The refresh token.</param>
+        /// <param name="accessToken">The access token.</param>
         /// <param name="innerHandler">The inner handler.</param>
-        public AccessTokenHandler(TokenClient client, string scope, HttpMessageHandler innerHandler = null)
+        public RefreshTokenDelegatingHandler(TokenClient client, string refreshToken, string accessToken = null, HttpMessageHandler innerHandler = null)
+            :base(innerHandler)
         {
             _tokenClient = client;
-            _scope = scope;
-
-            InnerHandler = innerHandler ?? new HttpClientHandler();
+            _refreshToken = refreshToken;
+            _accessToken = accessToken;
         }
 
         /// <summary>
@@ -98,7 +120,7 @@ namespace IdentityModel.Client
             var accessToken = await GetAccessTokenAsync(cancellationToken);
             if (accessToken.IsMissing())
             {
-                if (await RenewTokensAsync(cancellationToken) == false)
+                if (await RefreshTokensAsync(cancellationToken) == false)
                 {
                     return new HttpResponseMessage(HttpStatusCode.Unauthorized);
                 }
@@ -112,7 +134,7 @@ namespace IdentityModel.Client
                 return response;
             }
 
-            if (await RenewTokensAsync(cancellationToken) == false)
+            if (await RefreshTokensAsync(cancellationToken) == false)
             {
                 return response;
             }
@@ -137,26 +159,36 @@ namespace IdentityModel.Client
           base.Dispose(disposing);
         }
 
-        private async Task<bool> RenewTokensAsync(CancellationToken cancellationToken)
+        private async Task<bool> RefreshTokensAsync(CancellationToken cancellationToken)
         {
+            var refreshToken = RefreshToken;
+            if (refreshToken.IsMissing())
+            {
+                return false;
+            }
+
             if (await _lock.WaitAsync(Timeout, cancellationToken).ConfigureAwait(false))
             {
                 try
                 {
-                    var response = await _tokenClient.RequestClientCredentialsAsync(_scope, cancellationToken: cancellationToken).ConfigureAwait(false);
+                    var response = await _tokenClient.RequestRefreshTokenAsync(refreshToken, cancellationToken: cancellationToken).ConfigureAwait(false);
 
                     if (!response.IsError)
                     {
                         _accessToken = response.AccessToken;
+                        if (!response.RefreshToken.IsMissing())
+                        {
+                            _refreshToken = response.RefreshToken;
+                        }
 
 #pragma warning disable 4014
                         Task.Run(() =>
                         {
-                            foreach (EventHandler<TokenRenewedEventArgs> del in TokenRenewed.GetInvocationList())
+                            foreach (EventHandler<TokenRefreshedEventArgs> del in TokenRefreshed.GetInvocationList())
                             {
                                 try
                                 {
-                                    del(this, new TokenRenewedEventArgs(response.AccessToken, response.ExpiresIn));
+                                    del(this, new TokenRefreshedEventArgs(response.AccessToken, response.RefreshToken, (int)response.ExpiresIn));
                                 }
                                 catch { }
                             }

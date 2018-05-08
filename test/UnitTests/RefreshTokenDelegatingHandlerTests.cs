@@ -47,7 +47,7 @@ namespace IdentityModel.UnitTests
         }
     }
 
-    public class RefreshTokenHandlerTests
+    public class RefreshTokenDelegatingHandlerTests
     {
         [Fact]
         public async Task The_401_response_that_causes_token_refresh_and_retry_should_be_disposed_to_unblock_socket()
@@ -63,7 +63,7 @@ namespace IdentityModel.UnitTests
             var tokenResponse = await tokenClient.RequestClientCredentialsAsync();
 
             var indirectOutputOfHttpResponses = new StubHttpResponsesHandler();
-            var refreshHandler = new RefreshTokenHandler(
+            var refreshHandler = new RefreshTokenDelegatingHandler(
                 tokenClient,
                 tokenResponse.RefreshToken,
                 tokenResponse.AccessToken,
@@ -91,7 +91,7 @@ namespace IdentityModel.UnitTests
                 handler);
 
             var indirectOutputOfHttpResponses = new StubHttpResponsesHandler();
-            var refreshHandler = new RefreshTokenHandler(
+            var refreshHandler = new RefreshTokenDelegatingHandler(
                 tokenClient,
                 "refresh_token",
                 "access_token",
