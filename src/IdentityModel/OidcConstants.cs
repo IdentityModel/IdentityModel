@@ -195,6 +195,7 @@ namespace IdentityModel
             public const string Implicit = "implicit";
             public const string Saml2Bearer = "urn:ietf:params:oauth:grant-type:saml2-bearer";
             public const string JwtBearer = "urn:ietf:params:oauth:grant-type:jwt-bearer";
+            public const string DeviceCode = "urn:ietf:params:oauth:grant-type:device_code";
         }
 
         public static class ClientAssertionTypes
@@ -315,6 +316,7 @@ namespace IdentityModel
 
             // endpoints
             public const string AuthorizationEndpoint = "authorization_endpoint";
+            public const string DeviceAuthorizationEndpoint = "device_authorization_endpoint";
             public const string TokenEndpoint = "token_endpoint";
             public const string UserInfoEndpoint = "userinfo_endpoint";
             public const string IntrospectionEndpoint = "introspection_endpoint";
