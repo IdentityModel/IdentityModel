@@ -74,7 +74,7 @@ namespace IdentityModel.UnitTests
         }
 
         [Fact]
-        public async Task legacy_protocol_response_should_be_handled_correctly()
+        public async Task Legacy_protocol_response_should_be_handled_correctly()
         {
             var document = File.ReadAllText(FileName.Create("legacy_success_introspection_response.json"));
             var handler = new NetworkHandler(document, HttpStatusCode.OK);
@@ -115,7 +115,7 @@ namespace IdentityModel.UnitTests
         }
 
         [Fact]
-        public async Task success_protocol_response_should_be_handled_correctly()
+        public async Task Success_protocol_response_should_be_handled_correctly()
         {
             var document = File.ReadAllText(FileName.Create("success_introspection_response.json"));
             var handler = new NetworkHandler(document, HttpStatusCode.OK);
