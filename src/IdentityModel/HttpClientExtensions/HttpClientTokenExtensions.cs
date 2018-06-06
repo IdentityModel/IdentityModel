@@ -12,15 +12,39 @@ namespace IdentityModel.HttpClientExtensions
 {
     public static class HttpClientTokenExtensions
     {
+        public static async Task<TokenResponse> RequestClientCredentialsTokenAsync(this HttpClient client, TokenRequest request, CancellationToken cancellationToken = default)
+        {
+            if (request.Parameters == null)
+            {
+                request.Parameters = new Dictionary<string, string>();
+            }
+
+            request.Parameters.Add("grant_type", "client_credentials");
+
+            return await client.RequestTokenAsync(request, cancellationToken);
+        }
+
+        public static async Task<TokenResponse> RequestPasswordTokenAsync(this HttpClient client, PasswordTokenRequest request, CancellationToken cancellationToken = default)
+        {
+            if (request.Parameters == null)
+            {
+                request.Parameters = new Dictionary<string, string>();
+            }
+
+            request.Parameters.Add("grant_type", "password");
+            request.Parameters.AddIfPresent(OidcConstants.TokenRequest.UserName, request.UserName);
+            request.Parameters.AddIfPresent(OidcConstants.TokenRequest.Password, request.Password);
+
+            return await client.RequestTokenAsync(request, cancellationToken);
+        }
+
         public static async Task<TokenResponse> RequestTokenAsync(this HttpClient client, TokenRequest request, CancellationToken cancellationToken = default)
         {
-            IDictionary<string, string> form = new Dictionary<string, string>();
-
-            if (request.Parameters != null)
+            if (request.Parameters == null)
             {
-                form = ValuesHelper.ObjectToDictionary(request.Parameters);
+                request.Parameters = new Dictionary<string, string>();
             }
-            
+
             var httpRequest = new HttpRequestMessage(HttpMethod.Post, request.Address);
 
             if (request.ClientId.IsPresent())
@@ -31,11 +55,11 @@ namespace IdentityModel.HttpClientExtensions
                 }
                 else if (request.CredentialStyle == CredentialStyle.PostBody)
                 {
-                    form.AddIfPresent("client_id", request.ClientId);
+                    request.Parameters.AddIfPresent("client_id", request.ClientId);
 
                     if (request.ClientSecret.IsPresent())
                     {
-                        form.AddIfPresent("client_secret", request.ClientSecret);
+                        request.Parameters.AddIfPresent("client_secret", request.ClientSecret);
                     }
                 }
                 else
@@ -44,9 +68,9 @@ namespace IdentityModel.HttpClientExtensions
                 }
             }
 
-            form.AddIfPresent("scope", request.Scope);
+            request.Parameters.AddIfPresent("scope", request.Scope);
 
-            httpRequest.Content = new FormUrlEncodedContent(form);
+            httpRequest.Content = new FormUrlEncodedContent(request.Parameters);
 
             HttpResponseMessage response;
             try
