@@ -63,8 +63,19 @@ namespace IdentityModel.Client
         /// <param name="clientId">The client identifier.</param>
         /// <param name="clientSecret">The client secret.</param>
         /// <param name="scope">The scope.</param>
+        public AccessTokenDelegatingHandler(string tokenEndpoint, string clientId, string clientSecret, string scope)
+            : this(new TokenClient(tokenEndpoint, clientId, clientSecret), scope)
+        { }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AccessTokenDelegatingHandler"/> class.
+        /// </summary>
+        /// <param name="tokenEndpoint">The token endpoint.</param>
+        /// <param name="clientId">The client identifier.</param>
+        /// <param name="clientSecret">The client secret.</param>
+        /// <param name="scope">The scope.</param>
         /// <param name="innerHandler">The inner handler.</param>
-        public AccessTokenDelegatingHandler(string tokenEndpoint, string clientId, string clientSecret, string scope, HttpMessageHandler innerHandler = null)
+        public AccessTokenDelegatingHandler(string tokenEndpoint, string clientId, string clientSecret, string scope, HttpMessageHandler innerHandler)
             : this(new TokenClient(tokenEndpoint, clientId, clientSecret, innerHandler), scope, innerHandler)
         { }
 
@@ -73,8 +84,19 @@ namespace IdentityModel.Client
         /// </summary>
         /// <param name="client">The client.</param>
         /// <param name="scope">The scope.</param>
+        public AccessTokenDelegatingHandler(TokenClient client, string scope)
+        {
+            _tokenClient = client;
+            _scope = scope;
+        }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="AccessTokenDelegatingHandler"/> class.
+        /// </summary>
+        /// <param name="client">The client.</param>
+        /// <param name="scope">The scope.</param>
         /// <param name="innerHandler">The inner handler.</param>
-        public AccessTokenDelegatingHandler(TokenClient client, string scope, HttpMessageHandler innerHandler = null)
+        public AccessTokenDelegatingHandler(TokenClient client, string scope, HttpMessageHandler innerHandler)
             : base(innerHandler)
         {
             _tokenClient = client;
