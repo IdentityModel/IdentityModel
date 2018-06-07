@@ -3,18 +3,16 @@
 
 using FluentAssertions;
 using IdentityModel.Client;
+using IdentityModel.HttpClientExtensions;
+using Microsoft.AspNetCore.WebUtilities;
+using Newtonsoft.Json;
 using System;
 using System.IO;
 using System.Linq;
 using System.Net;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.WebUtilities;
-
-using Xunit;
-using Newtonsoft.Json;
 using System.Net.Http;
-using IdentityModel.HttpClientExtensions;
+using System.Threading.Tasks;
+using Xunit;
 
 namespace IdentityModel.UnitTests
 {
@@ -32,6 +30,7 @@ namespace IdentityModel.UnitTests
             var response = await client.RequestTokenAsync(new TokenRequest
             {
                 Address = Endpoint,
+                GrantType = "test",
                 ClientId = "client"
             });
 
@@ -54,6 +53,7 @@ namespace IdentityModel.UnitTests
             var response = await client.RequestTokenAsync(new TokenRequest
             {
                 Address = Endpoint,
+                GrantType = "test",
                 ClientId = "client"
             });
 
@@ -75,6 +75,7 @@ namespace IdentityModel.UnitTests
             var response = await client.RequestTokenAsync(new TokenRequest
             {
                 Address = Endpoint,
+                GrantType = "test",
                 ClientId = "client"
             });
 
@@ -93,6 +94,7 @@ namespace IdentityModel.UnitTests
             var response = await client.RequestTokenAsync(new TokenRequest
             {
                 Address = Endpoint,
+                GrantType = "test",
                 ClientId = "client"
             });
 
@@ -111,6 +113,7 @@ namespace IdentityModel.UnitTests
             var response = await client.RequestTokenAsync(new TokenRequest
             {
                 Address = Endpoint,
+                GrantType = "test",
                 ClientId = "client"
             });
 
@@ -129,6 +132,7 @@ namespace IdentityModel.UnitTests
             var response = await client.RequestTokenAsync(new TokenRequest
             {
                 Address = Endpoint,
+                GrantType = "test",
                 ClientId = "client"
             });
 
@@ -154,6 +158,7 @@ namespace IdentityModel.UnitTests
             var response = await client.RequestTokenAsync(new TokenRequest
             {
                 Address = Endpoint,
+                GrantType = "test",
                 ClientId = "client"
             });
 
@@ -176,16 +181,17 @@ namespace IdentityModel.UnitTests
             var response = await client.RequestTokenAsync(new TokenRequest
             {
                 Address = Endpoint,
+                GrantType = "test",
                 ClientId = "client",
                 ClientSecret = "secret",
-                CredentialStyle = CredentialStyle.AuthorizationHeader
+                CredentialStyle = ClientCredentialStyle.AuthorizationHeader
             });
 
             var request = handler.Request;
 
             request.Headers.Authorization.Should().NotBeNull();
             request.Headers.Authorization.Scheme.Should().Be("Basic");
-            request.Headers.Authorization.Parameter.Should().Be(Convert.ToBase64String(Encoding.UTF8.GetBytes("client:secret")));
+            request.Headers.Authorization.Parameter.Should().Be(BasicAuthenticationOAuthHeaderValue.EncodeCredential("client", "secret"));
         }
 
         [Fact]
@@ -198,9 +204,10 @@ namespace IdentityModel.UnitTests
             var response = await client.RequestTokenAsync(new TokenRequest
             {
                 Address = Endpoint,
+                GrantType = "test",
                 ClientId = "client",
                 ClientSecret = "secret",
-                CredentialStyle = CredentialStyle.PostBody
+                CredentialStyle = ClientCredentialStyle.PostBody
             });
 
             var request = handler.Request;
@@ -223,6 +230,7 @@ namespace IdentityModel.UnitTests
             var response = await client.RequestTokenAsync(new TokenRequest
             {
                 Address = Endpoint,
+                GrantType = "test",
             });
 
             var request = handler.Request;
@@ -230,30 +238,57 @@ namespace IdentityModel.UnitTests
             request.Headers.Authorization.Should().BeNull();
 
             var fields = QueryHelpers.ParseQuery(handler.Body);
-
             fields.TryGetValue("client_secret", out _).Should().BeFalse();
             fields.TryGetValue("client_id", out _).Should().BeFalse();
         }
 
-        //[Fact]
-        //public async Task Setting_client_id_only_should_put_client_id_in_post_body()
-        //{
-        //    var document = File.ReadAllText(FileName.Create("success_token_response.json"));
-        //    var handler = new NetworkHandler(document, HttpStatusCode.OK);
+        [Fact]
+        public async Task Setting_client_id_only_and_post_should_put_client_id_in_post_body()
+        {
+            var document = File.ReadAllText(FileName.Create("success_token_response.json"));
+            var handler = new NetworkHandler(document, HttpStatusCode.OK);
 
-        //    var client = new HttpClient(handler);
-        //    var response = await client.RequestTokenAsync(new TokenRequest
-        //    {
-        //        Address = Endpoint,
-        //        ClientId = "client"
-        //    });
+            var client = new HttpClient(handler);
+            var response = await client.RequestTokenAsync(new TokenRequest
+            {
+                Address = Endpoint,
+                GrantType = "test",
+                ClientId = "client",
+                CredentialStyle = ClientCredentialStyle.PostBody
+            });
 
-        //    var request = handler.Request;
+            var request = handler.Request;
 
-        //    request.Headers.Authorization.Should().BeNull();
+            request.Headers.Authorization.Should().BeNull();
 
-        //    var fields = QueryHelpers.ParseQuery(handler.Body);
-        //    fields["client_id"].First().Should().Be("client");
-        //}
+            var fields = QueryHelpers.ParseQuery(handler.Body);
+            fields["client_id"].First().Should().Be("client");
+        }
+
+        [Fact]
+        public async Task Setting_client_id_only_and_header_should_put_client_id_in_header()
+        {
+            var document = File.ReadAllText(FileName.Create("success_token_response.json"));
+            var handler = new NetworkHandler(document, HttpStatusCode.OK);
+
+            var client = new HttpClient(handler);
+            var response = await client.RequestTokenAsync(new TokenRequest
+            {
+                Address = Endpoint,
+                GrantType = "test",
+                ClientId = "client",
+                CredentialStyle = ClientCredentialStyle.AuthorizationHeader
+            });
+
+            var request = handler.Request;
+
+            request.Headers.Authorization.Should().NotBeNull();
+            request.Headers.Authorization.Scheme.Should().Be("Basic");
+            request.Headers.Authorization.Parameter.Should().Be(BasicAuthenticationOAuthHeaderValue.EncodeCredential("client", ""));
+
+            var fields = QueryHelpers.ParseQuery(handler.Body);
+            fields.TryGetValue("client_secret", out _).Should().BeFalse();
+            fields.TryGetValue("client_id", out _).Should().BeFalse();
+        }
     }
 }

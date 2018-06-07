@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace IdentityModel.HttpClientExtensions
+﻿namespace IdentityModel.HttpClientExtensions
 {
-    public enum CredentialStyle
+    public enum ClientCredentialStyle
     {
         /// <summary>
         /// HTTP basic authentication

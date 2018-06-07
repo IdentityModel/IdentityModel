@@ -12,63 +12,69 @@ namespace IdentityModel.HttpClientExtensions
 {
     public static class HttpClientTokenExtensions
     {
-        public static async Task<TokenResponse> RequestClientCredentialsTokenAsync(this HttpClient client, TokenRequest request, CancellationToken cancellationToken = default)
+        public static async Task<TokenResponse> RequestClientCredentialsTokenAsync(this HttpClient client, ClientCredentialsTokenRequest request, CancellationToken cancellationToken = default)
         {
-            if (request.Parameters == null)
-            {
-                request.Parameters = new Dictionary<string, string>();
-            }
+            request.GrantType = OidcConstants.GrantTypes.ClientCredentials;
 
-            request.Parameters.Add("grant_type", "client_credentials");
+            request.Parameters.AddOptional(OidcConstants.TokenRequest.Scope, request.Scope);
 
             return await client.RequestTokenAsync(request, cancellationToken);
         }
 
         public static async Task<TokenResponse> RequestPasswordTokenAsync(this HttpClient client, PasswordTokenRequest request, CancellationToken cancellationToken = default)
         {
-            if (request.Parameters == null)
-            {
-                request.Parameters = new Dictionary<string, string>();
-            }
+            request.GrantType = OidcConstants.GrantTypes.Password;
 
-            request.Parameters.Add("grant_type", "password");
-            request.Parameters.AddIfPresent(OidcConstants.TokenRequest.UserName, request.UserName);
-            request.Parameters.AddIfPresent(OidcConstants.TokenRequest.Password, request.Password);
+            request.Parameters.AddRequired(OidcConstants.TokenRequest.UserName, request.UserName);
+            request.Parameters.AddRequired(OidcConstants.TokenRequest.Password, request.Password, allowEmpty: true);
+            request.Parameters.AddOptional(OidcConstants.TokenRequest.Scope, request.Scope);
+
+            return await client.RequestTokenAsync(request, cancellationToken);
+        }
+
+        public static async Task<TokenResponse> RequestAuthorizationCodeTokenAsync(this HttpClient client, AuthorizationCodeTokenRequest request, CancellationToken cancellationToken = default)
+        {
+            request.GrantType = OidcConstants.GrantTypes.AuthorizationCode;
+
+            request.Parameters.AddRequired(OidcConstants.TokenRequest.Code, request.Code);
+            request.Parameters.AddRequired(OidcConstants.TokenRequest.RedirectUri, request.RedirectUri);
+            request.Parameters.AddOptional(OidcConstants.TokenRequest.CodeVerifier, request.CodeVerifier);
+
+            return await client.RequestTokenAsync(request, cancellationToken);
+        }
+
+        public static async Task<TokenResponse> RequestRefreshTokenAsync(this HttpClient client, RefreshTokenRequest request, CancellationToken cancellationToken = default)
+        {
+            request.GrantType = OidcConstants.GrantTypes.RefreshToken;
+
+            request.Parameters.AddRequired(OidcConstants.TokenRequest.RefreshToken, request.RefreshToken);
+            request.Parameters.AddOptional(OidcConstants.TokenRequest.Scope, request.Scope);
 
             return await client.RequestTokenAsync(request, cancellationToken);
         }
 
         public static async Task<TokenResponse> RequestTokenAsync(this HttpClient client, TokenRequest request, CancellationToken cancellationToken = default)
         {
-            if (request.Parameters == null)
-            {
-                request.Parameters = new Dictionary<string, string>();
-            }
+            request.Parameters.AddRequired(OidcConstants.TokenRequest.GrantType, request.GrantType);
 
             var httpRequest = new HttpRequestMessage(HttpMethod.Post, request.Address);
-
+            
             if (request.ClientId.IsPresent())
             {
-                if (request.CredentialStyle == CredentialStyle.AuthorizationHeader)
+                if (request.CredentialStyle == ClientCredentialStyle.AuthorizationHeader)
                 {
                     httpRequest.SetBasicAuthenticationOAuth(request.ClientId, request?.ClientSecret ?? "");
                 }
-                else if (request.CredentialStyle == CredentialStyle.PostBody)
+                else if (request.CredentialStyle == ClientCredentialStyle.PostBody)
                 {
-                    request.Parameters.AddIfPresent("client_id", request.ClientId);
-
-                    if (request.ClientSecret.IsPresent())
-                    {
-                        request.Parameters.AddIfPresent("client_secret", request.ClientSecret);
-                    }
+                    request.Parameters.Add(OidcConstants.TokenRequest.ClientId, request.ClientId);
+                    request.Parameters.AddIfPresent(OidcConstants.TokenRequest.ClientSecret, request.ClientSecret);
                 }
                 else
                 {
-                    throw new InvalidOperationException("Invalid credential style");
+                    throw new InvalidOperationException("Invalid client credential style");
                 }
             }
-
-            request.Parameters.AddIfPresent("scope", request.Scope);
 
             httpRequest.Content = new FormUrlEncodedContent(request.Parameters);
 
