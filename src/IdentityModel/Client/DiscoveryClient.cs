@@ -46,7 +46,7 @@ namespace IdentityModel.Client
                 throw new InvalidOperationException("Malformed URL");
             }
 
-            if (!DiscoveryUrlHelper.IsValidScheme(uri))
+            if (!DiscoveryUrl.IsValidScheme(uri))
             {
                 throw new InvalidOperationException("Malformed URL");
             }
@@ -136,7 +136,7 @@ namespace IdentityModel.Client
 
             string jwkUrl = "";
 
-            if (!DiscoveryUrlHelper.IsSecureScheme(new Uri(Url), Policy))
+            if (!DiscoveryUrl.IsSecureScheme(new Uri(Url), Policy))
             {
                 return new DiscoveryResponse(new InvalidOperationException("HTTPS required"), $"Error connecting to {Url}");
             }
