@@ -16,7 +16,7 @@ using Xunit;
 
 namespace IdentityModel.UnitTests
 {
-    public class HttpClientTokenExtensionsTests
+    public class HttpClientTokenExtensionsResponseTests
     {
         const string Endpoint = "http://server/token";
 
@@ -169,126 +169,6 @@ namespace IdentityModel.UnitTests
 
             response.Json.TryGetString("foo").Should().Be("foo");
             response.Json.TryGetString("bar").Should().Be("bar");
-        }
-
-        [Fact]
-        public async Task Setting_basic_authentication_style_should_send_basic_authentication_header()
-        {
-            var document = File.ReadAllText(FileName.Create("success_token_response.json"));
-            var handler = new NetworkHandler(document, HttpStatusCode.OK);
-
-            var client = new HttpClient(handler);
-            var response = await client.RequestTokenAsync(new TokenRequest
-            {
-                Address = Endpoint,
-                GrantType = "test",
-                ClientId = "client",
-                ClientSecret = "secret",
-                ClientCredentialStyle = ClientCredentialStyle.AuthorizationHeader
-            });
-
-            var request = handler.Request;
-
-            request.Headers.Authorization.Should().NotBeNull();
-            request.Headers.Authorization.Scheme.Should().Be("Basic");
-            request.Headers.Authorization.Parameter.Should().Be(BasicAuthenticationOAuthHeaderValue.EncodeCredential("client", "secret"));
-        }
-
-        [Fact]
-        public async Task Setting_post_values_authentication_style_should_post_values()
-        {
-            var document = File.ReadAllText(FileName.Create("success_token_response.json"));
-            var handler = new NetworkHandler(document, HttpStatusCode.OK);
-
-            var client = new HttpClient(handler);
-            var response = await client.RequestTokenAsync(new TokenRequest
-            {
-                Address = Endpoint,
-                GrantType = "test",
-                ClientId = "client",
-                ClientSecret = "secret",
-                ClientCredentialStyle = ClientCredentialStyle.PostBody
-            });
-
-            var request = handler.Request;
-
-            request.Headers.Authorization.Should().BeNull();
-
-            var fields = QueryHelpers.ParseQuery(handler.Body);
-            fields["client_id"].First().Should().Be("client");
-            fields["client_secret"].First().Should().Be("secret");
-
-        }
-
-        [Fact]
-        public async Task Setting_no_client_id_and_secret_should_not_send_credentials()
-        {
-            var document = File.ReadAllText(FileName.Create("success_token_response.json"));
-            var handler = new NetworkHandler(document, HttpStatusCode.OK);
-
-            var client = new HttpClient(handler);
-            var response = await client.RequestTokenAsync(new TokenRequest
-            {
-                Address = Endpoint,
-                GrantType = "test",
-            });
-
-            var request = handler.Request;
-
-            request.Headers.Authorization.Should().BeNull();
-
-            var fields = QueryHelpers.ParseQuery(handler.Body);
-            fields.TryGetValue("client_secret", out _).Should().BeFalse();
-            fields.TryGetValue("client_id", out _).Should().BeFalse();
-        }
-
-        [Fact]
-        public async Task Setting_client_id_only_and_post_should_put_client_id_in_post_body()
-        {
-            var document = File.ReadAllText(FileName.Create("success_token_response.json"));
-            var handler = new NetworkHandler(document, HttpStatusCode.OK);
-
-            var client = new HttpClient(handler);
-            var response = await client.RequestTokenAsync(new TokenRequest
-            {
-                Address = Endpoint,
-                GrantType = "test",
-                ClientId = "client",
-                ClientCredentialStyle = ClientCredentialStyle.PostBody
-            });
-
-            var request = handler.Request;
-
-            request.Headers.Authorization.Should().BeNull();
-
-            var fields = QueryHelpers.ParseQuery(handler.Body);
-            fields["client_id"].First().Should().Be("client");
-        }
-
-        [Fact]
-        public async Task Setting_client_id_only_and_header_should_put_client_id_in_header()
-        {
-            var document = File.ReadAllText(FileName.Create("success_token_response.json"));
-            var handler = new NetworkHandler(document, HttpStatusCode.OK);
-
-            var client = new HttpClient(handler);
-            var response = await client.RequestTokenAsync(new TokenRequest
-            {
-                Address = Endpoint,
-                GrantType = "test",
-                ClientId = "client",
-                ClientCredentialStyle = ClientCredentialStyle.AuthorizationHeader
-            });
-
-            var request = handler.Request;
-
-            request.Headers.Authorization.Should().NotBeNull();
-            request.Headers.Authorization.Scheme.Should().Be("Basic");
-            request.Headers.Authorization.Parameter.Should().Be(BasicAuthenticationOAuthHeaderValue.EncodeCredential("client", ""));
-
-            var fields = QueryHelpers.ParseQuery(handler.Body);
-            fields.TryGetValue("client_secret", out _).Should().BeFalse();
-            fields.TryGetValue("client_id", out _).Should().BeFalse();
         }
     }
 }
