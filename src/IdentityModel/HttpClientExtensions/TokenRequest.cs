@@ -1,5 +1,4 @@
-﻿using IdentityModel.Client;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace IdentityModel.HttpClientExtensions
 {
@@ -10,7 +9,7 @@ namespace IdentityModel.HttpClientExtensions
         
         public string ClientId { get; set; }
         public string ClientSecret { get; set; }
-        public ClientCredentialStyle CredentialStyle { get; set; } = ClientCredentialStyle.PostBody;
+        public ClientCredentialStyle ClientCredentialStyle { get; set; } = ClientCredentialStyle.PostBody;
 
         public IDictionary<string, string> Parameters { get; set; } = new Dictionary<string, string>();
     }
@@ -39,6 +38,14 @@ namespace IdentityModel.HttpClientExtensions
     public class RefreshTokenRequest : TokenRequest
     {
         public string RefreshToken { get; set; }
+
+        public string Scope { get; set; }
+    }
+
+    public class AssertionTokenRequest : TokenRequest
+    {
+        public string AssertionType { get; set; }
+        public string Assertion { get; set; }
 
         public string Scope { get; set; }
     }

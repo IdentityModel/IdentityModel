@@ -184,7 +184,7 @@ namespace IdentityModel.UnitTests
                 GrantType = "test",
                 ClientId = "client",
                 ClientSecret = "secret",
-                CredentialStyle = ClientCredentialStyle.AuthorizationHeader
+                ClientCredentialStyle = ClientCredentialStyle.AuthorizationHeader
             });
 
             var request = handler.Request;
@@ -207,7 +207,7 @@ namespace IdentityModel.UnitTests
                 GrantType = "test",
                 ClientId = "client",
                 ClientSecret = "secret",
-                CredentialStyle = ClientCredentialStyle.PostBody
+                ClientCredentialStyle = ClientCredentialStyle.PostBody
             });
 
             var request = handler.Request;
@@ -254,7 +254,7 @@ namespace IdentityModel.UnitTests
                 Address = Endpoint,
                 GrantType = "test",
                 ClientId = "client",
-                CredentialStyle = ClientCredentialStyle.PostBody
+                ClientCredentialStyle = ClientCredentialStyle.PostBody
             });
 
             var request = handler.Request;
@@ -277,7 +277,7 @@ namespace IdentityModel.UnitTests
                 Address = Endpoint,
                 GrantType = "test",
                 ClientId = "client",
-                CredentialStyle = ClientCredentialStyle.AuthorizationHeader
+                ClientCredentialStyle = ClientCredentialStyle.AuthorizationHeader
             });
 
             var request = handler.Request;

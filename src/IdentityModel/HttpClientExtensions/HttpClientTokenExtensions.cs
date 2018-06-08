@@ -1,8 +1,6 @@
 ﻿using IdentityModel.Client;
 using IdentityModel.Internal;
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 using System.Threading;
@@ -53,6 +51,16 @@ namespace IdentityModel.HttpClientExtensions
             return await client.RequestTokenAsync(request, cancellationToken);
         }
 
+        public static async Task<TokenResponse> RequestAssertionTokenAsync(this HttpClient client, AssertionTokenRequest request, CancellationToken cancellationToken = default)
+        {
+            request.GrantType = request.AssertionType;
+
+            request.Parameters.AddRequired(OidcConstants.TokenRequest.Assertion, request.Assertion);
+            request.Parameters.AddOptional(OidcConstants.TokenRequest.Scope, request.Scope);
+
+            return await client.RequestTokenAsync(request, cancellationToken);
+        }
+
         public static async Task<TokenResponse> RequestTokenAsync(this HttpClient client, TokenRequest request, CancellationToken cancellationToken = default)
         {
             request.Parameters.AddRequired(OidcConstants.TokenRequest.GrantType, request.GrantType);
@@ -61,14 +69,14 @@ namespace IdentityModel.HttpClientExtensions
             
             if (request.ClientId.IsPresent())
             {
-                if (request.CredentialStyle == ClientCredentialStyle.AuthorizationHeader)
+                if (request.ClientCredentialStyle == ClientCredentialStyle.AuthorizationHeader)
                 {
                     httpRequest.SetBasicAuthenticationOAuth(request.ClientId, request?.ClientSecret ?? "");
                 }
-                else if (request.CredentialStyle == ClientCredentialStyle.PostBody)
+                else if (request.ClientCredentialStyle == ClientCredentialStyle.PostBody)
                 {
                     request.Parameters.Add(OidcConstants.TokenRequest.ClientId, request.ClientId);
-                    request.Parameters.AddIfPresent(OidcConstants.TokenRequest.ClientSecret, request.ClientSecret);
+                    request.Parameters.AddOptional(OidcConstants.TokenRequest.ClientSecret, request.ClientSecret);
                 }
                 else
                 {
