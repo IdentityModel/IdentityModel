@@ -2,10 +2,7 @@
 using IdentityModel.Internal;
 using IdentityModel.Jwk;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -13,30 +10,40 @@ namespace IdentityModel.HttpClientExtensions
 {
     public static class HttpClientDiscoveryExtensions
     {
-        public static async Task<DiscoveryResponse> GetAsync(this HttpClient client, string address, DiscoveryPolicy policy = null, CancellationToken cancellationToken = default)
+        public static async Task<DiscoveryResponse> GetDiscoveryDocumentAsync(this HttpClient client, DiscoveryDocumentRequest request, CancellationToken cancellationToken = default)
         {
-            if (policy == null) policy = new DiscoveryPolicy();
-            if (address.IsMissing()) address = client.BaseAddress.AbsoluteUri;
+            string address;
+
+            if (request.Address.IsPresent())
+            {
+                address = request.Address;
+            }
+            else
+            {
+                address = client.BaseAddress.AbsoluteUri;
+            }
 
             var parsed = DiscoveryClient.ParseUrl(address);
             var authority = parsed.Authority;
             var url = parsed.Url;
 
-            if (policy.Authority.IsMissing())
+            if (request.Policy.Authority.IsMissing())
             {
-                policy.Authority = authority;
+                request.Policy.Authority = authority;
             }
 
             string jwkUrl = "";
 
-            if (!DiscoveryUrl.IsSecureScheme(new Uri(url), policy))
+            if (!DiscoveryUrl.IsSecureScheme(new Uri(url), request.Policy))
             {
                 return new DiscoveryResponse(new InvalidOperationException("HTTPS required"), $"Error connecting to {url}");
             }
 
             try
             {
-                var response = await client.GetAsync(url, cancellationToken).ConfigureAwait(false);
+                var httpRequest = new HttpRequestMessage(HttpMethod.Get, request.Address);
+                var response = await client.SendAsync(httpRequest, cancellationToken).ConfigureAwait(false);
+
                 string responseContent = null;
 
                 if (response.Content != null)
@@ -49,7 +56,7 @@ namespace IdentityModel.HttpClientExtensions
                     return new DiscoveryResponse(response.StatusCode, $"Error connecting to {url}: {response.ReasonPhrase}", responseContent);
                 }
 
-                var disco = new DiscoveryResponse(responseContent, policy);
+                var disco = new DiscoveryResponse(responseContent, request.Policy);
                 if (disco.IsError)
                 {
                     return disco;
