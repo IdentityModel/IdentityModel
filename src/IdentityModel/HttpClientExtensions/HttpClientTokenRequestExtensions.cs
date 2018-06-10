@@ -3,12 +3,13 @@ using IdentityModel.Internal;
 using System;
 using System.Net;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace IdentityModel.HttpClientExtensions
 {
-    public static class HttpClientTokenExtensions
+    public static class HttpClientTokenRequestExtensions
     {
         public static async Task<TokenResponse> RequestClientCredentialsTokenAsync(this HttpClient client, ClientCredentialsTokenRequest request, CancellationToken cancellationToken = default)
         {
@@ -63,10 +64,15 @@ namespace IdentityModel.HttpClientExtensions
 
         public static async Task<TokenResponse> RequestTokenAsync(this HttpClient client, TokenRequest request, CancellationToken cancellationToken = default)
         {
-            request.Parameters.AddRequired(OidcConstants.TokenRequest.GrantType, request.GrantType);
+            if (!request.Parameters.ContainsKey(OidcConstants.TokenRequest.GrantType))
+            {
+                request.Parameters.AddRequired(OidcConstants.TokenRequest.GrantType, request.GrantType);
+            }
 
             var httpRequest = new HttpRequestMessage(HttpMethod.Post, request.Address);
-            
+            httpRequest.Headers.Accept.Clear();
+            httpRequest.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
             if (request.ClientId.IsPresent())
             {
                 if (request.ClientCredentialStyle == ClientCredentialStyle.AuthorizationHeader)
@@ -86,7 +92,7 @@ namespace IdentityModel.HttpClientExtensions
                 }
                 else if (request.ClientCredentialStyle == ClientCredentialStyle.PostBody)
                 {
-                    request.Parameters.Add(OidcConstants.TokenRequest.ClientId, request.ClientId);
+                    request.Parameters.AddRequired(OidcConstants.TokenRequest.ClientId, request.ClientId);
                     request.Parameters.AddOptional(OidcConstants.TokenRequest.ClientSecret, request.ClientSecret);
                 }
                 else

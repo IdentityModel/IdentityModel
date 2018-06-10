@@ -16,7 +16,7 @@ using Xunit;
 
 namespace IdentityModel.UnitTests
 {
-    public class HttpClientTokenExtensionsResponseTests
+    public class HttpClientTokenRequestExtensionsResponseTests
     {
         const string Endpoint = "http://server/token";
 

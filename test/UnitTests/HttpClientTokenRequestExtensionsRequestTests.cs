@@ -16,14 +16,14 @@ using Xunit;
 
 namespace IdentityModel.UnitTests
 {
-    public class HttpClientTokenExtensionsRequestTests
+    public class HttpClientTokenRequestExtensionsRequestTests
     {
         const string Endpoint = "http://server/token";
 
         HttpClient _client;
         NetworkHandler _handler;
 
-        public HttpClientTokenExtensionsRequestTests()
+        public HttpClientTokenRequestExtensionsRequestTests()
         {
             var document = File.ReadAllText(FileName.Create("success_token_response.json"));
             _handler = new NetworkHandler(document, HttpStatusCode.OK);
@@ -215,6 +215,69 @@ namespace IdentityModel.UnitTests
             Func<Task> act = async () => await _client.RequestRefreshTokenAsync(new RefreshTokenRequest());
 
             act.Should().Throw<ArgumentException>().And.ParamName.Should().Be("refresh_token");
+        }
+
+        [Fact]
+        public void Setting_no_grant_type_should_fail()
+        {
+            Func<Task> act = async () => await _client.RequestTokenAsync(new TokenRequest());
+
+            act.Should().Throw<ArgumentException>().And.ParamName.Should().Be("grant_type");
+        }
+
+        [Fact]
+        public async Task Setting_custom_parameters_should_have_correct()
+        {
+            var response = await _client.RequestTokenAsync(new TokenRequest
+            {
+                GrantType = "test",
+                Parameters =
+                {
+                    { "client_id", "custom" },
+                    { "client_secret", "custom" },
+                    { "custom", "custom" }
+                }
+            });
+
+            var request = _handler.Request;
+
+            request.Headers.Authorization.Should().BeNull();
+
+            var fields = QueryHelpers.ParseQuery(_handler.Body);
+            fields.TryGetValue("grant_type", out var grant_type).Should().BeTrue();
+            grant_type.First().Should().Be("test");
+
+            fields.TryGetValue("client_id", out var client_id).Should().BeTrue();
+            client_id.First().Should().Be("custom");
+
+            fields.TryGetValue("client_secret", out var client_secret).Should().BeTrue();
+            client_secret.First().Should().Be("custom");
+
+            fields.TryGetValue("custom", out var custom).Should().BeTrue();
+            custom.First().Should().Be("custom");
+        }
+
+        [Fact]
+        public async Task Setting_grant_type_via_optional_parameters_should_created_correct_format()
+        {
+            var response = await _client.RequestTokenAsync(new TokenRequest
+            {
+                GrantType = "test",
+                Parameters =
+                {
+                    { "grant_type", "custom" },
+                    { "custom", "custom" }
+                }
+            });
+
+            var request = _handler.Request;
+
+            var fields = QueryHelpers.ParseQuery(_handler.Body);
+            fields.TryGetValue("grant_type", out var grant_type).Should().BeTrue();
+            grant_type.First().Should().Be("custom");
+
+            fields.TryGetValue("custom", out var custom).Should().BeTrue();
+            custom.First().Should().Be("custom");
         }
 
 
