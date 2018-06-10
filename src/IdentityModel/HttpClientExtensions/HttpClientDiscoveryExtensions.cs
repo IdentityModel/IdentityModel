@@ -35,7 +35,7 @@ namespace IdentityModel.HttpClientExtensions
 
             string jwkUrl = "";
 
-            if (!DiscoveryUrl.IsSecureScheme(new Uri(url), request.Policy))
+            if (!DiscoveryEndpoint.IsSecureScheme(new Uri(url), request.Policy))
             {
                 return new DiscoveryResponse(new InvalidOperationException("HTTPS required"), $"Error connecting to {url}");
             }

@@ -270,12 +270,12 @@ namespace IdentityModel.Client
                         return $"Malformed endpoint: {endpoint}";
                     }
 
-                    if (!DiscoveryUrl.IsValidScheme(uri))
+                    if (!DiscoveryEndpoint.IsValidScheme(uri))
                     {
                         return $"Malformed endpoint: {endpoint}";
                     }
 
-                    if (!DiscoveryUrl.IsSecureScheme(uri, policy))
+                    if (!DiscoveryEndpoint.IsSecureScheme(uri, policy))
                     {
                         return $"Endpoint does not use HTTPS: {endpoint}";
                     }

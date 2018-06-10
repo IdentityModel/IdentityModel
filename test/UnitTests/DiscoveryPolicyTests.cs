@@ -47,7 +47,7 @@ namespace IdentityModel.UnitTests
         [InlineData("https:something_weird_https://something_other")]
         public void Malformed_authority_url_should_throw(string input)
         {
-            Action act = () => DiscoveryUrl.ParseUrl(input);
+            Action act = () => DiscoveryEndpoint.ParseUrl(input);
 
             act.Should().Throw<InvalidOperationException>().Where(e => e.Message.Equals("Malformed URL"));
         }
