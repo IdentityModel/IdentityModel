@@ -8,8 +8,13 @@
         AuthorizationHeader,
 
         /// <summary>
-        /// post values in body
+        /// Post values in body
         /// </summary>
         PostBody,
+
+        /// <summary>
+        /// Put credentials on query string
+        /// </summary>
+        QueryString,
     };
 }

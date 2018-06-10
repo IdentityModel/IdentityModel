@@ -71,7 +71,18 @@ namespace IdentityModel.HttpClientExtensions
             {
                 if (request.ClientCredentialStyle == ClientCredentialStyle.AuthorizationHeader)
                 {
-                    httpRequest.SetBasicAuthenticationOAuth(request.ClientId, request?.ClientSecret ?? "");
+                    if (request.BasicAuthenticationHeaderStyle == BasicAuthenticationHeaderStyle.Rfc6749)
+                    {
+                        httpRequest.SetBasicAuthenticationOAuth(request.ClientId, request?.ClientSecret ?? "");
+                    }
+                    else if (request.BasicAuthenticationHeaderStyle == BasicAuthenticationHeaderStyle.Rfc2617)
+                    {
+                        httpRequest.SetBasicAuthentication(request.ClientId, request?.ClientSecret ?? "");
+                    }
+                    else
+                    {
+                        throw new InvalidOperationException("Unsupported basic authentication header style");
+                    }
                 }
                 else if (request.ClientCredentialStyle == ClientCredentialStyle.PostBody)
                 {
@@ -80,7 +91,7 @@ namespace IdentityModel.HttpClientExtensions
                 }
                 else
                 {
-                    throw new InvalidOperationException("Invalid client credential style");
+                    throw new InvalidOperationException("Unsupported client credential style");
                 }
             }
 

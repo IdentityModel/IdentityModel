@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using IdentityModel.Client;
+using System.Collections.Generic;
 
 namespace IdentityModel.HttpClientExtensions
 {
@@ -10,6 +11,7 @@ namespace IdentityModel.HttpClientExtensions
         public string ClientId { get; set; }
         public string ClientSecret { get; set; }
         public ClientCredentialStyle ClientCredentialStyle { get; set; } = ClientCredentialStyle.PostBody;
+        public BasicAuthenticationHeaderStyle BasicAuthenticationHeaderStyle { get; set; } = BasicAuthenticationHeaderStyle.Rfc6749;
 
         public IDictionary<string, string> Parameters { get; set; } = new Dictionary<string, string>();
     }
