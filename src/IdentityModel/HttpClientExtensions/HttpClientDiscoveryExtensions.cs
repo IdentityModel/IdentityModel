@@ -10,10 +10,11 @@ namespace IdentityModel.HttpClientExtensions
 {
     public static class HttpClientDiscoveryExtensions
     {
-        public static async Task<DiscoveryResponse> GetDiscoveryDocumentAsync(this HttpClient client, DiscoveryDocumentRequest request, CancellationToken cancellationToken = default)
+        public static async Task<DiscoveryResponse> GetDiscoveryDocumentAsync(this HttpClient client, DiscoveryDocumentRequest request = null, CancellationToken cancellationToken = default)
         {
-            string address;
+            if (request == null) request = new DiscoveryDocumentRequest();
 
+            string address;
             if (request.Address.IsPresent())
             {
                 address = request.Address;
