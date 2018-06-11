@@ -73,33 +73,13 @@ namespace IdentityModel.HttpClientExtensions
             httpRequest.Headers.Accept.Clear();
             httpRequest.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
-            if (request.ClientId.IsPresent())
-            {
-                if (request.ClientCredentialStyle == ClientCredentialStyle.AuthorizationHeader)
-                {
-                    if (request.BasicAuthenticationHeaderStyle == BasicAuthenticationHeaderStyle.Rfc6749)
-                    {
-                        httpRequest.SetBasicAuthenticationOAuth(request.ClientId, request?.ClientSecret ?? "");
-                    }
-                    else if (request.BasicAuthenticationHeaderStyle == BasicAuthenticationHeaderStyle.Rfc2617)
-                    {
-                        httpRequest.SetBasicAuthentication(request.ClientId, request?.ClientSecret ?? "");
-                    }
-                    else
-                    {
-                        throw new InvalidOperationException("Unsupported basic authentication header style");
-                    }
-                }
-                else if (request.ClientCredentialStyle == ClientCredentialStyle.PostBody)
-                {
-                    request.Parameters.AddRequired(OidcConstants.TokenRequest.ClientId, request.ClientId);
-                    request.Parameters.AddOptional(OidcConstants.TokenRequest.ClientSecret, request.ClientSecret);
-                }
-                else
-                {
-                    throw new InvalidOperationException("Unsupported client credential style");
-                }
-            }
+            ClientCredentialsHelper.PopulateClientCredentials(
+                request.ClientId,
+                request.ClientSecret,
+                request.ClientCredentialStyle,
+                request.BasicAuthenticationHeaderStyle,
+                httpRequest,
+                request.Parameters);
 
             httpRequest.Content = new FormUrlEncodedContent(request.Parameters);
 
