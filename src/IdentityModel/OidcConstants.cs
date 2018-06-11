@@ -122,6 +122,12 @@ namespace IdentityModel
             public const string BearerTokenType = "Bearer";
         }
 
+        public static class TokenIntrospectionRequest
+        {
+            public const string Token = "token";
+            public const string TokenTypeHint = "token_type_hint";
+        }
+
         public static class RegistrationResponse
         {
             public const string Error = "error";
