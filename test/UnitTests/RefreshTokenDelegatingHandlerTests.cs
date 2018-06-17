@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Net;
 using System.Net.Http;
 using System.Threading;
@@ -104,6 +105,23 @@ namespace IdentityModel.UnitTests
             refreshHandler.RefreshToken
                 .Should()
                 .Be("refresh_token", "Refresh token should be retained if token response contains only access token");
+        }
+
+        [Fact]
+        public void Creating_with_token_client_should_not_throw()
+        {
+            var tokenClient = new TokenClient("http://server/token", "client");
+            Action act = () => new RefreshTokenDelegatingHandler(tokenClient, "refresh_token");
+
+            act.Should().NotThrow();
+        }
+
+        [Fact]
+        public void Creating_should_not_throw()
+        {
+            Action act = () => new RefreshTokenDelegatingHandler("http://server/token", "client", "secret", "refresh_token");
+
+            act.Should().NotThrow();
         }
     }
 }

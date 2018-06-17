@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -36,6 +37,23 @@ namespace IdentityModel.UnitTests
                     .Should()
                     .BeTrue("Unauthorized response should be disposed to avoid socket blocking");
             }
+        }
+
+        [Fact]
+        public void Creating_with_token_client_should_not_throw()
+        {
+            var tokenClient = new TokenClient("http://server/token", "client");
+            Action act = () => new AccessTokenDelegatingHandler(tokenClient, "scope");
+
+            act.Should().NotThrow();
+        }
+
+        [Fact]
+        public void Creating_should_not_throw()
+        {
+            Action act = () => new AccessTokenDelegatingHandler("http://server/token", "client", "secret", "scope");
+
+            act.Should().NotThrow();
         }
     }
 }
