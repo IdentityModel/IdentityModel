@@ -42,6 +42,36 @@ namespace IdentityModel.UnitTests
         }
 
         [Theory]
+        [InlineData("foo")]
+        [InlineData("file://some_file")]
+        [InlineData("https:something_weird_https://something_other")]
+        public void Malformed_authority_url_should_throw(string input)
+        {
+            Action act = () => DiscoveryEndpoint.ParseUrl(input);
+
+            act.Should().Throw<InvalidOperationException>().Where(e => e.Message.Equals("Malformed URL"));
+        }
+
+        [Theory]
+        [InlineData("https://server:123/.well-known/openid-configuration")]
+        [InlineData("https://server:123/.well-known/openid-configuration/")]
+        [InlineData("https://server:123/")]
+        [InlineData("https://server:123")]
+        public void Various_urls_should_normalize(string input)
+        {
+            var result = DiscoveryClient.ParseUrl(input);
+
+            // test parse URL logic
+            result.Url.Should().Be("https://server:123/.well-known/openid-configuration");
+            result.Authority.Should().Be("https://server:123");
+
+            // make sure parse URL results are used correctly
+            var client = new DiscoveryClient(input);
+            client.Url.Should().Be(result.Url);
+            client.Authority.Should().Be(result.Authority);
+        }
+
+        [Theory]
         [InlineData("http://localhost")]
         [InlineData("http://LocalHost")]
         [InlineData("http://127.0.0.1")]
@@ -57,7 +87,7 @@ namespace IdentityModel.UnitTests
         [InlineData("https://demo.identityserver.io/sub")]
         [InlineData("https://demo.identityserver.io:5000/sub")]
         [InlineData("https://sub.demo.identityserver.io:5000/sub")]
-        public async Task success_with_default_policy(string input)
+        public async Task Valid_Urls_with_default_policy_should_succeed(string input)
         {
             var client = new DiscoveryClient(input, GetHandler(input))
             {
@@ -74,7 +104,7 @@ namespace IdentityModel.UnitTests
         }
 
         [Fact]
-        public async Task connecting_to_http_should_return_error()
+        public async Task Connecting_to_http_should_return_error()
         {
             var client = new DiscoveryClient("http://authority")
             {
@@ -95,7 +125,7 @@ namespace IdentityModel.UnitTests
         }
 
         [Fact]
-        public async Task if_policy_allows_http_non_http_must_not_return_error()
+        public async Task If_policy_allows_http_non_http_must_not_return_error()
         {
             var client = new DiscoveryClient("http://authority", GetHandler("http://authority"))
             {
@@ -114,7 +144,7 @@ namespace IdentityModel.UnitTests
         [InlineData("http://localhost")]
         [InlineData("http://LocalHost")]
         [InlineData("http://127.0.0.1")]
-        public async Task http_on_loopback_must_not_return_error(string input)
+        public async Task Http_on_loopback_must_not_return_error(string input)
         {
             var client = new DiscoveryClient(input, GetHandler(input))
             {
@@ -132,7 +162,7 @@ namespace IdentityModel.UnitTests
 
 
         [Fact]
-        public async Task invalid_issuer_name_must_return_policy_error()
+        public async Task Invalid_issuer_name_must_return_policy_error()
         {
             var handler = GetHandler("https://differentissuer");
             var client = new DiscoveryClient("https://authority", handler)
@@ -152,7 +182,7 @@ namespace IdentityModel.UnitTests
         }
 
         [Fact]
-        public async Task excluded_endpoints_should_not_fail_validation()
+        public async Task Excluded_endpoints_should_not_fail_validation()
         {
             var handler = GetHandler("https://authority", "https://otherserver");
             var client = new DiscoveryClient("https://authority", handler)
@@ -180,7 +210,7 @@ namespace IdentityModel.UnitTests
         }
 
         [Fact]
-        public async Task valid_issuer_name_must_return_no_error()
+        public async Task Valid_issuer_name_must_return_no_error()
         {
             var handler = GetHandler("https://authority");
             var client = new DiscoveryClient("https://authority", handler)
@@ -197,7 +227,7 @@ namespace IdentityModel.UnitTests
         }
 
         [Fact]
-        public async Task authority_comparison_may_be_case_insensitive()
+        public async Task Authority_comparison_may_be_case_insensitive()
         {
             var handler = GetHandler("https://authority/tenantid");
             var client = new DiscoveryClient("https://authority/TENANTID", handler)
@@ -215,7 +245,7 @@ namespace IdentityModel.UnitTests
         }
 
         [Fact]
-        public async Task endpoints_not_using_https_should_return_policy_error()
+        public async Task Endpoints_not_using_https_should_return_policy_error()
         {
             var handler = GetHandler("https://authority", "http://authority");
             var client = new DiscoveryClient("https://authority", handler)
@@ -239,7 +269,7 @@ namespace IdentityModel.UnitTests
         [Theory]
         [InlineData("https://authority/sub", "https://authority")]
         [InlineData("https://authority/sub1", "https://authority/sub2")]
-        public async Task endpoints_not_beneath_authority_must_return_policy_error(string authority, string endpointBase)
+        public async Task Endpoints_not_beneath_authority_must_return_policy_error(string authority, string endpointBase)
         {
             var handler = GetHandler(authority, endpointBase);
             var client = new DiscoveryClient(authority, handler)
@@ -263,7 +293,7 @@ namespace IdentityModel.UnitTests
         [Theory]
         [InlineData("https://authority/sub", "https://authority")]
         [InlineData("https://authority/sub1", "https://authority/sub2")]
-        public async Task endpoints_not_beneath_authority_must_be_allowed_if_whitelisted(string authority, string endpointBase)
+        public async Task Endpoints_not_beneath_authority_must_be_allowed_if_whitelisted(string authority, string endpointBase)
         {
             var handler = GetHandler(authority, endpointBase);
             var client = new DiscoveryClient(authority, handler)
@@ -292,7 +322,7 @@ namespace IdentityModel.UnitTests
         [InlineData("https://127.0.0.1", "https://differentauthority")]
         [InlineData("https://127.0.0.1", "https://127.0.0.2")]
         [InlineData("https://127.0.0.1", "https://localhost")]
-        public async Task endpoints_not_belonging_to_authority_host_must_return_policy_error(string authority, string endpointBase)
+        public async Task Endpoints_not_belonging_to_authority_host_must_return_policy_error(string authority, string endpointBase)
         {
             var handler = GetHandler(authority, endpointBase);
             var client = new DiscoveryClient(authority, handler)
@@ -319,7 +349,7 @@ namespace IdentityModel.UnitTests
         [InlineData("https://127.0.0.1", "https://differentauthority")]
         [InlineData("https://127.0.0.1", "https://127.0.0.2")]
         [InlineData("https://127.0.0.1", "https://localhost")]
-        public async Task endpoints_not_belonging_to_authority_host_must_be_allowed_if_whitelisted(string authority, string endpointBase)
+        public async Task Endpoints_not_belonging_to_authority_host_must_be_allowed_if_whitelisted(string authority, string endpointBase)
         {
             var handler = GetHandler(authority, endpointBase);
             var client = new DiscoveryClient(authority, handler)
@@ -343,7 +373,7 @@ namespace IdentityModel.UnitTests
         }
 
         [Fact]
-        public async Task issuer_and_endpoint_can_be_unrelated_if_allowed()
+        public async Task Issuer_and_endpoint_can_be_unrelated_if_allowed()
         {
             var handler = GetHandler("https://authority", "https://differentauthority");
             var client = new DiscoveryClient("https://authority", handler)
@@ -362,7 +392,7 @@ namespace IdentityModel.UnitTests
         }
 
         [Fact]
-        public async Task issuer_and_endpoint_can_be_unrelated_if_allowed_but_https_is_still_enforced()
+        public async Task Issuer_and_endpoint_can_be_unrelated_if_allowed_but_https_is_still_enforced()
         {
             var handler = GetHandler("https://authority", "http://differentauthority");
             var client = new DiscoveryClient("https://authority", handler)

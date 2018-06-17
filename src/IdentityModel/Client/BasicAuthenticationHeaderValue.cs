@@ -21,7 +21,7 @@ namespace System.Net.Http
             : base("Basic", EncodeCredential(userName, password))
         { }
 
-        private static string EncodeCredential(string userName, string password)
+        public static string EncodeCredential(string userName, string password)
         {
             if (string.IsNullOrWhiteSpace(userName)) throw new ArgumentNullException(nameof(userName));
             if (password == null) password = "";
