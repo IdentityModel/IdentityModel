@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <TargetFrameworks>net452;netstandard1.4;netstandard2.0</TargetFrameworks>
-    <VersionPrefix>3.7.0</VersionPrefix>
+    <VersionPrefix>3.7.1</VersionPrefix>
     <!--<VersionSuffix>preview2</VersionSuffix>-->
     <Authors>Dominick Baier;Brock Allen</Authors>
     <Description>OpenID Connect &amp; OAuth 2.0 client library</Description>
