@@ -1,6 +1,8 @@
 # IdentityModel
 A .NET standard helper library for claims-based identity, OAuth 2.0 and OpenID Connect.
 
+The nuget package can be found [here](https://www.nuget.org/packages/IdentityModel/) or use the https://www.myget.org/F/identity/ myget feed for CI builds.
+
 ### DiscoveryClient
 Client library to retrieve OpenID Connect discovery documents and key sets.
 
