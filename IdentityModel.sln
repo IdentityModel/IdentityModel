@@ -13,6 +13,10 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IdentityModel", "src\Identi
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnitTests", "test\UnitTests\UnitTests.csproj", "{211C2948-A6DC-4905-BD18-2968E13BDE5F}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "samples", "samples", "{41C01F83-FCE4-4DAC-A166-A518195992E8}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "HttpClientFactory", "samples\HttpClientFactorySample\WebApplication1\HttpClientFactory.csproj", "{B1831B80-B7D2-4953-85B3-B80554E853FF}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +31,10 @@ Global
 		{211C2948-A6DC-4905-BD18-2968E13BDE5F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{211C2948-A6DC-4905-BD18-2968E13BDE5F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{211C2948-A6DC-4905-BD18-2968E13BDE5F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B1831B80-B7D2-4953-85B3-B80554E853FF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B1831B80-B7D2-4953-85B3-B80554E853FF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B1831B80-B7D2-4953-85B3-B80554E853FF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B1831B80-B7D2-4953-85B3-B80554E853FF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -34,5 +42,9 @@ Global
 	GlobalSection(NestedProjects) = preSolution
 		{B0B96A68-D029-4B83-8475-00D9A2BB7965} = {2BF95931-60F6-4A54-9DF1-3EDB5D624AC0}
 		{211C2948-A6DC-4905-BD18-2968E13BDE5F} = {4685D8F8-5E7D-405B-9E04-CFB157AE0F41}
+		{B1831B80-B7D2-4953-85B3-B80554E853FF} = {41C01F83-FCE4-4DAC-A166-A518195992E8}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {46164F05-5CF1-4F8F-9D39-8CA75F2AAA18}
 	EndGlobalSection
 EndGlobal
