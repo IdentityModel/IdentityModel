@@ -118,7 +118,7 @@ namespace IdentityModel.Client
             {
                 if (await RenewTokensAsync(cancellationToken) == false)
                 {
-                    return new HttpResponseMessage(HttpStatusCode.Unauthorized);
+                    return new HttpResponseMessage(HttpStatusCode.Unauthorized) {RequestMessage = request};
                 }
             }
 
