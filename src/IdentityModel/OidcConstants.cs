@@ -91,6 +91,7 @@ namespace IdentityModel
             public const string TokenType = "token_type";
             public const string Algorithm = "alg";
             public const string Key = "key";
+            public const string DeviceCode = "device_code";
         }
 
         public static class TokenRequestTypes
@@ -108,6 +109,10 @@ namespace IdentityModel
             public const string UnsupportedGrantType = "unsupported_grant_type";
             public const string UnsupportedResponseType = "unsupported_response_type";
             public const string InvalidScope = "invalid_scope";
+            public const string AuthorizationPending = "authorization_pending";
+            public const string AccessDenied = "access_denied";
+            public const string SlowDown = "slow_down";
+            public const string ExpiredToken = "expired_token";
         }
 
         public static class TokenResponse
