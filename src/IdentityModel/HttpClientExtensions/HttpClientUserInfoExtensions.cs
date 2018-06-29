@@ -1,0 +1,41 @@
+﻿using IdentityModel.Client;
+using IdentityModel.Internal;
+using System;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Threading;
+using System.Threading.Tasks;
+
+namespace IdentityModel.HttpClientExtensions
+{
+    public static class HttpClientUserInfoExtensions
+    {
+        public static async Task<UserInfoResponse> GetUserInfoAsync(this HttpClient client, UserInfoRequest request, CancellationToken cancellationToken = default)
+        {
+            if (request.Token.IsMissing()) throw new ArgumentNullException(nameof(request.Token));
+            
+            var httpRequest = new HttpRequestMessage(HttpMethod.Get, request.Address);
+            httpRequest.Headers.Accept.Clear();
+            httpRequest.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+            httpRequest.SetBearerToken(request.Token);
+            
+            HttpResponseMessage response;
+            try
+            {
+                response = await client.SendAsync(httpRequest, cancellationToken).ConfigureAwait(false);
+            }
+            catch (Exception ex)
+            {
+                return new UserInfoResponse(ex);
+            }
+
+            if (!response.IsSuccessStatusCode)
+            {
+                return new UserInfoResponse(response.StatusCode, response.ReasonPhrase);
+            }
+
+            var content = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+            return new UserInfoResponse(content);
+        }
+    }
+}
