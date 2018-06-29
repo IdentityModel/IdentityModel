@@ -4,11 +4,9 @@
 using FluentAssertions;
 using IdentityModel.Client;
 using IdentityModel.HttpClientExtensions;
-using Microsoft.AspNetCore.WebUtilities;
 using Newtonsoft.Json;
 using System;
 using System.IO;
-using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;

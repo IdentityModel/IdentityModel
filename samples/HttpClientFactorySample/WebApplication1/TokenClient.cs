@@ -1,14 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Net.Http;
+﻿using System.Net.Http;
 using System.Threading.Tasks;
 using IdentityModel.HttpClientExtensions;
 using Microsoft.Extensions.Options;
 
 namespace WebApplication1
 {
-public class TokenClient
+    public class TokenClient
 {
     public TokenClient(HttpClient client, IOptions<TokenClientOptions> options)
     {

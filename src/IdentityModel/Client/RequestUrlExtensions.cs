@@ -3,8 +3,6 @@
 
 using IdentityModel.Internal;
 using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
 
 namespace IdentityModel.Client
 {

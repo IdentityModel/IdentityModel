@@ -6,7 +6,6 @@ using IdentityModel.Client;
 using IdentityModel.HttpClientExtensions;
 using Microsoft.AspNetCore.WebUtilities;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
