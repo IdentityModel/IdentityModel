@@ -42,7 +42,7 @@ namespace IdentityModel.HttpClientExtensions
 
             try
             {
-                var httpRequest = new HttpRequestMessage(HttpMethod.Get, request.Address);
+                var httpRequest = new HttpRequestMessage(HttpMethod.Get, url);
                 var response = await client.SendAsync(httpRequest, cancellationToken).ConfigureAwait(false);
 
                 string responseContent = null;

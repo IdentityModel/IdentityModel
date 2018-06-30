@@ -18,6 +18,7 @@ namespace IdentityModel.UnitTests
     {
         NetworkHandler _successHandler;
         string _endpoint = "https://demo.identityserver.io/.well-known/openid-configuration";
+        string _authority = "https://demo.identityserver.io";
 
         public HttpClientDiscoveryExtensionsTests()
         {
@@ -62,6 +63,21 @@ namespace IdentityModel.UnitTests
             });
 
             disco.IsError.Should().BeFalse();
+        }
+
+        [Fact]
+        public async Task Authority_should_expand_to_endpoint()
+        {
+            var handler = new NetworkHandler(HttpStatusCode.NotFound, "not found");
+            var client = new HttpClient(handler);
+
+            var disco = await client.GetDiscoveryDocumentAsync(new DiscoveryDocumentRequest
+            {
+                Address = _authority
+            });
+
+            disco.IsError.Should().BeTrue();
+            handler.Request.RequestUri.Should().Be(_endpoint);
         }
 
         [Fact]
