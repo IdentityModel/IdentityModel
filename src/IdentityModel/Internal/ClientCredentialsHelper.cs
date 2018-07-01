@@ -30,7 +30,7 @@ namespace IdentityModel.Internal
                 }
                 else if (request.ClientCredentialStyle == ClientCredentialStyle.PostBody)
                 {
-                    request.Parameters.Add(OidcConstants.TokenRequest.ClientId, request.ClientId);
+                    request.Parameters.AddRequired(OidcConstants.TokenRequest.ClientId, request.ClientId);
                     request.Parameters.AddOptional(OidcConstants.TokenRequest.ClientSecret, request.ClientSecret);
                 }
                 else
@@ -39,11 +39,8 @@ namespace IdentityModel.Internal
                 }
             }
 
-            if (request.Assertion.Type.IsPresent() && request.Assertion.Value.IsPresent())
-            {
-                request.Parameters.Add(OidcConstants.TokenRequest.ClientAssertionType, request.Assertion.Type);
-                request.Parameters.Add(OidcConstants.TokenRequest.ClientAssertion, request.Assertion.Value);
-            }
+            request.Parameters.AddOptional(OidcConstants.TokenRequest.ClientAssertionType, request.Assertion.Type);
+            request.Parameters.AddOptional(OidcConstants.TokenRequest.ClientAssertion, request.Assertion.Value);
         }
     }
 }
