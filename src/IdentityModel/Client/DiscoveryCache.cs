@@ -27,11 +27,11 @@ namespace IdentityModel.Client
         /// <param name="authority">Base address or discovery document endpoint.</param>
         /// <param name="client">The client.</param>
         /// <param name="policy">The policy.</param>
-        public DiscoveryCache(string authority, HttpClient client = default, DiscoveryPolicy policy = default)
+        public DiscoveryCache(string authority, HttpClient client = null, DiscoveryPolicy policy = null)
         {
             _authority = authority;
-            _client = client;
-            _policy = policy;
+            _client = client ?? new HttpClient();
+            _policy = policy ?? new DiscoveryPolicy();
         }
 
         /// <summary>
