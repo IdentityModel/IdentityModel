@@ -1,8 +1,10 @@
 ﻿// Copyright (c) Brock Allen & Dominick Baier. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
 
+using IdentityModel.HttpClientExtensions;
 using IdentityModel.Internal;
 using System;
+using System.Net.Http;
 using System.Threading.Tasks;
 
 namespace IdentityModel.Client
@@ -12,19 +14,24 @@ namespace IdentityModel.Client
     /// </summary>
     public class DiscoveryCache
     {
-        private readonly DiscoveryClient _client;
-
         private DateTime _nextReload = DateTime.MinValue;
         private AsyncLazy<DiscoveryResponse> _lazyResponse;
+
+        private readonly DiscoveryPolicy _policy;
+        private readonly HttpClient _client;
+        private readonly string _authority;
 
         /// <summary>
         /// Initialize instance of DiscoveryCache with passed authority.
         /// </summary>
         /// <param name="authority">Base address or discovery document endpoint.</param>
-        public DiscoveryCache(string authority)
+        /// <param name="client">The client.</param>
+        /// <param name="policy">The policy.</param>
+        public DiscoveryCache(string authority, HttpClient client = default, DiscoveryPolicy policy = default)
         {
-            _client = new DiscoveryClient(authority);
-            _client.Policy.RequireHttps = authority.StartsWith("https://");
+            _authority = authority;
+            _client = client;
+            _policy = policy;
         }
 
         /// <summary>
@@ -33,7 +40,9 @@ namespace IdentityModel.Client
         /// <param name="client">DiscoveryClient to use for obtaining discovery document.</param>
         public DiscoveryCache(DiscoveryClient client)
         {
-            _client = client;
+            _client = new HttpClient();
+            _policy = client.Policy;
+            _authority = client.Authority;
         }
 
         /// <summary>
@@ -65,7 +74,12 @@ namespace IdentityModel.Client
 
         private async Task<DiscoveryResponse> GetResponseAsync()
         {
-            var result = await _client.GetAsync();
+            var result = await _client.GetDiscoveryDocumentAsync(new DiscoveryDocumentRequest
+            {
+                Address = _authority,
+                Policy = _policy
+            });
+
             _nextReload = DateTime.UtcNow.Add(CacheDuration);
             return result;
         }
