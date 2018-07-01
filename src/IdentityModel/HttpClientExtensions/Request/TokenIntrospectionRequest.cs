@@ -3,15 +3,8 @@ using System.Collections.Generic;
 
 namespace IdentityModel.HttpClientExtensions
 {
-    public class TokenIntrospectionRequest
+    public class TokenIntrospectionRequest : Request
     {
-        public string Address { get; set; }
-        
-        public string ClientId { get; set; }
-        public string ClientSecret { get; set; }
-        public ClientCredentialStyle ClientCredentialStyle { get; set; } = ClientCredentialStyle.PostBody;
-        public BasicAuthenticationHeaderStyle BasicAuthenticationHeaderStyle { get; set; } = BasicAuthenticationHeaderStyle.Rfc6749;
-
         /// <summary>
         /// Gets or sets the token.
         /// </summary>
@@ -27,7 +20,5 @@ namespace IdentityModel.HttpClientExtensions
         /// The token type hint.
         /// </value>
         public string TokenTypeHint { get; set; }
-
-        public IDictionary<string, string> Parameters { get; set; } = new Dictionary<string, string>();
     }
 }

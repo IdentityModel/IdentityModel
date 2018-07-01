@@ -52,16 +52,6 @@ namespace IdentityModel.HttpClientExtensions
             return await client.RequestTokenAsync(request, cancellationToken);
         }
 
-        public static async Task<TokenResponse> RequestAssertionTokenAsync(this HttpClient client, AssertionTokenRequest request, CancellationToken cancellationToken = default)
-        {
-            request.GrantType = request.AssertionType;
-
-            request.Parameters.AddRequired(OidcConstants.TokenRequest.Assertion, request.Assertion);
-            request.Parameters.AddOptional(OidcConstants.TokenRequest.Scope, request.Scope);
-
-            return await client.RequestTokenAsync(request, cancellationToken);
-        }
-
         public static async Task<TokenResponse> RequestTokenAsync(this HttpClient client, TokenRequest request, CancellationToken cancellationToken = default)
         {
             if (!request.Parameters.ContainsKey(OidcConstants.TokenRequest.GrantType))
@@ -73,14 +63,7 @@ namespace IdentityModel.HttpClientExtensions
             httpRequest.Headers.Accept.Clear();
             httpRequest.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
-            ClientCredentialsHelper.PopulateClientCredentials(
-                request.ClientId,
-                request.ClientSecret,
-                request.ClientCredentialStyle,
-                request.BasicAuthenticationHeaderStyle,
-                httpRequest,
-                request.Parameters);
-
+            ClientCredentialsHelper.PopulateClientCredentials(request, httpRequest);
             httpRequest.Content = new FormUrlEncodedContent(request.Parameters);
 
             HttpResponseMessage response;

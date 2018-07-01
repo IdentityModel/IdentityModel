@@ -186,29 +186,6 @@ namespace IdentityModel.UnitTests
         }
 
         [Fact]
-        public async Task Assertion_request_should_have_correct_format()
-        {
-            var response = await _client.RequestAssertionTokenAsync(new AssertionTokenRequest
-            {
-                AssertionType = "at",
-                Assertion = "assertion",
-                Scope = "scope"
-            });
-
-            response.IsError.Should().BeFalse();
-
-            var fields = QueryHelpers.ParseQuery(_handler.Body);
-            fields.TryGetValue("grant_type", out var grant_type).Should().BeTrue();
-            grant_type.First().Should().Be("at");
-
-            fields.TryGetValue("assertion", out var assertion).Should().BeTrue();
-            assertion.First().Should().Be("assertion");
-
-            fields.TryGetValue("scope", out var redirect_uri).Should().BeTrue();
-            redirect_uri.First().Should().Be("scope");
-        }
-
-        [Fact]
         public void Refresh_request_without_refresh_token_should_fail()
         {
             Func<Task> act = async () => await _client.RequestRefreshTokenAsync(new RefreshTokenRequest());
@@ -225,7 +202,7 @@ namespace IdentityModel.UnitTests
         }
 
         [Fact]
-        public async Task Setting_custom_parameters_should_have_correct()
+        public async Task Setting_custom_parameters_should_have_correct_format()
         {
             var response = await _client.RequestTokenAsync(new TokenRequest
             {
@@ -373,6 +350,26 @@ namespace IdentityModel.UnitTests
             var fields = QueryHelpers.ParseQuery(_handler.Body);
             fields.TryGetValue("client_secret", out _).Should().BeFalse();
             fields.TryGetValue("client_id", out _).Should().BeFalse();
+        }
+
+        [Fact]
+        public async Task Setting_client_id_and_assertion_should_have_correct_format()
+        {
+            var response = await _client.RequestTokenAsync(new TokenRequest
+            {
+                GrantType = "test",
+                ClientId = "client",
+                Assertion = { Type = "type", Value = "value" }
+            });
+
+            var request = _handler.Request;
+
+            var fields = QueryHelpers.ParseQuery(_handler.Body);
+
+            fields["grant_type"].First().Should().Be("test");
+            fields["client_id"].First().Should().Be("client");
+            fields["client_assertion_type"].First().Should().Be("type");
+            fields["client_assertion"].First().Should().Be("value");
         }
     }
 }

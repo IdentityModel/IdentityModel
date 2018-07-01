@@ -16,13 +16,7 @@ namespace IdentityModel.HttpClientExtensions
             httpRequest.Headers.Accept.Clear();
             httpRequest.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
-            ClientCredentialsHelper.PopulateClientCredentials(
-                request.ClientId,
-                request.ClientSecret,
-                request.ClientCredentialStyle,
-                request.BasicAuthenticationHeaderStyle,
-                httpRequest,
-                request.Parameters);
+            ClientCredentialsHelper.PopulateClientCredentials(request, httpRequest);
 
             request.Parameters.AddRequired(OidcConstants.TokenIntrospectionRequest.Token, request.Token);
             request.Parameters.AddOptional(OidcConstants.TokenIntrospectionRequest.TokenTypeHint, request.TokenTypeHint);
