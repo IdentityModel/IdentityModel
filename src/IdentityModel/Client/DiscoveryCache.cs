@@ -18,7 +18,7 @@ namespace IdentityModel.Client
         private AsyncLazy<DiscoveryResponse> _lazyResponse;
 
         private readonly DiscoveryPolicy _policy;
-        private readonly HttpClient _client;
+        private readonly Func<HttpClient> _getHttpClient;
         private readonly string _authority;
 
         /// <summary>
@@ -30,20 +30,33 @@ namespace IdentityModel.Client
         public DiscoveryCache(string authority, HttpClient client = null, DiscoveryPolicy policy = null)
         {
             _authority = authority;
-            _client = client ?? new HttpClient();
             _policy = policy ?? new DiscoveryPolicy();
+
+            if (client == null) client = new HttpClient();
+            _getHttpClient = () => client;
+        }
+
+        /// <summary>
+        /// Initialize instance of DiscoveryCache with passed authority.
+        /// </summary>
+        /// <param name="authority">Base address or discovery document endpoint.</param>
+        /// <param name="httpClientFunc">The HTTP client function.</param>
+        /// <param name="policy">The policy.</param>
+        public DiscoveryCache(string authority, Func<HttpClient> httpClientFunc, DiscoveryPolicy policy = null)
+        {
+            _authority = authority;
+            _policy = policy ?? new DiscoveryPolicy();
+            _getHttpClient = httpClientFunc ?? throw new ArgumentNullException(nameof(httpClientFunc));
         }
 
         /// <summary>
         /// Initialize instance of DiscoveryCache with passed DiscoveryClient.
         /// </summary>
         /// <param name="client">DiscoveryClient to use for obtaining discovery document.</param>
+        [Obsolete("Will be removed in a future version")]
         public DiscoveryCache(DiscoveryClient client)
-        {
-            _client = new HttpClient();
-            _policy = client.Policy;
-            _authority = client.Authority;
-        }
+            : this(client.Authority, new HttpClient(), client.Policy)
+        { }
 
         /// <summary>
         /// Frequency to refresh discovery document. Defaults to 24 hours.
@@ -74,7 +87,7 @@ namespace IdentityModel.Client
 
         private async Task<DiscoveryResponse> GetResponseAsync()
         {
-            var result = await _client.GetDiscoveryDocumentAsync(new DiscoveryDocumentRequest
+            var result = await _getHttpClient().GetDiscoveryDocumentAsync(new DiscoveryDocumentRequest
             {
                 Address = _authority,
                 Policy = _policy
