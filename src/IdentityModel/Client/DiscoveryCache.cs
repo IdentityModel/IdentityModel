@@ -12,7 +12,7 @@ namespace IdentityModel.Client
     /// <summary>
     /// Helper for caching discovery documents.
     /// </summary>
-    public class DiscoveryCache
+    public class DiscoveryCache : IDiscoveryCache
     {
         private DateTime _nextReload = DateTime.MinValue;
         private AsyncLazy<DiscoveryResponse> _lazyResponse;
