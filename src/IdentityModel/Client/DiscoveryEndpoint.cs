@@ -41,6 +41,13 @@ namespace IdentityModel.Client
             }
         }
 
+        /// <summary>
+        /// Determines whether the URL uses http or https.
+        /// </summary>
+        /// <param name="url">The URL.</param>
+        /// <returns>
+        ///   <c>true</c> if [is valid scheme] [the specified URL]; otherwise, <c>false</c>.
+        /// </returns>
         public static bool IsValidScheme(Uri url)
         {
             if (string.Equals(url.Scheme, "http", StringComparison.OrdinalIgnoreCase) ||
@@ -52,6 +59,14 @@ namespace IdentityModel.Client
             return false;
         }
 
+        /// <summary>
+        /// Determines whether uses a secure scheme accoding to the policy.
+        /// </summary>
+        /// <param name="url">The URL.</param>
+        /// <param name="policy">The policy.</param>
+        /// <returns>
+        ///   <c>true</c> if [is secure scheme] [the specified URL]; otherwise, <c>false</c>.
+        /// </returns>
         public static bool IsSecureScheme(Uri url, DiscoveryPolicy policy)
         {
             if (policy.RequireHttps == true)

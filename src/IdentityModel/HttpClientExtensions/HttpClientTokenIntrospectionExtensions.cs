@@ -11,8 +11,18 @@ using System.Threading.Tasks;
 
 namespace IdentityModel.HttpClientExtensions
 {
+    /// <summary>
+    /// HttpClient extensions for OAuth token introspection
+    /// </summary>
     public static class HttpClientTokenIntrospectionExtensions
     {
+        /// <summary>
+        /// Sends an OAuth token introspection request.
+        /// </summary>
+        /// <param name="client">The client.</param>
+        /// <param name="request">The request.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
         public static async Task<IntrospectionResponse> IntrospectTokenAsync(this HttpClient client, TokenIntrospectionRequest request, CancellationToken cancellationToken = default)
         {
             var httpRequest = new HttpRequestMessage(HttpMethod.Post, request.Address);

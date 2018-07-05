@@ -21,6 +21,13 @@ namespace System.Net.Http
             : base("Basic", EncodeCredential(userName, password))
         { }
 
+        /// <summary>
+        /// Encodes the credential.
+        /// </summary>
+        /// <param name="userName">Name of the user.</param>
+        /// <param name="password">The password.</param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException">userName</exception>
         public static string EncodeCredential(string userName, string password)
         {
             if (string.IsNullOrWhiteSpace(userName)) throw new ArgumentNullException(nameof(userName));

@@ -3,6 +3,10 @@
 
 namespace IdentityModel.HttpClientExtensions
 {
+    /// <summary>
+    /// Request for OAuth token revocation
+    /// </summary>
+    /// <seealso cref="IdentityModel.HttpClientExtensions.Request" />
     public class TokenRevocationRequest : Request
     {
         /// <summary>

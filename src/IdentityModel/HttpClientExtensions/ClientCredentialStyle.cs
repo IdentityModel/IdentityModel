@@ -3,6 +3,9 @@
 
 namespace IdentityModel.HttpClientExtensions
 {
+    /// <summary>
+    /// Specifies how the client will transmit client ID and secret
+    /// </summary>
     public enum ClientCredentialStyle
     {
         /// <summary>
@@ -13,11 +16,6 @@ namespace IdentityModel.HttpClientExtensions
         /// <summary>
         /// Post values in body
         /// </summary>
-        PostBody,
-
-        /// <summary>
-        /// Put credentials on query string
-        /// </summary>
-        QueryString,
+        PostBody
     };
 }

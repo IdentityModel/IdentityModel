@@ -12,8 +12,18 @@ using System.Threading.Tasks;
 
 namespace IdentityModel.HttpClientExtensions
 {
+    /// <summary>
+    /// HttpClient extensions for OAuth token revocation
+    /// </summary>
     public static class HttpClientTokenRevocationExtensions
     {
+        /// <summary>
+        /// Sends an OAuth token revocation request.
+        /// </summary>
+        /// <param name="client">The client.</param>
+        /// <param name="request">The request.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
         public static async Task<TokenRevocationResponse> RevokeTokenAsync(this HttpClient client, TokenRevocationRequest request, CancellationToken cancellationToken = default)
         {
             var httpRequest = new HttpRequestMessage(HttpMethod.Post, request.Address);

@@ -11,13 +11,30 @@ using System.Threading.Tasks;
 
 namespace IdentityModel.HttpClientExtensions
 {
+    /// <summary>
+    /// HttpClient extentions for OIDC discovery
+    /// </summary>
     public static class HttpClientDiscoveryExtensions
     {
+        /// <summary>
+        /// Sends a discovery document request
+        /// </summary>
+        /// <param name="client">The client.</param>
+        /// <param name="address">The address.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
         public static async Task<DiscoveryResponse> GetDiscoveryDocumentAsync(this HttpClient client, string address, CancellationToken cancellationToken = default)
         {
             return await client.GetDiscoveryDocumentAsync(new DiscoveryDocumentRequest { Address = address }, cancellationToken);
         }
 
+        /// <summary>
+        /// Sends a discovery document request
+        /// </summary>
+        /// <param name="client">The client.</param>
+        /// <param name="request">The request.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
         public static async Task<DiscoveryResponse> GetDiscoveryDocumentAsync(this HttpClient client, DiscoveryDocumentRequest request = null, CancellationToken cancellationToken = default)
         {
             if (request == null) request = new DiscoveryDocumentRequest();

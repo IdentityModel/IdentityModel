@@ -3,44 +3,118 @@
 
 namespace IdentityModel.HttpClientExtensions
 {
+    /// <summary>
+    /// Request for token
+    /// </summary>
+    /// <seealso cref="IdentityModel.HttpClientExtensions.Request" />
     public class TokenRequest : Request
     {
+        /// <summary>
+        /// Gets or sets the type of the grant.
+        /// </summary>
+        /// <value>
+        /// The type of the grant.
+        /// </value>
         public string GrantType { get; set; }   
     }
 
+    /// <summary>
+    /// Request for token using client_credentials
+    /// </summary>
+    /// <seealso cref="IdentityModel.HttpClientExtensions.TokenRequest" />
     public class ClientCredentialsTokenRequest : TokenRequest
     {
+        /// <summary>
+        /// Gets or sets the scope.
+        /// </summary>
+        /// <value>
+        /// The scope.
+        /// </value>
         public string Scope { get; set; }
     }
 
+    /// <summary>
+    /// Request for token using password
+    /// </summary>
+    /// <seealso cref="IdentityModel.HttpClientExtensions.TokenRequest" />
     public class PasswordTokenRequest : TokenRequest
     {
+        /// <summary>
+        /// Gets or sets the name of the user.
+        /// </summary>
+        /// <value>
+        /// The name of the user.
+        /// </value>
         public string UserName { get; set; }
+
+        /// <summary>
+        /// Gets or sets the password.
+        /// </summary>
+        /// <value>
+        /// The password.
+        /// </value>
         public string Password { get; set; }
 
+        /// <summary>
+        /// Gets or sets the scope.
+        /// </summary>
+        /// <value>
+        /// The scope.
+        /// </value>
         public string Scope { get; set; }
     }
 
+    /// <summary>
+    /// Request for token using authorization_code
+    /// </summary>
+    /// <seealso cref="IdentityModel.HttpClientExtensions.TokenRequest" />
     public class AuthorizationCodeTokenRequest : TokenRequest
     {
+        /// <summary>
+        /// Gets or sets the code.
+        /// </summary>
+        /// <value>
+        /// The code.
+        /// </value>
         public string Code { get; set; }
+
+        /// <summary>
+        /// Gets or sets the redirect URI.
+        /// </summary>
+        /// <value>
+        /// The redirect URI.
+        /// </value>
         public string RedirectUri { get; set; }
 
+        /// <summary>
+        /// Gets or sets the code verifier.
+        /// </summary>
+        /// <value>
+        /// The code verifier.
+        /// </value>
         public string CodeVerifier { get; set; }
     }
 
+    /// <summary>
+    /// Request for token using refresh_token
+    /// </summary>
+    /// <seealso cref="IdentityModel.HttpClientExtensions.TokenRequest" />
     public class RefreshTokenRequest : TokenRequest
     {
+        /// <summary>
+        /// Gets or sets the refresh token.
+        /// </summary>
+        /// <value>
+        /// The refresh token.
+        /// </value>
         public string RefreshToken { get; set; }
 
-        public string Scope { get; set; }
-    }
-
-    public class AssertionTokenRequest : TokenRequest
-    {
-        public string AssertionType { get; set; }
-        public string Assertion { get; set; }
-
+        /// <summary>
+        /// Gets or sets the scope.
+        /// </summary>
+        /// <value>
+        /// The scope.
+        /// </value>
         public string Scope { get; set; }
     }
 }

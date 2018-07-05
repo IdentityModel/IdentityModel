@@ -3,6 +3,10 @@
 
 namespace IdentityModel.HttpClientExtensions
 {
+    /// <summary>
+    /// Request for OAuth token introspection
+    /// </summary>
+    /// <seealso cref="IdentityModel.HttpClientExtensions.Request" />
     public class TokenIntrospectionRequest : Request
     {
         /// <summary>

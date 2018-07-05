@@ -12,8 +12,18 @@ using System.Threading.Tasks;
 
 namespace IdentityModel.HttpClientExtensions
 {
+    /// <summary>
+    /// HttpClient extensions for OAuth token requests
+    /// </summary>
     public static class HttpClientTokenRequestExtensions
     {
+        /// <summary>
+        /// Sends a token request using the client_credentials grant type.
+        /// </summary>
+        /// <param name="client">The client.</param>
+        /// <param name="request">The request.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
         public static async Task<TokenResponse> RequestClientCredentialsTokenAsync(this HttpClient client, ClientCredentialsTokenRequest request, CancellationToken cancellationToken = default)
         {
             request.GrantType = OidcConstants.GrantTypes.ClientCredentials;
@@ -23,6 +33,13 @@ namespace IdentityModel.HttpClientExtensions
             return await client.RequestTokenAsync(request, cancellationToken);
         }
 
+        /// <summary>
+        /// Sends a token request using the password grant type.
+        /// </summary>
+        /// <param name="client">The client.</param>
+        /// <param name="request">The request.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
         public static async Task<TokenResponse> RequestPasswordTokenAsync(this HttpClient client, PasswordTokenRequest request, CancellationToken cancellationToken = default)
         {
             request.GrantType = OidcConstants.GrantTypes.Password;
@@ -34,6 +51,13 @@ namespace IdentityModel.HttpClientExtensions
             return await client.RequestTokenAsync(request, cancellationToken);
         }
 
+        /// <summary>
+        /// Sends a token request using the authorization_code grant type.
+        /// </summary>
+        /// <param name="client">The client.</param>
+        /// <param name="request">The request.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
         public static async Task<TokenResponse> RequestAuthorizationCodeTokenAsync(this HttpClient client, AuthorizationCodeTokenRequest request, CancellationToken cancellationToken = default)
         {
             request.GrantType = OidcConstants.GrantTypes.AuthorizationCode;
@@ -45,6 +69,13 @@ namespace IdentityModel.HttpClientExtensions
             return await client.RequestTokenAsync(request, cancellationToken);
         }
 
+        /// <summary>
+        /// Sends a token request using the refresh_token grant type.
+        /// </summary>
+        /// <param name="client">The client.</param>
+        /// <param name="request">The request.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
         public static async Task<TokenResponse> RequestRefreshTokenAsync(this HttpClient client, RefreshTokenRequest request, CancellationToken cancellationToken = default)
         {
             request.GrantType = OidcConstants.GrantTypes.RefreshToken;
@@ -55,6 +86,13 @@ namespace IdentityModel.HttpClientExtensions
             return await client.RequestTokenAsync(request, cancellationToken);
         }
 
+        /// <summary>
+        /// Sends a token request.
+        /// </summary>
+        /// <param name="client">The client.</param>
+        /// <param name="request">The request.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
         public static async Task<TokenResponse> RequestTokenAsync(this HttpClient client, TokenRequest request, CancellationToken cancellationToken = default)
         {
             if (!request.Parameters.ContainsKey(OidcConstants.TokenRequest.GrantType))

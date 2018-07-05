@@ -2,22 +2,15 @@
 // Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
 
 using IdentityModel.Client;
-using System.Collections.Generic;
 
 namespace IdentityModel.HttpClientExtensions
 {
-    public class DynamicClientRegistrationRequest
+    /// <summary>
+    /// Request for dynamic client registration
+    /// </summary>
+    /// <seealso cref="IdentityModel.HttpClientExtensions.Request" />
+    public class DynamicClientRegistrationRequest : Request
     {
-        public string Address { get; set; }
-
-        public string ClientId { get; set; }
-        public string ClientSecret { get; set; }
-        public ClientCredentialStyle ClientCredentialStyle { get; set; } = ClientCredentialStyle.PostBody;
-        public BasicAuthenticationHeaderStyle BasicAuthenticationHeaderStyle { get; set; } = BasicAuthenticationHeaderStyle.Rfc6749;
-
-        public IDictionary<string, string> Parameters { get; set; } = new Dictionary<string, string>();
-
-
         /// <summary>
         /// Gets or sets the token.
         /// </summary>
@@ -26,6 +19,12 @@ namespace IdentityModel.HttpClientExtensions
         /// </value>
         public string Token { get; set; }
 
+        /// <summary>
+        /// Gets or sets the registration request.
+        /// </summary>
+        /// <value>
+        /// The registration request.
+        /// </value>
         public RegistrationRequest RegistrationRequest  { get; set; }
     }
 }

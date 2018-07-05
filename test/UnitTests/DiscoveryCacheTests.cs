@@ -12,7 +12,6 @@ namespace UnitTests
     public class DiscoveryCacheTests
     {
         NetworkHandler _successHandler;
-        string _endpoint = "https://demo.identityserver.io/.well-known/openid-configuration";
         string _authority = "https://demo.identityserver.io";
 
         public DiscoveryCacheTests()

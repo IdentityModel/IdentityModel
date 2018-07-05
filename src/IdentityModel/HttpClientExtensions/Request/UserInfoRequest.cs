@@ -3,8 +3,17 @@
 
 namespace IdentityModel.HttpClientExtensions
 {
+    /// <summary>
+    /// Request for OIDC userinfo
+    /// </summary>
     public class UserInfoRequest
     {
+        /// <summary>
+        /// Gets or sets the address.
+        /// </summary>
+        /// <value>
+        /// The address.
+        /// </value>
         public string Address { get; set; }
 
         /// <summary>

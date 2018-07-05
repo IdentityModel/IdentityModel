@@ -14,8 +14,18 @@ using System.Threading.Tasks;
 
 namespace IdentityModel.HttpClientExtensions
 {
+    /// <summary>
+    /// HttpClient extensions for dynamic registration
+    /// </summary>
     public static class HttpClientDynamicRegistrationExtensions
     {
+        /// <summary>
+        /// Send a dynamic registration request.
+        /// </summary>
+        /// <param name="client">The client.</param>
+        /// <param name="request">The request.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
         public static async Task<RegistrationResponse> RegisterClientAsync(this HttpClient client, DynamicClientRegistrationRequest request, CancellationToken cancellationToken = default)
         {
             var httpRequest = new HttpRequestMessage(HttpMethod.Post, request.Address)
@@ -30,7 +40,7 @@ namespace IdentityModel.HttpClientExtensions
             {
                 httpRequest.SetBearerToken(request.Token);
             }
-            
+
             HttpResponseMessage response;
             try
             {
