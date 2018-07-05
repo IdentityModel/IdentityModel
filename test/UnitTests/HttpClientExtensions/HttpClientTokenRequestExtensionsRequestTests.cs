@@ -358,7 +358,7 @@ namespace IdentityModel.UnitTests
             {
                 GrantType = "test",
                 ClientId = "client",
-                Assertion = { Type = "type", Value = "value" }
+                ClientAssertion = { Type = "type", Value = "value" }
             });
 
             var request = _handler.Request;

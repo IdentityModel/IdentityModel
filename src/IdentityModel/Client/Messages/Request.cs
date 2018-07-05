@@ -40,7 +40,7 @@ namespace IdentityModel.Client
         /// <value>
         /// The assertion.
         /// </value>
-        public ClientAssertion Assertion { get; set; } = new ClientAssertion();
+        public ClientAssertion ClientAssertion { get; set; } = new ClientAssertion();
 
         /// <summary>
         /// Gets or sets the client credential style.

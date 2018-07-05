@@ -38,8 +38,8 @@ namespace IdentityModel.Internal
                 }
             }
 
-            request.Parameters.AddOptional(OidcConstants.TokenRequest.ClientAssertionType, request.Assertion.Type);
-            request.Parameters.AddOptional(OidcConstants.TokenRequest.ClientAssertion, request.Assertion.Value);
+            request.Parameters.AddOptional(OidcConstants.TokenRequest.ClientAssertionType, request.ClientAssertion.Type);
+            request.Parameters.AddOptional(OidcConstants.TokenRequest.ClientAssertion, request.ClientAssertion.Value);
         }
     }
 }
