@@ -1,7 +1,6 @@
 ﻿// Copyright (c) Brock Allen & Dominick Baier. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
 
-using IdentityModel.Client;
 using IdentityModel.Internal;
 using System;
 using System.Net.Http;
@@ -9,7 +8,7 @@ using System.Net.Http.Headers;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace IdentityModel.HttpClientExtensions
+namespace IdentityModel.Client
 {
     /// <summary>
     /// HttpClient extensions for OIDC userinfo

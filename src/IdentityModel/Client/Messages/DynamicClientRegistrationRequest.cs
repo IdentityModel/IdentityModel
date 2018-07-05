@@ -1,13 +1,14 @@
 ﻿// Copyright (c) Brock Allen & Dominick Baier. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
 
-namespace IdentityModel.HttpClientExtensions
+
+namespace IdentityModel.Client
 {
     /// <summary>
-    /// Request for OAuth token revocation
+    /// Request for dynamic client registration
     /// </summary>
-    /// <seealso cref="IdentityModel.HttpClientExtensions.Request" />
-    public class TokenRevocationRequest : Request
+    /// <seealso cref="Request" />
+    public class DynamicClientRegistrationRequest : Request
     {
         /// <summary>
         /// Gets or sets the token.
@@ -18,11 +19,11 @@ namespace IdentityModel.HttpClientExtensions
         public string Token { get; set; }
 
         /// <summary>
-        /// Gets or sets the token type hint.
+        /// Gets or sets the registration request.
         /// </summary>
         /// <value>
-        /// The token type hint.
+        /// The registration request.
         /// </value>
-        public string TokenTypeHint { get; set; }
+        public RegistrationRequest RegistrationRequest  { get; set; }
     }
 }

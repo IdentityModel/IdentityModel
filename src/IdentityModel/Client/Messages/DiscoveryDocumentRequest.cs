@@ -1,12 +1,13 @@
 ﻿// Copyright (c) Brock Allen & Dominick Baier. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
 
-namespace IdentityModel.HttpClientExtensions
+
+namespace IdentityModel.Client
 {
     /// <summary>
-    /// Request for OIDC userinfo
+    /// Request for OpenID Connect discovery document
     /// </summary>
-    public class UserInfoRequest
+    public class DiscoveryDocumentRequest
     {
         /// <summary>
         /// Gets or sets the address.
@@ -17,11 +18,11 @@ namespace IdentityModel.HttpClientExtensions
         public string Address { get; set; }
 
         /// <summary>
-        /// Gets or sets the token.
+        /// Gets or sets the policy.
         /// </summary>
         /// <value>
-        /// The token.
+        /// The policy.
         /// </value>
-        public string Token { get; set; }
+        public DiscoveryPolicy Policy { get; set; } = new DiscoveryPolicy();
     }
 }

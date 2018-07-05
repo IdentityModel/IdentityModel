@@ -1,12 +1,12 @@
 ﻿// Copyright (c) Brock Allen & Dominick Baier. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
 
-namespace IdentityModel.HttpClientExtensions
+namespace IdentityModel.Client
 {
     /// <summary>
     /// Request for token
     /// </summary>
-    /// <seealso cref="IdentityModel.HttpClientExtensions.Request" />
+    /// <seealso cref="Request" />
     public class TokenRequest : Request
     {
         /// <summary>
@@ -21,7 +21,7 @@ namespace IdentityModel.HttpClientExtensions
     /// <summary>
     /// Request for token using client_credentials
     /// </summary>
-    /// <seealso cref="IdentityModel.HttpClientExtensions.TokenRequest" />
+    /// <seealso cref="TokenRequest" />
     public class ClientCredentialsTokenRequest : TokenRequest
     {
         /// <summary>
@@ -36,7 +36,7 @@ namespace IdentityModel.HttpClientExtensions
     /// <summary>
     /// Request for token using password
     /// </summary>
-    /// <seealso cref="IdentityModel.HttpClientExtensions.TokenRequest" />
+    /// <seealso cref="TokenRequest" />
     public class PasswordTokenRequest : TokenRequest
     {
         /// <summary>
@@ -67,7 +67,7 @@ namespace IdentityModel.HttpClientExtensions
     /// <summary>
     /// Request for token using authorization_code
     /// </summary>
-    /// <seealso cref="IdentityModel.HttpClientExtensions.TokenRequest" />
+    /// <seealso cref="TokenRequest" />
     public class AuthorizationCodeTokenRequest : TokenRequest
     {
         /// <summary>
@@ -98,7 +98,7 @@ namespace IdentityModel.HttpClientExtensions
     /// <summary>
     /// Request for token using refresh_token
     /// </summary>
-    /// <seealso cref="IdentityModel.HttpClientExtensions.TokenRequest" />
+    /// <seealso cref="TokenRequest" />
     public class RefreshTokenRequest : TokenRequest
     {
         /// <summary>

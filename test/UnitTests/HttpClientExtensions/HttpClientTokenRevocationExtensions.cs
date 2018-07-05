@@ -3,7 +3,6 @@
 
 using FluentAssertions;
 using IdentityModel.Client;
-using IdentityModel.HttpClientExtensions;
 using Microsoft.AspNetCore.WebUtilities;
 using System;
 using System.IO;
@@ -25,7 +24,7 @@ namespace IdentityModel.UnitTests
             var handler = new NetworkHandler(HttpStatusCode.OK, "ok");
             var client = new HttpClient(handler);
 
-            var response = await client.RevokeTokenAsync(new HttpClientExtensions.TokenRevocationRequest
+            var response = await client.RevokeTokenAsync(new TokenRevocationRequest
             {
                 Address = Endpoint,
                 Token = "token",
@@ -44,7 +43,7 @@ namespace IdentityModel.UnitTests
             var handler = new NetworkHandler(document, HttpStatusCode.BadRequest);
             var client = new HttpClient(handler);
 
-            var response = await client.RevokeTokenAsync(new HttpClientExtensions.TokenRevocationRequest
+            var response = await client.RevokeTokenAsync(new TokenRevocationRequest
             {
                 Address = Endpoint,
                 Token = "token",
@@ -64,7 +63,7 @@ namespace IdentityModel.UnitTests
             var handler = new NetworkHandler(document, HttpStatusCode.BadRequest);
             var client = new HttpClient(handler);
 
-            var response = await client.RevokeTokenAsync(new HttpClientExtensions.TokenRevocationRequest
+            var response = await client.RevokeTokenAsync(new TokenRevocationRequest
             {
                 Address = Endpoint,
                 Token = "token",
@@ -83,7 +82,7 @@ namespace IdentityModel.UnitTests
             var handler = new NetworkHandler(new Exception("exception"));
             var client = new HttpClient(handler);
 
-            var response = await client.RevokeTokenAsync(new HttpClientExtensions.TokenRevocationRequest
+            var response = await client.RevokeTokenAsync(new TokenRevocationRequest
             {
                 Address = Endpoint,
                 Token = "token",
@@ -102,7 +101,7 @@ namespace IdentityModel.UnitTests
             var handler = new NetworkHandler(HttpStatusCode.NotFound, "not found");
             var client = new HttpClient(handler);
 
-            var response = await client.RevokeTokenAsync(new HttpClientExtensions.TokenRevocationRequest
+            var response = await client.RevokeTokenAsync(new TokenRevocationRequest
             {
                 Address = Endpoint,
                 Token = "token",
@@ -121,7 +120,7 @@ namespace IdentityModel.UnitTests
             var handler = new NetworkHandler(HttpStatusCode.OK, "ok");
             var client = new HttpClient(handler);
 
-            var response = await client.RevokeTokenAsync(new HttpClientExtensions.TokenRevocationRequest
+            var response = await client.RevokeTokenAsync(new TokenRevocationRequest
             {
                 Address = Endpoint,
                 ClientId = "client",

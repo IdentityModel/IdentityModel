@@ -3,7 +3,6 @@
 
 using FluentAssertions;
 using IdentityModel.Client;
-using IdentityModel.HttpClientExtensions;
 using Newtonsoft.Json;
 using System;
 using System.IO;

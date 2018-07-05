@@ -38,4 +38,8 @@
   <ItemGroup Condition=" '$(TargetFramework)' == 'net452' ">
     <Reference Include="System.Net.Http" />
   </ItemGroup>
+  
+  <ItemGroup>
+    <Folder Include="HttpClientExtensions\Request\" />
+  </ItemGroup>
 </Project>

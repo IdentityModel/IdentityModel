@@ -1,12 +1,12 @@
 ﻿// Copyright (c) Brock Allen & Dominick Baier. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
 
-namespace IdentityModel.HttpClientExtensions
+namespace IdentityModel.Client
 {
     /// <summary>
     /// Request for OAuth token introspection
     /// </summary>
-    /// <seealso cref="IdentityModel.HttpClientExtensions.Request" />
+    /// <seealso cref="Request" />
     public class TokenIntrospectionRequest : Request
     {
         /// <summary>

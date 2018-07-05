@@ -1,10 +1,9 @@
 ﻿// Copyright (c) Brock Allen & Dominick Baier. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
 
-using IdentityModel.Client;
 using System.Collections.Generic;
 
-namespace IdentityModel.HttpClientExtensions
+namespace IdentityModel.Client
 {
     /// <summary>
     /// Models a base OAuth/OIDC request with client credentials
@@ -57,7 +56,7 @@ namespace IdentityModel.HttpClientExtensions
         /// <value>
         /// The basic authentication header style.
         /// </value>
-        public BasicAuthenticationHeaderStyle BasicAuthenticationHeaderStyle { get; set; } = BasicAuthenticationHeaderStyle.Rfc6749;
+        public BasicAuthenticationHeaderStyle AuthorizationHeaderStyle { get; set; } = BasicAuthenticationHeaderStyle.Rfc6749;
 
         /// <summary>
         /// Gets or sets optional parameters.

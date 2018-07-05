@@ -1,29 +1,29 @@
 ﻿// Copyright (c) Brock Allen & Dominick Baier. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
 
-using IdentityModel.Client;
 using IdentityModel.Internal;
 using System;
+using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace IdentityModel.HttpClientExtensions
+namespace IdentityModel.Client
 {
     /// <summary>
-    /// HttpClient extensions for OAuth token introspection
+    /// HttpClient extensions for OAuth token revocation
     /// </summary>
-    public static class HttpClientTokenIntrospectionExtensions
+    public static class HttpClientTokenRevocationExtensions
     {
         /// <summary>
-        /// Sends an OAuth token introspection request.
+        /// Sends an OAuth token revocation request.
         /// </summary>
         /// <param name="client">The client.</param>
         /// <param name="request">The request.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
-        public static async Task<IntrospectionResponse> IntrospectTokenAsync(this HttpClient client, TokenIntrospectionRequest request, CancellationToken cancellationToken = default)
+        public static async Task<TokenRevocationResponse> RevokeTokenAsync(this HttpClient client, TokenRevocationRequest request, CancellationToken cancellationToken = default)
         {
             var httpRequest = new HttpRequestMessage(HttpMethod.Post, request.Address);
             httpRequest.Headers.Accept.Clear();
@@ -39,19 +39,25 @@ namespace IdentityModel.HttpClientExtensions
             HttpResponseMessage response;
             try
             {
-                response = await client.SendAsync(httpRequest).ConfigureAwait(false);
+                response = await client.SendAsync(httpRequest, cancellationToken).ConfigureAwait(false);
+
+                if (response.StatusCode == HttpStatusCode.OK)
+                {
+                    return new TokenRevocationResponse();
+                }
+                else if (response.StatusCode == HttpStatusCode.BadRequest)
+                {
+                    var content = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+                    return new TokenRevocationResponse(content);
+                }
+                else
+                {
+                    return new TokenRevocationResponse(response.StatusCode, response.ReasonPhrase);
+                }
             }
             catch (Exception ex)
             {
-                return new IntrospectionResponse(ex);
-            }
-            if (response.IsSuccessStatusCode)
-            {
-                return new IntrospectionResponse(await response.Content.ReadAsStringAsync().ConfigureAwait(false));
-            }
-            else
-            {
-                return new IntrospectionResponse(response.StatusCode, response.ReasonPhrase);
+                return new TokenRevocationResponse(ex);
             }
         }
     }

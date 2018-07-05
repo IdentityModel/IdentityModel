@@ -3,7 +3,6 @@
 
 using FluentAssertions;
 using IdentityModel.Client;
-using IdentityModel.HttpClientExtensions;
 using System;
 using System.IO;
 using System.Net;

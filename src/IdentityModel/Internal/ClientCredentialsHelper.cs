@@ -1,5 +1,4 @@
 ﻿using IdentityModel.Client;
-using IdentityModel.HttpClientExtensions;
 using System;
 using System.Net.Http;
 
@@ -15,11 +14,11 @@ namespace IdentityModel.Internal
             {
                 if (request.ClientCredentialStyle == ClientCredentialStyle.AuthorizationHeader)
                 {
-                    if (request.BasicAuthenticationHeaderStyle == BasicAuthenticationHeaderStyle.Rfc6749)
+                    if (request.AuthorizationHeaderStyle == BasicAuthenticationHeaderStyle.Rfc6749)
                     {
                         httpRequest.SetBasicAuthenticationOAuth(request.ClientId, request.ClientSecret ?? "");
                     }
-                    else if (request.BasicAuthenticationHeaderStyle == BasicAuthenticationHeaderStyle.Rfc2617)
+                    else if (request.AuthorizationHeaderStyle == BasicAuthenticationHeaderStyle.Rfc2617)
                     {
                         httpRequest.SetBasicAuthentication(request.ClientId, request.ClientSecret ?? "");
                     }
