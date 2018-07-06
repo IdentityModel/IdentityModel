@@ -7,12 +7,25 @@ The nuget package can be found [here](https://www.nuget.org/packages/IdentityMod
 Client library to retrieve OpenID Connect discovery documents and key sets.
 
 ```csharp
-var discoveryClient = new DiscoveryClient("https://demo.identityserver.io");
-var doc = await discoveryClient.GetAsync();
+var client = new HttpClient();
+
+var disco = await client.GetDiscoveryDocumentAsync("https://demo.identityserver.io");
+if (disco.IsError) throw new Exception(disco.Error);
 
 var tokenEndpoint = doc.TokenEndpoint;
 var keys = doc.KeySet.Keys;
 ```
+
+### DiscoveryCache
+Simple in-memory cache for discovery documents
+
+```csharp
+var cache = new DiscoveryCache(Constants.Authority);
+
+var disco = await cache.GetAsync();
+if (disco.IsError) throw new Exception(disco.Error);
+```
+
 
 ### TokenClient
 Client library for OAuth 2.0 and OpenID Connect token endpoints.
@@ -29,12 +42,18 @@ Features:
 
 Example:
 ```csharp
-var client = new TokenClient(
-    doc.TokenEndpoint,
-    "client_id",
-    "secret");
-    
-var response = await client.RequestClientCredentialsAsync("scope");
+var client = new HttpClient();
+
+var response = await client.RequestClientCredentialsTokenAsync(new ClientCredentialsTokenRequest
+{
+    Address = disco.TokenEndpoint,
+
+    ClientId = "client",
+    ClientSecret = "secret",
+    Scope = "api1"
+});
+
+if (response.IsError) throw new Exception(response.Error);
 var token = response.AccessToken;
 ```
 
@@ -42,26 +61,52 @@ var token = response.AccessToken;
 Client library for the OpenID Connect user info endpoint
 
 ```csharp
-var userInfoClient = new UserInfoClient(doc.UserInfoEndpoint);
+var client = new HttpClient();
 
-var response = await userInfoClient.GetAsync(token);
-var claims = response.Claims;
+var response = await client.GetUserInfoAsync(new UserInfoRequest
+{
+    Address = disco.UserInfoEndpoint,
+    Token = token
+});
+
+if (response.IsError) throw new Exception(response.Error);
+
+foreach (var claim in response.Claims)
+{
+    Console.WriteLine("{0}\n {1}", claim.Type, claim.Value);
+}
 ```
 
 ### IntrospectionClient
 Client library for the OAuth 2 introspection endpoint
 
 ```csharp
-var introspectionClient = new IntrospectionClient(
-    doc.IntrospectionEndpoint,
-    "scope_name",
-    "scope_secret");
+var client = new HttpClient();
+var result = await client.IntrospectTokenAsync(new TokenIntrospectionRequest
+{
+    Address = disco.IntrospectionEndpoint,
 
-var response = await introspectionClient.SendAsync(
-    new IntrospectionRequest { Token = token });
+    ClientId = "api1",
+    ClientSecret = "secret",
+    Token = accessToken
+});
 
-var isActive = response.IsActive;
-var claims = response.Claims;
+if (result.IsError)
+{
+    Console.WriteLine(result.Error);
+}
+else
+{
+    if (result.IsActive)
+    {
+        result.Claims.ToList().ForEach(c => Console.WriteLine("{0}: {1}",
+            c.Type, c.Value));
+    }
+    else
+    {
+        Console.WriteLine("token is not active");
+    }
+}
 ```
 
 ### RequestUrl
@@ -70,12 +115,12 @@ Helper class for creating request URLs (e.g. for authorize and end_session).
 ```csharp
 var request = new RequestUrl(doc.AuthorizationEndpoint);
 var url = request.CreateAuthorizeUrl(
-    clientId:     "client",
-    responseType: OidcConstants.ResponseTypes.CodeIdToken,
-    responseMode: OidcConstants.ResponseModes.FormPost,
-    redirectUri: "https://myapp.com/callback",
-    state:       CryptoRandom.CreateUniqueId(),
-    nonce:       CryptoRandom.CreateUniqueId());
+    clientId:         "client",
+    responseType:     OidcConstants.ResponseTypes.CodeIdToken,
+    responseMode:     OidcConstants.ResponseModes.FormPost,
+    redirectUri:     "https://myapp.com/callback",
+    state:           CryptoRandom.CreateUniqueId(),
+    nonce:           CryptoRandom.CreateUniqueId());
 ```
 
 ### AuthorizeResponse
