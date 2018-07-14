@@ -31,8 +31,14 @@ namespace IdentityModel.Client
             _authority = authority;
             _policy = policy ?? new DiscoveryPolicy();
 
-            if (client == null) client = new HttpClient();
-            _getHttpClient = () => client;
+            if (client == null)
+            {
+                _getHttpClient = () => new HttpClient();
+            }
+            else
+            {
+                _getHttpClient = () => client;
+            }
         }
 
         /// <summary>
