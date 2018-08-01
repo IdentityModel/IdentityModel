@@ -1,13 +1,12 @@
 ﻿using FluentAssertions;
 using IdentityModel.Client;
-using IdentityModel.UnitTests;
 using System.IO;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace UnitTests
+namespace IdentityModel.UnitTests
 {
     public class DiscoveryCacheTests
     {
