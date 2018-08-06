@@ -28,7 +28,7 @@ namespace IdentityModel.Client
             request.Parameters.AddRequired(OidcConstants.AuthorizeRequest.ClientId, request.ClientId);
             request.Parameters.AddOptional(OidcConstants.AuthorizeRequest.Scope, request.Scope);
 
-            var httpRequest = new HttpRequestMessage(HttpMethod.Get, request.Address)
+            var httpRequest = new HttpRequestMessage(HttpMethod.Post, request.Address)
             {
                 Content = new FormUrlEncodedContent(request.Parameters)
             };
