@@ -176,6 +176,8 @@ namespace IdentityModel.Client
         public string UserInfoEndpoint => TryGetString(OidcConstants.Discovery.UserInfoEndpoint);
         public string IntrospectionEndpoint => TryGetString(OidcConstants.Discovery.IntrospectionEndpoint);
         public string RevocationEndpoint => TryGetString(OidcConstants.Discovery.RevocationEndpoint);
+        public string DeviceAuthorizationEndpoint => TryGetString(OidcConstants.Discovery.DeviceAuthorizationEndpoint);
+
         public string JwksUri => TryGetString(OidcConstants.Discovery.JwksUri);
         public string EndSessionEndpoint => TryGetString(OidcConstants.Discovery.EndSessionEndpoint);
         public string CheckSessionIframe => TryGetString(OidcConstants.Discovery.CheckSessionIframe);
