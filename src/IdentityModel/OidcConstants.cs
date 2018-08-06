@@ -64,6 +64,16 @@ namespace IdentityModel
             public const string ErrorDescription = "error_description";
         }
 
+        public static class DeviceAuthorizationResponse
+        {
+            public const string DeviceCode = "device_code";
+            public const string UserCode = "user_code";
+            public const string VerificationUri = "verification_uri";
+            public const string VerificationUriComplete = "verification_uri_complete";
+            public const string ExpiresIn = "expires_in";
+            public const string Interval = "interval";
+        }
+
         public static class EndSessionRequest
         {
             public const string IdTokenHint = "id_token_hint";
@@ -290,7 +300,7 @@ namespace IdentityModel
             public const string ConfirmationByTelephone = "tel";
             public const string UserPresenceTest = "user";
             public const string VoiceBiometric = "vbm";
-            public const string WindowsIntegratedAuthentication = "wia";           
+            public const string WindowsIntegratedAuthentication = "wia";
         }
 
         public static class Algorithms
