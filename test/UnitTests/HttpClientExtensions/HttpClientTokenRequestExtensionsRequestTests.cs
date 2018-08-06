@@ -60,6 +60,44 @@ namespace IdentityModel.UnitTests
         }
 
         [Fact]
+        public async Task Device_request_should_have_correct_format()
+        {
+            var response = await _client.RequestDeviceTokenAsync(new DeviceTokenRequest
+            {
+                ClientId = "device",
+                DeviceCode = "device_code"
+            });
+
+            response.IsError.Should().BeFalse();
+
+            var fields = QueryHelpers.ParseQuery(_handler.Body);
+            fields.TryGetValue("grant_type", out var grant_type).Should().BeTrue();
+            grant_type.First().Should().Be(OidcConstants.GrantTypes.DeviceCode);
+
+            fields.TryGetValue("client_id", out var client_id).Should().BeTrue();
+            client_id.First().Should().Be("device");
+
+            fields.TryGetValue("device_code", out var device_code).Should().BeTrue();
+            device_code.First().Should().Be("device_code");
+        }
+
+        [Fact]
+        public void Device_request_without_client_id_should_fail()
+        {
+            Func<Task> act = async () => await _client.RequestDeviceTokenAsync(new DeviceTokenRequest { DeviceCode = "device_code" });
+
+            act.Should().Throw<ArgumentException>().And.ParamName.Should().Be("client_id");
+        }
+
+        [Fact]
+        public void Device_request_without_device_code_should_fail()
+        {
+            Func<Task> act = async () => await _client.RequestDeviceTokenAsync(new DeviceTokenRequest { ClientId = "device" });
+
+            act.Should().Throw<ArgumentException>().And.ParamName.Should().Be("device_code");
+        }
+
+        [Fact]
         public async Task Password_request_should_have_correct_format()
         {
             var response = await _client.RequestPasswordTokenAsync(new PasswordTokenRequest
@@ -233,7 +271,7 @@ namespace IdentityModel.UnitTests
         }
 
         [Fact]
-        public async Task Setting_grant_type_via_optional_parameters_should_created_correct_format()
+        public async Task Setting_grant_type_via_optional_parameters_should_create_correct_format()
         {
             var response = await _client.RequestTokenAsync(new TokenRequest
             {

@@ -33,6 +33,24 @@ namespace IdentityModel.Client
         }
 
         /// <summary>
+        /// Sends a token request using the urn:ietf:params:oauth:grant-type:device_code grant type.
+        /// </summary>
+        /// <param name="client">The client.</param>
+        /// <param name="request">The request.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
+        public static async Task<TokenResponse> RequestDeviceTokenAsync(this HttpMessageInvoker client, DeviceTokenRequest request, CancellationToken cancellationToken = default)
+        {
+            if (request.ClientId.IsMissing()) throw new ArgumentException("client_id is missing", "client_id");
+
+            request.GrantType = OidcConstants.GrantTypes.DeviceCode;
+
+            request.Parameters.AddRequired(OidcConstants.TokenRequest.DeviceCode, request.DeviceCode);
+
+            return await client.RequestTokenAsync(request, cancellationToken);
+        }
+
+        /// <summary>
         /// Sends a token request using the password grant type.
         /// </summary>
         /// <param name="client">The client.</param>
