@@ -12,8 +12,8 @@ var client = new HttpClient();
 var disco = await client.GetDiscoveryDocumentAsync("https://demo.identityserver.io");
 if (disco.IsError) throw new Exception(disco.Error);
 
-var tokenEndpoint = doc.TokenEndpoint;
-var keys = doc.KeySet.Keys;
+var tokenEndpoint = disco.TokenEndpoint;
+var keys = disco.KeySet.Keys;
 ```
 
 ### DiscoveryCache
