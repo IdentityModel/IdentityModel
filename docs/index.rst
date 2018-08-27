@@ -42,4 +42,5 @@ How to get
    misc/request_url
    misc/x509store
    misc/base64
+   misc/epoch_time
    misc/time_constant_comparison
