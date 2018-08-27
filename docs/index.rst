@@ -12,7 +12,8 @@ It has the following high level features:
 * misc helpers for base64 URL encoding, time constant string comparison and epoch time
 
 How to get
-^^^^^^^^^^
+----------
+
 * github https://github.com/IdentityModel/IdentityModel2
 * nuget https://www.nuget.org/packages/IdentityModel/
 * CI builds https://www.myget.org/F/identity/
@@ -29,6 +30,7 @@ How to get
    client/introspection
    client/revocation
    client/userinfo
+   client/device_authorize
 
 .. toctree::
    :maxdepth: 2
@@ -38,4 +40,4 @@ How to get
    misc/constants
    misc/x509store
    misc/base64
-   misc/timeconstantcomparison
+   misc/time_constant_comparison

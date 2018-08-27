@@ -1,0 +1,2 @@
+Device Authorization Endpoint
+=============================
