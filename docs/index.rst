@@ -39,6 +39,7 @@ How to get
    :caption: Misc Helpers
 
    misc/constants
+   misc/request_url
    misc/x509store
    misc/base64
    misc/time_constant_comparison
