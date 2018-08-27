@@ -1,6 +1,6 @@
 .. _refEndSession:
-The EndSession Endpoint
-=======================
+EndSession Endpoint
+===================
 
 The :ref:`RequestUrl <refRequestUrl>` class can be used to construct URLs to the `OpenID Connect EndSession endpoint <https://openid.net/specs/openid-connect-session-1_0.html#RPLogout>`_.
 
