@@ -1,10 +1,10 @@
+.. _refAuthorize:
 Authorization Endpoint
 ======================
-For most cases, the `OAuth 2.0 <https://tools.ietf.org/html/rfc6749#section-3.1>`_ and `OpenID Connect <https://openid.net/specs/openid-connect-core-1_0.html#AuthorizationEndpoint>`_ 
-authorization endpoint expects a GET request with a number of query string parameters.
+For most cases, the `OAuth 2.0 <https://tools.ietf.org/html/rfc6749#section-3.1>`_ and `OpenID Connect <https://openid.net/specs/openid-connect-core-1_0.html#AuthorizationEndpoint>`_ authorization endpoint expects a GET request with a number of query string parameters.
 
 While you can use any means of creating URLs with parameters to create the right strings, 
-the ``RequestUrl`` class is a simple helper to accomplish this task. (todo: link to requesturl docs).
+the :ref:`RequestUrl <refRequestUrl>` class is a simple helper to accomplish this task.
 
 In particular, you can use the ``CreateAuthorizeUrl`` extension method to create URLs for the authorize endpoint - it has support the most common parameters::
 

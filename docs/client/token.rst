@@ -1,6 +1,6 @@
 Token Endpoint
 ==============
-The client library for the token endpoint (`OAuth 2.0 <https://tools.ietf.org/html/rfc6749#section-3.2>`_ and `OpenID Connect <https://openid.net/specs/openid-connect-core-1_0.html#TokenEndpoint>`_ 
+The client library for the token endpoint (`OAuth 2.0 <https://tools.ietf.org/html/rfc6749#section-3.2>`_ and `OpenID Connect <https://openid.net/specs/openid-connect-core-1_0.html#TokenEndpoint>`_) 
 is provided as a set of extension methods for ``HttpClient``.
 This allows creating and managing the lifetime of the ``HttpClient`` the way you prefer - 
 e.g. statically or via a factory like the Microsoft ``HttpClientFactory``.
