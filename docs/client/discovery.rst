@@ -1,7 +1,7 @@
 Discovery Endpoint
 ==================
 
-The client library for the discovery endpoint is provided as an extension method for ``HttpClient``.
+The client library for the `OpenID Connect discovery endpoint <https://openid.net/specs/openid-connect-discovery-1_0.html>`_ is provided as an extension method for ``HttpClient``.
 The ``GetDiscoveryDocumentAsync`` method returns a ``DiscoveryResponse`` object that has 
 both strong and weak typed accessors for the various elements of the discovery document.
 
