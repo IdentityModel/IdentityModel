@@ -60,3 +60,5 @@ Example::
         redirectUri: "https://app.com/callback",
         nonce: "xyz",
         scope: "openid");
+
+.. note:: The ``extra`` parameter can either be a string dictionary or an arbitrary other type with properties. In both cases the values will be serialized as keys/values.

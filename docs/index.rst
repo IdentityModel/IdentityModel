@@ -26,6 +26,7 @@ How to get
 
    client/discovery
    client/authorize
+   client/end_session
    client/token
    client/introspection
    client/revocation
