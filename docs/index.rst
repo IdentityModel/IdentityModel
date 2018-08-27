@@ -23,4 +23,19 @@ How to get
    :hidden:
    :caption: Protocol Client Libraries
 
+   client/discovery
+   client/authorize
    client/token
+   client/introspection
+   client/revocation
+   client/userinfo
+
+.. toctree::
+   :maxdepth: 2
+   :hidden:
+   :caption: Misc Helpers
+
+   misc/constants
+   misc/x509store
+   misc/base64
+   misc/timeconstantcomparison

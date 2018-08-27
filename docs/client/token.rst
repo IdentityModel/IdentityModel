@@ -1,2 +1,2 @@
-OAuth 2.0 Token Endpoint
-========================
+Token Endpoint
+==============

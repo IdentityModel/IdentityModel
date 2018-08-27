@@ -1,0 +1,2 @@
+Token Revocation Endpoint
+=========================
