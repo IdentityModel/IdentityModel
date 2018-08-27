@@ -1,14 +1,7 @@
 Welcome to the IdentityModel Documentation!
 ===========================================
 
-.. toctree::
-   :maxdepth: 2
-   :hidden:
-   :caption: Protocol Client Libraries
-
-   client/token
-
-   IdentityModel is a .NET standard helper library for claims-based identity, OAuth 2.0 and OpenID Connect.
+IdentityModel is a .NET standard helper library for claims-based identity, OAuth 2.0 and OpenID Connect.
 
    It has the following high level features
 
@@ -23,3 +16,10 @@ Welcome to the IdentityModel Documentation!
    * github https://github.com/IdentityModel/IdentityModel2
    * nuget https://www.nuget.org/packages/IdentityModel/
    * CI builds https://www.myget.org/F/identity/
+
+.. toctree::
+   :maxdepth: 2
+   :hidden:
+   :caption: Protocol Client Libraries
+
+   client/token
