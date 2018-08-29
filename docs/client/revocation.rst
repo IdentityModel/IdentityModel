@@ -21,6 +21,3 @@ The response is of type ``TokenRevocationResponse`` gives you access to the the 
 Before using the response, you should always check the ``IsError`` property to make sure the request was successful::
 
     if (response.IsError) throw new Exception(response.Error);
-
-    var isActive = response.IsActive;
-    var claims = response.Claims;
