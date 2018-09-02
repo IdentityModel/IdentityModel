@@ -200,3 +200,6 @@ FakesAssemblies/
 *.opt
 .idea
 nuget.exe
+
+.vscode/
+docs/_build/
