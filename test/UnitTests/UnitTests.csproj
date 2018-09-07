@@ -2,7 +2,7 @@
   <PropertyGroup>
     <TargetFrameworks>net452;net461;netcoreapp1.1;netcoreapp2.0</TargetFrameworks>
     <AssemblyName>UnitTests</AssemblyName>
-    <PackageId>UnitTests</PackageId>
+    <IsPackable>false</IsPackable>
   </PropertyGroup>
   
   <ItemGroup>
@@ -12,7 +12,7 @@
   </ItemGroup>
   
   <ItemGroup>
-    <ProjectReference Include="..\..\src\IdentityModel\IdentityModel.csproj" />
+    <ProjectReference Include="..\..\src\IdentityModel.csproj" />
   </ItemGroup>
   
   <ItemGroup>

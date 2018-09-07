@@ -10,7 +10,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\..\src\IdentityModel\IdentityModel.csproj" />
+    <ProjectReference Include="..\..\..\src\IdentityModel.csproj" />
   </ItemGroup>
 
 </Project>

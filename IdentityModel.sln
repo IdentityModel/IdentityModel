@@ -9,7 +9,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "test", "test", "{4685D8F8-5E7D-405B-9E04-CFB157AE0F41}"
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IdentityModel", "src\IdentityModel\IdentityModel.csproj", "{B0B96A68-D029-4B83-8475-00D9A2BB7965}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "IdentityModel", "src\IdentityModel.csproj", "{B0B96A68-D029-4B83-8475-00D9A2BB7965}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "UnitTests", "test\UnitTests\UnitTests.csproj", "{211C2948-A6DC-4905-BD18-2968E13BDE5F}"
 EndProject
