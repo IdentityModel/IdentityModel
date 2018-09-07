@@ -4,13 +4,11 @@ var configuration   = Argument<string>("configuration", "Release");
 ///////////////////////////////////////////////////////////////////////////////
 // GLOBAL VARIABLES
 ///////////////////////////////////////////////////////////////////////////////
-var packPath            = Directory("./src/IdentityModel");
+var packPath            = Directory("./src");
 var buildArtifacts      = Directory("./artifacts/packages");
 
 var isAppVeyor          = AppVeyor.IsRunningOnAppVeyor;
 var isWindows           = IsRunningOnWindows();
-var netcore             = "netcoreapp2.0";
-var netstandard         = "netstandard2.0";
 
 ///////////////////////////////////////////////////////////////////////////////
 // Clean
@@ -33,32 +31,11 @@ Task("Build")
         Configuration = configuration
     };
 
-    // libraries
-	var projects = GetFiles("./src/**/*.csproj");
+    var projects = GetFiles("./src/**/*.csproj");
 
-    if (!isWindows)
-    {
-        Information("Not on Windows - building only for " + netstandard);
-        settings.Framework = netstandard;
-    }
-
-	foreach(var project in projects)
+    foreach(var project in projects)
 	{
-	    DotNetCoreBuild(project.GetDirectory().FullPath, settings); 
-    }
-
-    // tests
-	projects = GetFiles("./test/**/*.csproj");
-
-    if (!isWindows)
-    {
-        Information("Not on Windows - building only for " + netcore);
-        settings.Framework = netcore;
-    }
-
-	foreach(var project in projects)
-	{
-	    DotNetCoreBuild(project.GetDirectory().FullPath, settings); 
+	    DotNetCoreBuild(project.GetDirectory().FullPath, settings);
     }
 });
 
@@ -67,6 +44,7 @@ Task("Build")
 ///////////////////////////////////////////////////////////////////////////////
 Task("Test")
     .IsDependentOn("Clean")
+    .IsDependentOn("Build")
     .Does(() =>
 {
     var settings = new DotNetCoreTestSettings
@@ -74,16 +52,15 @@ Task("Test")
         Configuration = configuration
     };
 
-    var projects = GetFiles("./test/**/*.csproj");
-
     if (!isWindows)
     {
-        Information("Not on Windows - testing only for " + netcore);
-        settings.Framework = netcore;
+        Information("Not running on Windows - skipping tests for .NET Framework");
+        settings.Framework = "netcoreapp2.1";
     }
 
+    var projects = GetFiles("./test/**/*.csproj");
     foreach(var project in projects)
-	{
+    {
         DotNetCoreTest(project.FullPath, settings);
     }
 });
@@ -93,19 +70,14 @@ Task("Test")
 ///////////////////////////////////////////////////////////////////////////////
 Task("Pack")
     .IsDependentOn("Clean")
+    .IsDependentOn("Build")
     .Does(() =>
 {
-    if (!isWindows)
-    {
-        Information("Not on Windows - skipping pack");
-        return;
-    }
-
     var settings = new DotNetCorePackSettings
     {
         Configuration = configuration,
         OutputDirectory = buildArtifacts,
-        ArgumentCustomization = args => args.Append("--include-symbols")
+        //ArgumentCustomization = args => args.Append("--include-symbols")
     };
 
     // add build suffix for CI builds

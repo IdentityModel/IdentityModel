@@ -203,3 +203,4 @@ nuget.exe
 
 .vscode/
 docs/_build/
+tools/
