@@ -22,10 +22,6 @@ bld/
 [Bb]in/
 [Oo]bj/
 
-# Cake Build Related
-tools/Cake/
-tools/packages.config.md5sum
-
 # Visual Studo 2015 cache/options directory
 .vs/
 
@@ -199,7 +195,7 @@ FakesAssemblies/
 # Visual Studio 6 workspace options file
 *.opt
 .idea
-nuget.exe
+
 
 .vscode/
 docs/_build/
