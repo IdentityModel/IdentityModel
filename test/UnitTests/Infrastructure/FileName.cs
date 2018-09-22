@@ -9,7 +9,7 @@ namespace IdentityModel.UnitTests
     {
         public static string Create(string name)
         {
-#if NETCOREAPP1_1 || NETCOREAPP2_0
+#if NETCOREAPP1_1 || NETCOREAPP2_0 || NETCOREAPP2_1
             var fullName = Path.Combine(System.AppContext.BaseDirectory, "documents", name);
 #else
             var fullName = Path.Combine(Microsoft.Extensions.PlatformAbstractions.PlatformServices.Default.Application.ApplicationBasePath, "documents", name);

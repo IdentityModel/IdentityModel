@@ -200,3 +200,4 @@ FakesAssemblies/
 .vscode/
 docs/_build/
 tools/
+.dotnet/

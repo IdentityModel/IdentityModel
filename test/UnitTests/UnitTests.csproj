@@ -1,6 +1,6 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
-    <TargetFrameworks>net452;net461;netcoreapp1.1;netcoreapp2.0</TargetFrameworks>
+    <TargetFrameworks>net452;net461;netcoreapp1.1;netcoreapp2.0;netcoreapp2.1</TargetFrameworks>
     <AssemblyName>UnitTests</AssemblyName>
     <IsPackable>false</IsPackable>
   </PropertyGroup>
@@ -28,6 +28,10 @@
   
   <ItemGroup Condition=" '$(TargetFramework)' == 'netcoreapp2.0' ">
     <PackageReference Include="Microsoft.AspNetCore.WebUtilities" Version="2.0.1" />
+  </ItemGroup>
+
+  <ItemGroup Condition=" '$(TargetFramework)' == 'netcoreapp2.1' ">
+    <PackageReference Include="Microsoft.AspNetCore.WebUtilities" Version="2.1.0" />
   </ItemGroup>
   
   <ItemGroup Condition=" '$(TargetFramework)' == 'net452' ">
