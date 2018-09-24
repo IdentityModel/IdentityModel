@@ -109,6 +109,12 @@ Task("Build")
         MSBuildSettings = msBuildSettings
     };
 
+    if (!isWindows)
+    {
+        Information("Not running on Windows - building source for netstandard2.0");
+        settings.Framework = "netstandard2.0";
+    }
+
     var projects = GetFiles("./src/**/*.csproj");
     foreach(var project in projects)
 	{
@@ -117,7 +123,7 @@ Task("Build")
 
     if (!isWindows)
     {
-        Information("Not running on Windows - skipping building tests for .NET Framework");
+        Information("Not running on Windows - building tests for netcoreapp2.1");
         settings.Framework = "netcoreapp2.1";
     }
 
