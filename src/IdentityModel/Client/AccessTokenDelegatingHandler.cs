@@ -19,6 +19,7 @@ namespace IdentityModel.Client
         private readonly SemaphoreSlim _lock = new SemaphoreSlim(1, 1);
         private readonly TokenClient _tokenClient;
         private readonly string _scope;
+        private readonly object _extra;
 
         private string _accessToken;
         private bool _disposed;
@@ -103,6 +104,22 @@ namespace IdentityModel.Client
             _scope = scope;
         }
 
+        /// /// <summary>
+        /// Initializes a new instance of the <see cref="AccessTokenDelegatingHandler"/> class.
+        /// </summary>
+        /// <param name="client">The client.</param>
+        /// <param name="scope">The scope.</param>
+        /// <param name="extra">Extra parameters.</param>
+        /// <param name="innerHandler">The inner handler.</param>
+        public AccessTokenDelegatingHandler(TokenClient client, string scope, object extra, HttpMessageHandler innerHandler)
+            : base(innerHandler)
+        {
+            _tokenClient = client;
+            _scope = scope;
+            _extra = extra;
+        }
+
+
         /// <summary>
         /// Sends an HTTP request to the inner handler to send to the server as an asynchronous operation.
         /// </summary>
@@ -161,7 +178,7 @@ namespace IdentityModel.Client
             {
                 try
                 {
-                    var response = await _tokenClient.RequestClientCredentialsAsync(_scope, cancellationToken: cancellationToken).ConfigureAwait(false);
+                    var response = await _tokenClient.RequestClientCredentialsAsync(_scope, _extra, cancellationToken: cancellationToken).ConfigureAwait(false);
 
                     if (!response.IsError)
                     {
