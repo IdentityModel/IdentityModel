@@ -33,7 +33,7 @@ Custom elements (or elements not covered by the standard properties) can be acce
     // returns JToken
     var rawJson = disco.TryGetValue("some_element);
 
-Discover Policy
+Discovery Policy
 ---------------
 By default the discovery response is validated before it is returned to the client, 
 validation includes:
