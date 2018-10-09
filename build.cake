@@ -182,7 +182,7 @@ Task("Pack")
     .IsDependentOn("Build")
     .Does(() =>
 {
-    //if (SkipPack()) return;
+    if (SkipPack()) return;
 
     var settings = new DotNetCorePackSettings
     {
@@ -288,7 +288,7 @@ private void SignFile(string fileName)
 
 Task("Default")
   .IsDependentOn("Build")
-  //.IsDependentOn("Test")
+  .IsDependentOn("Test")
   .IsDependentOn("Pack");
 
 RunTarget(target);
