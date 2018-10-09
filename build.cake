@@ -2,11 +2,12 @@
 
 var target          = Argument("target", "Default");
 var configuration   = Argument<string>("configuration", "Release");
+var sign            = Argument<bool>("sign", false);
 
 // call e.g. .\build.ps1 --release=1.0.0 --pre=beta1
 // call e.g. .\build.ps1 --release=1.0.0
  var versionOverride = Argument<string>("release", "");
- var suffixOverride = Argument<string>("pre", "");
+ var suffixOverride  = Argument<string>("pre", "");
 
 ///////////////////////////////////////////////////////////////////////////////
 // GLOBAL VARIABLES
@@ -18,12 +19,12 @@ var isAppVeyor          = AppVeyor.IsRunningOnAppVeyor;
 var isVsts              = TFBuild.IsRunningOnVSTS;
 var isWindows           = IsRunningOnWindows();
 
-DotNetCoreMSBuildSettings msBuildSettings;
-VersionInfo versions;
-
 ///////////////////////////////////////////////////////////////////////////////
 // Setup
 ///////////////////////////////////////////////////////////////////////////////
+DotNetCoreMSBuildSettings msBuildSettings;
+VersionInfo versions;
+
 class VersionInfo
 {
     public string AssemblyVersion { get; set; }
@@ -109,6 +110,7 @@ Task("Build")
         MSBuildSettings = msBuildSettings
     };
 
+    // building projects
     if (!isWindows)
     {
         Information("Not running on Windows - building source for netstandard2.0");
@@ -121,6 +123,7 @@ Task("Build")
 	    DotNetCoreBuild(project.GetDirectory().FullPath, settings);
     }
 
+    // building tests
     if (!isWindows)
     {
         Information("Not running on Windows - building tests for netcoreapp2.1");
@@ -131,6 +134,16 @@ Task("Build")
     foreach(var test in tests)
 	{
 	    DotNetCoreBuild(test.GetDirectory().FullPath, settings);
+    }
+
+    // authenticode sign assemblies
+    if (sign)
+    {
+        var dlls = GetFiles("./src/bin/release/**/IdentityModel.dll");
+        foreach(var dll in dlls)
+        {
+            SignFile(dll.FullPath);
+        }
     }
 });
 
@@ -169,7 +182,7 @@ Task("Pack")
     .IsDependentOn("Build")
     .Does(() =>
 {
-    if (SkipPack()) return;
+    //if (SkipPack()) return;
 
     var settings = new DotNetCorePackSettings
     {
@@ -180,8 +193,21 @@ Task("Pack")
     };
 
     DotNetCorePack(packPath, settings);
+
+    if (sign)
+    {
+        var packages = GetFiles("./artifacts/**/*.nupkg");
+        foreach(var package in packages)
+        {
+            SignFile(package.FullPath);
+        }
+    }
 });
 
+
+///////////////////////////////////////////////////////////////////////////////
+// Helpers
+///////////////////////////////////////////////////////////////////////////////
 private bool SkipPack()
 {
     if (!isWindows)
@@ -222,9 +248,47 @@ private DotNetCoreMSBuildSettings GetMSBuildSettings()
     return settings;
 }
 
+private void SignFile(string fileName)
+{
+    var signClientConfig = EnvironmentVariable("SignClientConfig") ?? "";
+    var signClientSecret = EnvironmentVariable("SignClientSecret") ?? "";
+
+    if (signClientConfig == "")
+    {
+        throw new Exception("SignClientConfig environment variable is missing. Aborting.");
+    }
+
+    if (signClientSecret == "")
+    {
+        throw new Exception("SignClientSecret environment variable is missing. Aborting.");
+    }
+
+    Information("  Signing " + fileName);
+
+    var success = StartProcess("./tools/signclient", new ProcessSettings {
+        Arguments = new ProcessArgumentBuilder()
+            .Append("sign")
+            .Append($"-c {signClientConfig}")
+            .Append($"-i {fileName}")
+            .Append("-r sc-ids@dotnetfoundation.org")
+            .Append($"-s {signClientSecret}")
+            .Append(@"-n 'IdentityModel'")
+        });
+
+    if (success == 0)
+    {
+        Information("  success.");
+    }
+    else
+    {
+        throw new Exception("Error signing " + fileName);
+    }
+    
+}
+
 Task("Default")
   .IsDependentOn("Build")
-  .IsDependentOn("Test")
+  //.IsDependentOn("Test")
   .IsDependentOn("Pack");
 
 RunTarget(target);
