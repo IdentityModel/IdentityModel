@@ -1,4 +1,4 @@
-#tool "nuget:https://api.nuget.org/v3/index.json?package=GitVersion.CommandLine"
+#tool "nuget:https://api.nuget.org/v3/index.json?package=GitVersion.CommandLine&version=3.6.5"
 
 var target          = Argument("target", "Default");
 var configuration   = Argument<string>("configuration", "Release");
