@@ -14,7 +14,7 @@ namespace IdentityModel.Client
     /// <summary>
     /// HTTP message handler that encapsulates token handling and refresh
     /// </summary>
-    [Obsolete("Use AccesTokenDelegatingHandler (that does not create a default " +
+    [Obsolete("Use RefreshTokenDelegatingHandler (that does not create a default " +
               "inner handler) instead. See " +
               "https://github.com/IdentityModel/IdentityModel2/pull/110", false)]
     public class RefreshTokenHandler : DelegatingHandler
