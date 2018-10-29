@@ -135,6 +135,11 @@ namespace IdentityModel.Client
             {
                 try
                 {
+                    if (AccessToken.IsPresent())
+                    {
+                        return true;
+                    }
+
                     var response = await _tokenClient.RequestClientCredentialsAsync(_scope, cancellationToken: cancellationToken).ConfigureAwait(false);
 
                     if (response.IsError)
