@@ -21,14 +21,14 @@ namespace IdentityModel.Client
         private readonly string _scope;
         private readonly object _extra;
 
-        private string _accessToken;
+        private AccessToken _accessToken;
         private bool _disposed;
 
         /// <summary>
         /// Gets or sets the timeout
         /// </summary>
         public TimeSpan Timeout { get; set; } = TimeSpan.FromSeconds(5);
-        
+
         /// <summary>
         /// Gets the current access token
         /// </summary>
@@ -36,19 +36,12 @@ namespace IdentityModel.Client
         {
             get
             {
-                if (_lock.Wait(Timeout))
+                if (_accessToken.IsExpired)
                 {
-                    try
-                    {
-                        return _accessToken;
-                    }
-                    finally
-                    {
-                        _lock.Release();
-                    }
+                    return null;
                 }
 
-                return null;
+                return _accessToken.Token;
             }
         }
 
@@ -130,8 +123,7 @@ namespace IdentityModel.Client
         /// </returns>
         protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
-            var accessToken = await GetAccessTokenAsync(cancellationToken);
-            if (accessToken.IsMissing())
+            if (AccessToken.IsMissing())
             {
                 if (await RenewTokensAsync(cancellationToken) == false)
                 {
@@ -178,26 +170,21 @@ namespace IdentityModel.Client
             {
                 try
                 {
+                    if (AccessToken.IsPresent())
+                    {
+                        return true;
+                    }
+
                     var response = await _tokenClient.RequestClientCredentialsAsync(_scope, _extra, cancellationToken: cancellationToken).ConfigureAwait(false);
 
-                    if (!response.IsError)
+                    if (response.IsError)
                     {
-                        _accessToken = response.AccessToken;
-
-#pragma warning disable 4014
-                        Task.Run(() =>
-                        {
-                            foreach (EventHandler<TokenRenewedEventArgs> del in TokenRenewed.GetInvocationList())
-                            {
-                                try
-                                {
-                                    del(this, new TokenRenewedEventArgs(response.AccessToken, response.ExpiresIn));
-                                }
-                                catch { }
-                            }
-                        }).ConfigureAwait(false);
-#pragma warning restore 4014
-
+                        _accessToken = new AccessToken(null, DateTime.MinValue);
+                    }
+                    else
+                    {
+                        _accessToken = new AccessToken(response.AccessToken, DateTime.Now.AddSeconds(response.ExpiresIn));
+                        TriggerEvents(response);
                         return true;
                     }
                 }
@@ -210,21 +197,21 @@ namespace IdentityModel.Client
             return false;
         }
 
-        private async Task<string> GetAccessTokenAsync(CancellationToken cancellationToken)
+        private void TriggerEvents(TokenResponse response)
         {
-            if (await _lock.WaitAsync(Timeout, cancellationToken).ConfigureAwait(false))
+#pragma warning disable 4014
+            Task.Run(() =>
             {
-                try
+                foreach (EventHandler<TokenRenewedEventArgs> del in TokenRenewed.GetInvocationList())
                 {
-                    return _accessToken;
+                    try
+                    {
+                        del(this, new TokenRenewedEventArgs(response.AccessToken, response.ExpiresIn));
+                    }
+                    catch { }
                 }
-                finally
-                {
-                    _lock.Release();
-                }
-            }
-
-            return null;
+            }).ConfigureAwait(false);
+#pragma warning restore 4014
         }
     }
 }
