@@ -38,8 +38,7 @@ namespace IdentityModel.Client
             catch { }
 
             // some HTTP error - try to parse body as JSON but allow non-JSON as well
-            if (httpResponse.StatusCode != HttpStatusCode.OK &&
-                httpResponse.StatusCode != HttpStatusCode.Created &&
+            if (httpResponse.IsSuccessStatusCode == false &&
                 httpResponse.StatusCode != HttpStatusCode.BadRequest)
             {
                 response.ErrorType = ResponseErrorType.Http;
