@@ -52,7 +52,7 @@ namespace IdentityModel.Client
                     catch { }
                 }
 
-                await response.Initialize();
+                await response.InitializeAsync();
                 return response;
             }
             
@@ -75,7 +75,7 @@ namespace IdentityModel.Client
                 response.Exception = ex;
             }
 
-            await response.Initialize();
+            await response.InitializeAsync();
             return response;
         }
 
@@ -100,9 +100,9 @@ namespace IdentityModel.Client
         /// Allows to initialize instance specific data.
         /// </summary>
         /// <returns></returns>
-        protected virtual Task Initialize()
+        protected virtual Task InitializeAsync()
         {
-            return Task.FromResult(0);
+            return Task.CompletedTask;
         }
 
         /// <summary>

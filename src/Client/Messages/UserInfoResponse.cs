@@ -6,6 +6,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net;
 using System.Security.Claims;
+using System.Threading.Tasks;
 
 namespace IdentityModel.Client
 {
@@ -15,20 +16,26 @@ namespace IdentityModel.Client
     /// <seealso cref="IdentityModel.Client.Response" />
     public class UserInfoResponse : Response
     {
+        protected override Task InitializeAsync()
+        {
+            if (!IsError)
+            {
+                Claims = Json.ToClaims();
+            }
+            else
+            {
+                Claims = Enumerable.Empty<Claim>();
+            }
+
+            return Task.CompletedTask;
+        }
+
         /// <summary>
         /// Gets the claims.
         /// </summary>
         /// <value>
         /// The claims.
         /// </value>
-        public IEnumerable<Claim> Claims
-        {
-            get
-            {
-                if (!IsError) return Json.ToClaims();
-
-                return Enumerable.Empty<Claim>();
-            }
-        }
+        public IEnumerable<Claim> Claims { get; private set; }
     }
 }
