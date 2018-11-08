@@ -13,32 +13,6 @@ namespace IdentityModel.Client
     public class TokenResponse : Response
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="TokenResponse"/> class.
-        /// </summary>
-        /// <param name="raw">The raw response data.</param>
-        public TokenResponse(string raw) : base(raw)
-        {
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="TokenResponse"/> class.
-        /// </summary>
-        /// <param name="exception">The exception.</param>
-        public TokenResponse(Exception exception) : base(exception)
-        {
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="TokenResponse"/> class.
-        /// </summary>
-        /// <param name="statusCode">The status code.</param>
-        /// <param name="reason">The reason.</param>
-        /// <param name="content">The response body</param>
-        public TokenResponse(HttpStatusCode statusCode, string reason, string content) : base(statusCode, reason, content)
-        {
-        }
-
-        /// <summary>
         /// Gets the access token.
         /// </summary>
         /// <value>

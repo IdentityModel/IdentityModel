@@ -42,16 +42,5 @@ namespace IdentityModel.UnitTests
 
             disco.IsError.Should().BeFalse();
         }
-
-        [Fact]
-        public async Task Old_initialization_should_work()
-        {
-            var client = new DiscoveryClient(_authority, _successHandler);
-            var cache = new DiscoveryCache(client);
-
-            var disco = await cache.GetAsync();
-
-            disco.IsError.Should().BeFalse();
-        }
     }
 }

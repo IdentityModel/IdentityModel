@@ -3,7 +3,6 @@
 
 using IdentityModel.Internal;
 using System;
-using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading;
@@ -43,23 +42,10 @@ namespace IdentityModel.Client
             }
             catch (Exception ex)
             {
-                return new DeviceAuthorizationResponse(ex);
+                return Response.FromException<DeviceAuthorizationResponse>(ex);
             }
 
-            string content = null;
-            if (response.Content != null)
-            {
-                content = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-            }
-
-            if (response.StatusCode == HttpStatusCode.OK || response.StatusCode == HttpStatusCode.BadRequest)
-            {
-                return new DeviceAuthorizationResponse(content);
-            }
-            else
-            {
-                return new DeviceAuthorizationResponse(response.StatusCode, response.ReasonPhrase, content);
-            }
+            return await Response.FromHttpResponseAsync<DeviceAuthorizationResponse>(response);
         }
     }
 }

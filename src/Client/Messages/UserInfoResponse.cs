@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Security.Claims;
 
@@ -20,32 +21,14 @@ namespace IdentityModel.Client
         /// <value>
         /// The claims.
         /// </value>
-        public IEnumerable<Claim> Claims { get; }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="UserInfoResponse"/> class.
-        /// </summary>
-        /// <param name="raw">The raw response data.</param>
-        public UserInfoResponse(string raw) : base(raw)
+        public IEnumerable<Claim> Claims
         {
-            if (!IsError) Claims = Json.ToClaims();
-        }
+            get
+            {
+                if (!IsError) return Json.ToClaims();
 
-        /// <summary>
-        /// Initializes a new instance of the <see cref="UserInfoResponse"/> class.
-        /// </summary>
-        /// <param name="exception">The exception.</param>
-        public UserInfoResponse(Exception exception) : base(exception)
-        {
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="UserInfoResponse"/> class.
-        /// </summary>
-        /// <param name="statusCode">The status code.</param>
-        /// <param name="reason">The reason.</param>
-        public UserInfoResponse(HttpStatusCode statusCode, string reason) : base(statusCode, reason)
-        {
+                return Enumerable.Empty<Claim>();
+            }
         }
     }
 }

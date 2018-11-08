@@ -31,7 +31,7 @@ namespace IdentityModel.UnitTests
 
             response.IsError.Should().BeFalse();
             response.ErrorType.Should().Be(ResponseErrorType.None);
-            response.HttpStatusCode.Should().Be(HttpStatusCode.OK);
+            response.HttpStatusCode.Should().Be(HttpStatusCode.Created);
 
             response.ClientId.Should().Be("s6BhdRkqt3");
             response.ClientSecret.Should().Be("ZJYCqe3GGRvdrudKyZS0XhGv_Z45DuKhCUk0gBR1vZk");

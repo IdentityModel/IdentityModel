@@ -55,15 +55,6 @@ namespace IdentityModel.Client
         }
 
         /// <summary>
-        /// Initialize instance of DiscoveryCache with passed DiscoveryClient.
-        /// </summary>
-        /// <param name="client">DiscoveryClient to use for obtaining discovery document.</param>
-        [Obsolete("Will be removed in a future version")]
-        public DiscoveryCache(DiscoveryClient client)
-            : this(client.Authority, new HttpClient(), client.Policy)
-        { }
-
-        /// <summary>
         /// Frequency to refresh discovery document. Defaults to 24 hours.
         /// </summary>
         public TimeSpan CacheDuration { get; set; } = TimeSpan.FromHours(24);

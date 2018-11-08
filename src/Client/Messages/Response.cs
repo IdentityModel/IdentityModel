@@ -5,103 +5,138 @@ using IdentityModel.Internal;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Net;
+using System.Net.Http;
+using System.Threading.Tasks;
 
 namespace IdentityModel.Client
 {
     /// <summary>
     /// A protocol response
     /// </summary>
-    public abstract class Response
+    public class Response
     {
         /// <summary>
-        /// Initializes a new instance of the <see cref="Response"/> class.
+        /// Initializes a protocol response from an HTTP response 
         /// </summary>
-        /// <param name="raw">The raw response data.</param>
-        protected Response(string raw)
+        /// <typeparam name="T">Specific protocol response type</typeparam>
+        /// <param name="httpResponse">The HTTP response.</param>
+        /// <returns></returns>
+        public static async Task<T> FromHttpResponseAsync<T>(HttpResponseMessage httpResponse) where T: Response, new()
         {
-            Raw = raw;
+            var response = new T
+            {
+                HttpResponse = httpResponse
+            };
 
+            // try to read content
+            string content = null;
             try
             {
-                Json = JObject.Parse(raw);
+                content = await httpResponse.Content.ReadAsStringAsync();
+                response.Raw = content;
+            }
+            catch { }
+
+            // some HTTP error - try to parse body as JSON but allow non-JSON as well
+            if (httpResponse.StatusCode != HttpStatusCode.OK &&
+                httpResponse.StatusCode != HttpStatusCode.Created &&
+                httpResponse.StatusCode != HttpStatusCode.BadRequest)
+            {
+                response.ErrorType = ResponseErrorType.Http;
+
+                if (content.IsPresent())
+                {
+                    try
+                    {
+                        response.Json = JObject.Parse(content);
+                    }
+                    catch { }
+                }
+
+                await response.Initialize();
+                return response;
+            }
+            
+            if (httpResponse.StatusCode == HttpStatusCode.BadRequest)
+            {
+                response.ErrorType = ResponseErrorType.Protocol;
+            }
+
+            // either 200 or 400 - both cases need a JSON response (if present), otherwise error
+            try
+            {
+                if (content.IsPresent())
+                {
+                    response.Json = JObject.Parse(content);
+                }
             }
             catch (Exception ex)
             {
-                ErrorType = ResponseErrorType.Exception;
-                Exception = ex;
-
-                return;
+                response.ErrorType = ResponseErrorType.Exception;
+                response.Exception = ex;
             }
 
-            if (Error.IsMissing())
-            {
-                HttpStatusCode = HttpStatusCode.OK;
-            }
-            else
-            {
-                HttpStatusCode = HttpStatusCode.BadRequest;
-                ErrorType = ResponseErrorType.Protocol;
-            }
+            await response.Initialize();
+            return response;
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="Response"/> class with an exception.
+        /// Initializes a protocol response from an exception
         /// </summary>
-        /// <param name="exception">The exception.</param>
-        protected Response(Exception exception)
+        /// <typeparam name="T"></typeparam>
+        /// <param name="ex">The ex.</param>
+        /// <returns></returns>
+        public static T FromException<T>(Exception ex) where T : Response, new()
         {
-            Exception = exception;
-            ErrorType = ResponseErrorType.Exception;
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="Response"/> class with an HTTP status code.
-        /// </summary>
-        /// <param name="statusCode">The status code.</param>
-        /// <param name="reason">The reason.</param>
-        /// <param name="content">The response body</param>
-        protected Response(HttpStatusCode statusCode, string reason, string content = null)
-        {
-            HttpStatusCode = statusCode;
-            HttpErrorReason = reason;
-
-            if (statusCode != HttpStatusCode.OK) ErrorType = ResponseErrorType.Http;
-
-            if (content != null)
+            var response = new T
             {
-                Raw = content;
+                Exception = ex,
+                ErrorType = ResponseErrorType.Exception
+            };
 
-                try
-                {
-                    Json = JObject.Parse(content);
-                }
-                catch { }
-            }
+            return response;
         }
 
         /// <summary>
-        /// Gets the raw protocol response.
+        /// Allows to initialize instance specific data.
+        /// </summary>
+        /// <returns></returns>
+        protected virtual Task Initialize()
+        {
+            return Task.FromResult(0);
+        }
+
+        /// <summary>
+        /// Gets the HTTP response.
+        /// </summary>
+        /// <value>
+        /// The HTTP response.
+        /// </value>
+        public HttpResponseMessage HttpResponse { get; protected set; }
+        
+        /// <summary>
+        /// Gets the raw protocol response (if present).
         /// </summary>
         /// <value>
         /// The raw.
         /// </value>
-        public string Raw { get; }
+        public string Raw { get; protected set; }
 
         /// <summary>
-        /// Gets the protocol response as JSON.
+        /// Gets the protocol response as JSON (if present).
         /// </summary>
         /// <value>
         /// The json.
         /// </value>
-        public JObject Json { get; }
+        public JObject Json { get; protected set; }
 
         /// <summary>
-        /// Gets or sets the exception.
+        /// Gets the exception (if present).
         /// </summary>
         /// <value>
         /// The exception.
         /// </value>
-        public Exception Exception { get; set; }
+        public Exception Exception { get; protected set; }
 
         /// <summary>
         /// Gets a value indicating whether an error occurred.
@@ -117,7 +152,7 @@ namespace IdentityModel.Client
         /// <value>
         /// The type of the error.
         /// </value>
-        public ResponseErrorType ErrorType { get; } = ResponseErrorType.None;
+        public ResponseErrorType ErrorType { get; protected set; } = ResponseErrorType.None;
 
         /// <summary>
         /// Gets the HTTP status code.
@@ -125,7 +160,7 @@ namespace IdentityModel.Client
         /// <value>
         /// The HTTP status code.
         /// </value>
-        public HttpStatusCode HttpStatusCode { get; }
+        public HttpStatusCode HttpStatusCode => HttpResponse.StatusCode;
 
         /// <summary>
         /// Gets the HTTP error reason.
@@ -133,7 +168,7 @@ namespace IdentityModel.Client
         /// <value>
         /// The HTTP error reason.
         /// </value>
-        public string HttpErrorReason { get; }
+        public string HttpErrorReason => HttpResponse.ReasonPhrase;
 
         /// <summary>
         /// Gets the error.

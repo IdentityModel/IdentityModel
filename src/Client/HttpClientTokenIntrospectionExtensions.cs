@@ -42,16 +42,10 @@ namespace IdentityModel.Client
             }
             catch (Exception ex)
             {
-                return new IntrospectionResponse(ex);
+                return Response.FromException<IntrospectionResponse>(ex);
             }
-            if (response.IsSuccessStatusCode)
-            {
-                return new IntrospectionResponse(await response.Content.ReadAsStringAsync().ConfigureAwait(false));
-            }
-            else
-            {
-                return new IntrospectionResponse(response.StatusCode, response.ReasonPhrase);
-            }
+
+            return await Response.FromHttpResponseAsync<IntrospectionResponse>(response);
         }
     }
 }

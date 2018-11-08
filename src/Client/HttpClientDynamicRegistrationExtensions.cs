@@ -47,18 +47,10 @@ namespace IdentityModel.Client
             }
             catch (Exception ex)
             {
-                return new RegistrationResponse(ex);
+                return Response.FromException<RegistrationResponse>(ex);
             }
 
-            if (response.StatusCode == HttpStatusCode.Created || response.StatusCode == HttpStatusCode.BadRequest)
-            {
-                var content = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-                return new RegistrationResponse(content);
-            }
-            else
-            {
-                return new RegistrationResponse(response.StatusCode, response.ReasonPhrase);
-            }
+            return await Response.FromHttpResponseAsync<RegistrationResponse>(response);
         }
     }
 }

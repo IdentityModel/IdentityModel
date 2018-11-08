@@ -38,16 +38,10 @@ namespace IdentityModel.Client
             }
             catch (Exception ex)
             {
-                return new UserInfoResponse(ex);
+                return Response.FromException<UserInfoResponse>(ex);
             }
 
-            if (!response.IsSuccessStatusCode)
-            {
-                return new UserInfoResponse(response.StatusCode, response.ReasonPhrase);
-            }
-
-            var content = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-            return new UserInfoResponse(content);
+            return await Response.FromHttpResponseAsync<UserInfoResponse>(response);
         }
     }
 }

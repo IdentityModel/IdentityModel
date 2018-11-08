@@ -40,25 +40,13 @@ namespace IdentityModel.Client
             try
             {
                 response = await client.SendAsync(httpRequest, cancellationToken).ConfigureAwait(false);
-
-                if (response.StatusCode == HttpStatusCode.OK)
-                {
-                    return new TokenRevocationResponse();
-                }
-                else if (response.StatusCode == HttpStatusCode.BadRequest)
-                {
-                    var content = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-                    return new TokenRevocationResponse(content);
-                }
-                else
-                {
-                    return new TokenRevocationResponse(response.StatusCode, response.ReasonPhrase);
-                }
             }
             catch (Exception ex)
             {
-                return new TokenRevocationResponse(ex);
+                return Response.FromException<TokenRevocationResponse>(ex);
             }
+
+            return await Response.FromHttpResponseAsync<TokenRevocationResponse>(response);
         }
     }
 }
