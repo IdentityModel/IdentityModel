@@ -16,12 +16,13 @@ namespace IdentityModel.Client
     public class ProtocolResponse
     {
         /// <summary>
-        /// Initializes a protocol response from an HTTP response 
+        /// Initializes a protocol response from an HTTP response
         /// </summary>
         /// <typeparam name="T">Specific protocol response type</typeparam>
         /// <param name="httpResponse">The HTTP response.</param>
+        /// <param name="initializationData">The initialization data.</param>
         /// <returns></returns>
-        public static async Task<T> FromHttpResponseAsync<T>(HttpResponseMessage httpResponse) where T: ProtocolResponse, new()
+        public static async Task<T> FromHttpResponseAsync<T>(HttpResponseMessage httpResponse, object initializationData = null) where T: ProtocolResponse, new()
         {
             var response = new T
             {
@@ -52,7 +53,7 @@ namespace IdentityModel.Client
                     catch { }
                 }
 
-                await response.InitializeAsync();
+                await response.InitializeAsync(initializationData);
                 return response;
             }
             
@@ -75,7 +76,7 @@ namespace IdentityModel.Client
                 response.Exception = ex;
             }
 
-            await response.InitializeAsync();
+            await response.InitializeAsync(initializationData);
             return response;
         }
 
@@ -84,13 +85,15 @@ namespace IdentityModel.Client
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="ex">The ex.</param>
+        /// <param name="errorMessage">The error message.</param>
         /// <returns></returns>
-        public static T FromException<T>(Exception ex) where T : ProtocolResponse, new()
+        public static T FromException<T>(Exception ex, string errorMessage = null) where T : ProtocolResponse, new()
         {
             var response = new T
             {
                 Exception = ex,
-                ErrorType = ResponseErrorType.Exception
+                ErrorType = ResponseErrorType.Exception,
+                ErrorMessage = errorMessage
             };
 
             return response;
@@ -99,8 +102,9 @@ namespace IdentityModel.Client
         /// <summary>
         /// Allows to initialize instance specific data.
         /// </summary>
+        /// <param name="initializationData">The initialization data.</param>
         /// <returns></returns>
-        protected virtual Task InitializeAsync()
+        protected virtual Task InitializeAsync(object initializationData = null)
         {
             return Task.CompletedTask;
         }
@@ -154,6 +158,14 @@ namespace IdentityModel.Client
         public ResponseErrorType ErrorType { get; protected set; } = ResponseErrorType.None;
 
         /// <summary>
+        /// Gets or sets an explicit error message.
+        /// </summary>
+        /// <value>
+        /// The type of the error.
+        /// </value>
+        protected string ErrorMessage { get; set; }
+
+        /// <summary>
         /// Gets the HTTP status code.
         /// </summary>
         /// <value>
@@ -179,11 +191,15 @@ namespace IdentityModel.Client
         {
             get
             {
+                if (ErrorMessage.IsPresent())
+                {
+                    return ErrorMessage;
+                }
                 if (ErrorType == ResponseErrorType.Http)
                 {
                     return HttpErrorReason;
                 }
-                else if (ErrorType == ResponseErrorType.Exception)
+                if (ErrorType == ResponseErrorType.Exception)
                 {
                     return Exception.Message;
                 }
