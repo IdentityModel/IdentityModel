@@ -6,7 +6,7 @@ namespace IdentityModel.Client
     /// <summary>
     /// Request for device authorization
     /// </summary>
-    public class DeviceAuthorizationRequest : Request
+    public class DeviceAuthorizationRequest : ProtocolRequest
     {
         /// <summary>
         /// Gets or sets the scope (optional).

@@ -3,7 +3,6 @@
 
 using IdentityModel.Internal;
 using System;
-using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading;
@@ -12,29 +11,25 @@ using System.Threading.Tasks;
 namespace IdentityModel.Client
 {
     /// <summary>
-    /// HttpClient extensions for OAuth token revocation
+    /// HttpClient extensions for OIDC userinfo
     /// </summary>
-    public static class HttpClientTokenRevocationExtensions
+    public static class HttpClientUserInfoExtensions
     {
         /// <summary>
-        /// Sends an OAuth token revocation request.
+        /// Sends a userinfo request.
         /// </summary>
         /// <param name="client">The client.</param>
         /// <param name="request">The request.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
-        public static async Task<TokenRevocationResponse> RevokeTokenAsync(this HttpMessageInvoker client, TokenRevocationRequest request, CancellationToken cancellationToken = default)
+        public static async Task<UserInfoResponse> GetUserInfoAsync(this HttpMessageInvoker client, UserInfoRequest request, CancellationToken cancellationToken = default)
         {
-            var httpRequest = new HttpRequestMessage(HttpMethod.Post, request.Address);
+            if (request.Token.IsMissing()) throw new ArgumentNullException(nameof(request.Token));
+
+            var httpRequest = new HttpRequestMessage(HttpMethod.Get, request.Address);
             httpRequest.Headers.Accept.Clear();
             httpRequest.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-
-            ClientCredentialsHelper.PopulateClientCredentials(request, httpRequest);
-
-            request.Parameters.AddRequired(OidcConstants.TokenIntrospectionRequest.Token, request.Token);
-            request.Parameters.AddOptional(OidcConstants.TokenIntrospectionRequest.TokenTypeHint, request.TokenTypeHint);
-
-            httpRequest.Content = new FormUrlEncodedContent(request.Parameters);
+            httpRequest.SetBearerToken(request.Token);
 
             HttpResponseMessage response;
             try
@@ -43,10 +38,10 @@ namespace IdentityModel.Client
             }
             catch (Exception ex)
             {
-                return Response.FromException<TokenRevocationResponse>(ex);
+                return ProtocolResponse.FromException<UserInfoResponse>(ex);
             }
 
-            return await Response.FromHttpResponseAsync<TokenRevocationResponse>(response);
+            return await ProtocolResponse.FromHttpResponseAsync<UserInfoResponse>(response);
         }
     }
 }

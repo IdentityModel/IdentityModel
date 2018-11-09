@@ -1,10 +1,8 @@
 ﻿// Copyright (c) Brock Allen & Dominick Baier. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
 
-using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
 using System.Security.Claims;
 using System.Threading.Tasks;
 
@@ -13,9 +11,13 @@ namespace IdentityModel.Client
     /// <summary>
     /// Models an OpenID Connect userinfo response
     /// </summary>
-    /// <seealso cref="IdentityModel.Client.Response" />
-    public class UserInfoResponse : Response
+    /// <seealso cref="IdentityModel.Client.ProtocolResponse" />
+    public class UserInfoResponse : ProtocolResponse
     {
+        /// <summary>
+        /// Allows to initialize instance specific data.
+        /// </summary>
+        /// <returns></returns>
         protected override Task InitializeAsync()
         {
             if (!IsError)

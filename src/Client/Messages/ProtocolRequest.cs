@@ -8,7 +8,7 @@ namespace IdentityModel.Client
     /// <summary>
     /// Models a base OAuth/OIDC request with client credentials
     /// </summary>
-    public class Request
+    public class ProtocolRequest
     {
         /// <summary>
         /// Gets or sets the address.

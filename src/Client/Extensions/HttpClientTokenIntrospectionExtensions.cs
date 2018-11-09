@@ -11,29 +11,29 @@ using System.Threading.Tasks;
 namespace IdentityModel.Client
 {
     /// <summary>
-    /// HttpClient extensions for OIDC userinfo
+    /// HttpClient extensions for OAuth token introspection
     /// </summary>
-    public static class HttpClientDeviceFlowExtensions
+    public static class HttpClientTokenIntrospectionExtensions
     {
         /// <summary>
-        /// Sends a userinfo request.
+        /// Sends an OAuth token introspection request.
         /// </summary>
         /// <param name="client">The client.</param>
         /// <param name="request">The request.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
-        public static async Task<DeviceAuthorizationResponse> RequestDeviceAuthorizationAsync(this HttpMessageInvoker client, DeviceAuthorizationRequest request, CancellationToken cancellationToken = default)
+        public static async Task<IntrospectionResponse> IntrospectTokenAsync(this HttpMessageInvoker client, TokenIntrospectionRequest request, CancellationToken cancellationToken = default)
         {
-            request.Parameters.AddRequired(OidcConstants.AuthorizeRequest.ClientId, request.ClientId);
-            request.Parameters.AddOptional(OidcConstants.AuthorizeRequest.Scope, request.Scope);
-
-            var httpRequest = new HttpRequestMessage(HttpMethod.Post, request.Address)
-            {
-                Content = new FormUrlEncodedContent(request.Parameters)
-            };
-
+            var httpRequest = new HttpRequestMessage(HttpMethod.Post, request.Address);
             httpRequest.Headers.Accept.Clear();
             httpRequest.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+
+            ClientCredentialsHelper.PopulateClientCredentials(request, httpRequest);
+
+            request.Parameters.AddRequired(OidcConstants.TokenIntrospectionRequest.Token, request.Token);
+            request.Parameters.AddOptional(OidcConstants.TokenIntrospectionRequest.TokenTypeHint, request.TokenTypeHint);
+
+            httpRequest.Content = new FormUrlEncodedContent(request.Parameters);
 
             HttpResponseMessage response;
             try
@@ -42,10 +42,10 @@ namespace IdentityModel.Client
             }
             catch (Exception ex)
             {
-                return Response.FromException<DeviceAuthorizationResponse>(ex);
+                return ProtocolResponse.FromException<IntrospectionResponse>(ex);
             }
 
-            return await Response.FromHttpResponseAsync<DeviceAuthorizationResponse>(response);
+            return await ProtocolResponse.FromHttpResponseAsync<IntrospectionResponse>(response);
         }
     }
 }

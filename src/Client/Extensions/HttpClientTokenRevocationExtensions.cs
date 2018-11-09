@@ -11,25 +11,29 @@ using System.Threading.Tasks;
 namespace IdentityModel.Client
 {
     /// <summary>
-    /// HttpClient extensions for OIDC userinfo
+    /// HttpClient extensions for OAuth token revocation
     /// </summary>
-    public static class HttpClientUserInfoExtensions
+    public static class HttpClientTokenRevocationExtensions
     {
         /// <summary>
-        /// Sends a userinfo request.
+        /// Sends an OAuth token revocation request.
         /// </summary>
         /// <param name="client">The client.</param>
         /// <param name="request">The request.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
-        public static async Task<UserInfoResponse> GetUserInfoAsync(this HttpMessageInvoker client, UserInfoRequest request, CancellationToken cancellationToken = default)
+        public static async Task<TokenRevocationResponse> RevokeTokenAsync(this HttpMessageInvoker client, TokenRevocationRequest request, CancellationToken cancellationToken = default)
         {
-            if (request.Token.IsMissing()) throw new ArgumentNullException(nameof(request.Token));
-
-            var httpRequest = new HttpRequestMessage(HttpMethod.Get, request.Address);
+            var httpRequest = new HttpRequestMessage(HttpMethod.Post, request.Address);
             httpRequest.Headers.Accept.Clear();
             httpRequest.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-            httpRequest.SetBearerToken(request.Token);
+
+            ClientCredentialsHelper.PopulateClientCredentials(request, httpRequest);
+
+            request.Parameters.AddRequired(OidcConstants.TokenIntrospectionRequest.Token, request.Token);
+            request.Parameters.AddOptional(OidcConstants.TokenIntrospectionRequest.TokenTypeHint, request.TokenTypeHint);
+
+            httpRequest.Content = new FormUrlEncodedContent(request.Parameters);
 
             HttpResponseMessage response;
             try
@@ -38,10 +42,10 @@ namespace IdentityModel.Client
             }
             catch (Exception ex)
             {
-                return Response.FromException<UserInfoResponse>(ex);
+                return ProtocolResponse.FromException<TokenRevocationResponse>(ex);
             }
 
-            return await Response.FromHttpResponseAsync<UserInfoResponse>(response);
+            return await ProtocolResponse.FromHttpResponseAsync<TokenRevocationResponse>(response);
         }
     }
 }

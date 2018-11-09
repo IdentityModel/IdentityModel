@@ -2,38 +2,42 @@
 // Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
 
 using IdentityModel.Internal;
+using Newtonsoft.Json;
 using System;
 using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace IdentityModel.Client
 {
     /// <summary>
-    /// HttpClient extensions for OAuth token introspection
+    /// HttpClient extensions for dynamic registration
     /// </summary>
-    public static class HttpClientTokenIntrospectionExtensions
+    public static class HttpClientDynamicRegistrationExtensions
     {
         /// <summary>
-        /// Sends an OAuth token introspection request.
+        /// Send a dynamic registration request.
         /// </summary>
         /// <param name="client">The client.</param>
         /// <param name="request">The request.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
-        public static async Task<IntrospectionResponse> IntrospectTokenAsync(this HttpMessageInvoker client, TokenIntrospectionRequest request, CancellationToken cancellationToken = default)
+        public static async Task<RegistrationResponse> RegisterClientAsync(this HttpMessageInvoker client, DynamicClientRegistrationRequest request, CancellationToken cancellationToken = default)
         {
-            var httpRequest = new HttpRequestMessage(HttpMethod.Post, request.Address);
+            var httpRequest = new HttpRequestMessage(HttpMethod.Post, request.Address)
+            {
+                Content = new StringContent(JsonConvert.SerializeObject(request.RegistrationRequest), Encoding.UTF8, "application/json")
+            };
+
             httpRequest.Headers.Accept.Clear();
             httpRequest.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
-            ClientCredentialsHelper.PopulateClientCredentials(request, httpRequest);
-
-            request.Parameters.AddRequired(OidcConstants.TokenIntrospectionRequest.Token, request.Token);
-            request.Parameters.AddOptional(OidcConstants.TokenIntrospectionRequest.TokenTypeHint, request.TokenTypeHint);
-
-            httpRequest.Content = new FormUrlEncodedContent(request.Parameters);
+            if (request.Token.IsPresent())
+            {
+                httpRequest.SetBearerToken(request.Token);
+            }
 
             HttpResponseMessage response;
             try
@@ -42,10 +46,10 @@ namespace IdentityModel.Client
             }
             catch (Exception ex)
             {
-                return Response.FromException<IntrospectionResponse>(ex);
+                return ProtocolResponse.FromException<RegistrationResponse>(ex);
             }
 
-            return await Response.FromHttpResponseAsync<IntrospectionResponse>(response);
+            return await ProtocolResponse.FromHttpResponseAsync<RegistrationResponse>(response);
         }
     }
 }

@@ -13,7 +13,7 @@ namespace IdentityModel.Client
     /// <summary>
     /// A protocol response
     /// </summary>
-    public class Response
+    public class ProtocolResponse
     {
         /// <summary>
         /// Initializes a protocol response from an HTTP response 
@@ -21,7 +21,7 @@ namespace IdentityModel.Client
         /// <typeparam name="T">Specific protocol response type</typeparam>
         /// <param name="httpResponse">The HTTP response.</param>
         /// <returns></returns>
-        public static async Task<T> FromHttpResponseAsync<T>(HttpResponseMessage httpResponse) where T: Response, new()
+        public static async Task<T> FromHttpResponseAsync<T>(HttpResponseMessage httpResponse) where T: ProtocolResponse, new()
         {
             var response = new T
             {
@@ -85,7 +85,7 @@ namespace IdentityModel.Client
         /// <typeparam name="T"></typeparam>
         /// <param name="ex">The ex.</param>
         /// <returns></returns>
-        public static T FromException<T>(Exception ex) where T : Response, new()
+        public static T FromException<T>(Exception ex) where T : ProtocolResponse, new()
         {
             var response = new T
             {

@@ -3,7 +3,6 @@
 
 using IdentityModel.Internal;
 using System;
-using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading;
@@ -131,10 +130,10 @@ namespace IdentityModel.Client
             }
             catch (Exception ex)
             {
-                return Response.FromException<TokenResponse>(ex);
+                return ProtocolResponse.FromException<TokenResponse>(ex);
             }
 
-            return await Response.FromHttpResponseAsync<TokenResponse>(response);
+            return await ProtocolResponse.FromHttpResponseAsync<TokenResponse>(response);
         }
     }
 }

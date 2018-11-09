@@ -6,8 +6,8 @@ namespace IdentityModel.Client
     /// <summary>
     /// Request for OAuth token revocation
     /// </summary>
-    /// <seealso cref="IdentityModel.Client.Request" />
-    public class TokenRevocationRequest : Request
+    /// <seealso cref="IdentityModel.Client.ProtocolRequest" />
+    public class TokenRevocationRequest : ProtocolRequest
     {
         /// <summary>
         /// Gets or sets the token.

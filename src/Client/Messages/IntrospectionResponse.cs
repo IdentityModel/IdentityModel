@@ -5,7 +5,6 @@ using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Net;
 using System.Security.Claims;
 
 namespace IdentityModel.Client
@@ -13,8 +12,8 @@ namespace IdentityModel.Client
     /// <summary>
     /// Models an OAuth 2.0 introspection response
     /// </summary>
-    /// <seealso cref="IdentityModel.Client.Response" />
-    public class IntrospectionResponse : Response
+    /// <seealso cref="IdentityModel.Client.ProtocolResponse" />
+    public class IntrospectionResponse : ProtocolResponse
     {
         /// <summary>
         /// Gets a value indicating whether the token is active.

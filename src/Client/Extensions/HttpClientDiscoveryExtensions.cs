@@ -48,7 +48,7 @@ namespace IdentityModel.Client
                 address = client.BaseAddress.AbsoluteUri;
             }
 
-            var parsed = DiscoveryEndpointHelper.ParseUrl(address);
+            var parsed = DiscoveryEndpoint.ParseUrl(address);
             var authority = parsed.Authority;
             var url = parsed.Url;
 

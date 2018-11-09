@@ -3,7 +3,6 @@
 
 using IdentityModel.Internal;
 using System.Linq;
-using System.Text.Encodings.Web;
 
 namespace IdentityModel.Client
 {
