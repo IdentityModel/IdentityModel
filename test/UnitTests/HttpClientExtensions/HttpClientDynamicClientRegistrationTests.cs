@@ -26,7 +26,7 @@ namespace IdentityModel.UnitTests
             var response = await client.RegisterClientAsync(new DynamicClientRegistrationRequest
             {
                 Address = Endpoint,
-                RegistrationRequest = new RegistrationRequest()
+                RegistrationRequest = new DynamicClientRegistrationDocument()
             });
 
             response.IsError.Should().BeFalse();
@@ -56,7 +56,7 @@ namespace IdentityModel.UnitTests
             var response = await client.RegisterClientAsync(new DynamicClientRegistrationRequest
             {
                 Address = Endpoint,
-                RegistrationRequest = new RegistrationRequest()
+                RegistrationRequest = new DynamicClientRegistrationDocument()
             });
 
             response.IsError.Should().BeTrue();
@@ -74,7 +74,7 @@ namespace IdentityModel.UnitTests
             var response = await client.RegisterClientAsync(new DynamicClientRegistrationRequest
             {
                 Address = Endpoint,
-                RegistrationRequest = new RegistrationRequest()
+                RegistrationRequest = new DynamicClientRegistrationDocument()
             });
 
             response.IsError.Should().BeTrue();
@@ -92,7 +92,7 @@ namespace IdentityModel.UnitTests
             var response = await client.RegisterClientAsync(new DynamicClientRegistrationRequest
             {
                 Address = Endpoint,
-                RegistrationRequest = new RegistrationRequest()
+                RegistrationRequest = new DynamicClientRegistrationDocument()
             });
 
             response.IsError.Should().BeTrue();
@@ -111,7 +111,7 @@ namespace IdentityModel.UnitTests
             var response = await client.RegisterClientAsync(new DynamicClientRegistrationRequest
             {
                 Address = Endpoint,
-                RegistrationRequest = new RegistrationRequest()
+                RegistrationRequest = new DynamicClientRegistrationDocument()
             });
 
             response.IsError.Should().BeTrue();

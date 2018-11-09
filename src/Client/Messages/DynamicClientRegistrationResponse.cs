@@ -9,7 +9,7 @@ namespace IdentityModel.Client
     /// Models an OpenID Connect dynamic client registration response
     /// </summary>
     /// <seealso cref="IdentityModel.Client.ProtocolResponse" />
-    public class RegistrationResponse : ProtocolResponse
+    public class DynamicClientRegistrationResponse : ProtocolResponse
     {
         public string ErrorDescription         => Json.TryGetString("error_description");
         public string ClientId                 => Json.TryGetString(OidcConstants.RegistrationResponse.ClientId);

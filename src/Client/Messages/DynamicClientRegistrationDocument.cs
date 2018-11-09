@@ -13,7 +13,7 @@ namespace IdentityModel.Client
     /// <summary>
     /// Models an OpenID Connect dynamic client registration request
     /// </summary>
-    public class RegistrationRequest
+    public class DynamicClientRegistrationDocument
     {
         [JsonProperty(PropertyName = OidcConstants.ClientMetadata.RedirectUris, DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore, Required = Required.Default)]
         public ICollection<string> RedirectUris { get; set; } = new HashSet<string>();

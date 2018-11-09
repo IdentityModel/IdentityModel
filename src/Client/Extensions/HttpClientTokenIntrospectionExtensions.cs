@@ -22,7 +22,7 @@ namespace IdentityModel.Client
         /// <param name="request">The request.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
-        public static async Task<IntrospectionResponse> IntrospectTokenAsync(this HttpMessageInvoker client, TokenIntrospectionRequest request, CancellationToken cancellationToken = default)
+        public static async Task<TokenIntrospectionResponse> IntrospectTokenAsync(this HttpMessageInvoker client, TokenIntrospectionRequest request, CancellationToken cancellationToken = default)
         {
             var httpRequest = new HttpRequestMessage(HttpMethod.Post, request.Address);
             httpRequest.Headers.Accept.Clear();
@@ -42,10 +42,10 @@ namespace IdentityModel.Client
             }
             catch (Exception ex)
             {
-                return ProtocolResponse.FromException<IntrospectionResponse>(ex);
+                return ProtocolResponse.FromException<TokenIntrospectionResponse>(ex);
             }
 
-            return await ProtocolResponse.FromHttpResponseAsync<IntrospectionResponse>(response);
+            return await ProtocolResponse.FromHttpResponseAsync<TokenIntrospectionResponse>(response);
         }
     }
 }

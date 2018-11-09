@@ -14,7 +14,7 @@ namespace IdentityModel.Client
     public class DiscoveryCache : IDiscoveryCache
     {
         private DateTime _nextReload = DateTime.MinValue;
-        private AsyncLazy<DiscoveryResponse> _lazyResponse;
+        private AsyncLazy<DiscoveryDocumentResponse> _lazyResponse;
 
         private readonly DiscoveryPolicy _policy;
         private readonly Func<HttpClient> _getHttpClient;
@@ -63,7 +63,7 @@ namespace IdentityModel.Client
         /// Get the DiscoveryResponse either from cache or from discovery endpoint.
         /// </summary>
         /// <returns></returns>
-        public Task<DiscoveryResponse> GetAsync()
+        public Task<DiscoveryDocumentResponse> GetAsync()
         {
             if (_nextReload <= DateTime.UtcNow)
             {
@@ -78,10 +78,10 @@ namespace IdentityModel.Client
         /// </summary>
         public void Refresh()
         {
-            _lazyResponse = new AsyncLazy<DiscoveryResponse>(GetResponseAsync);
+            _lazyResponse = new AsyncLazy<DiscoveryDocumentResponse>(GetResponseAsync);
         }
 
-        private async Task<DiscoveryResponse> GetResponseAsync()
+        private async Task<DiscoveryDocumentResponse> GetResponseAsync()
         {
             var result = await _getHttpClient().GetDiscoveryDocumentAsync(new DiscoveryDocumentRequest
             {

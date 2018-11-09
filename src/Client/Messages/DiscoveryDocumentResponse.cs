@@ -16,7 +16,7 @@ namespace IdentityModel.Client
     /// <summary>
     /// Models the response from an OpenID Connect discovery endpoint
     /// </summary>
-    public class DiscoveryResponse : ProtocolResponse
+    public class DiscoveryDocumentResponse : ProtocolResponse
     {
         public DiscoveryPolicy Policy { get; set; }
 

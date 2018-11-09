@@ -22,7 +22,7 @@ namespace IdentityModel.Client
         /// <param name="address">The address.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
-        public static async Task<DiscoveryResponse> GetDiscoveryDocumentAsync(this HttpClient client, string address, CancellationToken cancellationToken = default)
+        public static async Task<DiscoveryDocumentResponse> GetDiscoveryDocumentAsync(this HttpClient client, string address, CancellationToken cancellationToken = default)
         {
             return await client.GetDiscoveryDocumentAsync(new DiscoveryDocumentRequest { Address = address }, cancellationToken);
         }
@@ -34,7 +34,7 @@ namespace IdentityModel.Client
         /// <param name="request">The request.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
-        public static async Task<DiscoveryResponse> GetDiscoveryDocumentAsync(this HttpClient client, DiscoveryDocumentRequest request = null, CancellationToken cancellationToken = default)
+        public static async Task<DiscoveryDocumentResponse> GetDiscoveryDocumentAsync(this HttpClient client, DiscoveryDocumentRequest request = null, CancellationToken cancellationToken = default)
         {
             if (request == null) request = new DiscoveryDocumentRequest();
 
@@ -61,7 +61,7 @@ namespace IdentityModel.Client
 
             if (!DiscoveryEndpoint.IsSecureScheme(new Uri(url), request.Policy))
             {
-                return ProtocolResponse.FromException<DiscoveryResponse>(new InvalidOperationException("HTTPS required"), $"Error connecting to {url}. HTTPS required.");
+                return ProtocolResponse.FromException<DiscoveryDocumentResponse>(new InvalidOperationException("HTTPS required"), $"Error connecting to {url}. HTTPS required.");
             }
 
             try
@@ -78,11 +78,11 @@ namespace IdentityModel.Client
 
                 if (!response.IsSuccessStatusCode)
                 {
-                    return await ProtocolResponse.FromHttpResponseAsync<DiscoveryResponse>(response, $"Error connecting to {url}: {response.ReasonPhrase}");
+                    return await ProtocolResponse.FromHttpResponseAsync<DiscoveryDocumentResponse>(response, $"Error connecting to {url}: {response.ReasonPhrase}");
                 }
 
                 //var disco = new DiscoveryResponse(responseContent, request.Policy);
-                var disco = await ProtocolResponse.FromHttpResponseAsync<DiscoveryResponse>(response, request.Policy);
+                var disco = await ProtocolResponse.FromHttpResponseAsync<DiscoveryDocumentResponse>(response, request.Policy);
 
                 if (disco.IsError)
                 {
@@ -103,7 +103,7 @@ namespace IdentityModel.Client
 
                         if (!response.IsSuccessStatusCode)
                         {
-                            return await ProtocolResponse.FromHttpResponseAsync<DiscoveryResponse>(response, $"Error connecting to {jwkUrl}: {response.ReasonPhrase}");
+                            return await ProtocolResponse.FromHttpResponseAsync<DiscoveryDocumentResponse>(response, $"Error connecting to {jwkUrl}: {response.ReasonPhrase}");
                         }
 
                         disco.KeySet = new JsonWebKeySet(responseContent);
@@ -113,12 +113,12 @@ namespace IdentityModel.Client
                 }
                 catch (Exception ex)
                 {
-                    return ProtocolResponse.FromException<DiscoveryResponse>(ex, $"Error connecting to {jwkUrl}. {ex.Message}.");
+                    return ProtocolResponse.FromException<DiscoveryDocumentResponse>(ex, $"Error connecting to {jwkUrl}. {ex.Message}.");
                 }
             }
             catch (Exception ex)
             {
-                return ProtocolResponse.FromException<DiscoveryResponse>(ex, $"Error connecting to {url}. {ex.Message}.");
+                return ProtocolResponse.FromException<DiscoveryDocumentResponse>(ex, $"Error connecting to {url}. {ex.Message}.");
             }
         }
     }
