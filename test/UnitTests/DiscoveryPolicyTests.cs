@@ -119,7 +119,7 @@ namespace IdentityModel.UnitTests
             disco.Json.Should().BeNull();
             disco.ErrorType.Should().Be(ResponseErrorType.Exception);
             disco.Error.Should().StartWith("Error connecting to");
-            disco.Error.Should().EndWith("HTTPS required");
+            disco.Error.Should().EndWith("HTTPS required.");
         }
 
         [Fact]

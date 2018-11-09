@@ -94,7 +94,7 @@ namespace IdentityModel.UnitTests
             disco.ErrorType.Should().Be(ResponseErrorType.Http);
             disco.Error.Should().StartWith("Error connecting to");
             disco.Error.Should().EndWith("not found");
-            disco.StatusCode.Should().Be(HttpStatusCode.NotFound);
+            disco.HttpStatusCode.Should().Be(HttpStatusCode.NotFound);
         }
 
         [Fact]
@@ -130,7 +130,7 @@ namespace IdentityModel.UnitTests
             disco.IsError.Should().BeTrue();
             disco.ErrorType.Should().Be(ResponseErrorType.Exception);
             disco.Error.Should().StartWith("Error connecting to");
-            disco.Error.Should().EndWith("error");
+            disco.Error.Should().EndWith("error.");
         }
 
         [Fact]
@@ -191,7 +191,7 @@ namespace IdentityModel.UnitTests
 
             disco.IsError.Should().BeTrue();
             disco.ErrorType.Should().Be(ResponseErrorType.Http);
-            disco.StatusCode.Should().Be(HttpStatusCode.InternalServerError);
+            disco.HttpStatusCode.Should().Be(HttpStatusCode.InternalServerError);
             disco.Error.Should().Contain("Internal Server Error");
             disco.Raw.Should().Be("not_json");
             disco.Json.Should().BeNull();
@@ -217,7 +217,7 @@ namespace IdentityModel.UnitTests
 
             disco.IsError.Should().BeTrue();
             disco.ErrorType.Should().Be(ResponseErrorType.Http);
-            disco.StatusCode.Should().Be(HttpStatusCode.InternalServerError);
+            disco.HttpStatusCode.Should().Be(HttpStatusCode.InternalServerError);
             disco.Error.Should().Contain("Internal Server Error");
 
             disco.Json.TryGetString("foo").Should().Be("foo");
@@ -261,7 +261,7 @@ namespace IdentityModel.UnitTests
 
             disco.IsError.Should().BeTrue();
             disco.ErrorType.Should().Be(ResponseErrorType.Http);
-            disco.StatusCode.Should().Be(HttpStatusCode.InternalServerError);
+            disco.HttpStatusCode.Should().Be(HttpStatusCode.InternalServerError);
             disco.Error.Should().Contain("Internal Server Error");
             disco.Raw.Should().Be("not_json");
             disco.Json.Should().BeNull();
@@ -310,7 +310,7 @@ namespace IdentityModel.UnitTests
 
             disco.IsError.Should().BeTrue();
             disco.ErrorType.Should().Be(ResponseErrorType.Http);
-            disco.StatusCode.Should().Be(HttpStatusCode.InternalServerError);
+            disco.HttpStatusCode.Should().Be(HttpStatusCode.InternalServerError);
             disco.Error.Should().Contain("Internal Server Error");
 
             disco.Json.TryGetString("foo").Should().Be("foo");

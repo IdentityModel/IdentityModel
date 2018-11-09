@@ -1,13 +1,13 @@
 ﻿// Copyright (c) Brock Allen & Dominick Baier. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
 
+using IdentityModel.Internal;
 using IdentityModel.Jwk;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
-using System.Net;
-using IdentityModel.Internal;
 using System.Linq;
+using System.Threading.Tasks;
 
 #pragma warning disable 1591
 
@@ -16,63 +16,32 @@ namespace IdentityModel.Client
     /// <summary>
     /// Models the response from an OpenID Connect discovery endpoint
     /// </summary>
-    public class DiscoveryResponse
+    public class DiscoveryResponse : ProtocolResponse
     {
-        /// <summary>
-        /// Gets the raw response.
-        /// </summary>
-        /// <value>
-        /// The raw.
-        /// </value>
-        public string Raw { get; }
+        public DiscoveryPolicy Policy { get; set; }
 
-        /// <summary>
-        /// Gets the response as a JObject.
-        /// </summary>
-        /// <value>
-        /// The json.
-        /// </value>
-        public JObject Json { get; }
+        protected override Task InitializeAsync(object initializationData = null)
+        {
+            if (!HttpResponse.IsSuccessStatusCode)
+            {
+                ErrorMessage = initializationData as string;
+                return Task.CompletedTask;
+            }
 
-        /// <summary>
-        /// Gets a value indicating whether an error occurred.
-        /// </summary>
-        /// <value>
-        ///   <c>true</c> if an error occurred; otherwise, <c>false</c>.
-        /// </value>
-        public bool IsError { get; } = false;
+            Policy = initializationData as DiscoveryPolicy ?? new DiscoveryPolicy();
 
-        /// <summary>
-        /// Gets the status code.
-        /// </summary>
-        /// <value>
-        /// The status code.
-        /// </value>
-        public HttpStatusCode StatusCode { get; }
+            var validationError = Validate(Policy);
 
-        /// <summary>
-        /// Gets the error.
-        /// </summary>
-        /// <value>
-        /// The error.
-        /// </value>
-        public string Error { get; }
+            if (validationError.IsPresent())
+            {
+                Json = null;
 
-        /// <summary>
-        /// Gets or sets the type of the error.
-        /// </summary>
-        /// <value>
-        /// The type of the error.
-        /// </value>
-        public ResponseErrorType ErrorType { get; set; } = ResponseErrorType.None;
+                ErrorType = ResponseErrorType.PolicyViolation;
+                ErrorMessage = validationError;
+            }
 
-        /// <summary>
-        /// Gets the exception.
-        /// </summary>
-        /// <value>
-        /// The exception.
-        /// </value>
-        public Exception Exception { get; }
+            return Task.CompletedTask;
+        }
 
         /// <summary>
         /// Gets or sets the JSON web key set.
@@ -81,94 +50,7 @@ namespace IdentityModel.Client
         /// The key set.
         /// </value>
         public JsonWebKeySet KeySet { get; set; }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="DiscoveryResponse"/> class.
-        /// </summary>
-        /// <param name="raw">The raw response.</param>
-        /// <param name="policy">The security policy.</param>
-        public DiscoveryResponse(string raw, DiscoveryPolicy policy = null)
-        {
-            if (policy == null) policy = new DiscoveryPolicy();
-
-            IsError = false;
-            StatusCode = HttpStatusCode.OK;
-            Raw = raw;
-
-            try
-            {
-                Json = JObject.Parse(raw);
-                var validationError = Validate(policy);
-
-                if (validationError.IsPresent())
-                {
-                    IsError = true;
-                    Json = null;
-
-                    ErrorType = ResponseErrorType.PolicyViolation;
-                    Error = validationError;
-                }
-            }
-            catch (Exception ex)
-            {
-                IsError = true;
-
-                ErrorType = ResponseErrorType.Exception;
-                Error = ex.Message;
-                Exception = ex;
-            }
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="DiscoveryResponse"/> class.
-        /// </summary>
-        /// <param name="statusCode">The status code.</param>
-        /// <param name="reason">The reason.</param>
-        public DiscoveryResponse(HttpStatusCode statusCode, string reason)
-        {
-            IsError = true;
-
-            ErrorType = ResponseErrorType.Http;
-            StatusCode = statusCode;
-            Error = reason;
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="DiscoveryResponse" /> class.
-        /// </summary>
-        /// <param name="statusCode">The status code.</param>
-        /// <param name="reason">The reason.</param>
-        /// <param name="content">The content.</param>
-        public DiscoveryResponse(HttpStatusCode statusCode, string reason, string content)
-        {
-            IsError = true;
-
-            ErrorType = ResponseErrorType.Http;
-            StatusCode = statusCode;
-            Error = reason;
-            Raw = content;
-
-            try
-            {
-                Json = JObject.Parse(content);
-            }
-            catch { }
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="DiscoveryResponse"/> class.
-        /// </summary>
-        /// <param name="exception">The exception.</param>
-        /// <param name="errorMessage">The error message.</param>
-        public DiscoveryResponse(Exception exception, string errorMessage)
-        {
-            IsError = true;
-
-            ErrorType = ResponseErrorType.Exception;
-            Exception = exception;
-            Error = $"{errorMessage}: {exception.Message}";
-        }
-
+        
         // strongly typed
         public string Issuer => TryGetString(OidcConstants.Discovery.Issuer);
         public string AuthorizeEndpoint => TryGetString(OidcConstants.Discovery.AuthorizationEndpoint);

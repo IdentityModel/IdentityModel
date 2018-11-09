@@ -61,7 +61,7 @@ namespace IdentityModel.Client
 
             if (!DiscoveryEndpoint.IsSecureScheme(new Uri(url), request.Policy))
             {
-                return new DiscoveryResponse(new InvalidOperationException("HTTPS required"), $"Error connecting to {url}");
+                return ProtocolResponse.FromException<DiscoveryResponse>(new InvalidOperationException("HTTPS required"), $"Error connecting to {url}. HTTPS required.");
             }
 
             try
@@ -78,10 +78,12 @@ namespace IdentityModel.Client
 
                 if (!response.IsSuccessStatusCode)
                 {
-                    return new DiscoveryResponse(response.StatusCode, $"Error connecting to {url}: {response.ReasonPhrase}", responseContent);
+                    return await ProtocolResponse.FromHttpResponseAsync<DiscoveryResponse>(response, $"Error connecting to {url}: {response.ReasonPhrase}");
                 }
 
-                var disco = new DiscoveryResponse(responseContent, request.Policy);
+                //var disco = new DiscoveryResponse(responseContent, request.Policy);
+                var disco = await ProtocolResponse.FromHttpResponseAsync<DiscoveryResponse>(response, request.Policy);
+
                 if (disco.IsError)
                 {
                     return disco;
@@ -101,7 +103,7 @@ namespace IdentityModel.Client
 
                         if (!response.IsSuccessStatusCode)
                         {
-                            return new DiscoveryResponse(response.StatusCode, $"Error connecting to {jwkUrl}: {response.ReasonPhrase}", responseContent);
+                            return await ProtocolResponse.FromHttpResponseAsync<DiscoveryResponse>(response, $"Error connecting to {jwkUrl}: {response.ReasonPhrase}");
                         }
 
                         disco.KeySet = new JsonWebKeySet(responseContent);
@@ -111,12 +113,12 @@ namespace IdentityModel.Client
                 }
                 catch (Exception ex)
                 {
-                    return new DiscoveryResponse(ex, $"Error connecting to {jwkUrl}");
+                    return ProtocolResponse.FromException<DiscoveryResponse>(ex, $"Error connecting to {jwkUrl}. {ex.Message}.");
                 }
             }
             catch (Exception ex)
             {
-                return new DiscoveryResponse(ex, $"Error connecting to {url}");
+                return ProtocolResponse.FromException<DiscoveryResponse>(ex, $"Error connecting to {url}. {ex.Message}.");
             }
         }
     }
