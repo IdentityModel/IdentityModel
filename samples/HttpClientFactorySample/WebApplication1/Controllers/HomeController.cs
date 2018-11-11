@@ -63,7 +63,9 @@ namespace WebApplication1.Controllers
 
         public async Task<string> Typed([FromServices] TokenClient tokenClient)
         {
-            return await tokenClient.GetToken();
+            var response = await tokenClient.RequestClientCredentialsTokenAsync();
+
+            return response.AccessToken;
         }
     }
 }
