@@ -1,5 +1,10 @@
-﻿namespace IdentityModel.Client
+﻿using System.Collections.Generic;
+
+namespace IdentityModel.Client
 {
+    /// <summary>
+    /// Options for TokenClient
+    /// </summary>
     public class TokenClientOptions
     {
         /// <summary>
@@ -49,5 +54,13 @@
         /// The basic authentication header style.
         /// </value>
         public BasicAuthenticationHeaderStyle AuthorizationHeaderStyle { get; set; } = BasicAuthenticationHeaderStyle.Rfc6749;
+
+        /// <summary>
+        /// Gets or sets additional request parameters (must not conflict with locally set parameters)
+        /// </summary>
+        /// <value>
+        /// The parameters.
+        /// </value>
+        public IDictionary<string, string> Parameters { get; set; } = new Dictionary<string, string>();
     }
 }

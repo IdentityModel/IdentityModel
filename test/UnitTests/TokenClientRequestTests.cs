@@ -269,6 +269,41 @@ namespace UnitTests
         }
 
         [Fact]
+        public async Task Mixing_local_and_global_custom_parameters_should_have_correct_format()
+        {
+            var tokenClient = new TokenClient(_client, new TokenClientOptions { Parameters = { { "global", "global" } } });
+
+            var parameters = new Dictionary<string, string>
+            {
+                { "client_id", "custom" },
+                { "client_secret", "custom" },
+                { "custom", "custom" }
+            };
+
+            var response = await tokenClient.RequestTokenAsync(grantType: "test", parameters: parameters);
+
+            var request = _handler.Request;
+
+            request.Headers.Authorization.Should().BeNull();
+
+            var fields = QueryHelpers.ParseQuery(_handler.Body);
+            fields.TryGetValue("grant_type", out var grant_type).Should().BeTrue();
+            grant_type.First().Should().Be("test");
+
+            fields.TryGetValue("client_id", out var client_id).Should().BeTrue();
+            client_id.First().Should().Be("custom");
+
+            fields.TryGetValue("client_secret", out var client_secret).Should().BeTrue();
+            client_secret.First().Should().Be("custom");
+
+            fields.TryGetValue("custom", out var custom).Should().BeTrue();
+            custom.First().Should().Be("custom");
+
+            fields.TryGetValue("global", out var global).Should().BeTrue();
+            global.First().Should().Be("global");
+        }
+
+        [Fact]
         public async Task Setting_basic_authentication_style_should_send_basic_authentication_header()
         {
             var tokenClient = new TokenClient(_client, new TokenClientOptions
