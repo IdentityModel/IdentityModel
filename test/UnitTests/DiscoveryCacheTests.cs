@@ -36,7 +36,7 @@ namespace IdentityModel.UnitTests
         public async Task New_initialization_should_work()
         {
             var client = new HttpClient(_successHandler);
-            var cache = new DiscoveryCache(_authority, client);
+            var cache = new DiscoveryCache(_authority, () => client);
 
             var disco = await cache.GetAsync();
 

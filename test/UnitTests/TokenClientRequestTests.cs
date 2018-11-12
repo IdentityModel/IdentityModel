@@ -12,7 +12,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using Xunit;
 
-namespace UnitTests
+namespace IdentityModel.UnitTests
 {
     public class TokenClientRequestTests
     {
