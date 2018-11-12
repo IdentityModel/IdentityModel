@@ -24,21 +24,12 @@ namespace IdentityModel.Client
         /// Initialize instance of DiscoveryCache with passed authority.
         /// </summary>
         /// <param name="authority">Base address or discovery document endpoint.</param>
-        /// <param name="client">The client.</param>
         /// <param name="policy">The policy.</param>
-        public DiscoveryCache(string authority, HttpClient client = null, DiscoveryPolicy policy = null)
+        public DiscoveryCache(string authority, DiscoveryPolicy policy = null)
         {
             _authority = authority;
             _policy = policy ?? new DiscoveryPolicy();
-
-            if (client == null)
-            {
-                _getHttpClient = () => new HttpClient();
-            }
-            else
-            {
-                _getHttpClient = () => client;
-            }
+            _getHttpClient = () => new HttpClient();
         }
 
         /// <summary>
