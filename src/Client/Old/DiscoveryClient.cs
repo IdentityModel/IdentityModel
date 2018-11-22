@@ -13,6 +13,7 @@ namespace IdentityModel.Client
     /// <summary>
     /// Client for retrieving OpenID Connect discovery documents
     /// </summary>
+    [Obsolete("This type will be deprecated or changed in a future version. It is recommended that you switch to the new extension methods for HttpClient. They give you much more control over the HttpClient lifetime and configuration. See the docs here: https://identitymodel.readthedocs.io")]
     public class DiscoveryClient : IDisposable
     {
         private bool _disposed;
