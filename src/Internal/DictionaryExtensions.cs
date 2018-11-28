@@ -15,14 +15,31 @@ namespace IdentityModel.Internal
 
         public static void AddOptional(this IDictionary<string, string> dictionary, string key, string value)
         {
-            if (value.IsPresent()) dictionary.Add(key, value);
+            if (value.IsPresent())
+            {
+                if (dictionary.ContainsKey(key))
+                {
+                    throw new InvalidOperationException($"Duplicate parameter: {key}");
+                }
+                else
+                {
+                    dictionary.Add(key, value);
+                }
+            }
         }
 
         public static void AddRequired(this IDictionary<string, string> dictionary, string key, string value, bool allowEmpty = false)
         {
             if (value.IsPresent())
             {
-                dictionary.Add(key, value);
+                if (dictionary.ContainsKey(key))
+                {
+                    throw new InvalidOperationException($"Duplicate parameter: {key}");
+                }
+                else
+                {
+                    dictionary.Add(key, value);
+                }
             }
             else
             {
