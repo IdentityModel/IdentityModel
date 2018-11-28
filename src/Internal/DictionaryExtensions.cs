@@ -8,11 +8,6 @@ namespace IdentityModel.Internal
 {
     internal static class DictionaryExtensions
     {
-        public static void AddIfPresent(this IDictionary<string, string> dictionary, string key, string value)
-        {
-            if (value.IsPresent()) dictionary.Add(key, value);
-        }
-
         public static void AddOptional(this IDictionary<string, string> dictionary, string key, string value)
         {
             if (value.IsPresent())

@@ -69,20 +69,20 @@ namespace IdentityModel.Client
                 { OidcConstants.AuthorizeRequest.ResponseType, responseType }
             };
 
-            values.AddIfPresent(OidcConstants.AuthorizeRequest.Scope, scope);
-            values.AddIfPresent(OidcConstants.AuthorizeRequest.RedirectUri, redirectUri);
-            values.AddIfPresent(OidcConstants.AuthorizeRequest.State, state);
-            values.AddIfPresent(OidcConstants.AuthorizeRequest.Nonce, nonce);
-            values.AddIfPresent(OidcConstants.AuthorizeRequest.LoginHint, loginHint);
-            values.AddIfPresent(OidcConstants.AuthorizeRequest.AcrValues, acrValues);
-            values.AddIfPresent(OidcConstants.AuthorizeRequest.Prompt, prompt);
-            values.AddIfPresent(OidcConstants.AuthorizeRequest.ResponseMode, responseMode);
-            values.AddIfPresent(OidcConstants.AuthorizeRequest.CodeChallenge, codeChallenge);
-            values.AddIfPresent(OidcConstants.AuthorizeRequest.CodeChallengeMethod, codeChallengeMethod);
-            values.AddIfPresent(OidcConstants.AuthorizeRequest.Display, display);
-            values.AddIfPresent(OidcConstants.AuthorizeRequest.MaxAge, maxAge?.ToString());
-            values.AddIfPresent(OidcConstants.AuthorizeRequest.UiLocales, uiLocales);
-            values.AddIfPresent(OidcConstants.AuthorizeRequest.IdTokenHint, idTokenHint);
+            values.AddOptional(OidcConstants.AuthorizeRequest.Scope, scope);
+            values.AddOptional(OidcConstants.AuthorizeRequest.RedirectUri, redirectUri);
+            values.AddOptional(OidcConstants.AuthorizeRequest.State, state);
+            values.AddOptional(OidcConstants.AuthorizeRequest.Nonce, nonce);
+            values.AddOptional(OidcConstants.AuthorizeRequest.LoginHint, loginHint);
+            values.AddOptional(OidcConstants.AuthorizeRequest.AcrValues, acrValues);
+            values.AddOptional(OidcConstants.AuthorizeRequest.Prompt, prompt);
+            values.AddOptional(OidcConstants.AuthorizeRequest.ResponseMode, responseMode);
+            values.AddOptional(OidcConstants.AuthorizeRequest.CodeChallenge, codeChallenge);
+            values.AddOptional(OidcConstants.AuthorizeRequest.CodeChallengeMethod, codeChallengeMethod);
+            values.AddOptional(OidcConstants.AuthorizeRequest.Display, display);
+            values.AddOptional(OidcConstants.AuthorizeRequest.MaxAge, maxAge?.ToString());
+            values.AddOptional(OidcConstants.AuthorizeRequest.UiLocales, uiLocales);
+            values.AddOptional(OidcConstants.AuthorizeRequest.IdTokenHint, idTokenHint);
 
             return request.Create(ValuesHelper.Merge(values, ValuesHelper.ObjectToDictionary(extra)));
         }
@@ -104,9 +104,9 @@ namespace IdentityModel.Client
         {
             var values = new Dictionary<string, string>();
 
-            values.AddIfPresent(OidcConstants.EndSessionRequest.IdTokenHint, idTokenHint);
-            values.AddIfPresent(OidcConstants.EndSessionRequest.PostLogoutRedirectUri, postLogoutRedirectUri);
-            values.AddIfPresent(OidcConstants.EndSessionRequest.State, state);
+            values.AddOptional(OidcConstants.EndSessionRequest.IdTokenHint, idTokenHint);
+            values.AddOptional(OidcConstants.EndSessionRequest.PostLogoutRedirectUri, postLogoutRedirectUri);
+            values.AddOptional(OidcConstants.EndSessionRequest.State, state);
 
             return request.Create(ValuesHelper.Merge(values, ValuesHelper.ObjectToDictionary(extra)));
         }
