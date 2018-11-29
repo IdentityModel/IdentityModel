@@ -61,6 +61,14 @@ namespace IdentityModel.UnitTests
         }
 
         [Fact]
+        public void Explicit_null_parameters_should_fail_as_expected()
+        {
+            Func<Task> act = async () => await _client.RequestClientCredentialsTokenAsync(new ClientCredentialsTokenRequest { Parameters = null });
+
+            act.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be("parameters");
+        }
+
+        [Fact]
         public async Task Device_request_should_have_correct_format()
         {
             var response = await _client.RequestDeviceTokenAsync(new DeviceTokenRequest
@@ -297,7 +305,7 @@ namespace IdentityModel.UnitTests
         [Fact]
         public async Task Sending_raw_parameters_should_create_correct_format()
         {
-            var response = await _client.RequestTokenRawAsync("https://token", new Dictionary<string, string>
+            var response = await _client.RequestTokenRawAsync("https://token/", new Dictionary<string, string>
             {
                 { "grant_type", "test" },
                 { "client_id", "client" },
@@ -306,6 +314,9 @@ namespace IdentityModel.UnitTests
             });
             
             var request = _handler.Request;
+
+            request.RequestUri.AbsoluteUri.Should().Be("https://token/");
+
 
             var fields = QueryHelpers.ParseQuery(_handler.Body);
 
