@@ -3,6 +3,7 @@
 
 using IdentityModel.Internal;
 using System;
+using System.Collections.Generic;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Threading;
@@ -134,6 +135,19 @@ namespace IdentityModel.Client
             }
 
             return await ProtocolResponse.FromHttpResponseAsync<TokenResponse>(response);
+        }
+
+        public static async Task<TokenResponse> RequestTokenRawAsync(this HttpMessageInvoker client, string address, IDictionary<string, string> parameters, CancellationToken cancellationToken = default)
+        {
+            if (parameters == null) throw new ArgumentNullException(nameof(parameters));
+
+            var request = new TokenRequest()
+            {
+                Address = address,
+                Parameters = parameters
+            };
+
+            return await client.RequestTokenAsync(request);
         }
     }
 }

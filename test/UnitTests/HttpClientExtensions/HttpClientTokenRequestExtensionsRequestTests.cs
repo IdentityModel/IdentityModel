@@ -5,6 +5,7 @@ using FluentAssertions;
 using IdentityModel.Client;
 using Microsoft.AspNetCore.WebUtilities;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -293,6 +294,33 @@ namespace IdentityModel.UnitTests
             custom.First().Should().Be("custom");
         }
 
+        [Fact]
+        public async Task Sending_raw_parameters_should_create_correct_format()
+        {
+            var response = await _client.RequestTokenRawAsync("https://token", new Dictionary<string, string>
+            {
+                { "grant_type", "test" },
+                { "client_id", "client" },
+                { "client_secret", "secret" },
+                { "scope", "scope" }
+            });
+            
+            var request = _handler.Request;
+
+            var fields = QueryHelpers.ParseQuery(_handler.Body);
+
+            fields.TryGetValue("grant_type", out var field).Should().BeTrue();
+            field.First().Should().Be("test");
+
+            fields.TryGetValue("client_id", out field).Should().BeTrue();
+            field.First().Should().Be("client");
+
+            fields.TryGetValue("client_secret", out field).Should().BeTrue();
+            field.First().Should().Be("secret");
+
+            fields.TryGetValue("scope", out field).Should().BeTrue();
+            field.First().Should().Be("scope");
+        }
 
         [Fact]
         public async Task Setting_basic_authentication_style_should_send_basic_authentication_header()
