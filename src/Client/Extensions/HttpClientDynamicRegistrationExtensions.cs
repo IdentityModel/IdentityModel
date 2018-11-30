@@ -28,7 +28,7 @@ namespace IdentityModel.Client
         {
             var httpRequest = new HttpRequestMessage(HttpMethod.Post, request.Address)
             {
-                Content = new StringContent(JsonConvert.SerializeObject(request.RegistrationRequest), Encoding.UTF8, "application/json")
+                Content = new StringContent(JsonConvert.SerializeObject(request.Document), Encoding.UTF8, "application/json")
             };
 
             httpRequest.Headers.Accept.Clear();

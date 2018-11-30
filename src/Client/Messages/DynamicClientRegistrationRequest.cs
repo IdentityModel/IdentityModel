@@ -23,6 +23,6 @@ namespace IdentityModel.Client
         /// <value>
         /// The registration request.
         /// </value>
-        public DynamicClientRegistrationDocument RegistrationRequest  { get; set; }
+        public DynamicClientRegistrationDocument Document  { get; set; }
     }
 }
