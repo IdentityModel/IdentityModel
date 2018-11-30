@@ -43,6 +43,14 @@ namespace IdentityModel.UnitTests
         }
 
         [Fact]
+        public void Sending_a_request_without_client_id_should_fail()
+        {
+            Func<Task> act = async () => await _client.RequestTokenAsync(new TokenRequest { Address = Endpoint, GrantType = "custom" });
+
+            act.Should().Throw<InvalidOperationException>().WithMessage("client_id is missing");
+        }
+
+        [Fact]
         public async Task Reusing_the_request_should_succeed()
         {
             var request = new ClientCredentialsTokenRequest
@@ -119,14 +127,6 @@ namespace IdentityModel.UnitTests
 
             fields.TryGetValue("device_code", out var device_code).Should().BeTrue();
             device_code.First().Should().Be("device_code");
-        }
-
-        [Fact]
-        public void Device_request_without_client_id_should_fail()
-        {
-            Func<Task> act = async () => await _client.RequestDeviceTokenAsync(new DeviceTokenRequest { DeviceCode = "device_code" });
-
-            act.Should().Throw<ArgumentException>().And.ParamName.Should().Be("client_id");
         }
 
         [Fact]
@@ -406,25 +406,7 @@ namespace IdentityModel.UnitTests
             fields["client_secret"].First().Should().Be("secret");
 
         }
-
-        [Fact]
-        public async Task Setting_no_client_id_and_secret_should_not_send_credentials()
-        {
-            var response = await _client.RequestTokenAsync(new TokenRequest
-            {
-                Address = Endpoint,
-                GrantType = "test",
-            });
-
-            var request = _handler.Request;
-
-            request.Headers.Authorization.Should().BeNull();
-
-            var fields = QueryHelpers.ParseQuery(_handler.Body);
-            fields.TryGetValue("client_secret", out _).Should().BeFalse();
-            fields.TryGetValue("client_id", out _).Should().BeFalse();
-        }
-
+        
         [Fact]
         public async Task Setting_client_id_only_and_post_should_put_client_id_in_post_body()
         {

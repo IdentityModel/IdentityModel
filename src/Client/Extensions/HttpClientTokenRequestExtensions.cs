@@ -129,7 +129,7 @@ namespace IdentityModel.Client
         {
             if (!request.Parameters.TryGetValue(OidcConstants.TokenRequest.ClientId, out _))
             {
-                if (request.ClientId.IsMissing()) throw new ArgumentException("client_id is missing", "client_id");
+                if (request.ClientId.IsMissing()) throw new InvalidOperationException("client_id is missing");
             }
 
             var httpRequest = new HttpRequestMessage(HttpMethod.Post, request.Address);

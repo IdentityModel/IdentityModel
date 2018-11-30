@@ -35,7 +35,7 @@ namespace IdentityModel.UnitTests
         [Fact]
         public async Task No_explicit_endpoint_address_should_use_base_addess()
         {
-            var tokenClient = new TokenClient(_client, null);
+            var tokenClient = new TokenClient(_client, new TokenClientOptions { ClientId = "client" });
 
             var response = await tokenClient.RequestClientCredentialsTokenAsync();
 
@@ -46,7 +46,7 @@ namespace IdentityModel.UnitTests
         [Fact]
         public async Task Client_credentials_request_should_have_correct_format()
         {
-            var tokenClient = new TokenClient(_client, null);
+            var tokenClient = new TokenClient(_client, new TokenClientOptions { ClientId = "client" });
 
             var response = await tokenClient.RequestClientCredentialsTokenAsync(scope: "scope");
 
@@ -81,16 +81,6 @@ namespace IdentityModel.UnitTests
         }
 
         [Fact]
-        public void Device_request_without_client_id_should_fail()
-        {
-            var tokenClient = new TokenClient(_client, null);
-
-            Func<Task> act = async () => await tokenClient.RequestDeviceTokenAsync(deviceCode: "device_code");
-
-            act.Should().Throw<ArgumentException>().And.ParamName.Should().Be("client_id");
-        }
-
-        [Fact]
         public void Device_request_without_device_code_should_fail()
         {
             var tokenClient = new TokenClient(_client, new TokenClientOptions { ClientId = "device" });
@@ -103,7 +93,7 @@ namespace IdentityModel.UnitTests
         [Fact]
         public async Task Password_request_should_have_correct_format()
         {
-            var tokenClient = new TokenClient(_client, null);
+            var tokenClient = new TokenClient(_client, new TokenClientOptions { ClientId = "client" });
 
             var response = await tokenClient.RequestPasswordTokenAsync(userName: "user", password: "password", scope: "scope");
 
@@ -126,7 +116,7 @@ namespace IdentityModel.UnitTests
         [Fact]
         public async Task Password_request_without_password_should_have_correct_format()
         {
-            var tokenClient = new TokenClient(_client, null);
+            var tokenClient = new TokenClient(_client, new TokenClientOptions { ClientId = "client" });
 
             var response = await tokenClient.RequestPasswordTokenAsync(userName: "user");
 
@@ -156,7 +146,7 @@ namespace IdentityModel.UnitTests
         [Fact]
         public async Task Code_request_should_have_correct_format()
         {
-            var tokenClient = new TokenClient(_client, null);
+            var tokenClient = new TokenClient(_client, new TokenClientOptions { ClientId = "client" });
 
             var response = await tokenClient.RequestAuthorizationCodeTokenAsync(code: "code", redirectUri: "uri", codeVerifier: "verifier");
 
@@ -199,7 +189,7 @@ namespace IdentityModel.UnitTests
         [Fact]
         public async Task Refresh_request_should_have_correct_format()
         {
-            var tokenClient = new TokenClient(_client, null);
+            var tokenClient = new TokenClient(_client, new TokenClientOptions { ClientId = "client" });
 
             var response = await tokenClient.RequestRefreshTokenAsync(refreshToken: "rt", scope: "scope");
 
@@ -341,22 +331,6 @@ namespace IdentityModel.UnitTests
             fields["client_id"].First().Should().Be("client");
             fields["client_secret"].First().Should().Be("secret");
 
-        }
-
-        [Fact]
-        public async Task Setting_no_client_id_and_secret_should_not_send_credentials()
-        {
-            var tokenClient = new TokenClient(_client, null);
-
-            var response = await tokenClient.RequestTokenAsync(grantType: "test");
-
-            var request = _handler.Request;
-
-            request.Headers.Authorization.Should().BeNull();
-
-            var fields = QueryHelpers.ParseQuery(_handler.Body);
-            fields.TryGetValue("client_secret", out _).Should().BeFalse();
-            fields.TryGetValue("client_id", out _).Should().BeFalse();
         }
 
         [Fact]
