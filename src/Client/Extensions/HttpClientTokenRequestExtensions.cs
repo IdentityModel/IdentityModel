@@ -25,7 +25,7 @@ namespace IdentityModel.Client
         /// <returns></returns>
         public static async Task<TokenResponse> RequestClientCredentialsTokenAsync(this HttpMessageInvoker client, ClientCredentialsTokenRequest request, CancellationToken cancellationToken = default)
         {
-            var clone = request.Clone(request);
+            var clone = request.Clone();
 
             clone.Parameters.AddRequired(OidcConstants.TokenRequest.GrantType, OidcConstants.GrantTypes.ClientCredentials);
             clone.Parameters.AddOptional(OidcConstants.TokenRequest.Scope, request.Scope);
@@ -42,7 +42,7 @@ namespace IdentityModel.Client
         /// <returns></returns>
         public static async Task<TokenResponse> RequestDeviceTokenAsync(this HttpMessageInvoker client, DeviceTokenRequest request, CancellationToken cancellationToken = default)
         {
-            var clone = request.Clone(request);
+            var clone = request.Clone();
 
             clone.Parameters.AddRequired(OidcConstants.TokenRequest.GrantType, OidcConstants.GrantTypes.DeviceCode);
             clone.Parameters.AddRequired(OidcConstants.TokenRequest.DeviceCode, request.DeviceCode);
@@ -59,7 +59,7 @@ namespace IdentityModel.Client
         /// <returns></returns>
         public static async Task<TokenResponse> RequestPasswordTokenAsync(this HttpMessageInvoker client, PasswordTokenRequest request, CancellationToken cancellationToken = default)
         {
-            var clone = request.Clone(request);
+            var clone = request.Clone();
 
             clone.Parameters.AddRequired(OidcConstants.TokenRequest.GrantType, OidcConstants.GrantTypes.Password);
             clone.Parameters.AddRequired(OidcConstants.TokenRequest.UserName, request.UserName);
@@ -78,7 +78,7 @@ namespace IdentityModel.Client
         /// <returns></returns>
         public static async Task<TokenResponse> RequestAuthorizationCodeTokenAsync(this HttpMessageInvoker client, AuthorizationCodeTokenRequest request, CancellationToken cancellationToken = default)
         {
-            var clone = request.Clone(request);
+            var clone = request.Clone();
 
             clone.Parameters.AddRequired(OidcConstants.TokenRequest.GrantType, OidcConstants.GrantTypes.AuthorizationCode);
             clone.Parameters.AddRequired(OidcConstants.TokenRequest.Code, request.Code);
@@ -97,7 +97,7 @@ namespace IdentityModel.Client
         /// <returns></returns>
         public static async Task<TokenResponse> RequestRefreshTokenAsync(this HttpMessageInvoker client, RefreshTokenRequest request, CancellationToken cancellationToken = default)
         {
-            var clone = request.Clone(request);
+            var clone = request.Clone();
 
             clone.Parameters.AddRequired(OidcConstants.TokenRequest.GrantType, OidcConstants.GrantTypes.RefreshToken);
             clone.Parameters.AddRequired(OidcConstants.TokenRequest.RefreshToken, request.RefreshToken);
@@ -115,7 +115,7 @@ namespace IdentityModel.Client
         /// <returns></returns>
         public static async Task<TokenResponse> RequestTokenAsync(this HttpMessageInvoker client, TokenRequest request, CancellationToken cancellationToken = default)
         {
-            var clone = request.Clone(request);
+            var clone = request.Clone();
 
             if (!clone.Parameters.ContainsKey(OidcConstants.TokenRequest.GrantType))
             {
@@ -127,12 +127,11 @@ namespace IdentityModel.Client
 
         internal static async Task<TokenResponse> RequestTokenAsync(this HttpMessageInvoker client, ProtocolRequest request, CancellationToken cancellationToken = default)
         {
-            // shall we always require a client id?
-            //if (!request.Parameters.TryGetValue(OidcConstants.TokenRequest.ClientId, out _))
-            //{
-            //    if (request.ClientId.IsMissing()) throw new ArgumentException("client_id is missing", "client_id");
-            //}
-            
+            if (!request.Parameters.TryGetValue(OidcConstants.TokenRequest.ClientId, out _))
+            {
+                if (request.ClientId.IsMissing()) throw new ArgumentException("client_id is missing", "client_id");
+            }
+
             var httpRequest = new HttpRequestMessage(HttpMethod.Post, request.Address);
             httpRequest.Headers.Accept.Clear();
             httpRequest.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
