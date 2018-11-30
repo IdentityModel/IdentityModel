@@ -66,6 +66,10 @@ namespace IdentityModel.Client
         /// </value>
         public IDictionary<string, string> Parameters { get; set; } = new Dictionary<string, string>();
 
+        /// <summary>
+        /// Clones this instance.
+        /// </summary>
+        /// <returns></returns>
         public Request Clone()
         {
             var clone = new Request

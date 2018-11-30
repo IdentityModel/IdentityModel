@@ -4,6 +4,7 @@
 using FluentAssertions;
 using IdentityModel.Client;
 using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.Extensions.Primitives;
 using System;
 using System.IO;
 using System.Linq;
@@ -39,6 +40,48 @@ namespace IdentityModel.UnitTests
             
             response.IsError.Should().BeFalse();
             _handler.Request.RequestUri.AbsoluteUri.Should().Be(Endpoint);
+        }
+
+        [Fact]
+        public async Task Repeating_request_should_succeed()
+        {
+            var request = new ClientCredentialsTokenRequest
+            {
+                ClientId = "client",
+                Scope = "scope"
+            };
+
+            var response = await _client.RequestClientCredentialsTokenAsync(request);
+
+            response.IsError.Should().BeFalse();
+
+            var fields = QueryHelpers.ParseQuery(_handler.Body);
+            StringValues values;
+
+            fields.TryGetValue("client_id", out values).Should().BeTrue();
+            values.First().Should().Be("client");
+
+            fields.TryGetValue("grant_type", out values).Should().BeTrue();
+            values.First().Should().Be(OidcConstants.GrantTypes.ClientCredentials);
+
+            fields.TryGetValue("scope", out values).Should().BeTrue();
+            values.First().Should().Be("scope");
+
+            // repeat
+            response = await _client.RequestClientCredentialsTokenAsync(request);
+
+            response.IsError.Should().BeFalse();
+
+            fields = QueryHelpers.ParseQuery(_handler.Body);
+            
+            fields.TryGetValue("client_id", out values).Should().BeTrue();
+            values.First().Should().Be("client");
+
+            fields.TryGetValue("grant_type", out values).Should().BeTrue();
+            values.First().Should().Be(OidcConstants.GrantTypes.ClientCredentials);
+
+            fields.TryGetValue("scope", out values).Should().BeTrue();
+            values.First().Should().Be("scope");
         }
 
         [Fact]

@@ -44,6 +44,49 @@ namespace IdentityModel.UnitTests
         }
 
         [Fact]
+        public async Task Repeating_request_should_succeed()
+        {
+            var document = File.ReadAllText(FileName.Create("success_device_authorization_response.json"));
+            var handler = new NetworkHandler(document, HttpStatusCode.OK);
+
+            var client = new HttpClient(handler);
+            var request = new DeviceAuthorizationRequest
+            {
+                Address = Endpoint,
+                ClientId = "client"
+            };
+
+            var response = await client.RequestDeviceAuthorizationAsync(request);
+
+            response.IsError.Should().BeFalse();
+            response.ErrorType.Should().Be(ResponseErrorType.None);
+            response.HttpStatusCode.Should().Be(HttpStatusCode.OK);
+
+            response.DeviceCode.Should().Be("GMMhmHCXhWEzkobqIHGG_EnNYYsAkukHspeYUk9E8");
+            response.UserCode.Should().Be("WDJB-MJHT");
+            response.VerificationUri.Should().Be("https://www.example.com/device");
+            response.VerificationUriComplete.Should().Be("https://www.example.com/device?user_code=WDJB-MJHT");
+
+            response.ExpiresIn.Should().Be(1800);
+            response.Interval.Should().Be(10);
+
+            // repeat
+            response = await client.RequestDeviceAuthorizationAsync(request);
+
+            response.IsError.Should().BeFalse();
+            response.ErrorType.Should().Be(ResponseErrorType.None);
+            response.HttpStatusCode.Should().Be(HttpStatusCode.OK);
+
+            response.DeviceCode.Should().Be("GMMhmHCXhWEzkobqIHGG_EnNYYsAkukHspeYUk9E8");
+            response.UserCode.Should().Be("WDJB-MJHT");
+            response.VerificationUri.Should().Be("https://www.example.com/device");
+            response.VerificationUriComplete.Should().Be("https://www.example.com/device?user_code=WDJB-MJHT");
+
+            response.ExpiresIn.Should().Be(1800);
+            response.Interval.Should().Be(10);
+        }
+
+        [Fact]
         public async Task Valid_protocol_error_should_be_handled_correctly()
         {
             var document = File.ReadAllText(FileName.Create("failure_device_authorization_response.json"));

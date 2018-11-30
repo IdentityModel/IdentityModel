@@ -37,6 +37,33 @@ namespace IdentityModel.UnitTests
         }
 
         [Fact]
+        public async Task Repeating_call_should_succeed()
+        {
+            var handler = new NetworkHandler(HttpStatusCode.OK, "ok");
+            var client = new HttpClient(handler);
+
+            var request = new TokenRevocationRequest
+            {
+                Address = Endpoint,
+                Token = "token",
+                ClientId = "client"
+            };
+
+            var response = await client.RevokeTokenAsync(request);
+
+            response.IsError.Should().BeFalse();
+            response.ErrorType.Should().Be(ResponseErrorType.None);
+            response.HttpStatusCode.Should().Be(HttpStatusCode.OK);
+
+            // repeat
+            response = await client.RevokeTokenAsync(request);
+
+            response.IsError.Should().BeFalse();
+            response.ErrorType.Should().Be(ResponseErrorType.None);
+            response.HttpStatusCode.Should().Be(HttpStatusCode.OK);
+        }
+
+        [Fact]
         public async Task Valid_protocol_error_should_be_handled_correctly()
         {
             var document = File.ReadAllText(FileName.Create("failure_token_revocation_response.json"));

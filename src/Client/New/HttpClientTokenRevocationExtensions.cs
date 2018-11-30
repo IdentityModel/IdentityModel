@@ -29,12 +29,13 @@ namespace IdentityModel.Client
             httpRequest.Headers.Accept.Clear();
             httpRequest.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
-            ClientCredentialsHelper.PopulateClientCredentials(request, httpRequest);
+            var clone = request.Clone();
+            ClientCredentialsHelper.PopulateClientCredentials(clone, httpRequest);
 
-            request.Parameters.AddRequired(OidcConstants.TokenIntrospectionRequest.Token, request.Token);
-            request.Parameters.AddOptional(OidcConstants.TokenIntrospectionRequest.TokenTypeHint, request.TokenTypeHint);
+            clone.Parameters.AddRequired(OidcConstants.TokenIntrospectionRequest.Token, request.Token);
+            clone.Parameters.AddOptional(OidcConstants.TokenIntrospectionRequest.TokenTypeHint, request.TokenTypeHint);
 
-            httpRequest.Content = new FormUrlEncodedContent(request.Parameters);
+            httpRequest.Content = new FormUrlEncodedContent(clone.Parameters);
 
             HttpResponseMessage response;
             try

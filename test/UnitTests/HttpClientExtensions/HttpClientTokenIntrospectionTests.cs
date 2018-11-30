@@ -62,6 +62,80 @@ namespace IdentityModel.UnitTests
         }
 
         [Fact]
+        public async Task Repeating_call_should_succeed()
+        {
+            var document = File.ReadAllText(FileName.Create("success_introspection_response.json"));
+            var handler = new NetworkHandler(document, HttpStatusCode.OK);
+
+            var client = new HttpClient(handler)
+            {
+                BaseAddress = new Uri(Endpoint)
+            };
+
+            var request = new TokenIntrospectionRequest
+            {
+                Token = "token"
+            };
+
+            var response = await client.IntrospectTokenAsync(request);
+
+            response.IsError.Should().BeFalse();
+            response.ErrorType.Should().Be(ResponseErrorType.None);
+            response.HttpStatusCode.Should().Be(HttpStatusCode.OK);
+            response.IsActive.Should().BeTrue();
+            response.Claims.Should().NotBeEmpty();
+
+            var audiences = response.Claims.Where(c => c.Type == "aud");
+            audiences.Count().Should().Be(2);
+            audiences.First().Value.Should().Be("https://idsvr4/resources");
+            audiences.Skip(1).First().Value.Should().Be("api1");
+
+            response.Claims.First(c => c.Type == "iss").Value.Should().Be("https://idsvr4");
+            response.Claims.First(c => c.Type == "nbf").Value.Should().Be("1475824871");
+            response.Claims.First(c => c.Type == "exp").Value.Should().Be("1475828471");
+            response.Claims.First(c => c.Type == "client_id").Value.Should().Be("client");
+            response.Claims.First(c => c.Type == "sub").Value.Should().Be("1");
+            response.Claims.First(c => c.Type == "auth_time").Value.Should().Be("1475824871");
+            response.Claims.First(c => c.Type == "idp").Value.Should().Be("local");
+            response.Claims.First(c => c.Type == "amr").Value.Should().Be("password");
+            response.Claims.First(c => c.Type == "active").Value.Should().Be("True");
+
+            var scopes = response.Claims.Where(c => c.Type == "scope");
+            scopes.Count().Should().Be(2);
+            scopes.First().Value.Should().Be("api1");
+            scopes.Skip(1).First().Value.Should().Be("api2");
+
+            // repeat
+            response = await client.IntrospectTokenAsync(request);
+
+            response.IsError.Should().BeFalse();
+            response.ErrorType.Should().Be(ResponseErrorType.None);
+            response.HttpStatusCode.Should().Be(HttpStatusCode.OK);
+            response.IsActive.Should().BeTrue();
+            response.Claims.Should().NotBeEmpty();
+
+            audiences = response.Claims.Where(c => c.Type == "aud");
+            audiences.Count().Should().Be(2);
+            audiences.First().Value.Should().Be("https://idsvr4/resources");
+            audiences.Skip(1).First().Value.Should().Be("api1");
+
+            response.Claims.First(c => c.Type == "iss").Value.Should().Be("https://idsvr4");
+            response.Claims.First(c => c.Type == "nbf").Value.Should().Be("1475824871");
+            response.Claims.First(c => c.Type == "exp").Value.Should().Be("1475828471");
+            response.Claims.First(c => c.Type == "client_id").Value.Should().Be("client");
+            response.Claims.First(c => c.Type == "sub").Value.Should().Be("1");
+            response.Claims.First(c => c.Type == "auth_time").Value.Should().Be("1475824871");
+            response.Claims.First(c => c.Type == "idp").Value.Should().Be("local");
+            response.Claims.First(c => c.Type == "amr").Value.Should().Be("password");
+            response.Claims.First(c => c.Type == "active").Value.Should().Be("True");
+
+            scopes = response.Claims.Where(c => c.Type == "scope");
+            scopes.Count().Should().Be(2);
+            scopes.First().Value.Should().Be("api1");
+            scopes.Skip(1).First().Value.Should().Be("api2");
+        }
+
+        [Fact]
         public void Request_without_token_should_fail()
         {
             var document = File.ReadAllText(FileName.Create("success_introspection_response.json"));
