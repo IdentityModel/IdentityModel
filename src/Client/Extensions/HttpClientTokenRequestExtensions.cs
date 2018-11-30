@@ -115,11 +115,24 @@ namespace IdentityModel.Client
         /// <returns></returns>
         public static async Task<TokenResponse> RequestTokenAsync(this HttpMessageInvoker client, TokenRequest request, CancellationToken cancellationToken = default)
         {
-            if (!request.Parameters.ContainsKey(OidcConstants.TokenRequest.GrantType))
+            var clone = request.Clone(request);
+
+            if (!clone.Parameters.ContainsKey(OidcConstants.TokenRequest.GrantType))
             {
-                request.Parameters.AddRequired(OidcConstants.TokenRequest.GrantType, request.GrantType);
+                clone.Parameters.AddRequired(OidcConstants.TokenRequest.GrantType, request.GrantType);
             }
 
+            return await client.RequestTokenAsync(clone, cancellationToken);
+        }
+
+        internal static async Task<TokenResponse> RequestTokenAsync(this HttpMessageInvoker client, ProtocolRequest request, CancellationToken cancellationToken = default)
+        {
+            // shall we always require a client id?
+            //if (!request.Parameters.TryGetValue(OidcConstants.TokenRequest.ClientId, out _))
+            //{
+            //    if (request.ClientId.IsMissing()) throw new ArgumentException("client_id is missing", "client_id");
+            //}
+            
             var httpRequest = new HttpRequestMessage(HttpMethod.Post, request.Address);
             httpRequest.Headers.Accept.Clear();
             httpRequest.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
