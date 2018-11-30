@@ -35,7 +35,7 @@ namespace IdentityModel.UnitTests
         [Fact]
         public async Task No_explicit_endpoint_address_should_use_base_addess()
         {
-            var response = await _client.RequestClientCredentialsTokenAsync(new ClientCredentialsTokenRequest());
+            var response = await _client.RequestClientCredentialsTokenAsync(new ClientCredentialsTokenRequest { ClientId = "client" });
             
             response.IsError.Should().BeFalse();
             _handler.Request.RequestUri.AbsoluteUri.Should().Be(Endpoint);
@@ -46,6 +46,7 @@ namespace IdentityModel.UnitTests
         {
             var response = await _client.RequestClientCredentialsTokenAsync(new ClientCredentialsTokenRequest
             {
+                ClientId = "client",
                 Scope = "scope"
             });
 
@@ -82,14 +83,6 @@ namespace IdentityModel.UnitTests
         }
 
         [Fact]
-        public void Device_request_without_client_id_should_fail()
-        {
-            Func<Task> act = async () => await _client.RequestDeviceTokenAsync(new DeviceTokenRequest { DeviceCode = "device_code" });
-
-            act.Should().Throw<ArgumentException>().And.ParamName.Should().Be("client_id");
-        }
-
-        [Fact]
         public void Device_request_without_device_code_should_fail()
         {
             Func<Task> act = async () => await _client.RequestDeviceTokenAsync(new DeviceTokenRequest { ClientId = "device" });
@@ -102,6 +95,7 @@ namespace IdentityModel.UnitTests
         {
             var response = await _client.RequestPasswordTokenAsync(new PasswordTokenRequest
             {
+                ClientId = "client",
                 UserName = "user",
                 Password = "password",
                 Scope = "scope"
@@ -128,6 +122,7 @@ namespace IdentityModel.UnitTests
         {
             var response = await _client.RequestPasswordTokenAsync(new PasswordTokenRequest
             {
+                ClientId = "client",
                 UserName = "user"
             });
 
@@ -157,6 +152,7 @@ namespace IdentityModel.UnitTests
         {
             var response = await _client.RequestAuthorizationCodeTokenAsync(new AuthorizationCodeTokenRequest
             {
+                ClientId = "client",
                 Code = "code",
                 RedirectUri = "uri",
                 CodeVerifier = "verifier"
@@ -205,6 +201,7 @@ namespace IdentityModel.UnitTests
         {
             var response = await _client.RequestRefreshTokenAsync(new RefreshTokenRequest
             {
+                ClientId = "client",
                 RefreshToken = "rt",
                 Scope = "scope"
             });
@@ -275,6 +272,7 @@ namespace IdentityModel.UnitTests
         {
             var response = await _client.RequestTokenAsync(new TokenRequest
             {
+                ClientId = "client",
                 GrantType = "test",
                 Parameters =
                 {
@@ -329,25 +327,14 @@ namespace IdentityModel.UnitTests
             var fields = QueryHelpers.ParseQuery(_handler.Body);
             fields["client_id"].First().Should().Be("client");
             fields["client_secret"].First().Should().Be("secret");
-
         }
 
         [Fact]
-        public async Task Setting_no_client_id_and_secret_should_not_send_credentials()
+        public void Setting_no_client_id_should_fail()
         {
-            var response = await _client.RequestTokenAsync(new TokenRequest
-            {
-                Address = Endpoint,
-                GrantType = "test",
-            });
+            Func<Task> act = async () => await _client.RequestTokenAsync(new TokenRequest { Address = Endpoint, GrantType = "custom" });
 
-            var request = _handler.Request;
-
-            request.Headers.Authorization.Should().BeNull();
-
-            var fields = QueryHelpers.ParseQuery(_handler.Body);
-            fields.TryGetValue("client_secret", out _).Should().BeFalse();
-            fields.TryGetValue("client_id", out _).Should().BeFalse();
+            act.Should().Throw<InvalidOperationException>().And.Message.Should().Be("client_id is missing");
         }
 
         [Fact]

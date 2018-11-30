@@ -66,22 +66,22 @@ namespace IdentityModel.Client
         /// </value>
         public IDictionary<string, string> Parameters { get; set; } = new Dictionary<string, string>();
 
-        public ProtocolRequest Clone(ProtocolRequest request)
+        public Request Clone()
         {
-            var clone = new ProtocolRequest
+            var clone = new Request
             {
-                Address = request.Address,
-                AuthorizationHeaderStyle = request.AuthorizationHeaderStyle,
-                ClientAssertion = request.ClientAssertion,
-                ClientCredentialStyle = request.ClientCredentialStyle,
-                ClientId = request.ClientId,
-                ClientSecret = request.ClientSecret,
+                Address = Address,
+                AuthorizationHeaderStyle = AuthorizationHeaderStyle,
+                ClientAssertion = ClientAssertion,
+                ClientCredentialStyle = ClientCredentialStyle,
+                ClientId = ClientId,
+                ClientSecret = ClientSecret,
                 Parameters = new Dictionary<string, string>()
             };
 
-            if (request.Parameters != null)
+            if (Parameters != null)
             {
-                foreach (var item in request.Parameters) clone.Parameters.Add(item);
+                foreach (var item in Parameters) clone.Parameters.Add(item);
             }
 
             return clone;
