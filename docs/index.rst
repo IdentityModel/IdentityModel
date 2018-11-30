@@ -31,6 +31,7 @@ How to get
    client/introspection
    client/revocation
    client/userinfo
+   client/dyanmic_registration
    client/device_authorize
 
 .. toctree::
