@@ -9,7 +9,7 @@ The following code sends a registration request::
     var response = await client.RegisterClientAsync(new DynamicClientRegistrationRequest
     {
         Address = Endpoint,
-        RegistrationRequest = new RegistrationRequest
+        Document = new DynamicClientRegistrationDocument
         {
             RedirectUris = { redirectUri },
             ApplicationType = "native"
