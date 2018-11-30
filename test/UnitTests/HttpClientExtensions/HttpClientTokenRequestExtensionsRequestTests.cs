@@ -51,7 +51,7 @@ namespace IdentityModel.UnitTests
         }
 
         [Fact]
-        public async Task Reusing_the_request_should_succeed()
+        public async Task Repeating_a_request_should_succeed()
         {
             var request = new ClientCredentialsTokenRequest
             {

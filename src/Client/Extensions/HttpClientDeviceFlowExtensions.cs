@@ -24,12 +24,14 @@ namespace IdentityModel.Client
         /// <returns></returns>
         public static async Task<DeviceAuthorizationResponse> RequestDeviceAuthorizationAsync(this HttpMessageInvoker client, DeviceAuthorizationRequest request, CancellationToken cancellationToken = default)
         {
-            request.Parameters.AddRequired(OidcConstants.AuthorizeRequest.ClientId, request.ClientId);
-            request.Parameters.AddOptional(OidcConstants.AuthorizeRequest.Scope, request.Scope);
+            var clone = request.Clone();
+
+            clone.Parameters.AddRequired(OidcConstants.AuthorizeRequest.ClientId, request.ClientId);
+            clone.Parameters.AddOptional(OidcConstants.AuthorizeRequest.Scope, request.Scope);
 
             var httpRequest = new HttpRequestMessage(HttpMethod.Post, request.Address)
             {
-                Content = new FormUrlEncodedContent(request.Parameters)
+                Content = new FormUrlEncodedContent(clone.Parameters)
             };
 
             httpRequest.Headers.Accept.Clear();
