@@ -16,7 +16,7 @@ The following code sends a registration request::
         }
     });
 
-.. note:: The ``RegistrationRequest`` class has strongly typed properties for all standard registration parameters as defines by the specification. If you want to add custom parameters, it is recommended to derive from this class and add your own properties.
+.. note:: The ``DynamicClientRegistrationDocument`` class has strongly typed properties for all standard registration parameters as defines by the specification. If you want to add custom parameters, it is recommended to derive from this class and add your own properties.
 
 The response is of type ``RegistrationResponse`` and has properties for the standard response parameters.
 You also have access to the the raw response as well as to a parsed JSON document 
