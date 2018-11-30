@@ -36,10 +36,40 @@ namespace IdentityModel.UnitTests
         [Fact]
         public async Task No_explicit_endpoint_address_should_use_base_addess()
         {
-            var response = await _client.RequestClientCredentialsTokenAsync(new ClientCredentialsTokenRequest());
+            var response = await _client.RequestClientCredentialsTokenAsync(new ClientCredentialsTokenRequest { ClientId = "client" });
             
             response.IsError.Should().BeFalse();
             _handler.Request.RequestUri.AbsoluteUri.Should().Be(Endpoint);
+        }
+
+        [Fact]
+        public async Task Reusing_the_request_should_succeed()
+        {
+            var request = new ClientCredentialsTokenRequest
+            {
+                ClientId = "client",
+                Scope = "scope"
+            };
+
+            var response = await _client.RequestClientCredentialsTokenAsync(request);
+            response.IsError.Should().BeFalse();
+
+            var fields = QueryHelpers.ParseQuery(_handler.Body);
+            fields.TryGetValue("grant_type", out var grant_type).Should().BeTrue();
+            grant_type.First().Should().Be(OidcConstants.GrantTypes.ClientCredentials);
+
+            fields.TryGetValue("scope", out var scope).Should().BeTrue();
+            scope.First().Should().Be("scope");
+
+            response = await _client.RequestClientCredentialsTokenAsync(request);
+            response.IsError.Should().BeFalse();
+
+            fields = QueryHelpers.ParseQuery(_handler.Body);
+            fields.TryGetValue("grant_type", out grant_type).Should().BeTrue();
+            grant_type.First().Should().Be(OidcConstants.GrantTypes.ClientCredentials);
+
+            fields.TryGetValue("scope", out scope).Should().BeTrue();
+            scope.First().Should().Be("scope");
         }
 
         [Fact]
@@ -47,6 +77,7 @@ namespace IdentityModel.UnitTests
         {
             var response = await _client.RequestClientCredentialsTokenAsync(new ClientCredentialsTokenRequest
             {
+                ClientId = "client",
                 Scope = "scope"
             });
 
@@ -61,11 +92,11 @@ namespace IdentityModel.UnitTests
         }
 
         [Fact]
-        public void Explicit_null_parameters_should_fail_as_expected()
+        public void Explicit_null_parameters_should__not_fail_()
         {
-            Func<Task> act = async () => await _client.RequestClientCredentialsTokenAsync(new ClientCredentialsTokenRequest { Parameters = null });
+            Func<Task> act = async () => await _client.RequestClientCredentialsTokenAsync(new ClientCredentialsTokenRequest { ClientId = "client", Parameters = null });
 
-            act.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be("parameters");
+            act.Should().NotThrow();
         }
 
         [Fact]
@@ -111,6 +142,7 @@ namespace IdentityModel.UnitTests
         {
             var response = await _client.RequestPasswordTokenAsync(new PasswordTokenRequest
             {
+                ClientId = "client",
                 UserName = "user",
                 Password = "password",
                 Scope = "scope"
@@ -137,6 +169,7 @@ namespace IdentityModel.UnitTests
         {
             var response = await _client.RequestPasswordTokenAsync(new PasswordTokenRequest
             {
+                ClientId = "client",
                 UserName = "user"
             });
 
@@ -166,6 +199,7 @@ namespace IdentityModel.UnitTests
         {
             var response = await _client.RequestAuthorizationCodeTokenAsync(new AuthorizationCodeTokenRequest
             {
+                ClientId = "client",
                 Code = "code",
                 RedirectUri = "uri",
                 CodeVerifier = "verifier"
@@ -214,6 +248,7 @@ namespace IdentityModel.UnitTests
         {
             var response = await _client.RequestRefreshTokenAsync(new RefreshTokenRequest
             {
+                ClientId = "client",
                 RefreshToken = "rt",
                 Scope = "scope"
             });
@@ -284,6 +319,7 @@ namespace IdentityModel.UnitTests
         {
             var response = await _client.RequestTokenAsync(new TokenRequest
             {
+                ClientId = "client",
                 GrantType = "test",
                 Parameters =
                 {
