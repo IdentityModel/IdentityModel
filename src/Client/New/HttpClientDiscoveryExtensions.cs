@@ -24,7 +24,7 @@ namespace IdentityModel.Client
         /// <returns></returns>
         public static async Task<DiscoveryResponse> GetDiscoveryDocumentAsync(this HttpClient client, string address, CancellationToken cancellationToken = default)
         {
-            return await client.GetDiscoveryDocumentAsync(new DiscoveryDocumentRequest { Address = address }, cancellationToken);
+            return await client.GetDiscoveryDocumentAsync(new DiscoveryDocumentRequest { Address = address }, cancellationToken).ConfigureAwait(false);
         }
 
         /// <summary>

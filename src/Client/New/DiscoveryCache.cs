@@ -96,7 +96,7 @@ namespace IdentityModel.Client
             {
                 Address = _authority,
                 Policy = _policy
-            });
+            }).ConfigureAwait(false);
 
             _nextReload = DateTime.UtcNow.Add(CacheDuration);
             return result;
