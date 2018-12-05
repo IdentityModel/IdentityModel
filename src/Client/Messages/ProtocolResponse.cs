@@ -33,7 +33,7 @@ namespace IdentityModel.Client
             string content = null;
             try
             {
-                content = await httpResponse.Content.ReadAsStringAsync();
+                content = await httpResponse.Content.ReadAsStringAsync().ConfigureAwait(false);
                 response.Raw = content;
             }
             catch { }
@@ -53,7 +53,7 @@ namespace IdentityModel.Client
                     catch { }
                 }
 
-                await response.InitializeAsync(initializationData);
+                await response.InitializeAsync(initializationData).ConfigureAwait(false);
                 return response;
             }
             
@@ -76,7 +76,7 @@ namespace IdentityModel.Client
                 response.Exception = ex;
             }
 
-            await response.InitializeAsync(initializationData);
+            await response.InitializeAsync(initializationData).ConfigureAwait(false);
             return response;
         }
 

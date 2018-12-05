@@ -24,7 +24,7 @@ namespace IdentityModel.Client
         /// <returns></returns>
         public static async Task<DiscoveryDocumentResponse> GetDiscoveryDocumentAsync(this HttpClient client, string address, CancellationToken cancellationToken = default)
         {
-            return await client.GetDiscoveryDocumentAsync(new DiscoveryDocumentRequest { Address = address }, cancellationToken);
+            return await client.GetDiscoveryDocumentAsync(new DiscoveryDocumentRequest { Address = address }, cancellationToken).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -82,7 +82,7 @@ namespace IdentityModel.Client
                 }
 
                 //var disco = new DiscoveryResponse(responseContent, request.Policy);
-                var disco = await ProtocolResponse.FromHttpResponseAsync<DiscoveryDocumentResponse>(response, request.Policy);
+                var disco = await ProtocolResponse.FromHttpResponseAsync<DiscoveryDocumentResponse>(response, request.Policy).ConfigureAwait(false);
 
                 if (disco.IsError)
                 {
@@ -103,7 +103,7 @@ namespace IdentityModel.Client
 
                         if (!response.IsSuccessStatusCode)
                         {
-                            return await ProtocolResponse.FromHttpResponseAsync<DiscoveryDocumentResponse>(response, $"Error connecting to {jwkUrl}: {response.ReasonPhrase}");
+                            return await ProtocolResponse.FromHttpResponseAsync<DiscoveryDocumentResponse>(response, $"Error connecting to {jwkUrl}: {response.ReasonPhrase}").ConfigureAwait(false);
                         }
 
                         disco.KeySet = new JsonWebKeySet(responseContent);

@@ -47,7 +47,7 @@ namespace IdentityModel.Client
                 return ProtocolResponse.FromException<DeviceAuthorizationResponse>(ex);
             }
 
-            return await ProtocolResponse.FromHttpResponseAsync<DeviceAuthorizationResponse>(response);
+            return await ProtocolResponse.FromHttpResponseAsync<DeviceAuthorizationResponse>(response).ConfigureAwait(false);
         }
     }
 }

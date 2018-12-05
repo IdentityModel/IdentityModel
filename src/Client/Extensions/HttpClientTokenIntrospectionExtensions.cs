@@ -46,7 +46,7 @@ namespace IdentityModel.Client
                 return ProtocolResponse.FromException<TokenIntrospectionResponse>(ex);
             }
 
-            return await ProtocolResponse.FromHttpResponseAsync<TokenIntrospectionResponse>(response);
+            return await ProtocolResponse.FromHttpResponseAsync<TokenIntrospectionResponse>(response).ConfigureAwait(false);
         }
     }
 }

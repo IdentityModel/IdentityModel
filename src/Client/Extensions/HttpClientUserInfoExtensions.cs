@@ -41,7 +41,7 @@ namespace IdentityModel.Client
                 return ProtocolResponse.FromException<UserInfoResponse>(ex);
             }
 
-            return await ProtocolResponse.FromHttpResponseAsync<UserInfoResponse>(response);
+            return await ProtocolResponse.FromHttpResponseAsync<UserInfoResponse>(response).ConfigureAwait(false);
         }
     }
 }

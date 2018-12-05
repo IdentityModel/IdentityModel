@@ -46,7 +46,7 @@ namespace IdentityModel.Client
                 return ProtocolResponse.FromException<TokenRevocationResponse>(ex);
             }
 
-            return await ProtocolResponse.FromHttpResponseAsync<TokenRevocationResponse>(response);
+            return await ProtocolResponse.FromHttpResponseAsync<TokenRevocationResponse>(response).ConfigureAwait(false);
         }
     }
 }

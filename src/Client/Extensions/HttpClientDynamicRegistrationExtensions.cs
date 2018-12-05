@@ -49,7 +49,7 @@ namespace IdentityModel.Client
                 return ProtocolResponse.FromException<DynamicClientRegistrationResponse>(ex);
             }
 
-            return await ProtocolResponse.FromHttpResponseAsync<DynamicClientRegistrationResponse>(response);
+            return await ProtocolResponse.FromHttpResponseAsync<DynamicClientRegistrationResponse>(response).ConfigureAwait(false);
         }
     }
 }
