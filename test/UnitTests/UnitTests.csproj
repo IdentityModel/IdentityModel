@@ -9,7 +9,7 @@
     <TargetFrameworks>net461;netcoreapp2.0;netcoreapp2.1</TargetFrameworks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(OS)' != 'Windows_NT' ">
-    <TargetFramework>netnetcoreapp2.0;netcoreapp2.1</TargetFramework>
+    <TargetFrameworks>netnetcoreapp2.0;netcoreapp2.1</TargetFrameworks>
   </PropertyGroup>
   
   <ItemGroup>
