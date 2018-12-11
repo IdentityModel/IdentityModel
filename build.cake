@@ -110,24 +110,10 @@ Task("Build")
         MSBuildSettings = msBuildSettings
     };
 
-    // building projects
-    if (!isWindows)
-    {
-        Information("Not running on Windows - building source for netstandard2.0");
-        settings.Framework = "netstandard2.0";
-    }
-
     var projects = GetFiles("./src/**/*.csproj");
     foreach(var project in projects)
 	{
 	    DotNetCoreBuild(project.GetDirectory().FullPath, settings);
-    }
-
-    // building tests
-    if (!isWindows)
-    {
-        Information("Not running on Windows - building tests for netcoreapp2.1");
-        settings.Framework = "netcoreapp2.1";
     }
 
     var tests = GetFiles("./test/**/*.csproj");
@@ -160,12 +146,6 @@ Task("Test")
         Configuration = configuration,
         NoBuild = true
     };
-
-    if (!isWindows)
-    {
-        Information("Not running on Windows - skipping tests for .NET Framework");
-        settings.Framework = "netcoreapp2.1";
-    }
 
     var projects = GetFiles("./test/**/*.csproj");
     foreach(var project in projects)
