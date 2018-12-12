@@ -80,7 +80,16 @@ namespace IdentityModel.Client
                 Policy = _policy
             });
 
-            _nextReload = DateTime.UtcNow.Add(CacheDuration);
+            if (result.IsError)
+            {
+                Refresh();
+                _nextReload = DateTime.MinValue;
+            }
+            else
+            {
+                _nextReload = DateTime.UtcNow.Add(CacheDuration);
+            }
+
             return result;
         }
     }
