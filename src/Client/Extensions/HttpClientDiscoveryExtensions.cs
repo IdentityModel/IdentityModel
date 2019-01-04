@@ -47,10 +47,10 @@ namespace IdentityModel.Client
             {
                 address = ((HttpClient)client).BaseAddress.AbsoluteUri;
             }
-			else
-			{
-				throw new ArgumentException("An address is required.");
-			}
+            else
+            {
+                throw new ArgumentException("An address is required.");
+            }
 
             var parsed = DiscoveryEndpoint.ParseUrl(address);
             var authority = parsed.Authority;
@@ -98,22 +98,22 @@ namespace IdentityModel.Client
                     jwkUrl = disco.JwksUri;
                     if (jwkUrl != null)
                     {
-						using (HttpRequestMessage getRequest = new HttpRequestMessage(HttpMethod.Get, jwkUrl))
-						{
-							response = await client.SendAsync(getRequest, cancellationToken).ConfigureAwait(false);
+                        using (HttpRequestMessage getRequest = new HttpRequestMessage(HttpMethod.Get, jwkUrl))
+                        {
+                            response = await client.SendAsync(getRequest, cancellationToken).ConfigureAwait(false);
 
-							if (response.Content != null)
-							{
-								responseContent = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-							}
+                            if (response.Content != null)
+                            {
+                                responseContent = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+                            }
 
-							if (!response.IsSuccessStatusCode)
-							{
-								return await ProtocolResponse.FromHttpResponseAsync<DiscoveryDocumentResponse>(response, $"Error connecting to {jwkUrl}: {response.ReasonPhrase}").ConfigureAwait(false);
-							}
+                            if (!response.IsSuccessStatusCode)
+                            {
+                                return await ProtocolResponse.FromHttpResponseAsync<DiscoveryDocumentResponse>(response, $"Error connecting to {jwkUrl}: {response.ReasonPhrase}").ConfigureAwait(false);
+                            }
 
-							disco.KeySet = new JsonWebKeySet(responseContent);
-						}
+                            disco.KeySet = new JsonWebKeySet(responseContent);
+                        }
                     }
 
                     return disco;
