@@ -24,19 +24,17 @@ namespace IdentityModel.Client
         /// <returns></returns>
         public static async Task<DeviceAuthorizationResponse> RequestDeviceAuthorizationAsync(this HttpMessageInvoker client, DeviceAuthorizationRequest request, CancellationToken cancellationToken = default)
         {
-            var clone = request.Clone();
-
-            clone.Parameters.AddRequired(OidcConstants.AuthorizeRequest.ClientId, request.ClientId);
-            clone.Parameters.AddOptional(OidcConstants.AuthorizeRequest.Scope, request.Scope);
-
-            var httpRequest = new HttpRequestMessage(HttpMethod.Post, request.Address)
-            {
-                Content = new FormUrlEncodedContent(clone.Parameters)
-            };
-
+            var httpRequest = new HttpRequestMessage(HttpMethod.Post, request.Address);
             httpRequest.Headers.Accept.Clear();
             httpRequest.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
 
+            var clone = request.Clone();
+            ClientCredentialsHelper.PopulateClientCredentials(clone, httpRequest);
+            
+            clone.Parameters.AddOptional(OidcConstants.AuthorizeRequest.Scope, request.Scope);
+
+            httpRequest.Content = new FormUrlEncodedContent(clone.Parameters);
+                        
             HttpResponseMessage response;
             try
             {

@@ -3,9 +3,11 @@
 
 using FluentAssertions;
 using IdentityModel.Client;
+using Microsoft.AspNetCore.WebUtilities;
 using Newtonsoft.Json;
 using System;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -13,9 +15,55 @@ using Xunit;
 
 namespace IdentityModel.UnitTests
 {
-    public class HttpClientDeviceAuthorizationExtensionsResponseTests
+    public class HttpClientDeviceAuthorizationExtensionsTests
     {
         const string Endpoint = "http://server/device";
+
+        [Fact]
+        public async Task Setting_basic_authentication_style_should_send_basic_authentication_header()
+        {
+            var document = File.ReadAllText(FileName.Create("success_device_authorization_response.json"));
+            var handler = new NetworkHandler(document, HttpStatusCode.OK);
+
+            var client = new HttpClient(handler);
+            var response = await client.RequestDeviceAuthorizationAsync(new DeviceAuthorizationRequest
+            {
+                Address = Endpoint,
+                ClientId = "client",
+                ClientSecret = "secret",
+                ClientCredentialStyle = ClientCredentialStyle.AuthorizationHeader
+            });
+
+            var request = handler.Request;
+
+            request.Headers.Authorization.Should().NotBeNull();
+            request.Headers.Authorization.Scheme.Should().Be("Basic");
+            request.Headers.Authorization.Parameter.Should().Be(BasicAuthenticationOAuthHeaderValue.EncodeCredential("client", "secret"));
+        }
+
+        [Fact]
+        public async Task Setting_post_values_authentication_style_should_post_values()
+        {
+            var document = File.ReadAllText(FileName.Create("success_device_authorization_response.json"));
+            var handler = new NetworkHandler(document, HttpStatusCode.OK);
+
+            var client = new HttpClient(handler);
+            var response = await client.RequestDeviceAuthorizationAsync(new DeviceAuthorizationRequest
+            {
+                Address = Endpoint,
+                ClientId = "client",
+                ClientSecret = "secret",
+                ClientCredentialStyle = ClientCredentialStyle.PostBody
+            });
+
+            var request = handler.Request;
+
+            request.Headers.Authorization.Should().BeNull();
+
+            var fields = QueryHelpers.ParseQuery(handler.Body);
+            fields["client_id"].First().Should().Be("client");
+            fields["client_secret"].First().Should().Be("secret");
+        }
 
         [Fact]
         public async Task Valid_protocol_response_should_be_handled_correctly()
