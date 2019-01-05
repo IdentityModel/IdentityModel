@@ -15,7 +15,7 @@ using Xunit;
 
 namespace IdentityModel.UnitTests
 {
-    public class HttpClientDeviceAuthorizationExtensionsResponseTests
+    public class HttpClientDeviceAuthorizationExtensionsTests
     {
         const string Endpoint = "http://server/device";
 
