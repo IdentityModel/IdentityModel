@@ -23,5 +23,5 @@ Before using the response, you should always check the ``IsError`` property to m
 
     var userCode = response.UserCode;
     var deviceCode = response.DeviceCode;
-    var verificationUrl = response.VerificationUri";
+    var verificationUrl = response.VerificationUri;
     var verificationUrlComplete = response.VerificationUriComplete;
