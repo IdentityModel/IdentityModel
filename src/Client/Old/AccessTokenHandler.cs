@@ -30,7 +30,7 @@ namespace IdentityModel.Client
         /// Gets or sets the timeout
         /// </summary>
         public TimeSpan Timeout { get; set; } = TimeSpan.FromSeconds(5);
-        
+
         /// <summary>
         /// Gets the current access token
         /// </summary>
@@ -57,7 +57,7 @@ namespace IdentityModel.Client
         /// <summary>
         /// Occurs when the tokens were renewed successfully
         /// </summary>
-        public event EventHandler<TokenRenewedEventArgs> TokenRenewed = delegate { };
+        public event EventHandler<TokenRenewedEventArgs> TokenRenewed;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AccessTokenHandler"/> class.
@@ -149,19 +149,7 @@ namespace IdentityModel.Client
                     {
                         _accessToken = response.AccessToken;
 
-#pragma warning disable 4014
-                        Task.Run(() =>
-                        {
-                            foreach (EventHandler<TokenRenewedEventArgs> del in TokenRenewed.GetInvocationList())
-                            {
-                                try
-                                {
-                                    del(this, new TokenRenewedEventArgs(response.AccessToken, response.ExpiresIn));
-                                }
-                                catch { }
-                            }
-                        }).ConfigureAwait(false);
-#pragma warning restore 4014
+                        TokenRenewed?.FireAndForget(this, new TokenRenewedEventArgs(response.AccessToken, response.ExpiresIn));
 
                         return true;
                     }
