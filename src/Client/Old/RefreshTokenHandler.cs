@@ -29,10 +29,11 @@ namespace IdentityModel.Client
         /// Gets or sets the timeout
         /// </summary>
         public TimeSpan Timeout { get; set; } = TimeSpan.FromSeconds(5);
-        
+
         /// <summary>
         /// Gets the current access token
         /// </summary>
+        [Obsolete("Please, use GetAccessTokenAsync() method instead.")]
         public string AccessToken
         {
             get
@@ -120,16 +121,20 @@ namespace IdentityModel.Client
         /// </returns>
         protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
-            var accessToken = await GetAccessTokenAsync(cancellationToken);
+            var accessToken = await GetAccessTokenAsync(cancellationToken).ConfigureAwait(false);
             if (accessToken.IsMissing())
             {
-                if (await RefreshTokensAsync(cancellationToken) == false)
+                if (await RefreshTokensAsync(cancellationToken).ConfigureAwait(false))
+                {
+                    accessToken = await GetAccessTokenAsync(cancellationToken).ConfigureAwait(false);
+                }
+                else
                 {
                     return new HttpResponseMessage(HttpStatusCode.Unauthorized) {RequestMessage = request};
                 }
             }
 
-            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", AccessToken);
+            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
             var response = await base.SendAsync(request, cancellationToken).ConfigureAwait(false);
 
             if (response.StatusCode != HttpStatusCode.Unauthorized)
@@ -137,14 +142,18 @@ namespace IdentityModel.Client
                 return response;
             }
 
-            if (await RefreshTokensAsync(cancellationToken) == false)
+            if (await RefreshTokensAsync(cancellationToken).ConfigureAwait(false))
+            {
+                accessToken = await GetAccessTokenAsync(cancellationToken).ConfigureAwait(false);
+            }
+            else
             {
                 return response;
             }
 
             response.Dispose(); // This 401 response will not be used for anything so is disposed to unblock the socket.
 
-            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", AccessToken);
+            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", accessToken);
             return await base.SendAsync(request, cancellationToken).ConfigureAwait(false);
         }
 
