@@ -7,61 +7,56 @@ namespace WebApplication1.Controllers
 {
     public class HomeController : Controller
     {
-        public HomeController(IHttpClientFactory httpClientFactory)
-        {
-            HttpClientFactory = httpClientFactory;
-        }
-
-        public IHttpClientFactory HttpClientFactory { get; }
-        public TokenClient TokenClient { get; }
-
         public IActionResult Index()
         {
             return View();
         }
 
-        public async Task<string> NoFactory()
+        public async Task<string> UseNativeHttpClient()
         {
-            var client = new HttpClient();
-
-            var response = await client.RequestClientCredentialsTokenAsync(new ClientCredentialsTokenRequest
+            using (var client = new HttpClient())
             {
-                Address = "https://demo.identityserver.io/connect/token",
-                ClientId = "client",
-                ClientSecret = "secret"
-            });
+                var response = await client.RequestClientCredentialsTokenAsync(new ClientCredentialsTokenRequest
+                {
+                    Address = "https://demo.identityserver.io/connect/token",
+                    ClientId = "client",
+                    ClientSecret = "secret"
+                });
 
-            return response.AccessToken ?? response.Error;
+                return response.AccessToken ?? response.Error;
+            }
         }
 
-        public async Task<string> Simple()
+        public async Task<string> UseHttpClientFactory([FromServices] IHttpClientFactory httpClientFactory)
         {
-            var client = HttpClientFactory.CreateClient();
-
-            var response = await client.RequestClientCredentialsTokenAsync(new ClientCredentialsTokenRequest
+            using (var client = httpClientFactory.CreateClient())
             {
-                Address = "https://demo.identityserver.io/connect/token",
-                ClientId = "client",
-                ClientSecret = "secret"
-            });
+                var response = await client.RequestClientCredentialsTokenAsync(new ClientCredentialsTokenRequest
+                {
+                    Address = "https://demo.identityserver.io/connect/token",
+                    ClientId = "client",
+                    ClientSecret = "secret"
+                });
 
-            return response.AccessToken ?? response.Error;
+                return response.AccessToken ?? response.Error;
+            }
         }
 
-        public async Task<string> WithAddress()
+        public async Task<string> UseHttpClientFactoryWithName([FromServices] IHttpClientFactory httpClientFactory)
         {
-            var client = HttpClientFactory.CreateClient("token_client");
-
-            var response = await client.RequestClientCredentialsTokenAsync(new ClientCredentialsTokenRequest
+            using (var client = httpClientFactory.CreateClient("token_client"))
             {
-                ClientId = "client",
-                ClientSecret = "secret"
-            });
+                var response = await client.RequestClientCredentialsTokenAsync(new ClientCredentialsTokenRequest
+                {
+                    ClientId = "client",
+                    ClientSecret = "secret"
+                });
 
-            return response.AccessToken ?? response.Error;
+                return response.AccessToken ?? response.Error;
+            }
         }
 
-        public async Task<string> Typed([FromServices] TokenClient tokenClient)
+        public async Task<string> UseTypedClient([FromServices] TokenClient tokenClient)
         {
             return await tokenClient.GetToken();
         }
