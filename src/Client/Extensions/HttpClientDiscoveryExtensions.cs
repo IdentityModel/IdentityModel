@@ -85,7 +85,6 @@ namespace IdentityModel.Client
                     return await ProtocolResponse.FromHttpResponseAsync<DiscoveryDocumentResponse>(response, $"Error connecting to {url}: {response.ReasonPhrase}");
                 }
 
-                //var disco = new DiscoveryResponse(responseContent, request.Policy);
                 var disco = await ProtocolResponse.FromHttpResponseAsync<DiscoveryDocumentResponse>(response, request.Policy).ConfigureAwait(false);
 
                 if (disco.IsError)
