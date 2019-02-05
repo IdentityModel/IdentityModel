@@ -34,7 +34,7 @@ namespace IdentityModel.Client
         /// <param name="request">The request.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
-        public static async Task<DiscoveryDocumentResponse> GetDiscoveryDocumentAsync(this HttpClient client, DiscoveryDocumentRequest request = null, CancellationToken cancellationToken = default)
+        public static async Task<DiscoveryDocumentResponse> GetDiscoveryDocumentAsync(this HttpMessageInvoker client, DiscoveryDocumentRequest request = null, CancellationToken cancellationToken = default)
         {
             if (request == null) request = new DiscoveryDocumentRequest();
 
@@ -43,9 +43,13 @@ namespace IdentityModel.Client
             {
                 address = request.Address;
             }
+            else if (client is HttpClient)
+            {
+                address = ((HttpClient)client).BaseAddress.AbsoluteUri;
+            }
             else
             {
-                address = client.BaseAddress.AbsoluteUri;
+                throw new ArgumentException("An address is required.");
             }
 
             var parsed = DiscoveryEndpoint.ParseUrl(address);
@@ -94,19 +98,22 @@ namespace IdentityModel.Client
                     jwkUrl = disco.JwksUri;
                     if (jwkUrl != null)
                     {
-                        response = await client.GetAsync(jwkUrl, cancellationToken).ConfigureAwait(false);
-
-                        if (response.Content != null)
+                        using (HttpRequestMessage getRequest = new HttpRequestMessage(HttpMethod.Get, jwkUrl))
                         {
-                            responseContent = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-                        }
+                            response = await client.SendAsync(getRequest, cancellationToken).ConfigureAwait(false);
 
-                        if (!response.IsSuccessStatusCode)
-                        {
-                            return await ProtocolResponse.FromHttpResponseAsync<DiscoveryDocumentResponse>(response, $"Error connecting to {jwkUrl}: {response.ReasonPhrase}").ConfigureAwait(false);
-                        }
+                            if (response.Content != null)
+                            {
+                                responseContent = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+                            }
 
-                        disco.KeySet = new JsonWebKeySet(responseContent);
+                            if (!response.IsSuccessStatusCode)
+                            {
+                                return await ProtocolResponse.FromHttpResponseAsync<DiscoveryDocumentResponse>(response, $"Error connecting to {jwkUrl}: {response.ReasonPhrase}").ConfigureAwait(false);
+                            }
+
+                            disco.KeySet = new JsonWebKeySet(responseContent);
+                        }
                     }
 
                     return disco;

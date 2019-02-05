@@ -17,7 +17,7 @@ namespace IdentityModel.Client
         private AsyncLazy<DiscoveryDocumentResponse> _lazyResponse;
 
         private readonly DiscoveryPolicy _policy;
-        private readonly Func<HttpClient> _getHttpClient;
+        private readonly Func<HttpMessageInvoker> _getHttpClient;
         private readonly string _authority;
 
         /// <summary>
@@ -38,7 +38,7 @@ namespace IdentityModel.Client
         /// <param name="authority">Base address or discovery document endpoint.</param>
         /// <param name="httpClientFunc">The HTTP client function.</param>
         /// <param name="policy">The policy.</param>
-        public DiscoveryCache(string authority, Func<HttpClient> httpClientFunc, DiscoveryPolicy policy = null)
+        public DiscoveryCache(string authority, Func<HttpMessageInvoker> httpClientFunc, DiscoveryPolicy policy = null)
         {
             _authority = authority;
             _policy = policy ?? new DiscoveryPolicy();

@@ -11,7 +11,7 @@ namespace IdentityModel.Client
     /// </summary>
     public class TokenClient
     {
-        private readonly HttpClient _client;
+        private readonly HttpMessageInvoker _client;
         private readonly TokenClientOptions _options;
 
         /// <summary>
@@ -20,7 +20,7 @@ namespace IdentityModel.Client
         /// <param name="client">The client.</param>
         /// <param name="options">The options.</param>
         /// <exception cref="ArgumentNullException">client</exception>
-        public TokenClient(HttpClient client, TokenClientOptions options)
+        public TokenClient(HttpMessageInvoker client, TokenClientOptions options)
         {
             _client = client ?? throw new ArgumentNullException(nameof(client));
             _options = options ?? new TokenClientOptions();
