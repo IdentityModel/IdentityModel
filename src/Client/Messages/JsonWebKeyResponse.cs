@@ -12,6 +12,11 @@ namespace IdentityModel.Client
     /// <seealso cref="IdentityModel.Client.ProtocolResponse" />
     public class JsonWebKeyResponse : ProtocolResponse
     {
+        /// <summary>
+        /// Intializes the key set
+        /// </summary>
+        /// <param name="initializationData"></param>
+        /// <returns></returns>
         protected override Task InitializeAsync(object initializationData = null)
         {
             if (!HttpResponse.IsSuccessStatusCode)
