@@ -29,7 +29,7 @@ namespace IdentityModel
         }
 
         /// <summary>
-        /// Creates a random key as base64 encoded string.
+        /// Creates a random key as base64 URL encoded string.
         /// </summary>
         /// <param name="length">The length.</param>
         /// <returns></returns>
@@ -38,7 +38,7 @@ namespace IdentityModel
             var bytes = new byte[length];
             Rng.GetBytes(bytes);
 
-            return Convert.ToBase64String(bytes);
+            return Base64Url.Encode(bytes);
         }
 
         /// <summary>
@@ -51,18 +51,7 @@ namespace IdentityModel
             var bytes = new byte[length];
             Rng.GetBytes(bytes);
 
-            return ByteArrayToString(bytes);
-        }
-
-        private static string ByteArrayToString(byte[] ba)
-        {
-            StringBuilder hex = new StringBuilder(ba.Length * 2);
-            foreach (byte b in ba)
-            {
-                hex.AppendFormat("{0:x2}", b);
-            }
-
-            return hex.ToString();
+            return Base64Url.Encode(bytes);
         }
 
         /// <summary>
