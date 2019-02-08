@@ -102,6 +102,15 @@ namespace IdentityModel
             public const string Algorithm = "alg";
             public const string Key = "key";
             public const string DeviceCode = "device_code";
+
+            // token exchange
+            public const string Resource = "resource";
+            public const string Audience = "audience";
+            public const string RequestedTokenType = "requested_token_type";
+            public const string SubjectToken = "subject_token";
+            public const string SubjectTokenType = "subject_token_type";
+            public const string ActorToken = "actor_token";
+            public const string ActorTokenType = "actor_token_type";
         }
 
         public static class TokenRequestTypes
@@ -135,6 +144,8 @@ namespace IdentityModel
             public const string Error = "error";
             public const string ErrorDescription = "error_description";
             public const string BearerTokenType = "Bearer";
+            public const string IssuedTokenType = "issued_token_type";
+            public const string Scope = "scope";
         }
 
         public static class TokenIntrospectionRequest
@@ -196,6 +207,15 @@ namespace IdentityModel
             public const string RefreshToken = "refresh_token";
         }
 
+        public static class TokenTypeIdentifiers
+        {
+            public const string AccessToken = "urn:ietf:params:oauth:token-type:access_token";
+            public const string IdentityToken = "urn:ietf:params:oauth:token-type:id_token";
+            public const string RefreshToken = "urn:ietf:params:oauth:token-type:refresh_token";
+            public const string Saml11 = "urn:ietf:params:oauth:token-type:saml1";
+            public const string Saml2 = "urn:ietf:params:oauth:token-type:saml2";
+        }
+
         public static class AuthenticationSchemes
         {
             public const string AuthorizationHeaderBearer = "Bearer";
@@ -217,11 +237,13 @@ namespace IdentityModel
             public const string Saml2Bearer = "urn:ietf:params:oauth:grant-type:saml2-bearer";
             public const string JwtBearer = "urn:ietf:params:oauth:grant-type:jwt-bearer";
             public const string DeviceCode = "urn:ietf:params:oauth:grant-type:device_code";
+            public const string TokenExchange = "urn:ietf:params:oauth:grant-type:token-exchange";
         }
 
         public static class ClientAssertionTypes
         {
             public const string JwtBearer = "urn:ietf:params:oauth:client-assertion-type:jwt-bearer";
+            public const string SamlBearer = "urn:ietf:params:oauth:client-assertion-type:saml2-bearer";
         }
 
         public static class ResponseTypes
@@ -277,6 +299,8 @@ namespace IdentityModel
             public const string PostBody = "client_secret_post";
             public const string BasicAuthentication = "client_secret_basic";
             public const string PrivateKeyJwt = "private_key_jwt";
+            public const string TlsClientAuth = "tls_client_auth";
+            public const string SelfSignedTlsClientAuth = "self_signed_tls_client_auth";
         }
 
         public static class AuthenticationMethods
@@ -385,6 +409,7 @@ namespace IdentityModel
             public const string UserInfoEncryptionAlgorithmsSupported = "userinfo_encryption_alg_values_supported";
             public const string UserInfoEncryptionEncValuesSupported = "userinfo_encryption_enc_values_supported";
             public const string UserInfoSigningAlgorithmsSupported = "userinfo_signing_alg_values_supported";
+            public const string TlsClientCertificateBoundAccessTokens = "tls_client_certificate_bound_access_tokens";
         }
 
         public static class Events
