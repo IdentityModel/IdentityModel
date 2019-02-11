@@ -221,37 +221,6 @@ namespace IdentityModel.UnitTests
         }
 
         [Fact]
-        public async Task Rotate_should_do_nothing_if_timeout()
-        {
-            // arrange
-            var countdown = new CountdownEvent(10);
-            var authenticationProvider = new InProcAuthenticationProvider(acquireToken: _ =>
-            {
-                countdown.Wait(TimeSpan.FromSeconds(1));
-                return Tuple.Create(Fake.ReferenceToken(), default(string));
-            });
-            var authenticationCache = new AuthenticationCache(authenticationProvider)
-            {
-                Timeout = TimeSpan.FromMilliseconds(1)
-            };
-
-            var accessToken = authenticationCache.AccessToken;
-
-            // act
-            var results = await Task.WhenAll(
-                Enumerable.Range(0, countdown.InitialCount).Select(_ => Task.Run(async () =>
-                {
-                    var task = authenticationCache.RotateAsync(accessToken);
-                    Task.Delay(TimeSpan.FromMilliseconds(25)).ContinueWith(x => countdown.Signal());
-                    return await task.ConfigureAwait(false);
-                }))
-            ).ConfigureAwait(false);
-
-            // assert
-            results.Count(_ => _).Should().Be(1, "Only 1 operation succeeded, the rest skipped by timeout.");
-        }
-
-        [Fact]
         public async Task Rotate_should_update_tokens_if_access_tokens_are_equal()
         {
             // arrange
