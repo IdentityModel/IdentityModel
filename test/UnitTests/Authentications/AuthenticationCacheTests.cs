@@ -239,13 +239,12 @@ namespace IdentityModel.UnitTests
 
             // act
             var results = await Task.WhenAll(
-                Enumerable.Range(0, countdown.InitialCount).Select(async _ =>
+                Enumerable.Range(0, countdown.InitialCount).Select(_ => Task.Run(async () =>
                 {
-                    await Task.Delay(TimeSpan.FromMilliseconds(1)).ConfigureAwait(false);
                     var task = authenticationCache.RotateAsync(accessToken);
                     Task.Delay(TimeSpan.FromMilliseconds(25)).ContinueWith(x => countdown.Signal());
                     return await task.ConfigureAwait(false);
-                })
+                }))
             ).ConfigureAwait(false);
 
             // assert
