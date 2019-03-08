@@ -65,7 +65,7 @@ namespace IdentityModel.Client
             };
             ApplyRequestParameters(request, parameters);
 
-            return _client.RequestClientCredentialsTokenAsync(request);
+            return _client.RequestClientCredentialsTokenAsync(request, cancellationToken);
         }
 
         /// <summary>
@@ -83,7 +83,7 @@ namespace IdentityModel.Client
             };
             ApplyRequestParameters(request, parameters);
 
-            return _client.RequestDeviceTokenAsync(request);
+            return _client.RequestDeviceTokenAsync(request, cancellationToken);
         }
 
         /// <summary>
@@ -105,7 +105,7 @@ namespace IdentityModel.Client
             };
             ApplyRequestParameters(request, parameters);
 
-            return _client.RequestPasswordTokenAsync(request);
+            return _client.RequestPasswordTokenAsync(request, cancellationToken);
         }
 
         /// <summary>
