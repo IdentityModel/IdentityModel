@@ -5,7 +5,19 @@ namespace IdentityModel.Client
     /// <summary>
     /// Options for TokenClient
     /// </summary>
-    public class TokenClientOptions
+    public class TokenClientOptions : ClientOptions
+    { }
+
+    /// <summary>
+    /// Options for IntrospectionClient
+    /// </summary>
+    public class IntrospectionClientOptions : ClientOptions
+    { }
+
+    /// <summary>
+    /// Base-class protocol client options
+    /// </summary>
+    public abstract class ClientOptions
     {
         /// <summary>
         /// Gets or sets the address.
