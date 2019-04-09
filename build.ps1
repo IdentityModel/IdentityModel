@@ -27,9 +27,10 @@ try {
 ###########################################################################
 # INSTALL .NET CORE CLI
 ###########################################################################
-$doIt=$args[0]
+$sdk = $args[0]
 
-if ($doIt -eq "-install")
+# only install sdk if -sdk was used
+if ($sdk -eq "-sdk")
 {
     Function Remove-PathVariable([string]$VariableToRemove)
     {
