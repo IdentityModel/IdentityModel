@@ -13,6 +13,7 @@ namespace IdentityModel
         /// <summary>
         /// Converts the given date value to epoch time.
         /// </summary>
+        [Obsolete("This functionality will be removed in a future version - use https://docs.microsoft.com/en-us/dotnet/api/system.datetimeoffset.fromunixtimeseconds?view=netframework-4.7.2 and https://docs.microsoft.com/en-us/dotnet/api/system.datetimeoffset.tounixtimeseconds?view=netframework-4.7.2 instead")]
         public static int ToEpochTime(this DateTime dateTime)
         {
             var date = dateTime.ToUniversalTime();
@@ -24,6 +25,7 @@ namespace IdentityModel
         /// <summary>
         /// Converts the given date value to epoch time.
         /// </summary>
+        [Obsolete("This functionality will be removed in a future version - use https://docs.microsoft.com/en-us/dotnet/api/system.datetimeoffset.fromunixtimeseconds?view=netframework-4.7.2 and https://docs.microsoft.com/en-us/dotnet/api/system.datetimeoffset.tounixtimeseconds?view=netframework-4.7.2 instead")]
         public static int ToEpochTime(this DateTimeOffset dateTime)
         {
             var date = dateTime.ToUniversalTime();
@@ -35,6 +37,7 @@ namespace IdentityModel
         /// <summary>
         /// Converts the given epoch time to a <see cref="DateTime"/> with <see cref="DateTimeKind.Utc"/> kind.
         /// </summary>
+        [Obsolete("This functionality will be removed in a future version - use https://docs.microsoft.com/en-us/dotnet/api/system.datetimeoffset.fromunixtimeseconds?view=netframework-4.7.2 and https://docs.microsoft.com/en-us/dotnet/api/system.datetimeoffset.tounixtimeseconds?view=netframework-4.7.2 instead")]
         public static DateTime ToDateTimeFromEpoch(this int intDate)
         {
             var timeInTicks = intDate * TimeSpan.TicksPerSecond;
@@ -44,6 +47,7 @@ namespace IdentityModel
         /// <summary>
         /// Converts the given epoch time to a UTC <see cref="DateTimeOffset"/>.
         /// </summary>
+        [Obsolete("This functionality will be removed in a future version - use https://docs.microsoft.com/en-us/dotnet/api/system.datetimeoffset.fromunixtimeseconds?view=netframework-4.7.2 and https://docs.microsoft.com/en-us/dotnet/api/system.datetimeoffset.tounixtimeseconds?view=netframework-4.7.2 instead")]
         public static DateTimeOffset ToDateTimeOffsetFromEpoch(this int intDate)
         {
             var timeInTicks = intDate * TimeSpan.TicksPerSecond;
