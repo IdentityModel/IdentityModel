@@ -21,6 +21,10 @@
   </PropertyGroup>
   
   <ItemGroup>
+    <PackageReference Include="minver" Version="1.0.0">
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
+      <PrivateAssets>all</PrivateAssets>
+    </PackageReference>
     <PackageReference Include="Newtonsoft.Json" Version="11.0.1" />
     <PackageReference Include="System.Text.Encodings.Web" Version="4.5.0" />
 

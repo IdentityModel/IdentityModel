@@ -1,0 +1,33 @@
+trigger:
+- master
+- dev
+- features/*
+
+jobs:
+- job: Linux
+  pool:
+    vmImage: 'ubuntu-16.04'
+  steps:
+  - task: Bash@3
+    displayName: 'Build Script'
+    inputs:
+      targetType: filePath
+      filePath: ./build.sh
+
+- job: Windows
+  pool:
+    vmImage: 'vs2017-win2016'
+  steps:
+  - task: PowerShell@2
+    displayName: 'Build Script'
+    inputs:
+      targetType: filePath
+      filePath: ./build.ps1  
+  - task: NuGetCommand@2
+    displayName: 'MyGet push'
+    inputs:
+      command: push
+      packagesToPush: 'artifacts/*.nupkg'
+      nuGetFeedType: external
+      publishFeedCredentials: 'MyGet'
+      condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/dev'))
