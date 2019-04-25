@@ -98,7 +98,11 @@ namespace IdentityModel.Client
                 Policy = _policy
             }).ConfigureAwait(false);
 
-            _nextReload = DateTime.UtcNow.Add(CacheDuration);
+            if (!result.IsError)
+            {
+                _nextReload = DateTime.UtcNow.Add(CacheDuration);
+            }
+
             return result;
         }
     }
