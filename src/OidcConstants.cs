@@ -25,6 +25,8 @@ namespace IdentityModel
             public const string AcrValues = "acr_values";
             public const string CodeChallenge = "code_challenge";
             public const string CodeChallengeMethod = "code_challenge_method";
+            public const string Request = "request";
+            public const string RequestUri = "request_uri";
         }
 
         public static class AuthorizeErrors
