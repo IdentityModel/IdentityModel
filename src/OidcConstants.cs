@@ -373,6 +373,7 @@ namespace IdentityModel
             public const string EndSessionEndpoint = "end_session_endpoint";
             public const string CheckSessionIframe = "check_session_iframe";
             public const string RegistrationEndpoint = "registration_endpoint";
+            public const string MtlsEndpointAliases = "mtls_endpoint_aliases";
 
             // common capabilities
             public const string FrontChannelLogoutSupported = "frontchannel_logout_supported";
