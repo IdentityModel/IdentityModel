@@ -33,7 +33,7 @@ namespace build
 
                     if (sign.HasValue())
                     {
-                        Sign("*.dll", "./src/bin/release");
+                        Sign("IdentityModel.dll", "./src/bin/release");
                     }
                 });
 
@@ -97,7 +97,7 @@ namespace build
             foreach (var file in files)
             {
                 Console.WriteLine("  Signing " + file);
-                Run("../../tools/signclient", $"sign -c {signClientConfig} -i {file} -r sc-ids@dotnetfoundation.org -s \"{signClientSecret}\" -n 'IdentityServer4'", noEcho: true);
+                Run("./tools/signclient", $"sign -c {signClientConfig} -i {file} -r sc-ids@dotnetfoundation.org -s \"{signClientSecret}\" -n 'IdentityServer4'", noEcho: true);
             }
         }
 
