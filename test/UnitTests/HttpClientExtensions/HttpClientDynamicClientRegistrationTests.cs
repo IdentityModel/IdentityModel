@@ -26,12 +26,12 @@ namespace IdentityModel.UnitTests
             var response = await client.RegisterClientAsync(new DynamicClientRegistrationRequest
             {
                 Address = Endpoint,
-                RegistrationRequest = new RegistrationRequest()
+                Document = new DynamicClientRegistrationDocument()
             });
 
             response.IsError.Should().BeFalse();
             response.ErrorType.Should().Be(ResponseErrorType.None);
-            response.HttpStatusCode.Should().Be(HttpStatusCode.OK);
+            response.HttpStatusCode.Should().Be(HttpStatusCode.Created);
 
             response.ClientId.Should().Be("s6BhdRkqt3");
             response.ClientSecret.Should().Be("ZJYCqe3GGRvdrudKyZS0XhGv_Z45DuKhCUk0gBR1vZk");
@@ -56,7 +56,7 @@ namespace IdentityModel.UnitTests
             var response = await client.RegisterClientAsync(new DynamicClientRegistrationRequest
             {
                 Address = Endpoint,
-                RegistrationRequest = new RegistrationRequest()
+                Document = new DynamicClientRegistrationDocument()
             });
 
             response.IsError.Should().BeTrue();
@@ -74,7 +74,7 @@ namespace IdentityModel.UnitTests
             var response = await client.RegisterClientAsync(new DynamicClientRegistrationRequest
             {
                 Address = Endpoint,
-                RegistrationRequest = new RegistrationRequest()
+                Document = new DynamicClientRegistrationDocument()
             });
 
             response.IsError.Should().BeTrue();
@@ -92,7 +92,7 @@ namespace IdentityModel.UnitTests
             var response = await client.RegisterClientAsync(new DynamicClientRegistrationRequest
             {
                 Address = Endpoint,
-                RegistrationRequest = new RegistrationRequest()
+                Document = new DynamicClientRegistrationDocument()
             });
 
             response.IsError.Should().BeTrue();
@@ -111,7 +111,7 @@ namespace IdentityModel.UnitTests
             var response = await client.RegisterClientAsync(new DynamicClientRegistrationRequest
             {
                 Address = Endpoint,
-                RegistrationRequest = new RegistrationRequest()
+                Document = new DynamicClientRegistrationDocument()
             });
 
             response.IsError.Should().BeTrue();

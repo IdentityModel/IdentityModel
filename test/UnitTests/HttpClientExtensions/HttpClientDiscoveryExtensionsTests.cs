@@ -13,13 +13,12 @@ using Xunit;
 
 namespace IdentityModel.UnitTests
 {
-    public class HttpClientDiscoveryExtensionsTests
+    public class HttpClientJsonWebkeyExtensionsTests
     {
-        NetworkHandler _successHandler;
-        string _endpoint = "https://demo.identityserver.io/.well-known/openid-configuration";
-        string _authority = "https://demo.identityserver.io";
-
-        public HttpClientDiscoveryExtensionsTests()
+        readonly NetworkHandler _successHandler;
+        readonly string _endpoint = "https://demo.identityserver.io/.well-known/openid-configuration/jwks";
+        
+        public HttpClientJsonWebkeyExtensionsTests()
         {
             var discoFileName = FileName.Create("discovery.json");
             var document = File.ReadAllText(discoFileName);
@@ -46,9 +45,9 @@ namespace IdentityModel.UnitTests
                 BaseAddress = new Uri(_endpoint)
             };
 
-            var disco = await client.GetDiscoveryDocumentAsync();
+            var jwk = await client.GetJsonWebKeySetAsync();
 
-            disco.IsError.Should().BeFalse();
+            jwk.IsError.Should().BeFalse();
         }
 
         [Fact]
@@ -56,27 +55,9 @@ namespace IdentityModel.UnitTests
         {
             var client = new HttpClient(_successHandler);
 
-            var disco = await client.GetDiscoveryDocumentAsync(new DiscoveryDocumentRequest
-            {
-                Address = _endpoint
-            });
+            var jwk = await client.GetJsonWebKeySetAsync(_endpoint);
 
-            disco.IsError.Should().BeFalse();
-        }
-
-        [Fact]
-        public async Task Authority_should_expand_to_endpoint()
-        {
-            var handler = new NetworkHandler(HttpStatusCode.NotFound, "not found");
-            var client = new HttpClient(handler);
-
-            var disco = await client.GetDiscoveryDocumentAsync(new DiscoveryDocumentRequest
-            {
-                Address = _authority
-            });
-
-            disco.IsError.Should().BeTrue();
-            handler.Request.RequestUri.Should().Be(_endpoint);
+            jwk.IsError.Should().BeFalse();
         }
 
         [Fact]
@@ -88,32 +69,13 @@ namespace IdentityModel.UnitTests
                 BaseAddress = new Uri(_endpoint)
             };
 
-            var disco = await client.GetDiscoveryDocumentAsync();
+            var jwk = await client.GetJsonWebKeySetAsync();
 
-            disco.IsError.Should().BeTrue();
-            disco.ErrorType.Should().Be(ResponseErrorType.Http);
-            disco.Error.Should().StartWith("Error connecting to");
-            disco.Error.Should().EndWith("not found");
-            disco.StatusCode.Should().Be(HttpStatusCode.NotFound);
-        }
-
-        [Fact]
-        public async Task Policy_authority_does_not_get_overwritten()
-        {
-            var policy = new DiscoveryPolicy
-            {
-                Authority = "https://server:123"
-            };
-
-            var client = new HttpClient(_successHandler);
-            var disco = await client.GetDiscoveryDocumentAsync(new DiscoveryDocumentRequest
-            {
-                Address = _endpoint,
-                Policy = policy
-            });
-
-            disco.IsError.Should().BeTrue();
-            policy.Authority.Should().Be("https://server:123");
+            jwk.IsError.Should().BeTrue();
+            jwk.ErrorType.Should().Be(ResponseErrorType.Http);
+            jwk.Error.Should().StartWith("Error connecting to");
+            jwk.Error.Should().EndWith("not found");
+            jwk.HttpStatusCode.Should().Be(HttpStatusCode.NotFound);
         }
 
         [Fact]
@@ -122,34 +84,12 @@ namespace IdentityModel.UnitTests
             var handler = new NetworkHandler(new Exception("error"));
 
             var client = new HttpClient(handler);
-            var disco = await client.GetDiscoveryDocumentAsync(new DiscoveryDocumentRequest
-            {
-                Address = _endpoint,
-            });
+            var jwk = await client.GetJsonWebKeySetAsync(_endpoint);
 
-            disco.IsError.Should().BeTrue();
-            disco.ErrorType.Should().Be(ResponseErrorType.Exception);
-            disco.Error.Should().StartWith("Error connecting to");
-            disco.Error.Should().EndWith("error");
-        }
-
-        [Fact]
-        public async Task TryGetValue_calls_should_behave_as_excected()
-        {
-            var client = new HttpClient(_successHandler)
-            {
-                BaseAddress = new Uri(_endpoint)
-            };
-
-            var disco = await client.GetDiscoveryDocumentAsync();
-
-            disco.IsError.Should().BeFalse();
-
-            disco.TryGetValue(OidcConstants.Discovery.AuthorizationEndpoint).Should().NotBeNull();
-            disco.TryGetValue("unknown").Should().BeNull();
-
-            disco.TryGetString(OidcConstants.Discovery.AuthorizationEndpoint).Should().Be("https://demo.identityserver.io/connect/authorize");
-            disco.TryGetString("unknown").Should().BeNull();
+            jwk.IsError.Should().BeTrue();
+            jwk.ErrorType.Should().Be(ResponseErrorType.Exception);
+            jwk.Error.Should().StartWith("Error connecting to");
+            jwk.Error.Should().EndWith("error.");
         }
 
         [Fact]
@@ -160,22 +100,10 @@ namespace IdentityModel.UnitTests
                 BaseAddress = new Uri(_endpoint)
             };
 
-            var disco = await client.GetDiscoveryDocumentAsync();
+            var jwk = await client.GetJsonWebKeySetAsync();
 
-            disco.IsError.Should().BeFalse();
-
-            disco.TokenEndpoint.Should().Be("https://demo.identityserver.io/connect/token");
-            disco.AuthorizeEndpoint.Should().Be("https://demo.identityserver.io/connect/authorize");
-            disco.UserInfoEndpoint.Should().Be("https://demo.identityserver.io/connect/userinfo");
-
-            disco.FrontChannelLogoutSupported.Should().Be(true);
-            disco.FrontChannelLogoutSessionSupported.Should().Be(true);
-
-            var responseModes = disco.ResponseModesSupported;
-
-            responseModes.Should().Contain("form_post");
-            responseModes.Should().Contain("query");
-            responseModes.Should().Contain("fragment");
+            jwk.IsError.Should().BeFalse();
+            jwk.KeySet.Should().NotBeNull();
         }
 
         [Fact]
@@ -187,14 +115,14 @@ namespace IdentityModel.UnitTests
                 BaseAddress = new Uri(_endpoint)
             };
 
-            var disco = await client.GetDiscoveryDocumentAsync();
+            var jwk = await client.GetJsonWebKeySetAsync();
 
-            disco.IsError.Should().BeTrue();
-            disco.ErrorType.Should().Be(ResponseErrorType.Http);
-            disco.StatusCode.Should().Be(HttpStatusCode.InternalServerError);
-            disco.Error.Should().Contain("Internal Server Error");
-            disco.Raw.Should().Be("not_json");
-            disco.Json.Should().BeNull();
+            jwk.IsError.Should().BeTrue();
+            jwk.ErrorType.Should().Be(ResponseErrorType.Http);
+            jwk.HttpStatusCode.Should().Be(HttpStatusCode.InternalServerError);
+            jwk.Error.Should().Contain("Internal Server Error");
+            jwk.Raw.Should().Be("not_json");
+            jwk.Json.Should().BeNull();
         }
 
         [Fact]
@@ -213,108 +141,15 @@ namespace IdentityModel.UnitTests
                 BaseAddress = new Uri(_endpoint)
             };
 
-            var disco = await client.GetDiscoveryDocumentAsync();
+            var jwk = await client.GetJsonWebKeySetAsync();
 
-            disco.IsError.Should().BeTrue();
-            disco.ErrorType.Should().Be(ResponseErrorType.Http);
-            disco.StatusCode.Should().Be(HttpStatusCode.InternalServerError);
-            disco.Error.Should().Contain("Internal Server Error");
+            jwk.IsError.Should().BeTrue();
+            jwk.ErrorType.Should().Be(ResponseErrorType.Http);
+            jwk.HttpStatusCode.Should().Be(HttpStatusCode.InternalServerError);
+            jwk.Error.Should().Contain("Internal Server Error");
 
-            disco.Json.TryGetString("foo").Should().Be("foo");
-            disco.Json.TryGetString("bar").Should().Be("bar");
-        }
-
-        [Fact]
-        public async Task Http_error_at_jwk_with_non_json_content_should_be_handled_correctly()
-        {
-            var handler = new NetworkHandler(request =>
-            {
-                HttpResponseMessage response;
-
-                if (!request.RequestUri.AbsoluteUri.Contains("jwk"))
-                {
-                    var discoFileName = FileName.Create("discovery.json");
-                    var document = File.ReadAllText(discoFileName);
-
-                    response = new HttpResponseMessage(HttpStatusCode.OK)
-                    {
-                        Content = new StringContent(document)
-                    };
-                }
-                else
-                {
-                    response = new HttpResponseMessage(HttpStatusCode.InternalServerError)
-                    {
-                        Content = new StringContent("not_json")
-                    };
-                }
-
-                return response;
-            });
-
-            var client = new HttpClient(handler)
-            {
-                BaseAddress = new Uri(_endpoint)
-            };
-
-            var disco = await client.GetDiscoveryDocumentAsync();
-
-            disco.IsError.Should().BeTrue();
-            disco.ErrorType.Should().Be(ResponseErrorType.Http);
-            disco.StatusCode.Should().Be(HttpStatusCode.InternalServerError);
-            disco.Error.Should().Contain("Internal Server Error");
-            disco.Raw.Should().Be("not_json");
-            disco.Json.Should().BeNull();
-        }
-
-        [Fact]
-        public async Task Http_error_at_jwk_with_json_content_should_be_handled_correctly()
-        {
-            var handler = new NetworkHandler(request =>
-            {
-                HttpResponseMessage response;
-
-                if (!request.RequestUri.AbsoluteUri.Contains("jwk"))
-                {
-                    var discoFileName = FileName.Create("discovery.json");
-                    var document = File.ReadAllText(discoFileName);
-
-                    response = new HttpResponseMessage(HttpStatusCode.OK)
-                    {
-                        Content = new StringContent(document)
-                    };
-                }
-                else
-                {
-                    var content = new
-                    {
-                        foo = "foo",
-                        bar = "bar"
-                    };
-
-                    response = new HttpResponseMessage(HttpStatusCode.InternalServerError)
-                    {
-                        Content = new StringContent(JsonConvert.SerializeObject(content))
-                    }; 
-                }
-
-                return response;
-            });
-
-            var client = new HttpClient(handler)
-            {
-                BaseAddress = new Uri(_endpoint)
-            };
-
-            var disco = await client.GetDiscoveryDocumentAsync();
-
-            disco.IsError.Should().BeTrue();
-            disco.ErrorType.Should().Be(ResponseErrorType.Http);
-            disco.StatusCode.Should().Be(HttpStatusCode.InternalServerError);
-            disco.Error.Should().Contain("Internal Server Error");
-
-            disco.Json.TryGetString("foo").Should().Be("foo");
-            disco.Json.TryGetString("bar").Should().Be("bar");
+            jwk.Json.TryGetString("foo").Should().Be("foo");
+            jwk.Json.TryGetString("bar").Should().Be("bar");
         }
     }
 }

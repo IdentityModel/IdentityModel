@@ -6,6 +6,7 @@ using IdentityModel.Client;
 using System;
 using System.IO;
 using System.Net;
+using System.Net.Http;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -59,16 +60,11 @@ namespace IdentityModel.UnitTests
         [InlineData("https://server:123")]
         public void Various_urls_should_normalize(string input)
         {
-            var result = DiscoveryClient.ParseUrl(input);
+            var result = DiscoveryEndpoint.ParseUrl(input);
 
             // test parse URL logic
             result.Url.Should().Be("https://server:123/.well-known/openid-configuration");
             result.Authority.Should().Be("https://server:123");
-
-            // make sure parse URL results are used correctly
-            var client = new DiscoveryClient(input);
-            client.Url.Should().Be(result.Url);
-            client.Authority.Should().Be(result.Authority);
         }
 
         [Theory]
@@ -89,16 +85,17 @@ namespace IdentityModel.UnitTests
         [InlineData("https://sub.demo.identityserver.io:5000/sub")]
         public async Task Valid_Urls_with_default_policy_should_succeed(string input)
         {
-            var client = new DiscoveryClient(input, GetHandler(input))
+            var client = new HttpClient(GetHandler(input));
+            var disco = await client.GetDiscoveryDocumentAsync(new DiscoveryDocumentRequest
             {
+                Address = input,
+
                 Policy =
                 {
                     RequireHttps = true,
                     AllowHttpOnLoopback = true
                 }
-            };
-
-            var disco = await client.GetAsync();
+            });
 
             disco.IsError.Should().BeFalse();
         }
@@ -106,36 +103,38 @@ namespace IdentityModel.UnitTests
         [Fact]
         public async Task Connecting_to_http_should_return_error()
         {
-            var client = new DiscoveryClient("http://authority")
+            var client = new HttpClient();
+            var disco = await client.GetDiscoveryDocumentAsync(new DiscoveryDocumentRequest
             {
+                Address = "http://authority",
+
                 Policy =
                 {
                     RequireHttps = true,
                     AllowHttpOnLoopback = true
                 }
-            };
-
-            var disco = await client.GetAsync();
+            });
 
             disco.IsError.Should().BeTrue();
             disco.Json.Should().BeNull();
             disco.ErrorType.Should().Be(ResponseErrorType.Exception);
             disco.Error.Should().StartWith("Error connecting to");
-            disco.Error.Should().EndWith("HTTPS required");
+            disco.Error.Should().EndWith("HTTPS required.");
         }
 
         [Fact]
         public async Task If_policy_allows_http_non_http_must_not_return_error()
         {
-            var client = new DiscoveryClient("http://authority", GetHandler("http://authority"))
+            var client = new HttpClient(GetHandler("http://authority"));
+            var disco = await client.GetDiscoveryDocumentAsync(new DiscoveryDocumentRequest
             {
+                Address = "http://authority",
+
                 Policy =
                 {
                     RequireHttps = false
                 }
-            };
-
-            var disco = await client.GetAsync();
+            });
 
             disco.IsError.Should().BeFalse();
         }
@@ -146,16 +145,17 @@ namespace IdentityModel.UnitTests
         [InlineData("http://127.0.0.1")]
         public async Task Http_on_loopback_must_not_return_error(string input)
         {
-            var client = new DiscoveryClient(input, GetHandler(input))
+            var client = new HttpClient(GetHandler(input));
+            var disco = await client.GetDiscoveryDocumentAsync(new DiscoveryDocumentRequest
             {
+                Address = input,
+
                 Policy =
                 {
                     RequireHttps = true,
                     AllowHttpOnLoopback = true
                 }
-            };
-
-            var disco = await client.GetAsync();
+            });
 
             disco.IsError.Should().BeFalse();
         }
@@ -164,16 +164,16 @@ namespace IdentityModel.UnitTests
         [Fact]
         public async Task Invalid_issuer_name_must_return_policy_error()
         {
-            var handler = GetHandler("https://differentissuer");
-            var client = new DiscoveryClient("https://authority", handler)
+            var client = new HttpClient(GetHandler("https://differentissuer"));
+            var disco = await client.GetDiscoveryDocumentAsync(new DiscoveryDocumentRequest
             {
+                Address = "https://authority",
+
                 Policy =
                 {
                     ValidateIssuerName = true
                 }
-            };
-
-            var disco = await client.GetAsync();
+            });
 
             disco.IsError.Should().BeTrue();
             disco.Json.Should().BeNull();
@@ -185,8 +185,12 @@ namespace IdentityModel.UnitTests
         public async Task Excluded_endpoints_should_not_fail_validation()
         {
             var handler = GetHandler("https://authority", "https://otherserver");
-            var client = new DiscoveryClient("https://authority", handler)
+            var client = new HttpClient(handler);
+
+            var disco = await client.GetDiscoveryDocumentAsync(new DiscoveryDocumentRequest
             {
+                Address = "https://authority",
+
                 Policy =
                 {
                     ValidateEndpoints = true,
@@ -202,9 +206,7 @@ namespace IdentityModel.UnitTests
                         "introspection_endpoint",
                     }
                 }
-            };
-
-            var disco = await client.GetAsync();
+            });
 
             disco.IsError.Should().BeFalse();
         }
@@ -213,15 +215,17 @@ namespace IdentityModel.UnitTests
         public async Task Valid_issuer_name_must_return_no_error()
         {
             var handler = GetHandler("https://authority");
-            var client = new DiscoveryClient("https://authority", handler)
+            var client = new HttpClient(handler);
+
+            var disco = await client.GetDiscoveryDocumentAsync(new DiscoveryDocumentRequest
             {
+                Address = "https://authority",
+
                 Policy =
                 {
                     ValidateIssuerName = true
                 }
-            };
-
-            var disco = await client.GetAsync();
+            });
 
             disco.IsError.Should().BeFalse();
         }
@@ -230,16 +234,18 @@ namespace IdentityModel.UnitTests
         public async Task Authority_comparison_may_be_case_insensitive()
         {
             var handler = GetHandler("https://authority/tenantid");
-            var client = new DiscoveryClient("https://authority/TENANTID", handler)
+            var client = new HttpClient(handler);
+
+            var disco = await client.GetDiscoveryDocumentAsync(new DiscoveryDocumentRequest
             {
+                Address = "https://authority/TENANTID",
+
                 Policy =
                 {
                     ValidateIssuerName = true,
                     AuthorityNameComparison = StringComparison.OrdinalIgnoreCase
                 }
-            };
-
-            var disco = await client.GetAsync();
+            });
 
             disco.IsError.Should().BeFalse();
         }
@@ -248,17 +254,19 @@ namespace IdentityModel.UnitTests
         public async Task Endpoints_not_using_https_should_return_policy_error()
         {
             var handler = GetHandler("https://authority", "http://authority");
-            var client = new DiscoveryClient("https://authority", handler)
+            var client = new HttpClient(handler);
+
+            var disco = await client.GetDiscoveryDocumentAsync(new DiscoveryDocumentRequest
             {
+                Address = "https://authority",
+
                 Policy =
                 {
                     RequireHttps = true,
                     ValidateIssuerName = true,
                     ValidateEndpoints = true
                 }
-            };
-
-            var disco = await client.GetAsync();
+            });
 
             disco.IsError.Should().BeTrue();
             disco.Json.Should().BeNull();
@@ -272,17 +280,19 @@ namespace IdentityModel.UnitTests
         public async Task Endpoints_not_beneath_authority_must_return_policy_error(string authority, string endpointBase)
         {
             var handler = GetHandler(authority, endpointBase);
-            var client = new DiscoveryClient(authority, handler)
+            var client = new HttpClient(handler);
+
+            var disco = await client.GetDiscoveryDocumentAsync(new DiscoveryDocumentRequest
             {
+                Address = authority,
+
                 Policy =
                 {
                     RequireHttps = true,
                     ValidateIssuerName = true,
                     ValidateEndpoints = true
                 }
-            };
-
-            var disco = await client.GetAsync();
+            });
 
             disco.IsError.Should().BeTrue();
             disco.Json.Should().BeNull();
@@ -296,8 +306,12 @@ namespace IdentityModel.UnitTests
         public async Task Endpoints_not_beneath_authority_must_be_allowed_if_whitelisted(string authority, string endpointBase)
         {
             var handler = GetHandler(authority, endpointBase);
-            var client = new DiscoveryClient(authority, handler)
+            var client = new HttpClient(handler);
+
+            var disco = await client.GetDiscoveryDocumentAsync(new DiscoveryDocumentRequest
             {
+                Address = authority,
+
                 Policy =
                 {
                     RequireHttps = true,
@@ -309,9 +323,7 @@ namespace IdentityModel.UnitTests
                         endpointBase
                     }
                 }
-            };
-
-            var disco = await client.GetAsync();
+            });
 
             disco.IsError.Should().BeFalse();
         }
@@ -325,17 +337,19 @@ namespace IdentityModel.UnitTests
         public async Task Endpoints_not_belonging_to_authority_host_must_return_policy_error(string authority, string endpointBase)
         {
             var handler = GetHandler(authority, endpointBase);
-            var client = new DiscoveryClient(authority, handler)
+            var client = new HttpClient(handler);
+
+            var disco = await client.GetDiscoveryDocumentAsync(new DiscoveryDocumentRequest
             {
+                Address = authority,
+
                 Policy =
                 {
                     RequireHttps = true,
                     ValidateIssuerName = true,
                     ValidateEndpoints = true
                 }
-            };
-
-            var disco = await client.GetAsync();
+            });
 
             disco.IsError.Should().BeTrue();
             disco.Json.Should().BeNull();
@@ -352,8 +366,12 @@ namespace IdentityModel.UnitTests
         public async Task Endpoints_not_belonging_to_authority_host_must_be_allowed_if_whitelisted(string authority, string endpointBase)
         {
             var handler = GetHandler(authority, endpointBase);
-            var client = new DiscoveryClient(authority, handler)
+            var client = new HttpClient(handler);
+
+            var disco = await client.GetDiscoveryDocumentAsync(new DiscoveryDocumentRequest
             {
+                Address = authority,
+
                 Policy =
                 {
                     RequireHttps = true,
@@ -365,9 +383,7 @@ namespace IdentityModel.UnitTests
                         endpointBase
                     }
                 }
-            };
-
-            var disco = await client.GetAsync();
+            });
 
             disco.IsError.Should().BeFalse();
         }
@@ -376,17 +392,19 @@ namespace IdentityModel.UnitTests
         public async Task Issuer_and_endpoint_can_be_unrelated_if_allowed()
         {
             var handler = GetHandler("https://authority", "https://differentauthority");
-            var client = new DiscoveryClient("https://authority", handler)
+            var client = new HttpClient(handler);
+
+            var disco = await client.GetDiscoveryDocumentAsync(new DiscoveryDocumentRequest
             {
+                Address = "https://authority",
+
                 Policy =
                 {
                     RequireHttps = true,
                     ValidateIssuerName = true,
                     ValidateEndpoints = false
                 }
-            };
-
-            var disco = await client.GetAsync();
+            });
 
             disco.IsError.Should().BeFalse();
         }
@@ -395,17 +413,19 @@ namespace IdentityModel.UnitTests
         public async Task Issuer_and_endpoint_can_be_unrelated_if_allowed_but_https_is_still_enforced()
         {
             var handler = GetHandler("https://authority", "http://differentauthority");
-            var client = new DiscoveryClient("https://authority", handler)
+            var client = new HttpClient(handler);
+
+            var disco = await client.GetDiscoveryDocumentAsync(new DiscoveryDocumentRequest
             {
+                Address = "https://authority",
+
                 Policy =
                 {
                     RequireHttps = true,
                     ValidateIssuerName = true,
                     ValidateEndpoints = false
                 }
-            };
-
-            var disco = await client.GetAsync();
+            });
 
             disco.IsError.Should().BeTrue();
             disco.Json.Should().BeNull();

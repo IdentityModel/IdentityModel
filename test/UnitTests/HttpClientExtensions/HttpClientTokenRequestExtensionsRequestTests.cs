@@ -4,8 +4,8 @@
 using FluentAssertions;
 using IdentityModel.Client;
 using Microsoft.AspNetCore.WebUtilities;
-using Microsoft.Extensions.Primitives;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -43,7 +43,15 @@ namespace IdentityModel.UnitTests
         }
 
         [Fact]
-        public async Task Repeating_request_should_succeed()
+        public void Sending_a_request_without_client_id_should_fail()
+        {
+            Func<Task> act = async () => await _client.RequestTokenAsync(new TokenRequest { Address = Endpoint, GrantType = "custom" });
+
+            act.Should().Throw<InvalidOperationException>().WithMessage("client_id is missing");
+        }
+
+        [Fact]
+        public async Task Repeating_a_request_should_succeed()
         {
             var request = new ClientCredentialsTokenRequest
             {
@@ -52,36 +60,24 @@ namespace IdentityModel.UnitTests
             };
 
             var response = await _client.RequestClientCredentialsTokenAsync(request);
-
             response.IsError.Should().BeFalse();
 
             var fields = QueryHelpers.ParseQuery(_handler.Body);
-            StringValues values;
+            fields.TryGetValue("grant_type", out var grant_type).Should().BeTrue();
+            grant_type.First().Should().Be(OidcConstants.GrantTypes.ClientCredentials);
 
-            fields.TryGetValue("client_id", out values).Should().BeTrue();
-            values.First().Should().Be("client");
+            fields.TryGetValue("scope", out var scope).Should().BeTrue();
+            scope.First().Should().Be("scope");
 
-            fields.TryGetValue("grant_type", out values).Should().BeTrue();
-            values.First().Should().Be(OidcConstants.GrantTypes.ClientCredentials);
-
-            fields.TryGetValue("scope", out values).Should().BeTrue();
-            values.First().Should().Be("scope");
-
-            // repeat
             response = await _client.RequestClientCredentialsTokenAsync(request);
-
             response.IsError.Should().BeFalse();
 
             fields = QueryHelpers.ParseQuery(_handler.Body);
-            
-            fields.TryGetValue("client_id", out values).Should().BeTrue();
-            values.First().Should().Be("client");
+            fields.TryGetValue("grant_type", out grant_type).Should().BeTrue();
+            grant_type.First().Should().Be(OidcConstants.GrantTypes.ClientCredentials);
 
-            fields.TryGetValue("grant_type", out values).Should().BeTrue();
-            values.First().Should().Be(OidcConstants.GrantTypes.ClientCredentials);
-
-            fields.TryGetValue("scope", out values).Should().BeTrue();
-            values.First().Should().Be("scope");
+            fields.TryGetValue("scope", out scope).Should().BeTrue();
+            scope.First().Should().Be("scope");
         }
 
         [Fact]
@@ -101,6 +97,14 @@ namespace IdentityModel.UnitTests
 
             fields.TryGetValue("scope", out var scope).Should().BeTrue();
             scope.First().Should().Be("scope");
+        }
+
+        [Fact]
+        public void Explicit_null_parameters_should__not_fail_()
+        {
+            Func<Task> act = async () => await _client.RequestClientCredentialsTokenAsync(new ClientCredentialsTokenRequest { ClientId = "client", Parameters = null });
+
+            act.Should().NotThrow();
         }
 
         [Fact]
@@ -334,6 +338,36 @@ namespace IdentityModel.UnitTests
             custom.First().Should().Be("custom");
         }
 
+        [Fact]
+        public async Task Sending_raw_parameters_should_create_correct_format()
+        {
+            var response = await _client.RequestTokenRawAsync("https://token/", new Dictionary<string, string>
+            {
+                { "grant_type", "test" },
+                { "client_id", "client" },
+                { "client_secret", "secret" },
+                { "scope", "scope" }
+            });
+            
+            var request = _handler.Request;
+
+            request.RequestUri.AbsoluteUri.Should().Be("https://token/");
+
+
+            var fields = QueryHelpers.ParseQuery(_handler.Body);
+
+            fields.TryGetValue("grant_type", out var field).Should().BeTrue();
+            field.First().Should().Be("test");
+
+            fields.TryGetValue("client_id", out field).Should().BeTrue();
+            field.First().Should().Be("client");
+
+            fields.TryGetValue("client_secret", out field).Should().BeTrue();
+            field.First().Should().Be("secret");
+
+            fields.TryGetValue("scope", out field).Should().BeTrue();
+            field.First().Should().Be("scope");
+        }
 
         [Fact]
         public async Task Setting_basic_authentication_style_should_send_basic_authentication_header()
@@ -370,16 +404,9 @@ namespace IdentityModel.UnitTests
             var fields = QueryHelpers.ParseQuery(_handler.Body);
             fields["client_id"].First().Should().Be("client");
             fields["client_secret"].First().Should().Be("secret");
+
         }
-
-        [Fact]
-        public void Setting_no_client_id_should_fail()
-        {
-            Func<Task> act = async () => await _client.RequestTokenAsync(new TokenRequest { Address = Endpoint, GrantType = "custom" });
-
-            act.Should().Throw<InvalidOperationException>().And.Message.Should().Be("client_id is missing");
-        }
-
+        
         [Fact]
         public async Task Setting_client_id_only_and_post_should_put_client_id_in_post_body()
         {

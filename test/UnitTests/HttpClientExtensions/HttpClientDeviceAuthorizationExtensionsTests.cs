@@ -92,18 +92,18 @@ namespace IdentityModel.UnitTests
         }
 
         [Fact]
-        public async Task Repeating_request_should_succeed()
+        public async Task Repeating_a_request_should_succeed()
         {
             var document = File.ReadAllText(FileName.Create("success_device_authorization_response.json"));
             var handler = new NetworkHandler(document, HttpStatusCode.OK);
 
-            var client = new HttpClient(handler);
             var request = new DeviceAuthorizationRequest
             {
                 Address = Endpoint,
                 ClientId = "client"
             };
 
+            var client = new HttpClient(handler);
             var response = await client.RequestDeviceAuthorizationAsync(request);
 
             response.IsError.Should().BeFalse();

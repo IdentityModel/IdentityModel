@@ -1,14 +1,13 @@
 ﻿// Copyright (c) Brock Allen & Dominick Baier. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
 
-
 namespace IdentityModel.Client
 {
     /// <summary>
     /// Request for dynamic client registration
     /// </summary>
-    /// <seealso cref="Request" />
-    public class DynamicClientRegistrationRequest : Request
+    /// <seealso cref="ProtocolRequest" />
+    public class DynamicClientRegistrationRequest : ProtocolRequest
     {
         /// <summary>
         /// Gets or sets the token.
@@ -24,6 +23,6 @@ namespace IdentityModel.Client
         /// <value>
         /// The registration request.
         /// </value>
-        public RegistrationRequest RegistrationRequest  { get; set; }
+        public DynamicClientRegistrationDocument Document  { get; set; }
     }
 }

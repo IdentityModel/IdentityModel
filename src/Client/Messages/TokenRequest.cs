@@ -6,8 +6,8 @@ namespace IdentityModel.Client
     /// <summary>
     /// Request for token
     /// </summary>
-    /// <seealso cref="Request" />
-    public class TokenRequest : Request
+    /// <seealso cref="ProtocolRequest" />
+    public class TokenRequest : ProtocolRequest
     {
         /// <summary>
         /// Gets or sets the type of the grant.

@@ -6,8 +6,8 @@ namespace IdentityModel.Client
     /// <summary>
     /// Request for OAuth token introspection
     /// </summary>
-    /// <seealso cref="Request" />
-    public class TokenIntrospectionRequest : Request
+    /// <seealso cref="ProtocolRequest" />
+    public class TokenIntrospectionRequest : ProtocolRequest
     {
         /// <summary>
         /// Gets or sets the token.

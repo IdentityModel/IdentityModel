@@ -1,16 +1,13 @@
 ﻿// Copyright (c) Brock Allen & Dominick Baier. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
 
-using System;
-using System.Net;
-
 namespace IdentityModel.Client
 {
     /// <summary>
     /// Models an OAuth device authorization response
     /// </summary>
-    /// <seealso cref="IdentityModel.Client.Response" />
-    public class DeviceAuthorizationResponse : Response
+    /// <seealso cref="IdentityModel.Client.ProtocolResponse" />
+    public class DeviceAuthorizationResponse : ProtocolResponse
     {
         /// <summary>
         /// Gets the device verification code.
@@ -67,41 +64,5 @@ namespace IdentityModel.Client
         /// The error description.
         /// </value>
         public string ErrorDescription => Json.TryGetString(OidcConstants.TokenResponse.ErrorDescription);
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="DeviceAuthorizationResponse"/> class.
-        /// </summary>
-        /// <param name="raw">The raw response data.</param>
-        public DeviceAuthorizationResponse(string raw) : base(raw)
-        {
-
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="DeviceAuthorizationResponse"/> class.
-        /// </summary>
-        /// <param name="exception">The exception.</param>
-        public DeviceAuthorizationResponse(Exception exception) : base(exception)
-        {
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="DeviceAuthorizationResponse"/> class.
-        /// </summary>
-        /// <param name="statusCode">The status code.</param>
-        /// <param name="reason">The reason.</param>
-        public DeviceAuthorizationResponse(HttpStatusCode statusCode, string reason) : base(statusCode, reason)
-        {
-        }
-
-        /// <summary>
-        /// Initializes a new instance of the <see cref="DeviceAuthorizationResponse"/> class.
-        /// </summary>
-        /// <param name="statusCode">The status code.</param>
-        /// <param name="reason">The reason.</param>
-        /// <param name="content">The response body</param>
-        public DeviceAuthorizationResponse(HttpStatusCode statusCode, string reason, string content) : base(statusCode, reason, content)
-        {
-        }
     }
 }

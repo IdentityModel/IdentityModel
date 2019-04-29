@@ -1,16 +1,14 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-  
-  <PropertyGroup Condition=" '$(OS)' != 'Windows_NT' ">
-      <TargetFrameworks>netcoreapp2.1;netcoreapp2.2</TargetFrameworks>
-  </PropertyGroup>
-  
-  <PropertyGroup Condition=" '$(OS)' == 'Windows_NT' ">
-      <TargetFrameworks>net452;net461;netcoreapp2.1;netcoreapp2.2</TargetFrameworks>
+  <PropertyGroup>
+    <IsPackable>false</IsPackable>
   </PropertyGroup>
 
-  <PropertyGroup>
-    <AssemblyName>UnitTests</AssemblyName>
-    <IsPackable>false</IsPackable>
+  <!--Conditional compilation-->
+  <PropertyGroup Condition=" '$(OS)' == 'Windows_NT' ">
+    <TargetFrameworks>net461;netcoreapp2.1</TargetFrameworks>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(OS)' != 'Windows_NT' ">
+    <TargetFramework>netcoreapp2.1</TargetFramework>
   </PropertyGroup>
   
   <ItemGroup>
@@ -29,20 +27,11 @@
     <PackageReference Include="xunit" Version="2.3.1" />
     <PackageReference Include="FluentAssertions" Version="5.1.2" />
   </ItemGroup>
-  
+
   <ItemGroup Condition=" '$(TargetFramework)' == 'netcoreapp2.1' ">
     <PackageReference Include="Microsoft.AspNetCore.WebUtilities" Version="2.1.0" />
   </ItemGroup>
-
-  <ItemGroup Condition=" '$(TargetFramework)' == 'netcoreapp2.2' ">
-    <PackageReference Include="Microsoft.AspNetCore.WebUtilities" Version="2.2.0" />
-  </ItemGroup>
-  
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net452' ">
-    <PackageReference Include="Microsoft.Extensions.PlatformAbstractions" Version="1.1.0" />
-    <PackageReference Include="Microsoft.AspNetCore.WebUtilities" Version="1.1.2" />
-  </ItemGroup>
-  
+    
   <ItemGroup Condition=" '$(TargetFramework)' == 'net461' ">
     <PackageReference Include="Microsoft.Extensions.PlatformAbstractions" Version="1.1.0" />
     <PackageReference Include="Microsoft.AspNetCore.WebUtilities" Version="2.0.1" />

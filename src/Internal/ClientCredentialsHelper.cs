@@ -7,7 +7,7 @@ namespace IdentityModel.Internal
     internal static class ClientCredentialsHelper
     {
         internal static void PopulateClientCredentials(
-            Request request,
+            ProtocolRequest request,
             HttpRequestMessage httpRequest)
         {
             if (request.ClientId.IsPresent())

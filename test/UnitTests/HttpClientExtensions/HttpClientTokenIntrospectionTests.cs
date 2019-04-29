@@ -62,7 +62,7 @@ namespace IdentityModel.UnitTests
         }
 
         [Fact]
-        public async Task Repeating_call_should_succeed()
+        public async Task Repeating_a_request_should_succeed()
         {
             var document = File.ReadAllText(FileName.Create("success_introspection_response.json"));
             var handler = new NetworkHandler(document, HttpStatusCode.OK);

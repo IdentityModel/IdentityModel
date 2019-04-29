@@ -20,7 +20,7 @@ namespace IdentityModel.Client
         /// Retrieves the discovery document
         /// </summary>
         /// <returns></returns>
-        Task<DiscoveryResponse> GetAsync();
+        Task<DiscoveryDocumentResponse> GetAsync();
 
         /// <summary>
         /// Forces a refresh on the next get.

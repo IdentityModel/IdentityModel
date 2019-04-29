@@ -8,44 +8,43 @@ namespace IdentityModel.Internal
 {
     internal static class DictionaryExtensions
     {
-        public static void AddIfPresent(this IDictionary<string, string> dictionary, string key, string value)
+        public static void AddOptional(this IDictionary<string, string> parameters, string key, string value)
         {
-            if (value.IsPresent()) dictionary.Add(key, value);
-        }
+            if (parameters == null) throw new ArgumentNullException(nameof(parameters));
 
-        public static void AddOptional(this IDictionary<string, string> dictionary, string key, string value)
-        {
             if (value.IsPresent())
             {
-                if (dictionary.ContainsKey(key))
+                if (parameters.ContainsKey(key))
                 {
                     throw new InvalidOperationException($"Duplicate parameter: {key}");
                 }
                 else
                 {
-                    dictionary.Add(key, value);
+                    parameters.Add(key, value);
                 }
             }
         }
 
-        public static void AddRequired(this IDictionary<string, string> dictionary, string key, string value, bool allowEmpty = false)
+        public static void AddRequired(this IDictionary<string, string> parameters, string key, string value, bool allowEmpty = false)
         {
+            if (parameters == null) throw new ArgumentNullException(nameof(parameters));
+
             if (value.IsPresent())
             {
-                if (dictionary.ContainsKey(key))
+                if (parameters.ContainsKey(key))
                 {
                     throw new InvalidOperationException($"Duplicate parameter: {key}");
                 }
                 else
                 {
-                    dictionary.Add(key, value);
+                    parameters.Add(key, value);
                 }
             }
             else
             {
                 if (allowEmpty)
                 {
-                    dictionary.Add(key, "");
+                    parameters.Add(key, "");
                 }
                 else
                 {

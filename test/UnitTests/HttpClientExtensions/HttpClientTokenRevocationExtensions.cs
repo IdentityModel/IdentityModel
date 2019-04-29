@@ -37,7 +37,7 @@ namespace IdentityModel.UnitTests
         }
 
         [Fact]
-        public async Task Repeating_call_should_succeed()
+        public async Task Repeating_a_request_should_succeed()
         {
             var handler = new NetworkHandler(HttpStatusCode.OK, "ok");
             var client = new HttpClient(handler);
