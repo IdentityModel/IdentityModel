@@ -25,6 +25,8 @@ namespace IdentityModel
             public const string AcrValues = "acr_values";
             public const string CodeChallenge = "code_challenge";
             public const string CodeChallengeMethod = "code_challenge_method";
+            public const string Request = "request";
+            public const string RequestUri = "request_uri";
         }
 
         public static class AuthorizeErrors
@@ -371,6 +373,7 @@ namespace IdentityModel
             public const string EndSessionEndpoint = "end_session_endpoint";
             public const string CheckSessionIframe = "check_session_iframe";
             public const string RegistrationEndpoint = "registration_endpoint";
+            public const string MtlsEndpointAliases = "mtls_endpoint_aliases";
 
             // common capabilities
             public const string FrontChannelLogoutSupported = "frontchannel_logout_supported";
