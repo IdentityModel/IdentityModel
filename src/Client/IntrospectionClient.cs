@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
@@ -10,7 +11,7 @@ namespace IdentityModel.Client
     /// </summary>
     public class IntrospectionClient
     {
-        private readonly HttpMessageInvoker _client;
+        private readonly Func<HttpMessageInvoker> _client;
         private readonly IntrospectionClientOptions _options;
 
         /// <summary>
@@ -19,9 +20,18 @@ namespace IdentityModel.Client
         /// <param name="client"></param>
         /// <param name="options"></param>
         public IntrospectionClient(HttpMessageInvoker client, IntrospectionClientOptions options)
+            : this(() => client, options)
+        { }
+
+        /// <summary>
+        /// ctor
+        /// </summary>
+        /// <param name="client func"></param>
+        /// <param name="options"></param>
+        public IntrospectionClient(Func<HttpMessageInvoker> client, IntrospectionClientOptions options)
         {
-            _client = client;
-            _options = options;
+            _client = client ?? throw new ArgumentNullException(nameof(client));
+            _options = options ?? new IntrospectionClientOptions();
         }
 
         /// <summary>
@@ -65,7 +75,7 @@ namespace IdentityModel.Client
             };
             ApplyRequestParameters(request, parameters);
 
-            return _client.IntrospectTokenAsync(request, cancellationToken);
+            return _client().IntrospectTokenAsync(request, cancellationToken);
         }
     }
 }

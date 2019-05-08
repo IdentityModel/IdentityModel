@@ -11,7 +11,7 @@ namespace IdentityModel.Client
     /// </summary>
     public class TokenClient
     {
-        private readonly HttpMessageInvoker _client;
+        private readonly Func<HttpMessageInvoker> _client;
         private readonly TokenClientOptions _options;
 
         /// <summary>
@@ -21,6 +21,16 @@ namespace IdentityModel.Client
         /// <param name="options">The options.</param>
         /// <exception cref="ArgumentNullException">client</exception>
         public TokenClient(HttpMessageInvoker client, TokenClientOptions options)
+            : this(() => client, options)
+        { }
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="TokenClient"/> class.
+        /// </summary>
+        /// <param name="client">The client func.</param>
+        /// <param name="options">The options.</param>
+        /// <exception cref="ArgumentNullException">client</exception>
+        public TokenClient(Func<HttpMessageInvoker> client, TokenClientOptions options)
         {
             _client = client ?? throw new ArgumentNullException(nameof(client));
             _options = options ?? new TokenClientOptions();
@@ -65,7 +75,7 @@ namespace IdentityModel.Client
             };
             ApplyRequestParameters(request, parameters);
 
-            return _client.RequestClientCredentialsTokenAsync(request, cancellationToken);
+            return _client().RequestClientCredentialsTokenAsync(request, cancellationToken);
         }
 
         /// <summary>
@@ -83,7 +93,7 @@ namespace IdentityModel.Client
             };
             ApplyRequestParameters(request, parameters);
 
-            return _client.RequestDeviceTokenAsync(request, cancellationToken);
+            return _client().RequestDeviceTokenAsync(request, cancellationToken);
         }
 
         /// <summary>
@@ -105,7 +115,7 @@ namespace IdentityModel.Client
             };
             ApplyRequestParameters(request, parameters);
 
-            return _client.RequestPasswordTokenAsync(request, cancellationToken);
+            return _client().RequestPasswordTokenAsync(request, cancellationToken);
         }
 
         /// <summary>
@@ -127,7 +137,7 @@ namespace IdentityModel.Client
             };
             ApplyRequestParameters(request, parameters);
 
-            return _client.RequestAuthorizationCodeTokenAsync(request, cancellationToken);
+            return _client().RequestAuthorizationCodeTokenAsync(request, cancellationToken);
         }
 
         /// <summary>
@@ -147,7 +157,7 @@ namespace IdentityModel.Client
             };
             ApplyRequestParameters(request, parameters);
 
-            return _client.RequestRefreshTokenAsync(request, cancellationToken);
+            return _client().RequestRefreshTokenAsync(request, cancellationToken);
         }
 
         /// <summary>
@@ -165,7 +175,7 @@ namespace IdentityModel.Client
             };
             ApplyRequestParameters(request, parameters);
 
-            return _client.RequestTokenAsync(request, cancellationToken);
+            return _client().RequestTokenAsync(request, cancellationToken);
         }
     }
 }
