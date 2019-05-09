@@ -40,8 +40,11 @@ namespace IdentityModel.Internal
 
             if (request.ClientAssertion != null)
             {
-                request.Parameters.AddOptional(OidcConstants.TokenRequest.ClientAssertionType, request.ClientAssertion.Type);
-                request.Parameters.AddOptional(OidcConstants.TokenRequest.ClientAssertion, request.ClientAssertion.Value);
+                if (request.ClientAssertion.Type != null && request.ClientAssertion.Value != null)
+                {
+                    request.Parameters.AddOptional(OidcConstants.TokenRequest.ClientAssertionType, request.ClientAssertion.Type);
+                    request.Parameters.AddOptional(OidcConstants.TokenRequest.ClientAssertion, request.ClientAssertion.Value);
+                }
             }
         }
     }
