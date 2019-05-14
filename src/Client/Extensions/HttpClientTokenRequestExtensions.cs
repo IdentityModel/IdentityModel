@@ -154,17 +154,13 @@ namespace IdentityModel.Client
                 if (request.ClientId.IsMissing()) throw new InvalidOperationException("client_id is missing");
             }
 
-            var httpRequest = new HttpRequestMessage(HttpMethod.Post, request.Address);
-            httpRequest.Headers.Accept.Clear();
-            httpRequest.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-
-            ClientCredentialsHelper.PopulateClientCredentials(request, httpRequest);
-            httpRequest.Content = new FormUrlEncodedContent(request.Parameters);
-
+            request.Prepare();
+            request.Method = HttpMethod.Post;
+            
             HttpResponseMessage response;
             try
             {
-                response = await client.SendAsync(httpRequest, cancellationToken).ConfigureAwait(false);
+                response = await client.SendAsync(request, cancellationToken).ConfigureAwait(false);
             }
             catch (Exception ex)
             {
