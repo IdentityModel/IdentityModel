@@ -10,7 +10,7 @@ namespace IdentityModel.Client
     /// Models a response from a JWK endpoint
     /// </summary>
     /// <seealso cref="IdentityModel.Client.ProtocolResponse" />
-    public class JsonWebKeyResponse : ProtocolResponse
+    public class JsonWebKeySetResponse : ProtocolResponse
     {
         /// <summary>
         /// Intializes the key set

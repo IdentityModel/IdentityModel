@@ -16,40 +16,57 @@ namespace IdentityModel.Client
     public static class HttpClientJsonWebKeySetExtensions
     {
         /// <summary>
-        /// Sends a discovery document request
+        /// Sends a JSON web key set document request
         /// </summary>
         /// <param name="client">The client.</param>
-        /// <param name="address">The endpoint address.</param>
+        /// <param name="address"></param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
-        public static async Task<JsonWebKeyResponse> GetJsonWebKeySetAsync(this HttpMessageInvoker client, string address = null, CancellationToken cancellationToken = default)
+        public static async Task<JsonWebKeySetResponse> GetJsonWebKeySetAsync(this HttpMessageInvoker client, string address = null, CancellationToken cancellationToken = default)
         {
+            return await client.GetJsonWebKeySetAsync(new JsonWebKeySetRequest
+            {
+                Address = address
+            }, cancellationToken).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Sends a JSON web key set document request
+        /// </summary>
+        /// <param name="client">The client.</param>
+        /// <param name="request">The request</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
+        public static async Task<JsonWebKeySetResponse> GetJsonWebKeySetAsync(this HttpMessageInvoker client, JsonWebKeySetRequest request, CancellationToken cancellationToken = default)
+        {
+            var clone = request.Clone();
+
+            clone.Method = HttpMethod.Get;
+            clone.Prepare();
+
             HttpResponseMessage response;
 
-            using (HttpRequestMessage getRequest = new HttpRequestMessage(HttpMethod.Get, address))
+            try
             {
-                try
-                {
-                    response = await client.SendAsync(getRequest, cancellationToken).ConfigureAwait(false);
+                response = await client.SendAsync(clone, cancellationToken).ConfigureAwait(false);
 
-                    string responseContent = null;
-                    if (response.Content != null)
-                    {
-                        responseContent = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-                    }
-
-                    if (!response.IsSuccessStatusCode)
-                    {
-                        return await ProtocolResponse.FromHttpResponseAsync<JsonWebKeyResponse>(response, $"Error connecting to {address}: {response.ReasonPhrase}").ConfigureAwait(false);
-                    }
-                }
-                catch (Exception ex)
+                string responseContent = null;
+                if (response.Content != null)
                 {
-                    return ProtocolResponse.FromException<JsonWebKeyResponse>(ex, $"Error connecting to {address}. {ex.Message}.");
+                    responseContent = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
                 }
 
-                return await ProtocolResponse.FromHttpResponseAsync<JsonWebKeyResponse>(response);
+                if (!response.IsSuccessStatusCode)
+                {
+                    return await ProtocolResponse.FromHttpResponseAsync<JsonWebKeySetResponse>(response, $"Error connecting to {clone.RequestUri.AbsoluteUri}: {response.ReasonPhrase}").ConfigureAwait(false);
+                }
             }
+            catch (Exception ex)
+            {
+                return ProtocolResponse.FromException<JsonWebKeySetResponse>(ex, $"Error connecting to {clone.RequestUri.AbsoluteUri}. {ex.Message}.");
+            }
+
+            return await ProtocolResponse.FromHttpResponseAsync<JsonWebKeySetResponse>(response);
         }
     }
 }
