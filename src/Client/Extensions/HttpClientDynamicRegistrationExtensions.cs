@@ -27,13 +27,9 @@ namespace IdentityModel.Client
         {
             var clone = request.Clone();
 
-            if (clone.Address.IsPresent())
-            {
-                clone.RequestUri = new Uri(clone.Address);
-            }
-
             clone.Method = HttpMethod.Get;
             clone.Content = new StringContent(JsonConvert.SerializeObject(request.Document), Encoding.UTF8, "application/json");
+            clone.Prepare();
 
             if (request.Token.IsPresent())
             {

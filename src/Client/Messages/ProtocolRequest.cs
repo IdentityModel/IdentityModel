@@ -169,7 +169,10 @@ namespace IdentityModel.Client
                 RequestUri = new Uri(Address);
             }
 
-            Content = new FormUrlEncodedContent(Parameters);
+            if (Parameters.Any())
+            {
+                Content = new FormUrlEncodedContent(Parameters);
+            }
         }
     }
 

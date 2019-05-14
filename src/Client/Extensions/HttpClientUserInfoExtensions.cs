@@ -27,13 +27,9 @@ namespace IdentityModel.Client
 
             var clone = request.Clone();
 
-            if (clone.Address.IsPresent())
-            {
-                clone.RequestUri = new Uri(clone.Address);
-            }
-
             clone.Method = HttpMethod.Get;
             clone.SetBearerToken(request.Token);
+            clone.Prepare();
 
             HttpResponseMessage response;
             try
