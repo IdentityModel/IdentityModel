@@ -101,22 +101,19 @@ namespace IdentityModel.Client
                     jwkUrl = disco.JwksUri;
                     if (jwkUrl != null)
                     {
-                        using (HttpRequestMessage getRequest = new HttpRequestMessage(HttpMethod.Get, jwkUrl))
+                        var jwkClone = request.Clone<JsonWebKeySetRequest>();
+                        jwkClone.Method = HttpMethod.Get;
+                        jwkClone.Address = jwkUrl;
+                        jwkClone.Prepare();
+
+                        var jwkResponse = await client.GetJsonWebKeySetAsync(jwkClone, cancellationToken).ConfigureAwait(false);
+
+                        if (jwkResponse.IsError)
                         {
-                            response = await client.SendAsync(getRequest, cancellationToken).ConfigureAwait(false);
-
-                            if (response.Content != null)
-                            {
-                                responseContent = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
-                            }
-
-                            if (!response.IsSuccessStatusCode)
-                            {
-                                return await ProtocolResponse.FromHttpResponseAsync<DiscoveryDocumentResponse>(response, $"Error connecting to {jwkUrl}: {response.ReasonPhrase}").ConfigureAwait(false);
-                            }
-
-                            disco.KeySet = new JsonWebKeySet(responseContent);
+                            return await ProtocolResponse.FromHttpResponseAsync<DiscoveryDocumentResponse>(jwkResponse.HttpResponse, $"Error connecting to {jwkUrl}: {jwkResponse.HttpErrorReason}").ConfigureAwait(false);
                         }
+
+                        disco.KeySet = jwkResponse.KeySet;
                     }
 
                     return disco;
