@@ -4,7 +4,6 @@
 using IdentityModel.Internal;
 using System;
 using System.Net.Http;
-using System.Net.Http.Headers;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -24,10 +23,6 @@ namespace IdentityModel.Client
         /// <returns></returns>
         public static async Task<DeviceAuthorizationResponse> RequestDeviceAuthorizationAsync(this HttpMessageInvoker client, DeviceAuthorizationRequest request, CancellationToken cancellationToken = default)
         {
-            //var httpRequest = new HttpRequestMessage(HttpMethod.Post, request.Address);
-            //httpRequest.Headers.Accept.Clear();
-            //httpRequest.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-
             var clone = request.Clone();
 
             clone.Parameters.AddOptional(OidcConstants.AuthorizeRequest.Scope, request.Scope);

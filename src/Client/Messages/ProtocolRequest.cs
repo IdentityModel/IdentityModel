@@ -85,41 +85,7 @@ namespace IdentityModel.Client
         /// </summary>
         public ProtocolRequest Clone()
         {
-            var clone = new ProtocolRequest
-            {
-                RequestUri = RequestUri,
-                Version = Version,
-                Method = Method,
-
-                Address = Address,
-                AuthorizationHeaderStyle = AuthorizationHeaderStyle,
-                ClientAssertion = ClientAssertion,
-                ClientCredentialStyle = ClientCredentialStyle,
-                ClientId = ClientId,
-                ClientSecret = ClientSecret,
-                Parameters = new Dictionary<string, string>(),
-            };
-
-            if (Parameters != null)
-            {
-                foreach (var item in Parameters) clone.Parameters.Add(item);
-            }
-
-            clone.Headers.Clear();
-            foreach (var header in Headers)
-            {
-                clone.Headers.TryAddWithoutValidation(header.Key, header.Value);
-            }
-
-            if (Properties != null && Properties.Any())
-            {
-                foreach (var property in Properties)
-                {
-                    clone.Properties.Add(property);
-                }
-            }
-
-            return clone;
+            return Clone<ProtocolRequest>();
         }
 
         /// <summary>
