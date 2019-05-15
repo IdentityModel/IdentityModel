@@ -22,7 +22,7 @@ namespace IdentityModel.Client
         /// <param name="address">The address.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
-        public static async Task<DiscoveryDocumentResponse> GetDiscoveryDocumentAsync(this HttpClient client, string address, CancellationToken cancellationToken = default)
+        public static async Task<DiscoveryDocumentResponse> GetDiscoveryDocumentAsync(this HttpClient client, string address = null, CancellationToken cancellationToken = default)
         {
             return await client.GetDiscoveryDocumentAsync(new DiscoveryDocumentRequest { Address = address }, cancellationToken).ConfigureAwait(false);
         }
@@ -34,10 +34,8 @@ namespace IdentityModel.Client
         /// <param name="request">The request.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
-        public static async Task<DiscoveryDocumentResponse> GetDiscoveryDocumentAsync(this HttpMessageInvoker client, DiscoveryDocumentRequest request = null, CancellationToken cancellationToken = default)
+        public static async Task<DiscoveryDocumentResponse> GetDiscoveryDocumentAsync(this HttpMessageInvoker client, DiscoveryDocumentRequest request, CancellationToken cancellationToken = default)
         {
-            if (request == null) request = new DiscoveryDocumentRequest();
-
             string address;
             if (request.Address.IsPresent())
             {
@@ -70,8 +68,14 @@ namespace IdentityModel.Client
 
             try
             {
-                var httpRequest = new HttpRequestMessage(HttpMethod.Get, url);
-                var response = await client.SendAsync(httpRequest, cancellationToken).ConfigureAwait(false);
+                var clone = request.Clone();
+
+                clone.Method = HttpMethod.Get;
+                clone.Prepare();
+
+                clone.RequestUri = new Uri(url);
+
+                var response = await client.SendAsync(clone, cancellationToken).ConfigureAwait(false);
 
                 string responseContent = null;
 
