@@ -30,17 +30,17 @@ namespace IdentityModel.Client
             {
                 try
                 {
-                    response = await client.SendAsync(getRequest, cancellationToken).ConfigureAwait(false);
+                    response = await client.SendAsync(getRequest, cancellationToken).ConfigureAwait();
 
                     string responseContent = null;
                     if (response.Content != null)
                     {
-                        responseContent = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+                        responseContent = await response.Content.ReadAsStringAsync().ConfigureAwait();
                     }
 
                     if (!response.IsSuccessStatusCode)
                     {
-                        return await ProtocolResponse.FromHttpResponseAsync<JsonWebKeyResponse>(response, $"Error connecting to {address}: {response.ReasonPhrase}").ConfigureAwait(false);
+                        return await ProtocolResponse.FromHttpResponseAsync<JsonWebKeyResponse>(response, $"Error connecting to {address}: {response.ReasonPhrase}").ConfigureAwait();
                     }
                 }
                 catch (Exception ex)

@@ -24,7 +24,7 @@ namespace IdentityModel.Client
         /// <returns></returns>
         public static async Task<DiscoveryDocumentResponse> GetDiscoveryDocumentAsync(this HttpClient client, string address, CancellationToken cancellationToken = default)
         {
-            return await client.GetDiscoveryDocumentAsync(new DiscoveryDocumentRequest { Address = address }, cancellationToken).ConfigureAwait(false);
+            return await client.GetDiscoveryDocumentAsync(new DiscoveryDocumentRequest { Address = address }, cancellationToken).ConfigureAwait();
         }
 
         /// <summary>
@@ -71,13 +71,13 @@ namespace IdentityModel.Client
             try
             {
                 var httpRequest = new HttpRequestMessage(HttpMethod.Get, url);
-                var response = await client.SendAsync(httpRequest, cancellationToken).ConfigureAwait(false);
+                var response = await client.SendAsync(httpRequest, cancellationToken).ConfigureAwait();
 
                 string responseContent = null;
 
                 if (response.Content != null)
                 {
-                    responseContent = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+                    responseContent = await response.Content.ReadAsStringAsync().ConfigureAwait();
                 }
 
                 if (!response.IsSuccessStatusCode)
@@ -85,7 +85,7 @@ namespace IdentityModel.Client
                     return await ProtocolResponse.FromHttpResponseAsync<DiscoveryDocumentResponse>(response, $"Error connecting to {url}: {response.ReasonPhrase}");
                 }
 
-                var disco = await ProtocolResponse.FromHttpResponseAsync<DiscoveryDocumentResponse>(response, request.Policy).ConfigureAwait(false);
+                var disco = await ProtocolResponse.FromHttpResponseAsync<DiscoveryDocumentResponse>(response, request.Policy).ConfigureAwait();
 
                 if (disco.IsError)
                 {
@@ -99,16 +99,16 @@ namespace IdentityModel.Client
                     {
                         using (HttpRequestMessage getRequest = new HttpRequestMessage(HttpMethod.Get, jwkUrl))
                         {
-                            response = await client.SendAsync(getRequest, cancellationToken).ConfigureAwait(false);
+                            response = await client.SendAsync(getRequest, cancellationToken).ConfigureAwait();
 
                             if (response.Content != null)
                             {
-                                responseContent = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+                                responseContent = await response.Content.ReadAsStringAsync().ConfigureAwait();
                             }
 
                             if (!response.IsSuccessStatusCode)
                             {
-                                return await ProtocolResponse.FromHttpResponseAsync<DiscoveryDocumentResponse>(response, $"Error connecting to {jwkUrl}: {response.ReasonPhrase}").ConfigureAwait(false);
+                                return await ProtocolResponse.FromHttpResponseAsync<DiscoveryDocumentResponse>(response, $"Error connecting to {jwkUrl}: {response.ReasonPhrase}").ConfigureAwait();
                             }
 
                             disco.KeySet = new JsonWebKeySet(responseContent);
