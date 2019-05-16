@@ -3,6 +3,7 @@
 
 using System;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -40,6 +41,7 @@ namespace IdentityModel.Client
             var clone = request.Clone();
 
             clone.Method = HttpMethod.Get;
+            clone.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/jwk-set+json"));
             clone.Prepare();
 
             HttpResponseMessage response;
