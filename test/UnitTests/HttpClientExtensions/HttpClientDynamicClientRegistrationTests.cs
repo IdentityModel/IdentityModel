@@ -5,6 +5,7 @@ using FluentAssertions;
 using IdentityModel.Client;
 using System;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -15,6 +16,41 @@ namespace IdentityModel.UnitTests
     public class HttpClientDynamicClientRegistrationTests
     {
         const string Endpoint = "http://server/register";
+
+        [Fact]
+        public async Task Http_request_should_have_correct_format()
+        {
+            var handler = new NetworkHandler(HttpStatusCode.NotFound, "not found");
+
+            var client = new HttpClient(handler);
+            var request = new DynamicClientRegistrationRequest
+            {
+                Address = Endpoint,
+                Document = new DynamicClientRegistrationDocument()
+            };
+
+            request.Headers.Add("custom", "custom");
+            request.Properties.Add("custom", "custom");
+
+            var response = await client.RegisterClientAsync(request);
+
+            var httpRequest = handler.Request;
+
+            httpRequest.Method.Should().Be(HttpMethod.Post);
+            httpRequest.RequestUri.Should().Be(new Uri(Endpoint));
+            httpRequest.Content.Should().NotBeNull();
+
+            var headers = httpRequest.Headers;
+            headers.Count().Should().Be(2);
+            headers.Should().Contain(h => h.Key == "custom" && h.Value.First() == "custom");
+
+            var properties = httpRequest.Properties;
+            properties.Count.Should().Be(1);
+
+            var prop = properties.First();
+            prop.Key.Should().Be("custom");
+            ((string)prop.Value).Should().Be("custom");
+        }
 
         [Fact]
         public async Task Valid_protocol_response_should_be_handled_correctly()

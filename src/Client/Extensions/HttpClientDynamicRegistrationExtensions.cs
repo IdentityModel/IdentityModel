@@ -27,7 +27,7 @@ namespace IdentityModel.Client
         {
             var clone = request.Clone();
 
-            clone.Method = HttpMethod.Get;
+            clone.Method = HttpMethod.Post;
             clone.Content = new StringContent(JsonConvert.SerializeObject(request.Document), Encoding.UTF8, "application/json");
             clone.Prepare();
 

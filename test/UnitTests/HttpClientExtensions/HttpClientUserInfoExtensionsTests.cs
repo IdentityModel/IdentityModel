@@ -5,6 +5,7 @@ using FluentAssertions;
 using IdentityModel.Client;
 using System;
 using System.IO;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -34,6 +35,43 @@ namespace IdentityModel.UnitTests
             response.HttpStatusCode.Should().Be(HttpStatusCode.OK);
             response.Claims.Should().NotBeEmpty();
         }
+
+        [Fact]
+        public async Task Http_request_should_have_correct_format()
+        {
+            var handler = new NetworkHandler(HttpStatusCode.NotFound, "not found");
+
+            var client = new HttpClient(handler);
+            var request = new UserInfoRequest
+            {
+                Address = Endpoint,
+                Token = "token"
+            };
+
+            request.Headers.Add("custom", "custom");
+            request.Properties.Add("custom", "custom");
+
+            var response = await client.GetUserInfoAsync(request);
+
+            var httpRequest = handler.Request;
+
+            httpRequest.Method.Should().Be(HttpMethod.Get);
+            httpRequest.RequestUri.Should().Be(new Uri(Endpoint));
+            httpRequest.Content.Should().BeNull();
+
+            var headers = httpRequest.Headers;
+            headers.Count().Should().Be(3);
+            headers.Should().Contain(h => h.Key == "custom" && h.Value.First() == "custom");
+            headers.Should().Contain(h => h.Key == "Authorization" && h.Value.First() == "Bearer token");
+
+            var properties = httpRequest.Properties;
+            properties.Count.Should().Be(1);
+
+            var prop = properties.First();
+            prop.Key.Should().Be("custom");
+            ((string)prop.Value).Should().Be("custom");
+        }
+
 
         [Fact]
         public async Task Malformed_response_document_should_be_handled_correctly()

@@ -20,6 +20,41 @@ namespace IdentityModel.UnitTests
         const string Endpoint = "http://server/device";
 
         [Fact]
+        public async Task Http_request_should_have_correct_format()
+        {
+            var handler = new NetworkHandler(HttpStatusCode.NotFound, "not found");
+
+            var client = new HttpClient(handler);
+            var request = new DeviceAuthorizationRequest
+            {
+                Address = Endpoint,
+                ClientId = "client"
+            };
+
+            request.Headers.Add("custom", "custom");
+            request.Properties.Add("custom", "custom");
+
+            var response = await client.RequestDeviceAuthorizationAsync(request);
+
+            var httpRequest = handler.Request;
+
+            httpRequest.Method.Should().Be(HttpMethod.Post);
+            httpRequest.RequestUri.Should().Be(new Uri(Endpoint));
+            httpRequest.Content.Should().NotBeNull();
+
+            var headers = httpRequest.Headers;
+            headers.Count().Should().Be(2);
+            headers.Should().Contain(h => h.Key == "custom" && h.Value.First() == "custom");
+
+            var properties = httpRequest.Properties;
+            properties.Count.Should().Be(1);
+
+            var prop = properties.First();
+            prop.Key.Should().Be("custom");
+            ((string)prop.Value).Should().Be("custom");
+        }
+
+        [Fact]
         public async Task Setting_basic_authentication_style_should_send_basic_authentication_header()
         {
             var document = File.ReadAllText(FileName.Create("success_device_authorization_response.json"));

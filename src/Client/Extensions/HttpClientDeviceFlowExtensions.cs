@@ -26,6 +26,7 @@ namespace IdentityModel.Client
             var clone = request.Clone();
 
             clone.Parameters.AddOptional(OidcConstants.AuthorizeRequest.Scope, request.Scope);
+            clone.Method = HttpMethod.Post;
             clone.Prepare();
                         
             HttpResponseMessage response;

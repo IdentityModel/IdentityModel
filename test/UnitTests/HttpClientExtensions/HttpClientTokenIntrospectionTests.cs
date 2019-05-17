@@ -19,6 +19,41 @@ namespace IdentityModel.UnitTests
         const string Endpoint = "http://server/token";
 
         [Fact]
+        public async Task Http_request_should_have_correct_format()
+        {
+            var handler = new NetworkHandler(HttpStatusCode.NotFound, "not found");
+
+            var client = new HttpClient(handler);
+            var request = new TokenIntrospectionRequest
+            {
+                Address = Endpoint,
+                Token = "token"
+            };
+
+            request.Headers.Add("custom", "custom");
+            request.Properties.Add("custom", "custom");
+
+            var response = await client.IntrospectTokenAsync(request);
+
+            var httpRequest = handler.Request;
+
+            httpRequest.Method.Should().Be(HttpMethod.Post);
+            httpRequest.RequestUri.Should().Be(new Uri(Endpoint));
+            httpRequest.Content.Should().NotBeNull();
+
+            var headers = httpRequest.Headers;
+            headers.Count().Should().Be(2);
+            headers.Should().Contain(h => h.Key == "custom" && h.Value.First() == "custom");
+
+            var properties = httpRequest.Properties;
+            properties.Count.Should().Be(1);
+
+            var prop = properties.First();
+            prop.Key.Should().Be("custom");
+            ((string)prop.Value).Should().Be("custom");
+        }
+
+        [Fact]
         public async Task Success_protocol_response_should_be_handled_correctly()
         {
             var document = File.ReadAllText(FileName.Create("success_introspection_response.json"));
