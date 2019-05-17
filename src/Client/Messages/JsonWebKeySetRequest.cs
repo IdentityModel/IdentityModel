@@ -3,6 +3,9 @@
 
 namespace IdentityModel.Client
 {
+    /// <summary>
+    /// Request for JSON web key set document
+    /// </summary>
     public class JsonWebKeySetRequest : ProtocolRequest
     { }
 }

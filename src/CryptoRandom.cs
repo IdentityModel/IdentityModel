@@ -14,10 +14,22 @@ namespace IdentityModel
         private static readonly RandomNumberGenerator Rng = RandomNumberGenerator.Create();
         private readonly byte[] _uint32Buffer = new byte[4];
 
+        /// <summary>
+        /// Output format for unique IDs
+        /// </summary>
         public enum OutputFormat
         {
+            /// <summary>
+            /// URL-safe Base64
+            /// </summary>
             Base64Url,
+            /// <summary>
+            /// Base64
+            /// </summary>
             Base64,
+            /// <summary>
+            /// Hex
+            /// </summary>
             Hex
         }
 
