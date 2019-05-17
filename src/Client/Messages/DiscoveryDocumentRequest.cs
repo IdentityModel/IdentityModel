@@ -6,16 +6,8 @@ namespace IdentityModel.Client
     /// <summary>
     /// Request for OpenID Connect discovery document
     /// </summary>
-    public class DiscoveryDocumentRequest
+    public class DiscoveryDocumentRequest : ProtocolRequest
     {
-        /// <summary>
-        /// Gets or sets the address.
-        /// </summary>
-        /// <value>
-        /// The address.
-        /// </value>
-        public string Address { get; set; }
-
         /// <summary>
         /// Gets or sets the policy.
         /// </summary>

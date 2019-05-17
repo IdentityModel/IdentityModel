@@ -100,6 +100,48 @@ namespace IdentityModel.UnitTests
         }
 
         [Fact]
+        public async Task Additional_headers_should_be_propagated()
+        {
+            var request = new ClientCredentialsTokenRequest
+            {
+                ClientId = "client",
+                Scope = "scope"
+            };
+
+            request.Headers.Add("foo", "bar");
+
+            var response = await _client.RequestClientCredentialsTokenAsync(request);
+
+            response.IsError.Should().BeFalse();
+
+            var headers = _handler.Request.Headers;
+            var foo = headers.FirstOrDefault(h => h.Key == "foo");
+            foo.Should().NotBeNull();
+            foo.Value.Single().Should().Be("bar");    
+        }
+
+        [Fact]
+        public async Task Additional_request_properties_should_be_propagated()
+        {
+            var request = new ClientCredentialsTokenRequest
+            {
+                ClientId = "client",
+                Scope = "scope"
+            };
+
+            request.Properties.Add("foo", "bar");
+
+            var response = await _client.RequestClientCredentialsTokenAsync(request);
+
+            response.IsError.Should().BeFalse();
+
+            var properties = _handler.Request.Properties;
+            var foo = properties.First().Value as string;
+            foo.Should().NotBeNull();
+            foo.Should().Be("bar");
+        }
+
+        [Fact]
         public void Explicit_null_parameters_should__not_fail_()
         {
             Func<Task> act = async () => await _client.RequestClientCredentialsTokenAsync(new ClientCredentialsTokenRequest { ClientId = "client", Parameters = null });

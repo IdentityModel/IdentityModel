@@ -5,7 +5,6 @@ using IdentityModel.Internal;
 using Newtonsoft.Json;
 using System;
 using System.Net.Http;
-using System.Net.Http.Headers;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -26,23 +25,21 @@ namespace IdentityModel.Client
         /// <returns></returns>
         public static async Task<DynamicClientRegistrationResponse> RegisterClientAsync(this HttpMessageInvoker client, DynamicClientRegistrationRequest request, CancellationToken cancellationToken = default)
         {
-            var httpRequest = new HttpRequestMessage(HttpMethod.Post, request.Address)
-            {
-                Content = new StringContent(JsonConvert.SerializeObject(request.Document), Encoding.UTF8, "application/json")
-            };
+            var clone = request.Clone();
 
-            httpRequest.Headers.Accept.Clear();
-            httpRequest.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
+            clone.Method = HttpMethod.Get;
+            clone.Content = new StringContent(JsonConvert.SerializeObject(request.Document), Encoding.UTF8, "application/json");
+            clone.Prepare();
 
             if (request.Token.IsPresent())
             {
-                httpRequest.SetBearerToken(request.Token);
+                clone.SetBearerToken(request.Token);
             }
 
             HttpResponseMessage response;
             try
             {
-                response = await client.SendAsync(httpRequest, cancellationToken).ConfigureAwait(false);
+                response = await client.SendAsync(clone, cancellationToken).ConfigureAwait(false);
             }
             catch (Exception ex)
             {

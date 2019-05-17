@@ -4,7 +4,6 @@
 using IdentityModel.Internal;
 using System;
 using System.Net.Http;
-using System.Net.Http.Headers;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -26,15 +25,16 @@ namespace IdentityModel.Client
         {
             if (request.Token.IsMissing()) throw new ArgumentNullException(nameof(request.Token));
 
-            var httpRequest = new HttpRequestMessage(HttpMethod.Get, request.Address);
-            httpRequest.Headers.Accept.Clear();
-            httpRequest.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-            httpRequest.SetBearerToken(request.Token);
+            var clone = request.Clone();
+
+            clone.Method = HttpMethod.Get;
+            clone.SetBearerToken(request.Token);
+            clone.Prepare();
 
             HttpResponseMessage response;
             try
             {
-                response = await client.SendAsync(httpRequest, cancellationToken).ConfigureAwait(false);
+                response = await client.SendAsync(clone, cancellationToken).ConfigureAwait(false);
             }
             catch (Exception ex)
             {
