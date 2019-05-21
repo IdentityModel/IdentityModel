@@ -34,6 +34,42 @@ namespace IdentityModel.UnitTests
         }
 
         [Fact]
+        public async Task Http_request_should_have_correct_format()
+        {
+            var handler = new NetworkHandler(HttpStatusCode.NotFound, "not found");
+
+            var client = new HttpClient(handler);
+            var request = new TokenRequest
+            {
+                Address = Endpoint,
+                ClientId = "client",
+                GrantType = "grant"
+            };
+
+            request.Headers.Add("custom", "custom");
+            request.Properties.Add("custom", "custom");
+
+            var response = await client.RequestTokenAsync(request);
+
+            var httpRequest = handler.Request;
+
+            httpRequest.Method.Should().Be(HttpMethod.Post);
+            httpRequest.RequestUri.Should().Be(new Uri(Endpoint));
+            httpRequest.Content.Should().NotBeNull();
+
+            var headers = httpRequest.Headers;
+            headers.Count().Should().Be(2);
+            headers.Should().Contain(h => h.Key == "custom" && h.Value.First() == "custom");
+
+            var properties = httpRequest.Properties;
+            properties.Count.Should().Be(1);
+
+            var prop = properties.First();
+            prop.Key.Should().Be("custom");
+            ((string)prop.Value).Should().Be("custom");
+        }
+
+        [Fact]
         public async Task No_explicit_endpoint_address_should_use_base_addess()
         {
             var response = await _client.RequestClientCredentialsTokenAsync(new ClientCredentialsTokenRequest { ClientId = "client" });
@@ -97,6 +133,48 @@ namespace IdentityModel.UnitTests
 
             fields.TryGetValue("scope", out var scope).Should().BeTrue();
             scope.First().Should().Be("scope");
+        }
+
+        [Fact]
+        public async Task Additional_headers_should_be_propagated()
+        {
+            var request = new ClientCredentialsTokenRequest
+            {
+                ClientId = "client",
+                Scope = "scope"
+            };
+
+            request.Headers.Add("foo", "bar");
+
+            var response = await _client.RequestClientCredentialsTokenAsync(request);
+
+            response.IsError.Should().BeFalse();
+
+            var headers = _handler.Request.Headers;
+            var foo = headers.FirstOrDefault(h => h.Key == "foo");
+            foo.Should().NotBeNull();
+            foo.Value.Single().Should().Be("bar");    
+        }
+
+        [Fact]
+        public async Task Additional_request_properties_should_be_propagated()
+        {
+            var request = new ClientCredentialsTokenRequest
+            {
+                ClientId = "client",
+                Scope = "scope"
+            };
+
+            request.Properties.Add("foo", "bar");
+
+            var response = await _client.RequestClientCredentialsTokenAsync(request);
+
+            response.IsError.Should().BeFalse();
+
+            var properties = _handler.Request.Properties;
+            var foo = properties.First().Value as string;
+            foo.Should().NotBeNull();
+            foo.Should().Be("bar");
         }
 
         [Fact]

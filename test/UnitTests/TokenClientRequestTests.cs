@@ -1,7 +1,5 @@
 ﻿using FluentAssertions;
-using IdentityModel;
 using IdentityModel.Client;
-using IdentityModel.UnitTests;
 using Microsoft.AspNetCore.WebUtilities;
 using System;
 using System.Collections.Generic;

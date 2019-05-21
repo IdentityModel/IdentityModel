@@ -4,7 +4,6 @@
 using IdentityModel.Internal;
 using System;
 using System.Net.Http;
-using System.Net.Http.Headers;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -24,21 +23,16 @@ namespace IdentityModel.Client
         /// <returns></returns>
         public static async Task<DeviceAuthorizationResponse> RequestDeviceAuthorizationAsync(this HttpMessageInvoker client, DeviceAuthorizationRequest request, CancellationToken cancellationToken = default)
         {
-            var httpRequest = new HttpRequestMessage(HttpMethod.Post, request.Address);
-            httpRequest.Headers.Accept.Clear();
-            httpRequest.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-
             var clone = request.Clone();
-            ClientCredentialsHelper.PopulateClientCredentials(clone, httpRequest);
-            
-            clone.Parameters.AddOptional(OidcConstants.AuthorizeRequest.Scope, request.Scope);
 
-            httpRequest.Content = new FormUrlEncodedContent(clone.Parameters);
+            clone.Parameters.AddOptional(OidcConstants.AuthorizeRequest.Scope, request.Scope);
+            clone.Method = HttpMethod.Post;
+            clone.Prepare();
                         
             HttpResponseMessage response;
             try
             {
-                response = await client.SendAsync(httpRequest, cancellationToken).ConfigureAwait();
+                response = await client.SendAsync(clone, cancellationToken).ConfigureAwait();
             }
             catch (Exception ex)
             {

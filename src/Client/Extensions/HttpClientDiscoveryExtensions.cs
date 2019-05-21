@@ -2,7 +2,6 @@
 // Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
 
 using IdentityModel.Internal;
-using IdentityModel.Jwk;
 using System;
 using System.Net.Http;
 using System.Threading;
@@ -22,7 +21,7 @@ namespace IdentityModel.Client
         /// <param name="address">The address.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
-        public static async Task<DiscoveryDocumentResponse> GetDiscoveryDocumentAsync(this HttpClient client, string address, CancellationToken cancellationToken = default)
+        public static async Task<DiscoveryDocumentResponse> GetDiscoveryDocumentAsync(this HttpClient client, string address = null, CancellationToken cancellationToken = default)
         {
             return await client.GetDiscoveryDocumentAsync(new DiscoveryDocumentRequest { Address = address }, cancellationToken).ConfigureAwait();
         }
@@ -34,10 +33,8 @@ namespace IdentityModel.Client
         /// <param name="request">The request.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
-        public static async Task<DiscoveryDocumentResponse> GetDiscoveryDocumentAsync(this HttpMessageInvoker client, DiscoveryDocumentRequest request = null, CancellationToken cancellationToken = default)
+        public static async Task<DiscoveryDocumentResponse> GetDiscoveryDocumentAsync(this HttpMessageInvoker client, DiscoveryDocumentRequest request, CancellationToken cancellationToken = default)
         {
-            if (request == null) request = new DiscoveryDocumentRequest();
-
             string address;
             if (request.Address.IsPresent())
             {
@@ -70,8 +67,14 @@ namespace IdentityModel.Client
 
             try
             {
-                var httpRequest = new HttpRequestMessage(HttpMethod.Get, url);
-                var response = await client.SendAsync(httpRequest, cancellationToken).ConfigureAwait();
+                var clone = request.Clone();
+
+                clone.Method = HttpMethod.Get;
+                clone.Prepare();
+
+                clone.RequestUri = new Uri(url);
+
+                var response = await client.SendAsync(clone, cancellationToken).ConfigureAwait();
 
                 string responseContent = null;
 
@@ -97,22 +100,19 @@ namespace IdentityModel.Client
                     jwkUrl = disco.JwksUri;
                     if (jwkUrl != null)
                     {
-                        using (HttpRequestMessage getRequest = new HttpRequestMessage(HttpMethod.Get, jwkUrl))
+                        var jwkClone = request.Clone<JsonWebKeySetRequest>();
+                        jwkClone.Method = HttpMethod.Get;
+                        jwkClone.Address = jwkUrl;
+                        jwkClone.Prepare();
+
+                        var jwkResponse = await client.GetJsonWebKeySetAsync(jwkClone, cancellationToken).ConfigureAwait();
+
+                        if (jwkResponse.IsError)
                         {
-                            response = await client.SendAsync(getRequest, cancellationToken).ConfigureAwait();
-
-                            if (response.Content != null)
-                            {
-                                responseContent = await response.Content.ReadAsStringAsync().ConfigureAwait();
-                            }
-
-                            if (!response.IsSuccessStatusCode)
-                            {
-                                return await ProtocolResponse.FromHttpResponseAsync<DiscoveryDocumentResponse>(response, $"Error connecting to {jwkUrl}: {response.ReasonPhrase}").ConfigureAwait();
-                            }
-
-                            disco.KeySet = new JsonWebKeySet(responseContent);
+                            return await ProtocolResponse.FromHttpResponseAsync<DiscoveryDocumentResponse>(jwkResponse.HttpResponse, $"Error connecting to {jwkUrl}: {jwkResponse.HttpErrorReason}").ConfigureAwait();
                         }
+
+                        disco.KeySet = jwkResponse.KeySet;
                     }
 
                     return disco;

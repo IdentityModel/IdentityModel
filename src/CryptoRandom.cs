@@ -3,7 +3,6 @@
 
 using System;
 using System.Security.Cryptography;
-using System.Text;
 
 namespace IdentityModel
 {
@@ -14,6 +13,25 @@ namespace IdentityModel
     {
         private static readonly RandomNumberGenerator Rng = RandomNumberGenerator.Create();
         private readonly byte[] _uint32Buffer = new byte[4];
+
+        /// <summary>
+        /// Output format for unique IDs
+        /// </summary>
+        public enum OutputFormat
+        {
+            /// <summary>
+            /// URL-safe Base64
+            /// </summary>
+            Base64Url,
+            /// <summary>
+            /// Base64
+            /// </summary>
+            Base64,
+            /// <summary>
+            /// Hex
+            /// </summary>
+            Hex
+        }
 
         /// <summary>
         /// Creates a random key byte array.
@@ -29,29 +47,26 @@ namespace IdentityModel
         }
 
         /// <summary>
-        /// Creates a random key as base64 URL encoded string.
-        /// </summary>
-        /// <param name="length">The length.</param>
-        /// <returns></returns>
-        public static string CreateRandomKeyString(int length)
-        {
-            var bytes = new byte[length];
-            Rng.GetBytes(bytes);
-
-            return Base64Url.Encode(bytes);
-        }
-
-        /// <summary>
         /// Creates a URL safe unique identifier.
         /// </summary>
         /// <param name="length">The length.</param>
+        /// <param name="format">The output format</param>
         /// <returns></returns>
-        public static string CreateUniqueId(int length = 32)
+        public static string CreateUniqueId(int length = 32, OutputFormat format = OutputFormat.Base64Url)
         {
-            var bytes = new byte[length];
-            Rng.GetBytes(bytes);
-
-            return Base64Url.Encode(bytes);
+            var bytes = CreateRandomKey(length);
+            
+            switch (format)
+            {
+                case OutputFormat.Base64Url:
+                    return Base64Url.Encode(bytes);
+                case OutputFormat.Base64:
+                    return Convert.ToBase64String(bytes);
+                case OutputFormat.Hex:
+                    return BitConverter.ToString(bytes).Replace("-", "");
+                default:
+                    throw new ArgumentException("Invalid output format", nameof(format));
+            }
         }
 
         /// <summary>

@@ -41,7 +41,7 @@ namespace IdentityModel.Client
         /// </summary>
         /// <param name="request">The request.</param>
         /// <param name="parameters">The parameters.</param>
-        public void ApplyRequestParameters(TokenRequest request, IDictionary<string, string> parameters)
+        internal void ApplyRequestParameters(TokenRequest request, IDictionary<string, string> parameters)
         {
             request.Address = _options.Address;
             request.ClientId = _options.ClientId;

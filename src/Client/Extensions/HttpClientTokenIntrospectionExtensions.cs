@@ -4,7 +4,6 @@
 using IdentityModel.Internal;
 using System;
 using System.Net.Http;
-using System.Net.Http.Headers;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -24,22 +23,17 @@ namespace IdentityModel.Client
         /// <returns></returns>
         public static async Task<TokenIntrospectionResponse> IntrospectTokenAsync(this HttpMessageInvoker client, TokenIntrospectionRequest request, CancellationToken cancellationToken = default)
         {
-            var httpRequest = new HttpRequestMessage(HttpMethod.Post, request.Address);
-            httpRequest.Headers.Accept.Clear();
-            httpRequest.Headers.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
-
             var clone = request.Clone();
-            ClientCredentialsHelper.PopulateClientCredentials(clone, httpRequest);
 
+            clone.Method = HttpMethod.Post;
             clone.Parameters.AddRequired(OidcConstants.TokenIntrospectionRequest.Token, request.Token);
             clone.Parameters.AddOptional(OidcConstants.TokenIntrospectionRequest.TokenTypeHint, request.TokenTypeHint);
-
-            httpRequest.Content = new FormUrlEncodedContent(clone.Parameters);
+            clone.Prepare();
 
             HttpResponseMessage response;
             try
             {
-                response = await client.SendAsync(httpRequest, cancellationToken).ConfigureAwait();
+                response = await client.SendAsync(clone, cancellationToken).ConfigureAwait();
             }
             catch (Exception ex)
             {
