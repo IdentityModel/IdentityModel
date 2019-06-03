@@ -17,11 +17,8 @@ jobs:
   pool:
     vmImage: 'windows-2019'
   steps:
-  - task: PowerShell@2
+  - script: ./build.cmd
     displayName: 'Build Script'
-    inputs:
-      targetType: filePath
-      filePath: ./build.ps1  
   - task: NuGetCommand@2
     displayName: 'MyGet push'
     inputs:
