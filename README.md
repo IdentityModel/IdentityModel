@@ -1,5 +1,5 @@
 ## About IdentityModel
-[<img align="right" width="100px" src="https://dotnetfoundation.org/images/logo_big.svg" />](https://dotnetfoundation.org/projects?searchquery=IdentityServer&type=project)
+[<img align="right" width="100px" src="https://dotnetfoundation.org/img/logo_big.svg" />](https://dotnetfoundation.org/projects?searchquery=IdentityModel&type=project)
 
 IdentityModel is a .NET standard helper library for claims-based identity, OAuth 2.0 and OpenID Connect.
 Founded and maintained by [Dominick Baier](https://twitter.com/leastprivilege) and [Brock Allen](https://twitter.com/brocklallen).
