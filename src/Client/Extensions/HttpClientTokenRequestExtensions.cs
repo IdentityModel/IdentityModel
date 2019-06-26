@@ -148,11 +148,6 @@ namespace IdentityModel.Client
 
         internal static async Task<TokenResponse> RequestTokenAsync(this HttpMessageInvoker client, ProtocolRequest request, CancellationToken cancellationToken = default)
         {
-            if (!request.Parameters.TryGetValue(OidcConstants.TokenRequest.ClientId, out _))
-            {
-                if (request.ClientId.IsMissing()) throw new InvalidOperationException("client_id is missing");
-            }
-
             request.Prepare();
             request.Method = HttpMethod.Post;
             

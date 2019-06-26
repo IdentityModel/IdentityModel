@@ -79,14 +79,6 @@ namespace IdentityModel.UnitTests
         }
 
         [Fact]
-        public void Sending_a_request_without_client_id_should_fail()
-        {
-            Func<Task> act = async () => await _client.RequestTokenAsync(new TokenRequest { Address = Endpoint, GrantType = "custom" });
-
-            act.Should().Throw<InvalidOperationException>().WithMessage("client_id is missing");
-        }
-
-        [Fact]
         public async Task Repeating_a_request_should_succeed()
         {
             var request = new ClientCredentialsTokenRequest
