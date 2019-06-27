@@ -23,10 +23,10 @@ jobs:
       targetType: filePath
       filePath: ./build.ps1  
   - task: NuGetCommand@2
-    displayName: 'Package push'
+    displayName: 'MyGet push'
     inputs:
       command: push
       packagesToPush: 'artifacts/*.nupkg'
       nuGetFeedType: external
-      publishFeedCredentials: 'GitHub Packages'
+      publishFeedCredentials: 'MyGet'
       condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
