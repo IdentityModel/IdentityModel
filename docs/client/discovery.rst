@@ -57,7 +57,7 @@ e.g. disabling the issuer name check::
         }
     });
 
-You can also customize validation strategy based on the authority with your own implementation of `IAuthorityValidationStrategy`. 
+You can also customize validation strategy based on the authority with your own implementation of ``IAuthorityValidationStrategy``. 
 By default, comparison uses ordinal string comparison. To switch to Uri comparison:
 
     var disco = await client.GetDiscoveryDocumentAsync(new DiscoveryDocumentRequest
