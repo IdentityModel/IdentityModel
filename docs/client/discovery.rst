@@ -43,6 +43,8 @@ validation includes:
 * enforce that the protocol endpoints are on the same DNS name as the authority
 * enforce the existence of a keyset
 
+Policy violation errors will set the ``ErrorType`` property on the ``DiscoveryResponse`` to ``PolicyViolation``.   
+
 All of the standard validation rules can be modified using the ``DiscoveryPolicy`` class, 
 e.g. disabling the issuer name check::
 
@@ -54,8 +56,19 @@ e.g. disabling the issuer name check::
             ValidateIssuerName = false
         }
     });
-    
-Policy violation errors will set the ``ErrorType`` property on the ``DiscoveryResponse`` to ``PolicyViolation``.   
+
+You can also customize validation strategy based on the authority with your own implementation of `IAuthorityValidationStrategy`. 
+By default, comparison uses ordinal string comparison. To switch to Uri comparison:
+
+    var disco = await client.GetDiscoveryDocumentAsync(new DiscoveryDocumentRequest
+    {
+        Address = "https://demo.identityserver.io",
+        Policy = 
+        {
+            AuthorityValidationStrategy = AuthorityUrlValidationStrategy.Instance
+        }
+    });
+
 
 Caching the Discovery Document
 ------------------------------

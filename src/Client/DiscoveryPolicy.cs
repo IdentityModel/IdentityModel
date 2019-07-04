@@ -11,6 +11,9 @@ namespace IdentityModel.Client
     /// </summary>
     public class DiscoveryPolicy
     {
+        private static readonly StringComparison defaultAuthorityNameComparison = StringComparison.Ordinal;
+        private StringComparison _authorityNameComparison = defaultAuthorityNameComparison;
+
         /// <summary>
         /// Gets or sets the Authority on which the policy checks will be based on
         /// </summary>
@@ -19,7 +22,25 @@ namespace IdentityModel.Client
         /// <summary>
         /// Method of comparison for issuer and authority names. Defaults to <see cref="StringComparison.Ordinal" />
         /// </summary>
-        public StringComparison AuthorityNameComparison { get; set; } = StringComparison.Ordinal;
+        [Obsolete("Please use AuthorityValidationStrategy")]
+        public StringComparison AuthorityNameComparison
+        {
+            get
+            {
+                return _authorityNameComparison;
+            }
+            set
+            {
+                _authorityNameComparison = value;
+                AuthorityValidationStrategy = new StringComparisonAuthorityValidationStrategy(value);
+            }
+        }
+
+        /// <summary>
+        /// Strategy used to validate issuer name and endpoints based on expected authority.
+        /// Defaults to <see cref="StringComparisonAuthorityValidationStrategy.Default"/>.
+        /// </summary>
+        public IAuthorityValidationStrategy AuthorityValidationStrategy { get; set; } = new StringComparisonAuthorityValidationStrategy(defaultAuthorityNameComparison);
 
         /// <summary>
         /// Specifies if HTTPS is enforced on all endpoints. Defaults to true.
