@@ -243,7 +243,27 @@ namespace IdentityModel.UnitTests
                 Policy =
                 {
                     ValidateIssuerName = true,
-                    AuthorityNameComparison = StringComparison.OrdinalIgnoreCase
+                    AuthorityValidationStrategy = new StringComparisonAuthorityValidationStrategy(StringComparison.OrdinalIgnoreCase)
+                }
+            });
+
+            disco.IsError.Should().BeFalse();
+        }
+
+        [Fact]
+        public async Task Authority_comparison_with_uri_equivalence()
+        {
+            var handler = GetHandler(issuer: "https://authority:443/tenantid/");
+            var client = new HttpClient(handler);
+
+            var disco = await client.GetDiscoveryDocumentAsync(new DiscoveryDocumentRequest
+            {
+                Address = "https://authority/tenantid",
+
+                Policy =
+                {
+                    ValidateIssuerName = true,
+                    AuthorityValidationStrategy = AuthorityUrlValidationStrategy.Instance
                 }
             });
 

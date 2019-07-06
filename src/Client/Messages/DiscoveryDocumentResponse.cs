@@ -85,10 +85,14 @@ namespace IdentityModel.Client
         {
             if (policy.ValidateIssuerName)
             {
-                if (string.IsNullOrWhiteSpace(Issuer)) return "Issuer name is missing";
+#pragma warning disable 0618
+                IAuthorityValidationStrategy strategy = policy.AuthorityValidationStrategy ?? new StringComparisonAuthorityValidationStrategy(policy.AuthorityNameComparison);
+#pragma warning restore 0618
 
-                var isValid = ValidateIssuerName(Issuer.RemoveTrailingSlash(), policy.Authority.RemoveTrailingSlash(), policy.AuthorityNameComparison);
-                if (!isValid) return "Issuer name does not match authority: " + Issuer;
+                AuthorityValidationResult issuerValidationResult = strategy.IsIssuerNameValid(Issuer, policy.Authority);
+
+                if (!issuerValidationResult.Success)
+                    return issuerValidationResult.ErrorMessage;
             }
 
             var error = ValidateEndpoints(Json, policy);
@@ -105,7 +109,7 @@ namespace IdentityModel.Client
         /// <returns></returns>
         public bool ValidateIssuerName(string issuer, string authority)
         {
-            return ValidateIssuerName(issuer, authority, StringComparison.Ordinal);
+            return StringComparisonAuthorityValidationStrategy.Default.IsIssuerNameValid(issuer, authority).Success;
         }
 
         /// <summary>
@@ -117,8 +121,23 @@ namespace IdentityModel.Client
         /// <returns></returns>
         public bool ValidateIssuerName(string issuer, string authority, StringComparison nameComparison)
         {
-            return string.Equals(issuer, authority, nameComparison);
+            return new StringComparisonAuthorityValidationStrategy(nameComparison).IsIssuerNameValid(issuer, authority).Success;
         }
+
+        /// <summary>
+        /// Checks if the issuer matches the authority.
+        /// </summary>
+        /// <param name="issuer">The issuer.</param>
+        /// <param name="authority">The authority.</param>
+        /// <param name="validationStrategy">The strategy to use.</param>
+        /// <returns></returns>
+        private bool ValidateIssuerName(string issuer, string authority, IAuthorityValidationStrategy validationStrategy)
+        {
+            return validationStrategy.IsIssuerNameValid(issuer, authority).Success;
+        }
+
+
+
 
         /// <summary>
         /// Validates the endoints and jwks_uri according to the security policy.
@@ -183,20 +202,12 @@ namespace IdentityModel.Client
                             return $"Endpoint is on a different host than authority: {endpoint}";
                         }
 
-
-                        isAllowed = false;
-                        foreach (var authority in allowedAuthorities)
-                        {
-                            if (endpoint.StartsWith(authority, policy.AuthorityNameComparison))
-                            {
-                                isAllowed = true;
-                            }
-                        }
-
-                        if (!isAllowed)
-                        {
-                            return $"Endpoint belongs to different authority: {endpoint}";
-                        }
+#pragma warning disable 0618
+                        IAuthorityValidationStrategy strategy = policy.AuthorityValidationStrategy ?? new StringComparisonAuthorityValidationStrategy(policy.AuthorityNameComparison);
+#pragma warning restore 0618
+                        AuthorityValidationResult endpointValidationResult = strategy.IsEndpointValid(endpoint, allowedAuthorities);
+                        if (!endpointValidationResult.Success)
+                            return endpointValidationResult.ErrorMessage;
                     }
                 }
             }
