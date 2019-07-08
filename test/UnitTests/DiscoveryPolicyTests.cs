@@ -263,7 +263,7 @@ namespace IdentityModel.UnitTests
                 Policy =
                 {
                     ValidateIssuerName = true,
-                    AuthorityValidationStrategy = AuthorityUrlValidationStrategy.Instance
+                    AuthorityValidationStrategy = new AuthorityUrlValidationStrategy()
                 }
             });
 

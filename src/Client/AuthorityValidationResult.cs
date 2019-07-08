@@ -1,5 +1,6 @@
 ﻿using System;
 
+#pragma warning disable 1591
 namespace IdentityModel.Client
 {
     public struct AuthorityValidationResult
@@ -30,3 +31,4 @@ namespace IdentityModel.Client
         }
     }
 }
+#pragma warning restore 1591

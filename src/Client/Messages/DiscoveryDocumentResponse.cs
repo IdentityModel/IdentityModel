@@ -92,11 +92,16 @@ namespace IdentityModel.Client
                 AuthorityValidationResult issuerValidationResult = strategy.IsIssuerNameValid(Issuer, policy.Authority);
 
                 if (!issuerValidationResult.Success)
+                {
                     return issuerValidationResult.ErrorMessage;
+                }
             }
 
             var error = ValidateEndpoints(Json, policy);
-            if (error.IsPresent()) return error;
+            if (error.IsPresent())
+            {
+                return error;
+            }
 
             return string.Empty;
         }
@@ -186,7 +191,10 @@ namespace IdentityModel.Client
                     if (policy.ValidateEndpoints)
                     {
                         // if endpoint is on exclude list, don't validate
-                        if (policy.EndpointValidationExcludeList.Contains(element.Key)) continue;
+                        if (policy.EndpointValidationExcludeList.Contains(element.Key))
+                        {
+                            continue;
+                        }
 
                         bool isAllowed = false;
                         foreach (var host in allowedHosts)
@@ -207,7 +215,9 @@ namespace IdentityModel.Client
 #pragma warning restore 0618
                         AuthorityValidationResult endpointValidationResult = strategy.IsEndpointValid(endpoint, allowedAuthorities);
                         if (!endpointValidationResult.Success)
+                        {
                             return endpointValidationResult.ErrorMessage;
+                        }
                     }
                 }
             }
