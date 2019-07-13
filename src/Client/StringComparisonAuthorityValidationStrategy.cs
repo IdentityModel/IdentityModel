@@ -7,13 +7,9 @@ namespace IdentityModel.Client
     /// <summary>
     /// Implementation of <see cref="IAuthorityValidationStrategy"/> based on <see cref="StringComparison"/>.
     /// </summary>
+    /// <seealso cref="AuthorityUrlValidationStrategy"/>
     public sealed class StringComparisonAuthorityValidationStrategy : IAuthorityValidationStrategy
     {
-        /// <summary>
-        /// Default comparison based on <see cref="StringComparison.Ordinal"/>.
-        /// </summary>
-        public static StringComparisonAuthorityValidationStrategy Default = new StringComparisonAuthorityValidationStrategy(StringComparison.Ordinal);
-
         private readonly StringComparison _stringComparison;
 
         /// <summary>

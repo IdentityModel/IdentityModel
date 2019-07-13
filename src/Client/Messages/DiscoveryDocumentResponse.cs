@@ -85,9 +85,7 @@ namespace IdentityModel.Client
         {
             if (policy.ValidateIssuerName)
             {
-#pragma warning disable 0618
-                IAuthorityValidationStrategy strategy = policy.AuthorityValidationStrategy ?? new StringComparisonAuthorityValidationStrategy(policy.AuthorityNameComparison);
-#pragma warning restore 0618
+                IAuthorityValidationStrategy strategy = policy.AuthorityValidationStrategy ?? DiscoveryPolicy.DefaultAuthorityValidationStrategy;
 
                 AuthorityValidationResult issuerValidationResult = strategy.IsIssuerNameValid(Issuer, policy.Authority);
 
@@ -114,7 +112,7 @@ namespace IdentityModel.Client
         /// <returns></returns>
         public bool ValidateIssuerName(string issuer, string authority)
         {
-            return StringComparisonAuthorityValidationStrategy.Default.IsIssuerNameValid(issuer, authority).Success;
+            return DiscoveryPolicy.DefaultAuthorityValidationStrategy.IsIssuerNameValid(issuer, authority).Success;
         }
 
         /// <summary>
@@ -210,9 +208,7 @@ namespace IdentityModel.Client
                             return $"Endpoint is on a different host than authority: {endpoint}";
                         }
 
-#pragma warning disable 0618
-                        IAuthorityValidationStrategy strategy = policy.AuthorityValidationStrategy ?? new StringComparisonAuthorityValidationStrategy(policy.AuthorityNameComparison);
-#pragma warning restore 0618
+                        IAuthorityValidationStrategy strategy = policy.AuthorityValidationStrategy ?? DiscoveryPolicy.DefaultAuthorityValidationStrategy;
                         AuthorityValidationResult endpointValidationResult = strategy.IsEndpointValid(endpoint, allowedAuthorities);
                         if (!endpointValidationResult.Success)
                         {

@@ -11,8 +11,7 @@ namespace IdentityModel.Client
     /// </summary>
     public class DiscoveryPolicy
     {
-        private static readonly StringComparison defaultAuthorityNameComparison = StringComparison.Ordinal;
-        private StringComparison _authorityNameComparison = defaultAuthorityNameComparison;
+        internal static readonly IAuthorityValidationStrategy DefaultAuthorityValidationStrategy = new AuthorityUrlValidationStrategy();
 
         /// <summary>
         /// Gets or sets the Authority on which the policy checks will be based on
@@ -20,27 +19,10 @@ namespace IdentityModel.Client
         public string Authority { get; set; }
 
         /// <summary>
-        /// Method of comparison for issuer and authority names. Defaults to <see cref="StringComparison.Ordinal" />
-        /// </summary>
-        [Obsolete("Please use AuthorityValidationStrategy")]
-        public StringComparison AuthorityNameComparison
-        {
-            get
-            {
-                return _authorityNameComparison;
-            }
-            set
-            {
-                _authorityNameComparison = value;
-                AuthorityValidationStrategy = new StringComparisonAuthorityValidationStrategy(value);
-            }
-        }
-
-        /// <summary>
         /// Strategy used to validate issuer name and endpoints based on expected authority.
-        /// Defaults to <see cref="StringComparisonAuthorityValidationStrategy.Default"/>.
+        /// Defaults to <see cref="AuthorityUrlValidationStrategy"/>.
         /// </summary>
-        public IAuthorityValidationStrategy AuthorityValidationStrategy { get; set; } = new StringComparisonAuthorityValidationStrategy(defaultAuthorityNameComparison);
+        public IAuthorityValidationStrategy AuthorityValidationStrategy { get; set; } = DefaultAuthorityValidationStrategy;
 
         /// <summary>
         /// Specifies if HTTPS is enforced on all endpoints. Defaults to true.

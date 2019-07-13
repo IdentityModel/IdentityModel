@@ -5,8 +5,10 @@ using System.Collections.Generic;
 namespace IdentityModel.Client
 {
     /// <summary>
-    /// Implementation of <see cref="IAuthorityValidationStrategy"/> based on <see cref="Uri"/> equality.
+    /// <para>Implementation of <see cref="IAuthorityValidationStrategy"/> based on <see cref="Uri"/> equality.
+    /// Trailing slash is also ignored.</para>
     /// </summary>
+    /// <seealso cref="StringComparisonAuthorityValidationStrategy"/>
     public sealed class AuthorityUrlValidationStrategy : IAuthorityValidationStrategy
     {
 #pragma warning disable 1591
@@ -49,7 +51,7 @@ namespace IdentityModel.Client
 
             foreach (string authority in allowedAuthorities)
             {
-                if (!Uri.TryCreate(endpoint.RemoveTrailingSlash(), UriKind.Absolute, out var authorityUrl))
+                if (!Uri.TryCreate(authority.RemoveTrailingSlash(), UriKind.Absolute, out var authorityUrl))
                 {
                     throw new ArgumentOutOfRangeException("Authority must be a URL.", nameof(allowedAuthorities));
                 }
