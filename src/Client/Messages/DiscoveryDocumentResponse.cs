@@ -85,14 +85,21 @@ namespace IdentityModel.Client
         {
             if (policy.ValidateIssuerName)
             {
-                if (string.IsNullOrWhiteSpace(Issuer)) return "Issuer name is missing";
+                IAuthorityValidationStrategy strategy = policy.AuthorityValidationStrategy ?? DiscoveryPolicy.DefaultAuthorityValidationStrategy;
 
-                var isValid = ValidateIssuerName(Issuer.RemoveTrailingSlash(), policy.Authority.RemoveTrailingSlash(), policy.AuthorityNameComparison);
-                if (!isValid) return "Issuer name does not match authority: " + Issuer;
+                AuthorityValidationResult issuerValidationResult = strategy.IsIssuerNameValid(Issuer, policy.Authority);
+
+                if (!issuerValidationResult.Success)
+                {
+                    return issuerValidationResult.ErrorMessage;
+                }
             }
 
             var error = ValidateEndpoints(Json, policy);
-            if (error.IsPresent()) return error;
+            if (error.IsPresent())
+            {
+                return error;
+            }
 
             return string.Empty;
         }
@@ -105,7 +112,7 @@ namespace IdentityModel.Client
         /// <returns></returns>
         public bool ValidateIssuerName(string issuer, string authority)
         {
-            return ValidateIssuerName(issuer, authority, StringComparison.Ordinal);
+            return DiscoveryPolicy.DefaultAuthorityValidationStrategy.IsIssuerNameValid(issuer, authority).Success;
         }
 
         /// <summary>
@@ -117,8 +124,23 @@ namespace IdentityModel.Client
         /// <returns></returns>
         public bool ValidateIssuerName(string issuer, string authority, StringComparison nameComparison)
         {
-            return string.Equals(issuer, authority, nameComparison);
+            return new StringComparisonAuthorityValidationStrategy(nameComparison).IsIssuerNameValid(issuer, authority).Success;
         }
+
+        /// <summary>
+        /// Checks if the issuer matches the authority.
+        /// </summary>
+        /// <param name="issuer">The issuer.</param>
+        /// <param name="authority">The authority.</param>
+        /// <param name="validationStrategy">The strategy to use.</param>
+        /// <returns></returns>
+        private bool ValidateIssuerName(string issuer, string authority, IAuthorityValidationStrategy validationStrategy)
+        {
+            return validationStrategy.IsIssuerNameValid(issuer, authority).Success;
+        }
+
+
+
 
         /// <summary>
         /// Validates the endoints and jwks_uri according to the security policy.
@@ -167,7 +189,10 @@ namespace IdentityModel.Client
                     if (policy.ValidateEndpoints)
                     {
                         // if endpoint is on exclude list, don't validate
-                        if (policy.EndpointValidationExcludeList.Contains(element.Key)) continue;
+                        if (policy.EndpointValidationExcludeList.Contains(element.Key))
+                        {
+                            continue;
+                        }
 
                         bool isAllowed = false;
                         foreach (var host in allowedHosts)
@@ -183,19 +208,11 @@ namespace IdentityModel.Client
                             return $"Endpoint is on a different host than authority: {endpoint}";
                         }
 
-
-                        isAllowed = false;
-                        foreach (var authority in allowedAuthorities)
+                        IAuthorityValidationStrategy strategy = policy.AuthorityValidationStrategy ?? DiscoveryPolicy.DefaultAuthorityValidationStrategy;
+                        AuthorityValidationResult endpointValidationResult = strategy.IsEndpointValid(endpoint, allowedAuthorities);
+                        if (!endpointValidationResult.Success)
                         {
-                            if (endpoint.StartsWith(authority, policy.AuthorityNameComparison))
-                            {
-                                isAllowed = true;
-                            }
-                        }
-
-                        if (!isAllowed)
-                        {
-                            return $"Endpoint belongs to different authority: {endpoint}";
+                            return endpointValidationResult.ErrorMessage;
                         }
                     }
                 }
