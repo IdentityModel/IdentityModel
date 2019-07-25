@@ -11,7 +11,7 @@ namespace IdentityModel.Client
     /// </summary>
     public class DiscoveryPolicy
     {
-        internal static readonly IAuthorityValidationStrategy DefaultAuthorityValidationStrategy = new AuthorityUrlValidationStrategy();
+        internal static readonly IAuthorityValidationStrategy DefaultAuthorityValidationStrategy = new StringComparisonAuthorityValidationStrategy();
 
         /// <summary>
         /// Gets or sets the Authority on which the policy checks will be based on

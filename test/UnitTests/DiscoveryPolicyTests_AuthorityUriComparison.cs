@@ -211,7 +211,7 @@ namespace IdentityModel.UnitTests
         }
 
         [Fact]
-        public async Task Authority_comparison_with_uri_equivalence_is_default_strategy()
+        public async Task String_comparison_with_uri_equivalence_is_default_strategy()
         {
             DiscoveryPolicy policy = new DiscoveryPolicy()
             {
@@ -227,7 +227,7 @@ namespace IdentityModel.UnitTests
                 Policy = policy
             });
 
-            disco.IsError.Should().BeFalse();
+            disco.IsError.Should().BeTrue();
         }
 
         [Fact]

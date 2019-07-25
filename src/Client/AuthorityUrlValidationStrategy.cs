@@ -11,7 +11,7 @@ namespace IdentityModel.Client
     /// <seealso cref="StringComparisonAuthorityValidationStrategy"/>
     public sealed class AuthorityUrlValidationStrategy : IAuthorityValidationStrategy
     {
-#pragma warning disable 1591
+        /// <inheritdoc/>
         public AuthorityValidationResult IsIssuerNameValid(string issuerName, string expectedAuthority)
         {
             if (!Uri.TryCreate(expectedAuthority.RemoveTrailingSlash(), UriKind.Absolute, out var expectedAuthorityUrl))
@@ -37,6 +37,7 @@ namespace IdentityModel.Client
             return AuthorityValidationResult.CreateError("Issuer name does not match authority: " + issuerName);
         }
 
+        /// <inheritdoc/>
         public AuthorityValidationResult IsEndpointValid(string endpoint, IEnumerable<string> allowedAuthorities)
         {
             if (string.IsNullOrEmpty(endpoint))
@@ -68,6 +69,5 @@ namespace IdentityModel.Client
 
             return AuthorityValidationResult.CreateError($"Endpoint belongs to different authority: {endpoint}");
         }
-#pragma warning restore 1591
     }
 }
