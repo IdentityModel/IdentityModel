@@ -42,7 +42,7 @@ namespace IdentityModel
         /// <param name="options">Comparison options.</param>
         public ClaimComparer(Options options)
         {
-            _options = options;
+            _options = options ?? throw new ArgumentNullException(nameof(options));
         }
 
         /// <inheritdoc/>
