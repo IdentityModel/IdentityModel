@@ -33,12 +33,22 @@ namespace IdentityModel.Client
                 {
                     foreach (var item in array)
                     {
-                        claims.Add(new Claim(x.Key, item.ToString()));
+                        // String is special because item.ToString(Formatting.None) will result in "/"string/"". The quotes will be added.
+                        // Boolean needs item.ToString otherwise 'true' => 'True'
+                        var value = item.Type == JTokenType.String ?
+                            item.ToString() :
+                            item.ToString(Newtonsoft.Json.Formatting.None);
+                        claims.Add(new Claim(x.Key, value));
                     }
                 }
                 else
                 {
-                    claims.Add(new Claim(x.Key, x.Value.ToString()));
+                    // String is special because item.ToString(Formatting.None) will result in "/"string/"". The quotes will be added.
+                    // Boolean needs item.ToString otherwise 'true' => 'True'
+                    var value = x.Value.Type == JTokenType.String ? 
+                        x.Value.ToString() : 
+                        x.Value.ToString(Newtonsoft.Json.Formatting.None);
+                    claims.Add(new Claim(x.Key, value));
                 }
             }
 

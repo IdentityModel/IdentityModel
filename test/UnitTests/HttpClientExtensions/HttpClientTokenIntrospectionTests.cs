@@ -88,7 +88,7 @@ namespace IdentityModel.UnitTests
             response.Claims.First(c => c.Type == "auth_time").Value.Should().Be("1475824871");
             response.Claims.First(c => c.Type == "idp").Value.Should().Be("local");
             response.Claims.First(c => c.Type == "amr").Value.Should().Be("password");
-            response.Claims.First(c => c.Type == "active").Value.Should().Be("True");
+            response.Claims.First(c => c.Type == "active").Value.Should().Be("true");
 
             var scopes = response.Claims.Where(c => c.Type == "scope");
             scopes.Count().Should().Be(2);
@@ -133,7 +133,7 @@ namespace IdentityModel.UnitTests
             response.Claims.First(c => c.Type == "auth_time").Value.Should().Be("1475824871");
             response.Claims.First(c => c.Type == "idp").Value.Should().Be("local");
             response.Claims.First(c => c.Type == "amr").Value.Should().Be("password");
-            response.Claims.First(c => c.Type == "active").Value.Should().Be("True");
+            response.Claims.First(c => c.Type == "active").Value.Should().Be("true");
 
             var scopes = response.Claims.Where(c => c.Type == "scope");
             scopes.Count().Should().Be(2);
@@ -162,7 +162,7 @@ namespace IdentityModel.UnitTests
             response.Claims.First(c => c.Type == "auth_time").Value.Should().Be("1475824871");
             response.Claims.First(c => c.Type == "idp").Value.Should().Be("local");
             response.Claims.First(c => c.Type == "amr").Value.Should().Be("password");
-            response.Claims.First(c => c.Type == "active").Value.Should().Be("True");
+            response.Claims.First(c => c.Type == "active").Value.Should().Be("true");
 
             scopes = response.Claims.Where(c => c.Type == "scope");
             scopes.Count().Should().Be(2);
@@ -273,7 +273,7 @@ namespace IdentityModel.UnitTests
             response.Claims.First(c => c.Type == "auth_time").Value.Should().Be("1475824871");
             response.Claims.First(c => c.Type == "idp").Value.Should().Be("local");
             response.Claims.First(c => c.Type == "amr").Value.Should().Be("password");
-            response.Claims.First(c => c.Type == "active").Value.Should().Be("True");
+            response.Claims.First(c => c.Type == "active").Value.Should().Be("true");
 
             var scopes = response.Claims.Where(c => c.Type == "scope");
             scopes.Count().Should().Be(2);
