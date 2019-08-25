@@ -23,9 +23,9 @@ namespace IdentityModel
             public bool IgnoreIssuer { get; set; } = false;
 
             /// <summary>
-            /// Specifies if value comparison should be case-sensitive
+            /// Specifies if claim and issuer value comparison should be case-sensitive
             /// </summary>
-            public bool IgnoreCase { get; set; } = true;
+            public bool IgnoreValueCase { get; set; } = false;
         }
 
         private readonly Options _options = new Options();
@@ -52,19 +52,20 @@ namespace IdentityModel
             if (x == null && y != null) return false;
             if (x != null && y == null) return false;
 
-            StringComparison comparison = StringComparison.OrdinalIgnoreCase;
-            if (_options.IgnoreCase == false) comparison = StringComparison.Ordinal;
-            
+            StringComparison valueComparison = StringComparison.Ordinal;
+            if (_options.IgnoreValueCase == true) valueComparison = StringComparison.OrdinalIgnoreCase;
+
+            var equal = (String.Equals(x.Type, y.Type, StringComparison.OrdinalIgnoreCase) &&
+                         String.Equals(x.Value, y.Value, valueComparison));
+
+
             if (_options.IgnoreIssuer)
             {
-                return (String.Equals(x.Type, y.Type, comparison) &&
-                        String.Equals(x.Value, y.Value, comparison));
+                return equal;
             }
             else
             {
-                return (String.Equals(x.Type, y.Type, comparison) &&
-                        String.Equals(x.Value, y.Value, comparison) &&
-                        String.Equals(x.Issuer, y.Issuer, comparison));
+                return (equal && String.Equals(x.Issuer, y.Issuer, valueComparison));
             }
         }
 
@@ -73,19 +74,17 @@ namespace IdentityModel
         {
             if (claim is null) return 0;
 
-            int typeHash;
+            int typeHash = claim.Type?.ToLowerInvariant().GetHashCode() ?? 0;
             int valueHash;
             int issuerHash;
 
-            if (_options.IgnoreCase)
+            if (_options.IgnoreValueCase)
             {
-                typeHash = claim.Type?.ToLowerInvariant().GetHashCode() ?? 0;
                 valueHash = claim.Value?.ToLowerInvariant().GetHashCode() ?? 0;
                 issuerHash = claim.Issuer?.ToLowerInvariant().GetHashCode() ?? 0;
             }
             else
             {
-                typeHash = claim.Type?.GetHashCode() ?? 0;
                 valueHash = claim.Value?.GetHashCode() ?? 0;
                 issuerHash = claim.Issuer?.GetHashCode() ?? 0;
             }

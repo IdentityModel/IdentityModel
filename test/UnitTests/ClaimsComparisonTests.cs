@@ -15,40 +15,27 @@ namespace IdentityModel.UnitTests
         {
             new Claim("claim_type1", "value", ClaimValueTypes.String, "issuer1"),
             new Claim("claim_type1", "value", ClaimValueTypes.String, "issuer1"),
+            new Claim("claim_type1", "Value", ClaimValueTypes.String, "issuer1"),
+
             new Claim("Claim_type1", "value", ClaimValueTypes.String, "issuer1"),
             new Claim("Claim_type1", "value", ClaimValueTypes.String, "issuer1"),
+            new Claim("Claim_type1", "Value", ClaimValueTypes.String, "issuer1"),
 
             new Claim("claim_type1", "value", ClaimValueTypes.String, "issuer2"),
             new Claim("claim_type1", "value", ClaimValueTypes.String, "issuer2"),
+            new Claim("claim_type1", "Value", ClaimValueTypes.String, "issuer2"),
+
             new Claim("Claim_type1", "value", ClaimValueTypes.String, "issuer2"),
             new Claim("Claim_type1", "value", ClaimValueTypes.String, "issuer2"),
+            new Claim("Claim_type1", "Value", ClaimValueTypes.String, "issuer2"),
         };
 
 
         
         [Fact]
-        public void Default_options_should_result_in_two_claims()
+        public void Default_options_should_result_in_four_claims()
         {
             var hashSet = new HashSet<Claim>(_claims, new ClaimComparer());
-
-            hashSet.Count.Should().Be(2);
-
-            var item = hashSet.First();
-            item.Type.Should().Be("claim_type1");
-            item.Value.Should().Be("value");
-            item.Issuer.Should().Be("issuer1");
-
-            item = hashSet.Skip(1).First();
-            item.Type.Should().Be("claim_type1");
-            item.Value.Should().Be("value");
-            item.Issuer.Should().Be("issuer2");
-
-        }
-
-        [Fact]
-        public void Ordinal_should_result_in_four_claims()
-        {
-            var hashSet = new HashSet<Claim>(_claims, new ClaimComparer(new ClaimComparer.Options { IgnoreCase = false }));
 
             hashSet.Count.Should().Be(4);
 
@@ -58,8 +45,8 @@ namespace IdentityModel.UnitTests
             item.Issuer.Should().Be("issuer1");
 
             item = hashSet.Skip(1).First();
-            item.Type.Should().Be("Claim_type1");
-            item.Value.Should().Be("value");
+            item.Type.Should().Be("claim_type1");
+            item.Value.Should().Be("Value");
             item.Issuer.Should().Be("issuer1");
 
             item = hashSet.Skip(2).First();
@@ -68,8 +55,37 @@ namespace IdentityModel.UnitTests
             item.Issuer.Should().Be("issuer2");
 
             item = hashSet.Skip(3).First();
-            item.Type.Should().Be("Claim_type1");
+            item.Type.Should().Be("claim_type1");
+            item.Value.Should().Be("Value");
+            item.Issuer.Should().Be("issuer2");
+
+        }
+
+        [Fact]
+        public void Ordinal_should_result_in_four_claims()
+        {
+            var hashSet = new HashSet<Claim>(_claims, new ClaimComparer(new ClaimComparer.Options { IgnoreValueCase = false }));
+
+            hashSet.Count.Should().Be(4);
+
+            var item = hashSet.First();
+            item.Type.Should().Be("claim_type1");
             item.Value.Should().Be("value");
+            item.Issuer.Should().Be("issuer1");
+
+            item = hashSet.Skip(1).First();
+            item.Type.Should().Be("claim_type1");
+            item.Value.Should().Be("Value");
+            item.Issuer.Should().Be("issuer1");
+
+            item = hashSet.Skip(2).First();
+            item.Type.Should().Be("claim_type1");
+            item.Value.Should().Be("value");
+            item.Issuer.Should().Be("issuer2");
+
+            item = hashSet.Skip(3).First();
+            item.Type.Should().Be("claim_type1");
+            item.Value.Should().Be("Value");
             item.Issuer.Should().Be("issuer2");
         }
 
@@ -77,19 +93,6 @@ namespace IdentityModel.UnitTests
         public void Ignoring_issuer_should_result_in_one_claim()
         {
             var hashSet = new HashSet<Claim>(_claims, new ClaimComparer(new ClaimComparer.Options { IgnoreIssuer = true }));
-
-            hashSet.Count.Should().Be(1);
-
-            var item = hashSet.First();
-            item.Type.Should().Be("claim_type1");
-            item.Value.Should().Be("value");
-            item.Issuer.Should().Be("issuer1");
-        }
-
-        [Fact]
-        public void Ordinal_and_ignoring_issuer_should_result_in_two_claims()
-        {
-            var hashSet = new HashSet<Claim>(_claims, new ClaimComparer(new ClaimComparer.Options { IgnoreCase = false, IgnoreIssuer = true }));
 
             hashSet.Count.Should().Be(2);
 
@@ -99,8 +102,26 @@ namespace IdentityModel.UnitTests
             item.Issuer.Should().Be("issuer1");
 
             item = hashSet.Skip(1).First();
-            item.Type.Should().Be("Claim_type1");
+            item.Type.Should().Be("claim_type1");
+            item.Value.Should().Be("Value");
+            item.Issuer.Should().Be("issuer1");
+        }
+
+        [Fact]
+        public void Ordinal_and_ignoring_issuer_should_result_in_two_claims()
+        {
+            var hashSet = new HashSet<Claim>(_claims, new ClaimComparer(new ClaimComparer.Options { IgnoreValueCase = false, IgnoreIssuer = true }));
+
+            hashSet.Count.Should().Be(2);
+
+            var item = hashSet.First();
+            item.Type.Should().Be("claim_type1");
             item.Value.Should().Be("value");
+            item.Issuer.Should().Be("issuer1");
+
+            item = hashSet.Skip(1).First();
+            item.Type.Should().Be("claim_type1");
+            item.Value.Should().Be("Value");
             item.Issuer.Should().Be("issuer1");
         }
     }
