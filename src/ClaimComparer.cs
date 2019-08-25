@@ -56,7 +56,8 @@ namespace IdentityModel
             if (_options.IgnoreValueCase == true) valueComparison = StringComparison.OrdinalIgnoreCase;
 
             var equal = (String.Equals(x.Type, y.Type, StringComparison.OrdinalIgnoreCase) &&
-                         String.Equals(x.Value, y.Value, valueComparison));
+                         String.Equals(x.Value, y.Value, valueComparison) &&
+                         String.Equals(x.ValueType, y.ValueType, StringComparison.Ordinal));
 
 
             if (_options.IgnoreIssuer)
@@ -74,7 +75,7 @@ namespace IdentityModel
         {
             if (claim is null) return 0;
 
-            int typeHash = claim.Type?.ToLowerInvariant().GetHashCode() ?? 0;
+            int typeHash = claim.Type?.ToLowerInvariant().GetHashCode() ?? 0 ^ claim.ValueType?.GetHashCode() ?? 0;
             int valueHash;
             int issuerHash;
 
