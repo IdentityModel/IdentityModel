@@ -23,7 +23,7 @@ namespace IdentityModel.Client
         /// <returns></returns>
         public static async Task<DiscoveryDocumentResponse> GetDiscoveryDocumentAsync(this HttpClient client, string address = null, CancellationToken cancellationToken = default)
         {
-            return await client.GetDiscoveryDocumentAsync(new DiscoveryDocumentRequest { Address = address }, cancellationToken).ConfigureAwait(false);
+            return await client.GetDiscoveryDocumentAsync(new DiscoveryDocumentRequest { Address = address }, cancellationToken).ConfigureAwait();
         }
 
         /// <summary>
@@ -74,13 +74,13 @@ namespace IdentityModel.Client
 
                 clone.RequestUri = new Uri(url);
 
-                var response = await client.SendAsync(clone, cancellationToken).ConfigureAwait(false);
+                var response = await client.SendAsync(clone, cancellationToken).ConfigureAwait();
 
                 string responseContent = null;
 
                 if (response.Content != null)
                 {
-                    responseContent = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+                    responseContent = await response.Content.ReadAsStringAsync().ConfigureAwait();
                 }
 
                 if (!response.IsSuccessStatusCode)
@@ -88,7 +88,7 @@ namespace IdentityModel.Client
                     return await ProtocolResponse.FromHttpResponseAsync<DiscoveryDocumentResponse>(response, $"Error connecting to {url}: {response.ReasonPhrase}");
                 }
 
-                var disco = await ProtocolResponse.FromHttpResponseAsync<DiscoveryDocumentResponse>(response, request.Policy).ConfigureAwait(false);
+                var disco = await ProtocolResponse.FromHttpResponseAsync<DiscoveryDocumentResponse>(response, request.Policy).ConfigureAwait();
 
                 if (disco.IsError)
                 {
@@ -105,11 +105,11 @@ namespace IdentityModel.Client
                         jwkClone.Address = jwkUrl;
                         jwkClone.Prepare();
 
-                        var jwkResponse = await client.GetJsonWebKeySetAsync(jwkClone, cancellationToken).ConfigureAwait(false);
+                        var jwkResponse = await client.GetJsonWebKeySetAsync(jwkClone, cancellationToken).ConfigureAwait();
 
                         if (jwkResponse.IsError)
                         {
-                            return await ProtocolResponse.FromHttpResponseAsync<DiscoveryDocumentResponse>(jwkResponse.HttpResponse, $"Error connecting to {jwkUrl}: {jwkResponse.HttpErrorReason}").ConfigureAwait(false);
+                            return await ProtocolResponse.FromHttpResponseAsync<DiscoveryDocumentResponse>(jwkResponse.HttpResponse, $"Error connecting to {jwkUrl}: {jwkResponse.HttpErrorReason}").ConfigureAwait();
                         }
 
                         disco.KeySet = jwkResponse.KeySet;

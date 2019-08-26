@@ -34,14 +34,14 @@ namespace IdentityModel.Client
             HttpResponseMessage response;
             try
             {
-                response = await client.SendAsync(clone, cancellationToken).ConfigureAwait(false);
+                response = await client.SendAsync(clone, cancellationToken).ConfigureAwait();
             }
             catch (Exception ex)
             {
                 return ProtocolResponse.FromException<UserInfoResponse>(ex);
             }
 
-            return await ProtocolResponse.FromHttpResponseAsync<UserInfoResponse>(response).ConfigureAwait(false);
+            return await ProtocolResponse.FromHttpResponseAsync<UserInfoResponse>(response).ConfigureAwait();
         }
     }
 }

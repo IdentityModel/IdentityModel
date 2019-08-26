@@ -1,6 +1,7 @@
 ﻿// Copyright (c) Brock Allen & Dominick Baier. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
 
+using IdentityModel.Internal;
 using System;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -26,7 +27,7 @@ namespace IdentityModel.Client
             return await client.GetJsonWebKeySetAsync(new JsonWebKeySetRequest
             {
                 Address = address
-            }, cancellationToken).ConfigureAwait(false);
+            }, cancellationToken).ConfigureAwait();
         }
 
         /// <summary>
@@ -48,17 +49,17 @@ namespace IdentityModel.Client
 
             try
             {
-                response = await client.SendAsync(clone, cancellationToken).ConfigureAwait(false);
+                response = await client.SendAsync(clone, cancellationToken).ConfigureAwait();
 
                 string responseContent = null;
                 if (response.Content != null)
                 {
-                    responseContent = await response.Content.ReadAsStringAsync().ConfigureAwait(false);
+                    responseContent = await response.Content.ReadAsStringAsync().ConfigureAwait();
                 }
 
                 if (!response.IsSuccessStatusCode)
                 {
-                    return await ProtocolResponse.FromHttpResponseAsync<JsonWebKeySetResponse>(response, $"Error connecting to {clone.RequestUri.AbsoluteUri}: {response.ReasonPhrase}").ConfigureAwait(false);
+                    return await ProtocolResponse.FromHttpResponseAsync<JsonWebKeySetResponse>(response, $"Error connecting to {clone.RequestUri.AbsoluteUri}: {response.ReasonPhrase}").ConfigureAwait();
                 }
             }
             catch (Exception ex)
