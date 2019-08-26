@@ -14,10 +14,18 @@ namespace IdentityModel.Internal
 
         private static async Task<Task<T>> GetTaskAsync(Func<Task<T>> taskFactory)
         {
-            // Let the task factory run synchronously in its own context.
-            await Task.Yield();
+			if (TaskHelpers.CanFactoryStartNew)
+			{
+				// Runs the task factory in a background thread and retrieves the resulting task.
+				return Task<Task<T>>.Factory.StartNew(taskFactory).Unwrap();
+			}
+			else
+			{
+				// Let the task factory run synchronously in its own context.
+				await Task.Yield();
 
-            return taskFactory();
+				return taskFactory();
+			}
         }
         
         //TODO: at some point allow this

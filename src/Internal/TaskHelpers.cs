@@ -13,7 +13,12 @@ namespace IdentityModel.Internal
         /// </summary>
         public static bool CanConfigureAwaitFalse { get; set; } = true;
 
-        internal static ConfiguredTaskAwaitable ConfigureAwait(this Task task)
+		/// <summary>
+		/// Gets or sets if this library's internal tasks can call <see cref="TaskFactory.StartNew(System.Action)"/>.
+		/// </summary>
+		public static bool CanFactoryStartNew { get; set; } = true;
+
+		internal static ConfiguredTaskAwaitable ConfigureAwait(this Task task)
             => task.ConfigureAwait(!CanConfigureAwaitFalse);
 
         internal static ConfiguredTaskAwaitable<TResult> ConfigureAwait<TResult>(this Task<TResult> task)
