@@ -143,7 +143,7 @@ namespace IdentityModel.Client
                 Parameters = parameters
             };
 
-            return await client.RequestTokenAsync(request).ConfigureAwait();
+            return await client.RequestTokenAsync(request, cancellationToken).ConfigureAwait();
         }
 
         internal static async Task<TokenResponse> RequestTokenAsync(this HttpMessageInvoker client, ProtocolRequest request, CancellationToken cancellationToken = default)
