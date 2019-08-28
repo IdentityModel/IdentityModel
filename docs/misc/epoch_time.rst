@@ -2,7 +2,7 @@ Epoch Time Conversion
 =====================
 JWT tokens use so called `Epoch or Unix time <https://en.wikipedia.org/wiki/Unix_time>`_ to represent date/times.
 
-IdentityModel contains extensions methods for ``DateTime`` and ``DateTimeOffset`` or convert to/from Unix time::
+IdentityModel contains extensions methods for ``DateTime`` to convert to/from Unix time::
 
     var dt = DateTime.UtcNow;
     var unix = dt.ToEpochTime();
