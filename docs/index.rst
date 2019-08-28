@@ -14,7 +14,7 @@ It has the following high level features:
 How to get
 ----------
 
-* github https://github.com/IdentityModel/IdentityModel2
+* github https://github.com/IdentityModel/IdentityModel
 * nuget https://www.nuget.org/packages/IdentityModel/
 * CI builds https://www.myget.org/F/identity/
 
@@ -24,6 +24,7 @@ How to get
    :hidden:
    :caption: Protocol Client Libraries
 
+   client/overview
    client/discovery
    client/authorize
    client/end_session
