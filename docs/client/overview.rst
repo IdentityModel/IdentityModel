@@ -30,7 +30,7 @@ Again these steps are automated using the extension methods. So let's have a loo
 
 Extension methods
 -----------------
-For each protocol interaction, an extension method for ``HttpMessageInvoke`` (that's the base class of ``HttpClient``) exists. 
+For each protocol interaction, an extension method for ``HttpMessageInvoker`` (that's the base class of ``HttpClient``) exists. 
 The extension methods expect a request object and return a response object.
 
 It is your responsibility to setup and manage the lifetime of the ``HttpClient``, e.g. manually::
