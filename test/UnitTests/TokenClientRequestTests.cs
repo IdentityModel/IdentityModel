@@ -134,7 +134,7 @@ namespace IdentityModel.UnitTests
         [Fact]
         public void Password_request_without_username_should_fail()
         {
-            var tokenClient = new TokenClient(_client, null);
+            var tokenClient = new TokenClient(_client, new TokenClientOptions());
 
             Func<Task> act = async () => await tokenClient.RequestPasswordTokenAsync(userName: null);
 
@@ -167,7 +167,7 @@ namespace IdentityModel.UnitTests
         [Fact]
         public void Code_request_without_code_should_fail()
         {
-            var tokenClient = new TokenClient(_client, null);
+            var tokenClient = new TokenClient(_client, new TokenClientOptions());
 
             Func<Task> act = async () => await tokenClient.RequestAuthorizationCodeTokenAsync(code: null, redirectUri: "uri", codeVerifier: "verifier");
 
@@ -177,7 +177,7 @@ namespace IdentityModel.UnitTests
         [Fact]
         public void Code_request_without_redirect_uri_should_fail()
         {
-            var tokenClient = new TokenClient(_client, null);
+            var tokenClient = new TokenClient(_client, new TokenClientOptions());
 
             Func<Task> act = async () => await tokenClient.RequestAuthorizationCodeTokenAsync(code: "code", redirectUri: null, codeVerifier: "verifier");
 
@@ -207,7 +207,7 @@ namespace IdentityModel.UnitTests
         [Fact]
         public void Refresh_request_without_refresh_token_should_fail()
         {
-            var tokenClient = new TokenClient(_client, null);
+            var tokenClient = new TokenClient(_client, new TokenClientOptions());
 
             Func<Task> act = async () => await tokenClient.RequestRefreshTokenAsync(refreshToken: null, scope: "scope");
 
@@ -217,7 +217,7 @@ namespace IdentityModel.UnitTests
         [Fact]
         public void Setting_no_grant_type_should_fail()
         {
-            var tokenClient = new TokenClient(_client, null);
+            var tokenClient = new TokenClient(_client, new TokenClientOptions());
 
             Func<Task> act = async () => await tokenClient.RequestTokenAsync(grantType: null);
 
@@ -227,7 +227,7 @@ namespace IdentityModel.UnitTests
         [Fact]
         public async Task Setting_custom_parameters_should_have_correct_format()
         {
-            var tokenClient = new TokenClient(_client, null);
+            var tokenClient = new TokenClient(_client, new TokenClientOptions());
 
             var parameters = new Dictionary<string, string>
             {
