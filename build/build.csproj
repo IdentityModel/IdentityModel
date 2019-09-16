@@ -7,7 +7,7 @@
 
   <ItemGroup>
     <PackageReference Include="Bullseye" Version="2.4.0" />
-    <PackageReference Include="McMaster.Extensions.CommandLineUtils" Version="2.3.4" />
+    <PackageReference Include="McMaster.Extensions.CommandLineUtils" Version="2.4.0" />
     <PackageReference Include="SimpleExec" Version="6.0.0" />
   </ItemGroup>
   
