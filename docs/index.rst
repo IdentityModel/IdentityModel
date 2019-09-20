@@ -12,9 +12,6 @@ It has the following high level features:
 * Constants for standard JWT claim types and protocol values
 * Misc helpers for base64 URL encoding, X509 certificate store access, time constant string comparison and epoch time
 
-How to get
-----------
-
 IdentityModel
 -------------
 * github https://github.com/IdentityModel/IdentityModel
