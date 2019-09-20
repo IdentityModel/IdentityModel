@@ -45,7 +45,7 @@ oidc-client.js
 .. toctree::
    :maxdepth: 2
    :hidden:
-   :caption: IdentityModel - Protocol Client Libraries
+   :caption: IdentityModel
 
    client/overview
    client/discovery
@@ -67,6 +67,17 @@ oidc-client.js
    misc/base64
    misc/epoch_time
    misc/time_constant_comparison
+
+.. toctree::
+   :maxdepth: 2
+   :hidden:
+   :caption: Building mobile/native Clients
+
+   native/overview
+   native/manual
+   native/automatic
+   native/logging
+   native/logging
 
 .. toctree::
    :maxdepth: 2
