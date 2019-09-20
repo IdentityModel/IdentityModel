@@ -4,7 +4,7 @@ IdentityModel is a family of libraries for building OAuth 2.0 and OpenID Connect
 
 It has the following high level features:
 
-* OpenID certified library for .NET-based building native clients (e.g. console, Xamarin iOS & Android, WPF and WinForms). Follows `RFC 8252 <https://tools.ietf.org/html/rfc8252>`_
+* OpenID certified library for .NET-based building native clients (e.g. console, Xamarin iOS & Android, WPF and WinForms). Follows `RFC 8252 <https://tools.ietf.org/html/rfc8252>`_.
 * OpenID certifed library for building JavaScript-based clients. Follows the `OAuth 2.0 for Browser-Based Apps BCP <https://tools.ietf.org/html/draft-ietf-oauth-browser-based-apps-03>`_.
 * .NET standard client library for OAuth 2.0 and OpenID Connect endpoints like authorize, token, discovery, introspection, revocation etc.
 * Helpers for ASP.NET Core token management
@@ -42,7 +42,7 @@ IdentityModel.OidcClient
 oidc-client.js
 --------------
 * github https://github.com/IdentityModel/oidc-client-js
-* npm oidc-client
+* npm https://www.npmjs.com/package/oidc-client
 
 
 .. toctree::
