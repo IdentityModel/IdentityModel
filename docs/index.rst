@@ -77,7 +77,7 @@ oidc-client.js
    native/manual
    native/automatic
    native/logging
-   native/logging
+   native/samples
 
 .. toctree::
    :maxdepth: 2
