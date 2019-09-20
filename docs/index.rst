@@ -1,22 +1,48 @@
-Welcome to the IdentityModel Documentation!
-===========================================
-
-IdentityModel is a .NET standard helper library for claims-based identity, OAuth 2.0 and OpenID Connect.
+Overview
+========
+IdentityModel is a family of libraries for building OAuth 2.0 and OpenID Connect clients.
 
 It has the following high level features:
 
-* client libraries for standard OAuth 2.0 and OpenID Connect endpoints like authorize, token, discovery, introspection, revocation etc.
-* helpers for token management
-* constants for standard JWT claim types and protocol values
-* simplified API to access the X509 certificate store
-* misc helpers for base64 URL encoding, time constant string comparison and epoch time
+* OpenID certified library for .NET-based building native clients (e.g. console, Xamarin iOS & Android, WPF and WinForms). Follows `RFC 8252 <https://tools.ietf.org/html/rfc8252>`_
+* OpenID certifed library for building JavaScript-based clients. Follows the `OAuth 2.0 for Browser-Based Apps BCP <https://tools.ietf.org/html/draft-ietf-oauth-browser-based-apps-03>`_.
+* .NET standard client library for OAuth 2.0 and OpenID Connect endpoints like authorize, token, discovery, introspection, revocation etc.
+* Helpers for ASP.NET Core token management
+* OAuth 2.0 Token Introspection authentication handler for ASP.NET Core
+* Constants for standard JWT claim types and protocol values
+* Misc helpers for base64 URL encoding, X509 certificate store access, time constant string comparison and epoch time
 
 How to get
 ----------
 
+IdentityModel
+-------------
 * github https://github.com/IdentityModel/IdentityModel
 * nuget https://www.nuget.org/packages/IdentityModel/
 * CI builds https://www.myget.org/F/identity/
+
+IdentityModel.AspNetCore
+------------------------
+* github https://github.com/IdentityModel/IdentityModel.AspNetCore
+* nuget https://www.nuget.org/packages/IdentityModel.AspNetCore/
+* CI builds https://www.myget.org/F/identity/
+
+IdentityModel.AspNetCore.OAuthIntrospection
+-------------------------------------------
+* github https://github.com/IdentityModel/IdentityModel.AspNetCore.OAuthIntrospection
+* nuget https://www.nuget.org/packages/IdentityModel.AspNetCore.OAuthIntrospection/
+* CI builds https://www.myget.org/F/identity/
+
+IdentityModel.OidcClient
+------------------------
+* github https://github.com/IdentityModel/IdentityModel.OidcClient
+* nuget https://www.nuget.org/packages/IdentityModel.OidClient
+* CI builds https://www.myget.org/F/identity/
+
+oidc-client.js
+--------------
+* github https://github.com/IdentityModel/oidc-client-js
+* npm oidc-client
 
 
 .. toctree::
