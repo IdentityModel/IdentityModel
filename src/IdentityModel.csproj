@@ -34,7 +34,7 @@
   </PropertyGroup>
   
   <ItemGroup>
-    <PackageReference Include="minver" Version="1.1.0">
+    <PackageReference Include="minver" Version="2.0.0-rc.1">
       <IncludeAssets>runtime; build; native; contentfiles; analyzers</IncludeAssets>
       <PrivateAssets>all</PrivateAssets>
     </PackageReference>

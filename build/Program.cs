@@ -61,7 +61,7 @@ namespace build
                 {
                     var project = Directory.GetFiles("./src", "*.csproj", SearchOption.TopDirectoryOnly).First();
 
-                    Run("dotnet", $"pack {project} -c Release -o ../{ArtifactsDir} --no-build");
+                    Run("dotnet", $"pack {project} -c Release -o ./{ArtifactsDir} --no-build");
                     
                     if (sign.HasValue())
                     {
