@@ -11,6 +11,11 @@ jobs:
     displayName: 'Install .NET Core 3.x SDK'
     inputs:
       packageType: 'sdk'
+      version: '2.x'
+  - task: UseDotNet@2
+    displayName: 'Install .NET Core 3.x SDK'
+    inputs:
+      packageType: 'sdk'
       version: '3.0.100'
       includePreviewVersions: true
   - task: Bash@3
@@ -23,6 +28,11 @@ jobs:
   pool:
     vmImage: 'vs2017-win2016'
   steps:
+  - task: UseDotNet@2
+    displayName: 'Install .NET Core 3.x SDK'
+    inputs:
+      packageType: 'sdk'
+      version: '2.x'
   - task: UseDotNet@2
     displayName: 'Install .NET Core 3.x SDK'
     inputs:
