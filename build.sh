@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
 set -euo pipefail
-dotnet tool install --tool-path tools SignClient
+dotnet tool restore
 
 dotnet run --project build -- "$@"
