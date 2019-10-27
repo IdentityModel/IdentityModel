@@ -9,12 +9,15 @@ namespace build
 {
     class Program
     {
-        private const bool RequireTests = true;
+        private static class Targets
+        {
+            public const string Build = "build";
+            public const string Test = "test";
+            public const string Pack = "pack";
+        }
 
-        private const string ArtifactsDir = "artifacts";
-        private const string Build = "build";
-        private const string Test = "test";
-        private const string Pack = "pack";
+        static string BinaryToSign = "IdentityModel.dll";
+
         
         static void Main(string[] args)
         {
@@ -25,52 +28,35 @@ namespace build
 
             app.OnExecute(() =>
             {
-                Target(Build, () => 
+                Target(Targets.Build, () => 
                 {
-                    var solution = Directory.GetFiles(".", "*.sln", SearchOption.TopDirectoryOnly).First();
-
-                    Run("dotnet", $"build {solution} -c Release");
+                    Run("dotnet", $"build -c Release");
 
                     if (sign.HasValue())
                     {
-                        Sign("IdentityModel.dll", "./src/bin/release");
+                        Sign(BinaryToSign, "./src/bin/release");
                     }
                 });
 
-                Target(Test, DependsOn(Build), () => 
+                Target(Targets.Test, DependsOn(Targets.Build), () => 
                 {
-                    try
-                    {
-                        var tests = Directory.GetFiles("./test", "*.csproj", SearchOption.AllDirectories);
-
-                        foreach (var test in tests)
-                        {
-                            Run("dotnet", $"test {test} -c Release --no-build");
-                        }    
-                    }
-                    catch (System.IO.DirectoryNotFoundException ex)
-                    {
-                        if (RequireTests)
-                        {
-                            throw new Exception($"No tests found: {ex.Message}");
-                        };
-                    }
+                    Run("dotnet", $"test -c Release --no-build");
                 });
                 
-                Target(Pack, DependsOn(Build), () => 
+                Target(Targets.Pack, DependsOn(Targets.Test), () => 
                 {
                     var project = Directory.GetFiles("./src", "*.csproj", SearchOption.TopDirectoryOnly).First();
 
-                    Run("dotnet", $"pack {project} -c Release -o ./{ArtifactsDir} --no-build");
+                    Run("dotnet", $"pack {project} -c Release -o ./artifacts --no-build");
                     
                     if (sign.HasValue())
                     {
-                        Sign("*.nupkg", $"./{ArtifactsDir}");
+                        Sign("*.nupkg", $"./artifacts");
                     }
                 });
 
 
-                Target("default", DependsOn(Test, Pack));
+                Target("default", DependsOn(Targets.Test, Targets.Pack));
                 RunTargetsAndExit(app.RemainingArguments);
             });
 
@@ -103,9 +89,9 @@ namespace build
 
         private static void CleanArtifacts()
         {
-            Directory.CreateDirectory($"./{ArtifactsDir}");
+            Directory.CreateDirectory($"./artifacts");
 
-            foreach (var file in Directory.GetFiles($"./{ArtifactsDir}"))
+            foreach (var file in Directory.GetFiles($"./artifacts"))
             {
                 File.Delete(file);
             }
