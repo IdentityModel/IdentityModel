@@ -78,7 +78,7 @@ namespace IdentityModel.Client
             {
                 Address = _authority,
                 Policy = _policy
-            });
+            }).ConfigureAwait();
 
             if (result.IsError)
             {

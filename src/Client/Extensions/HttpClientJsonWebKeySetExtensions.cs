@@ -67,7 +67,7 @@ namespace IdentityModel.Client
                 return ProtocolResponse.FromException<JsonWebKeySetResponse>(ex, $"Error connecting to {clone.RequestUri.AbsoluteUri}. {ex.Message}.");
             }
 
-            return await ProtocolResponse.FromHttpResponseAsync<JsonWebKeySetResponse>(response);
+            return await ProtocolResponse.FromHttpResponseAsync<JsonWebKeySetResponse>(response).ConfigureAwait();
         }
     }
 }
