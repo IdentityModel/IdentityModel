@@ -85,7 +85,7 @@ namespace IdentityModel.Client
 
                 if (!response.IsSuccessStatusCode)
                 {
-                    return await ProtocolResponse.FromHttpResponseAsync<DiscoveryDocumentResponse>(response, $"Error connecting to {url}: {response.ReasonPhrase}");
+                    return await ProtocolResponse.FromHttpResponseAsync<DiscoveryDocumentResponse>(response, $"Error connecting to {url}: {response.ReasonPhrase}").ConfigureAwait();
                 }
 
                 var disco = await ProtocolResponse.FromHttpResponseAsync<DiscoveryDocumentResponse>(response, request.Policy).ConfigureAwait();
