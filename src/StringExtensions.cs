@@ -27,7 +27,7 @@ namespace IdentityModel
                 var bytes = Encoding.UTF8.GetBytes(input);
                 var hash = sha.ComputeHash(bytes);
 
-                return Convert.ToBase64String(hash);
+                return Base64Url.Encode(hash);
             }
         }
 
@@ -45,7 +45,7 @@ namespace IdentityModel
                 var bytes = Encoding.UTF8.GetBytes(input);
                 var hash = sha.ComputeHash(bytes);
 
-                return Convert.ToBase64String(hash);
+                return Base64Url.Encode(hash);
             }
         }
     }
