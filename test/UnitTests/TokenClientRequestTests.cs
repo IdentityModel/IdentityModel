@@ -292,6 +292,25 @@ namespace IdentityModel.UnitTests
         }
 
         [Fact]
+        public async Task Local_custom_parameters_should_not_interfere_with_global()
+        {
+            var globalOptions = new TokenClientOptions { Parameters = { { "global", "value" } } };
+            var tokenClient = new TokenClient(_client, globalOptions);
+
+            var localParameters = new Dictionary<string, string>
+            {
+                { "client_id", "custom" },
+                { "client_secret", "custom" },
+                { "custom", "custom" }
+            };
+            _ = await tokenClient.RequestTokenAsync(grantType: "test", parameters: localParameters);
+
+            globalOptions.Parameters.Should().HaveCount(1);
+            globalOptions.Parameters.TryGetValue("global", out var globalValue);
+            globalValue.Should().Be("value");
+        }
+
+        [Fact]
         public async Task Setting_basic_authentication_style_should_send_basic_authentication_header()
         {
             var tokenClient = new TokenClient(_client, new TokenClientOptions

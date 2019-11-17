@@ -52,7 +52,7 @@ namespace IdentityModel.Client
             request.ClientAssertion = _options.ClientAssertion;
             request.ClientCredentialStyle = _options.ClientCredentialStyle;
             request.AuthorizationHeaderStyle = _options.AuthorizationHeaderStyle;
-            request.Parameters = _options.Parameters;
+            request.Parameters = new Dictionary<string, string>(_options.Parameters);
 
             if (parameters != null)
             {
