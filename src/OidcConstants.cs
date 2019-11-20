@@ -50,6 +50,9 @@ namespace IdentityModel
             public const string RequestNotSupported = "request_not_supported";
             public const string RequestUriNotSupported = "request_uri_not_supported";
             public const string RegistrationNotSupported = "registration_not_supported";
+
+            // resource indicator spec
+            public const string InvalidTarget = "invalid_target";
         }
 
         public static class AuthorizeResponse
