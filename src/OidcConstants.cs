@@ -134,6 +134,7 @@ namespace IdentityModel
             public const string AccessDenied = "access_denied";
             public const string SlowDown = "slow_down";
             public const string ExpiredToken = "expired_token";
+            public const string InvalidTarget = "invalid_target";
         }
 
         public static class TokenResponse
@@ -216,6 +217,7 @@ namespace IdentityModel
             public const string RefreshToken = "urn:ietf:params:oauth:token-type:refresh_token";
             public const string Saml11 = "urn:ietf:params:oauth:token-type:saml1";
             public const string Saml2 = "urn:ietf:params:oauth:token-type:saml2";
+            public const string Jwt = "urn:ietf:params:oauth:token-type:jwt";
         }
 
         public static class AuthenticationSchemes
