@@ -25,7 +25,7 @@ namespace IdentityModel.Client
     public class ClientCredentialsTokenRequest : TokenRequest
     {
         /// <summary>
-        /// Gets or sets the scope.
+        /// Gets or sets the scope. Request multiple scopes by separating them with a space"
         /// </summary>
         /// <value>
         /// The scope.
