@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using Bullseye;
 using McMaster.Extensions.CommandLineUtils;
 using static Bullseye.Targets;
 using static SimpleExec.Command;
@@ -21,13 +22,25 @@ namespace build
         
         static void Main(string[] args)
         {
-            var app = new CommandLineApplication(throwOnUnexpectedArg: false);
+            var app = new CommandLineApplication();
+            app.HelpOption();
             var sign = app.Option<(bool hasValue, int theValue)>("--sign", "Sign binaries and nuget package", CommandOptionType.SingleOrNoValue);
+
+            // translate from Bullseye to McMaster.Extensions.CommandLineUtils
+            var targets = app.Argument("targets", "The targets to run or list.", true);
+            foreach (var option in Options.Definitions)
+            {
+                app.Option((option.ShortName != null ? $"{option.ShortName}|" : "") + option.LongName, option.Description, CommandOptionType.NoValue);
+            }
 
             CleanArtifacts();
 
             app.OnExecute(() =>
             {
+                // translate from McMaster.Extensions.CommandLineUtils to Bullseye
+                var targets = app.Arguments[0].Values;
+                var options = new Options(Options.Definitions.Select(d => (d.LongName, app.Options.Single(o => "--" + o.LongName == d.LongName).HasValue())));
+
                 Target(Targets.Build, () => 
                 {
                     Run("dotnet", $"build -c Release");
@@ -57,7 +70,7 @@ namespace build
 
 
                 Target("default", DependsOn(Targets.Test, Targets.Pack));
-                RunTargetsAndExit(app.RemainingArguments);
+                RunTargetsAndExit(targets, options);
             });
 
             app.Execute(args);
