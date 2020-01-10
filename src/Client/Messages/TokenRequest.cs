@@ -15,7 +15,7 @@ namespace IdentityModel.Client
         /// <value>
         /// The type of the grant.
         /// </value>
-        public string GrantType { get; set; }   
+        public string GrantType { get; set; }
     }
 
     /// <summary>
@@ -25,7 +25,7 @@ namespace IdentityModel.Client
     public class ClientCredentialsTokenRequest : TokenRequest
     {
         /// <summary>
-        /// Gets or sets the scope. Request multiple scopes by separating them with a space"
+        /// space separated list of the requested scopes 
         /// </summary>
         /// <value>
         /// The scope.
@@ -71,7 +71,7 @@ namespace IdentityModel.Client
         public string Password { get; set; }
 
         /// <summary>
-        /// Gets or sets the scope.
+        /// space separated list of the requested scopes
         /// </summary>
         /// <value>
         /// The scope.
@@ -125,7 +125,7 @@ namespace IdentityModel.Client
         public string RefreshToken { get; set; }
 
         /// <summary>
-        /// Gets or sets the scope.
+        /// space separated list of the requested scopes
         /// </summary>
         /// <value>
         /// The scope.
