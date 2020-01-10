@@ -9,7 +9,7 @@ namespace IdentityModel.Client
     public class DeviceAuthorizationRequest : ProtocolRequest
     {
         /// <summary>
-        /// Gets or sets the scope (optional).
+        /// Space separated list of the requested scopes (optional).
         /// </summary>
         /// <value>
         /// The scope.
