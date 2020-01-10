@@ -25,7 +25,7 @@ namespace IdentityModel.Client
     public class ClientCredentialsTokenRequest : TokenRequest
     {
         /// <summary>
-        /// space separated list of the requested scopes 
+        /// Space separated list of the requested scopes 
         /// </summary>
         /// <value>
         /// The scope.
@@ -71,7 +71,7 @@ namespace IdentityModel.Client
         public string Password { get; set; }
 
         /// <summary>
-        /// space separated list of the requested scopes
+        /// Space separated list of the requested scopes
         /// </summary>
         /// <value>
         /// The scope.
@@ -125,7 +125,7 @@ namespace IdentityModel.Client
         public string RefreshToken { get; set; }
 
         /// <summary>
-        /// space separated list of the requested scopes
+        /// Space separated list of the requested scopes
         /// </summary>
         /// <value>
         /// The scope.
