@@ -11,6 +11,7 @@ namespace IdentityModel.Internal
         public static void AddOptional(this IDictionary<string, string> parameters, string key, string value)
         {
             if (parameters == null) throw new ArgumentNullException(nameof(parameters));
+            if (key.IsMissing()) throw new ArgumentNullException(nameof(key));
 
             if (value.IsPresent())
             {
@@ -28,6 +29,7 @@ namespace IdentityModel.Internal
         public static void AddRequired(this IDictionary<string, string> parameters, string key, string value, bool allowEmpty = false)
         {
             if (parameters == null) throw new ArgumentNullException(nameof(parameters));
+            if (key.IsMissing()) throw new ArgumentNullException(nameof(key));
             
             if (parameters.ContainsKey(key))
             {
