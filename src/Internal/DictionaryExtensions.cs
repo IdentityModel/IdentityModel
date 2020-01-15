@@ -28,28 +28,18 @@ namespace IdentityModel.Internal
         public static void AddRequired(this IDictionary<string, string> parameters, string key, string value, bool allowEmpty = false)
         {
             if (parameters == null) throw new ArgumentNullException(nameof(parameters));
-
-            if (value.IsPresent())
+            
+            if (parameters.ContainsKey(key))
             {
-                if (parameters.ContainsKey(key))
-                {
-                    throw new InvalidOperationException($"Duplicate parameter: {key}");
-                }
-                else
-                {
-                    parameters.Add(key, value);
-                }
+                throw new InvalidOperationException($"Duplicate parameter: {key}");
+            }
+            else if (value.IsPresent() || allowEmpty)
+            {
+                parameters.Add(key, value);
             }
             else
             {
-                if (allowEmpty)
-                {
-                    parameters.Add(key, "");
-                }
-                else
-                {
-                    throw new ArgumentException("Parameter is required", key);
-                }
+                throw new ArgumentException($"Parameter is required", key);
             }
         }
     }
