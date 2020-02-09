@@ -92,7 +92,7 @@ namespace IdentityModel.Client
         /// Clones this instance.
         /// </summary>
         public T Clone<T>()
-            where T: ProtocolRequest, new()
+            where T : ProtocolRequest, new()
         {
             var clone = new T
             {
@@ -166,10 +166,15 @@ namespace IdentityModel.Client
 
             if (ClientAssertion != null)
             {
-                if (ClientAssertion.Type != null && ClientAssertion.Value != null)
+                if (ClientAssertion.Type != null && (ClientAssertion.Value != null || ClientAssertion.ValueProvider != null))
                 {
                     Parameters.AddOptional(OidcConstants.TokenRequest.ClientAssertionType, ClientAssertion.Type);
-                    Parameters.AddOptional(OidcConstants.TokenRequest.ClientAssertion, ClientAssertion.Value);
+
+                    var assertionValue = ClientAssertion.ValueProvider != null
+                        ? ClientAssertion.ValueProvider()
+                        : ClientAssertion.Value;
+
+                    Parameters.AddOptional(OidcConstants.TokenRequest.ClientAssertion, assertionValue);
                 }
             }
 
@@ -205,5 +210,11 @@ namespace IdentityModel.Client
         /// The value.
         /// </value>
         public string Value { get; set; }
+
+        /// <summary>
+        /// Delegate providing assertion value.
+        /// If ValueProvider is set, value returned will have priority over Value
+        /// </summary>
+        public Func<string> ValueProvider { get; set; }
     }
 }

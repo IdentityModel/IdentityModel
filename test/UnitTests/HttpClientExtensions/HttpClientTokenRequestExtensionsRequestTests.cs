@@ -535,5 +535,30 @@ namespace IdentityModel.UnitTests
             fields["client_assertion_type"].First().Should().Be("type");
             fields["client_assertion"].First().Should().Be("value");
         }
+
+        [Fact]
+        public async Task ClientAssertionValueProviderShouldBeInvokedToGetValue()
+        {
+            var valueFromValueProvider = "ValueFromProvider";
+            bool isValueProviderInvoked = false;
+            Func<string> valueProvider = () =>
+            {
+                isValueProviderInvoked = true;
+                return valueFromValueProvider;
+            };
+            var response = await _client.RequestTokenAsync(new TokenRequest
+            {
+                GrantType = "test",
+                ClientId = "client",
+                ClientAssertion = { Type = "type", Value = "value", ValueProvider = valueProvider}
+            });
+
+            var request = _handler.Request;
+
+            var fields = QueryHelpers.ParseQuery(_handler.Body);
+
+            fields["client_assertion"].First().Should().Be(valueFromValueProvider);
+            isValueProviderInvoked.Should().Be(true);
+        }
     }
 }
