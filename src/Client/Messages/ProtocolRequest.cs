@@ -209,6 +209,7 @@ namespace IdentityModel.Client
         /// <value>
         /// The value.
         /// </value>
+        [Obsolete("ValueProvider in order to recalculate Value of ClientAssertion every time request is created")]
         public string Value { get; set; }
 
         /// <summary>
