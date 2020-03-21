@@ -26,8 +26,9 @@
 //------------------------------------------------------------------------------
 
 using System.Collections.Generic;
-using Newtonsoft.Json;
 using System;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 #pragma warning disable 1591
 
@@ -36,7 +37,6 @@ namespace IdentityModel.Jwk
     /// <summary>
     /// Represents a Json Web Key as defined in http://tools.ietf.org/html/rfc7517.
     /// </summary>
-    [JsonObject]
     public class JsonWebKey
     {
         // kept private to hide that a List is used.
@@ -58,7 +58,7 @@ namespace IdentityModel.Jwk
         {
             if (string.IsNullOrWhiteSpace(json)) throw new ArgumentNullException(nameof(json));
 
-            var key = JsonConvert.DeserializeObject<JsonWebKey>(json);
+            var key = JsonSerializer.Deserialize<JsonWebKey>(json);
             Copy(key);
         }
 
@@ -93,53 +93,53 @@ namespace IdentityModel.Jwk
         /// <summary>
         /// Gets or sets the 'alg' (KeyType)..
         /// </summary>
-        [JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore, PropertyName = JsonWebKeyParameterNames.Alg, Required = Required.Default)]
+        [JsonPropertyName(JsonWebKeyParameterNames.Alg)]
         public string Alg { get; set; }
 
         /// <summary>
         /// Gets or sets the 'crv' (ECC - Curve)..
         /// </summary>
-        [JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore, PropertyName = JsonWebKeyParameterNames.Crv, Required = Required.Default)]
+        [JsonPropertyName(JsonWebKeyParameterNames.Crv)]
         public string Crv { get; set; }
 
         /// <summary>
         /// Gets or sets the 'd' (ECC - Private Key OR RSA - Private Exponent)..
         /// </summary>
         /// <remarks> value is formated as: Base64urlUInt</remarks>
-        [JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore, PropertyName = JsonWebKeyParameterNames.D, Required = Required.Default)]
+        [JsonPropertyName(JsonWebKeyParameterNames.D)]
         public string D { get; set; }
 
         /// <summary>
         /// Gets or sets the 'dp' (RSA - First Factor CRT Exponent)..
         /// </summary>
         /// <remarks> value is formated as: Base64urlUInt</remarks>
-        [JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore, PropertyName = JsonWebKeyParameterNames.DP, Required = Required.Default)]
+        [JsonPropertyName(JsonWebKeyParameterNames.DP)]
         public string DP { get; set; }
 
         /// <summary>
         /// Gets or sets the 'dq' (RSA - Second Factor CRT Exponent)..
         /// </summary>
         /// <remarks> value is formated as: Base64urlUInt</remarks>
-        [JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore, PropertyName = JsonWebKeyParameterNames.DQ, Required = Required.Default)]
+        [JsonPropertyName(JsonWebKeyParameterNames.DQ)]
         public string DQ { get; set; }
 
         /// <summary>
         /// Gets or sets the 'e' (RSA - Exponent)..
         /// </summary>
-        [JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore, PropertyName = JsonWebKeyParameterNames.E, Required = Required.Default)]
+        [JsonPropertyName(JsonWebKeyParameterNames.E)]
         public string E { get; set; }
 
         /// <summary>
         /// Gets or sets the 'k' (Symmetric - Key Value)..
         /// </summary>
         /// Base64urlEncoding
-        [JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore, PropertyName = JsonWebKeyParameterNames.K, Required = Required.Default)]
+        [JsonPropertyName(JsonWebKeyParameterNames.K)]
         public string K { get; set; }
 
         /// <summary>
         /// Gets or sets the 'key_ops' (Key Operations)..
         /// </summary>
-        [JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore, PropertyName = JsonWebKeyParameterNames.KeyOps, Required = Required.Default)]
+        [JsonPropertyName(JsonWebKeyParameterNames.KeyOps)]
         public IList<string> KeyOps
         {
             get
@@ -158,66 +158,66 @@ namespace IdentityModel.Jwk
         /// <summary>
         /// Gets or sets the 'kid' (Key ID)..
         /// </summary>
-        [JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore, PropertyName = JsonWebKeyParameterNames.Kid, Required = Required.Default)]
+        [JsonPropertyName(JsonWebKeyParameterNames.Kid)]
         public string Kid { get; set; }
 
         /// <summary>
         /// Gets or sets the 'kty' (Key Type)..
         /// </summary>
-        [JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore, PropertyName = JsonWebKeyParameterNames.Kty, Required = Required.Default)]
+        [JsonPropertyName(JsonWebKeyParameterNames.Kty)]
         public string Kty { get; set; }
 
         /// <summary>
         /// Gets or sets the 'n' (RSA - Modulus)..
         /// </summary>
         /// <remarks> value is formated as: Base64urlEncoding</remarks>
-        [JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore, PropertyName = JsonWebKeyParameterNames.N, Required = Required.Default)]
+        [JsonPropertyName(JsonWebKeyParameterNames.N)]
         public string N { get; set; }
 
         /// <summary>
         /// Gets or sets the 'oth' (RSA - Other Primes Info)..
         /// </summary>
-        [JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore, PropertyName = JsonWebKeyParameterNames.Oth, Required = Required.Default)]
+        [JsonPropertyName(JsonWebKeyParameterNames.Oth)]
         public IList<string> Oth { get; set; }
 
         /// <summary>
         /// Gets or sets the 'p' (RSA - First Prime Factor)..
         /// </summary>
         /// <remarks> value is formated as: Base64urlUInt</remarks>
-        [JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore, PropertyName = JsonWebKeyParameterNames.P, Required = Required.Default)]
+        [JsonPropertyName(JsonWebKeyParameterNames.P)]
         public string P { get; set; }
 
         /// <summary>
         /// Gets or sets the 'q' (RSA - Second  Prime Factor)..
         /// </summary>
         /// <remarks> value is formated as: Base64urlUInt</remarks>
-        [JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore, PropertyName = JsonWebKeyParameterNames.Q, Required = Required.Default)]
+        [JsonPropertyName(JsonWebKeyParameterNames.Q)]
         public string Q { get; set; }
 
         /// <summary>
         /// Gets or sets the 'qi' (RSA - First CRT Coefficient)..
         /// </summary>
         /// <remarks> value is formated as: Base64urlUInt</remarks>
-        [JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore, PropertyName = JsonWebKeyParameterNames.QI, Required = Required.Default)]
+        [JsonPropertyName(JsonWebKeyParameterNames.QI)]
         public string QI { get; set; }
 
         /// <summary>
         /// Gets or sets the 'use' (Public Key Use)..
         /// </summary>
-        [JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore, PropertyName = JsonWebKeyParameterNames.Use, Required = Required.Default)]
+        [JsonPropertyName(JsonWebKeyParameterNames.Use)]
         public string Use { get; set; }
 
         /// <summary>
         /// Gets or sets the 'x' (ECC - X Coordinate)..
         /// </summary>
         /// <remarks> value is formated as: Base64urlEncoding</remarks>
-        [JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore, PropertyName = JsonWebKeyParameterNames.X, Required = Required.Default)]
+        [JsonPropertyName(JsonWebKeyParameterNames.X)]
         public string X { get; set; }
 
         /// <summary>
         /// Gets the 'x5c' collection (X.509 Certificate Chain)..
         /// </summary>
-        [JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore, PropertyName = JsonWebKeyParameterNames.X5c, Required = Required.Default)]
+        [JsonPropertyName(JsonWebKeyParameterNames.X5c)]
         public IList<string> X5c
         {
             get
@@ -237,26 +237,26 @@ namespace IdentityModel.Jwk
         /// <summary>
         /// Gets or sets the 'x5t' (X.509 Certificate SHA-1 thumbprint)..
         /// </summary>
-        [JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore, PropertyName = JsonWebKeyParameterNames.X5t, Required = Required.Default)]
+        [JsonPropertyName(JsonWebKeyParameterNames.X5t)]
         public string X5t { get; set; }
 
         /// <summary>
         /// Gets or sets the 'x5t#S256' (X.509 Certificate SHA-1 thumbprint)..
         /// </summary>
-        [JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore, PropertyName = JsonWebKeyParameterNames.X5tS256, Required = Required.Default)]
+        [JsonPropertyName(JsonWebKeyParameterNames.X5tS256)]
         public string X5tS256 { get; set; }
 
         /// <summary>
         /// Gets or sets the 'x5u' (X.509 URL)..
         /// </summary>
-        [JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore, PropertyName = JsonWebKeyParameterNames.X5u, Required = Required.Default)]
+        [JsonPropertyName(JsonWebKeyParameterNames.X5u)]
         public string X5u { get; set; }
 
         /// <summary>
         /// Gets or sets the 'y' (ECC - Y Coordinate)..
         /// </summary>
         /// <remarks> value is formated as: Base64urlEncoding</remarks>
-        [JsonProperty(DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore, PropertyName = JsonWebKeyParameterNames.Y, Required = Required.Default)]
+        [JsonPropertyName(JsonWebKeyParameterNames.Y)]
         public string Y { get; set; }
 
         public int KeySize

@@ -9,6 +9,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Text.Json;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -157,7 +158,7 @@ namespace IdentityModel.UnitTests
             jwk.HttpStatusCode.Should().Be(HttpStatusCode.InternalServerError);
             jwk.Error.Should().Contain("Internal Server Error");
             jwk.Raw.Should().Be("not_json");
-            jwk.Json.Should().BeNull();
+            jwk.Json.ValueKind.Should().Be(JsonValueKind.Undefined);
         }
 
         [Fact]

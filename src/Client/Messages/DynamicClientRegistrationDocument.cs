@@ -2,9 +2,9 @@
 // Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
 
 using IdentityModel.Jwk;
-using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json.Serialization;
 
 #pragma warning disable 1591
 
@@ -15,94 +15,94 @@ namespace IdentityModel.Client
     /// </summary>
     public class DynamicClientRegistrationDocument
     {
-        [JsonProperty(PropertyName = OidcConstants.ClientMetadata.RedirectUris, DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore, Required = Required.Default)]
+        [JsonPropertyName(OidcConstants.ClientMetadata.RedirectUris)]
         public ICollection<string> RedirectUris { get; set; } = new HashSet<string>();
 
-        [JsonProperty(PropertyName = OidcConstants.ClientMetadata.ResponseTypes, DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore, Required = Required.Default)]
+        [JsonPropertyName(OidcConstants.ClientMetadata.ResponseTypes)]
         public ICollection<string> ResponseTypes { get; set; } = new HashSet<string>();
 
-        [JsonProperty(PropertyName = OidcConstants.ClientMetadata.GrantTypes, DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore, Required = Required.Default)]
+        [JsonPropertyName(OidcConstants.ClientMetadata.GrantTypes)]
         public ICollection<string> GrantTypes { get; set; } = new HashSet<string>();
 
-        [JsonProperty(PropertyName = OidcConstants.ClientMetadata.ApplicationType, DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore, Required = Required.Default)]
+        [JsonPropertyName(OidcConstants.ClientMetadata.ApplicationType)]
         public string ApplicationType { get; set; }
 
-        [JsonProperty(PropertyName = OidcConstants.ClientMetadata.Contacts, DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore, Required = Required.Default)]
+        [JsonPropertyName(OidcConstants.ClientMetadata.Contacts)]
         public ICollection<string> Contacts { get; set; } = new HashSet<string>();
 
-        [JsonProperty(PropertyName = OidcConstants.ClientMetadata.ClientName, DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore, Required = Required.Default)]
+        [JsonPropertyName(OidcConstants.ClientMetadata.ClientName)]
         public string ClientName { get; set; }
 
-        [JsonProperty(PropertyName = OidcConstants.ClientMetadata.LogoUri, DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore, Required = Required.Default)]
+        [JsonPropertyName(OidcConstants.ClientMetadata.LogoUri)]
         public string LogoUri { get; set; }
 
-        [JsonProperty(PropertyName = OidcConstants.ClientMetadata.ClientUri, DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore, Required = Required.Default)]
+        [JsonPropertyName(OidcConstants.ClientMetadata.ClientUri)]
         public string ClientUri { get; set; }
 
-        [JsonProperty(PropertyName = OidcConstants.ClientMetadata.PolicyUri, DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore, Required = Required.Default)]
+        [JsonPropertyName(OidcConstants.ClientMetadata.PolicyUri)]
         public string PolicyUri { get; set; }
 
-        [JsonProperty(PropertyName = OidcConstants.ClientMetadata.TosUri, DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore, Required = Required.Default)]
+        [JsonPropertyName(OidcConstants.ClientMetadata.TosUri)]
         public string TosUri { get; set; }
 
-        [JsonProperty(PropertyName = OidcConstants.ClientMetadata.JwksUri, DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore, Required = Required.Default)]
+        [JsonPropertyName(OidcConstants.ClientMetadata.JwksUri)]
         public string JwksUri { get; set; }
 
-        [JsonProperty(PropertyName = OidcConstants.ClientMetadata.Jwks, DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore, Required = Required.Default)]
+        [JsonPropertyName(OidcConstants.ClientMetadata.Jwks)]
         public JsonWebKeySet Jwks { get; set; }
 
-        [JsonProperty(PropertyName = OidcConstants.ClientMetadata.SectorIdentifierUri, DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore, Required = Required.Default)]
+        [JsonPropertyName(OidcConstants.ClientMetadata.SectorIdentifierUri)]
         public string SectorIdentifierUri { get; set; }
 
-        [JsonProperty(PropertyName = OidcConstants.ClientMetadata.SubjectType, DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore, Required = Required.Default)]
+        [JsonPropertyName(OidcConstants.ClientMetadata.SubjectType)]
         public string SubjectType { get; set; }
 
-        [JsonProperty(PropertyName = OidcConstants.ClientMetadata.IdentityTokenSignedResponseAlgorithm, DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore, Required = Required.Default)]
+        [JsonPropertyName(OidcConstants.ClientMetadata.IdentityTokenSignedResponseAlgorithm)]
         public string IdentityTokenSignedResponseAlgorithm { get; set; }
 
-        [JsonProperty(PropertyName = OidcConstants.ClientMetadata.IdentityTokenEncryptedResponseAlgorithm, DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore, Required = Required.Default)]
+        [JsonPropertyName(OidcConstants.ClientMetadata.IdentityTokenEncryptedResponseAlgorithm)]
         public string IdentityTokenEncryptedResponseAlgorithm { get; set; }
 
-        [JsonProperty(PropertyName = OidcConstants.ClientMetadata.IdentityTokenEncryptedResponseEncryption, DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore, Required = Required.Default)]
+        [JsonPropertyName(OidcConstants.ClientMetadata.IdentityTokenEncryptedResponseEncryption)]
         public string IdentityTokenEncryptedResponseEncryption { get; set; }
 
-        [JsonProperty(PropertyName = OidcConstants.ClientMetadata.UserinfoSignedResponseAlgorithm, DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore, Required = Required.Default)]
+        [JsonPropertyName(OidcConstants.ClientMetadata.UserinfoSignedResponseAlgorithm)]
         public string UserinfoSignedResponseAlgorithm { get; set; }
 
-        [JsonProperty(PropertyName = OidcConstants.ClientMetadata.UserInfoEncryptedResponseAlgorithm, DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore, Required = Required.Default)]
+        [JsonPropertyName(OidcConstants.ClientMetadata.UserInfoEncryptedResponseAlgorithm)]
         public string UserInfoEncryptedResponseAlgorithm { get; set; }
 
-        [JsonProperty(PropertyName = OidcConstants.ClientMetadata.UserinfoEncryptedResponseEncryption, DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore, Required = Required.Default)]
+        [JsonPropertyName(OidcConstants.ClientMetadata.UserinfoEncryptedResponseEncryption)]
         public string UserinfoEncryptedResponseEncryption { get; set; }
 
-        [JsonProperty(PropertyName = OidcConstants.ClientMetadata.RequestObjectSigningAlgorithm, DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore, Required = Required.Default)]
+        [JsonPropertyName(OidcConstants.ClientMetadata.RequestObjectSigningAlgorithm)]
         public string RequestObjectSigningAlgorithm { get; set; }
 
-        [JsonProperty(PropertyName = OidcConstants.ClientMetadata.RequestObjectEncryptionAlgorithm, DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore, Required = Required.Default)]
+        [JsonPropertyName(OidcConstants.ClientMetadata.RequestObjectEncryptionAlgorithm)]
         public string RequestObjectEncryptionAlgorithm { get; set; }
 
-        [JsonProperty(PropertyName = OidcConstants.ClientMetadata.RequestObjectEncryptionEncryption, DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore, Required = Required.Default)]
+        [JsonPropertyName(OidcConstants.ClientMetadata.RequestObjectEncryptionEncryption)]
         public string RequestObjectEncryptionEncryption { get; set; }
 
-        [JsonProperty(PropertyName = OidcConstants.ClientMetadata.TokenEndpointAuthenticationMethod, DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore, Required = Required.Default)]
+        [JsonPropertyName(OidcConstants.ClientMetadata.TokenEndpointAuthenticationMethod)]
         public string TokenEndpointAuthenticationMethod { get; set; }
 
-        [JsonProperty(PropertyName = OidcConstants.ClientMetadata.TokenEndpointAuthenticationSigningAlgorithm, DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore, Required = Required.Default)]
+        [JsonPropertyName(OidcConstants.ClientMetadata.TokenEndpointAuthenticationSigningAlgorithm)]
         public string TokenEndpointAuthenticationSigningAlgorithm { get; set; }
 
-        [JsonProperty(PropertyName = OidcConstants.ClientMetadata.DefaultMaxAge, DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore, Required = Required.Default)]
+        [JsonPropertyName(OidcConstants.ClientMetadata.DefaultMaxAge)]
         public int DefaultMaxAge { get; set; }
 
-        [JsonProperty(PropertyName = OidcConstants.ClientMetadata.RequireAuthenticationTime, DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore, Required = Required.Default)]
+        [JsonPropertyName(OidcConstants.ClientMetadata.RequireAuthenticationTime)]
         public bool RequireAuthenticationTime { get; set; }
 
-        [JsonProperty(PropertyName = OidcConstants.ClientMetadata.DefaultAcrValues, DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore, Required = Required.Default)]
+        [JsonPropertyName(OidcConstants.ClientMetadata.DefaultAcrValues)]
         public ICollection<string> DefaultAcrValues { get; set; } = new HashSet<string>();
 
-        [JsonProperty(PropertyName = OidcConstants.ClientMetadata.InitiateLoginUris, DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore, Required = Required.Default)]
+        [JsonPropertyName(OidcConstants.ClientMetadata.InitiateLoginUris)]
         public string InitiateLoginUri { get; set; }
 
-        [JsonProperty(PropertyName = OidcConstants.ClientMetadata.RequestUris, DefaultValueHandling = DefaultValueHandling.Ignore, NullValueHandling = NullValueHandling.Ignore, Required = Required.Default)]
+        [JsonPropertyName(OidcConstants.ClientMetadata.RequestUris)]
         public ICollection<string> RequestUris { get; set; } = new HashSet<string>();
 
         // don't serialize empty arrays
