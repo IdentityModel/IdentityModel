@@ -3,6 +3,7 @@
 
 using FluentAssertions;
 using IdentityModel.Client;
+using Newtonsoft.Json;
 using System;
 using System.IO;
 using System.Linq;
@@ -242,7 +243,7 @@ namespace IdentityModel.UnitTests
                 bar = "bar"
             };
 
-            var handler = new NetworkHandler(JsonSerializer.Serialize(content), HttpStatusCode.InternalServerError);
+            var handler = new NetworkHandler(JsonConvert.SerializeObject(content), HttpStatusCode.InternalServerError);
 
             var client = new HttpClient(handler)
             {
@@ -330,7 +331,7 @@ namespace IdentityModel.UnitTests
 
                     response = new HttpResponseMessage(HttpStatusCode.InternalServerError)
                     {
-                        Content = new StringContent(JsonSerializer.Serialize(content))
+                        Content = new StringContent(JsonConvert.SerializeObject(content))
                     }; 
                 }
 

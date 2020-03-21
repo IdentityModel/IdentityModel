@@ -3,11 +3,11 @@
 
 using FluentAssertions;
 using IdentityModel.Client;
+using Newtonsoft.Json;
 using System;
 using System.IO;
 using System.Net;
 using System.Net.Http;
-using System.Text.Json;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -149,7 +149,7 @@ namespace IdentityModel.UnitTests
                 bar = "bar"
             };
 
-            var handler = new NetworkHandler(JsonSerializer.Serialize(content), HttpStatusCode.Unauthorized);
+            var handler = new NetworkHandler(JsonConvert.SerializeObject(content), HttpStatusCode.Unauthorized);
 
             var client = new HttpClient(handler);
             var response = await client.RequestTokenAsync(new TokenRequest
