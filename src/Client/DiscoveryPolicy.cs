@@ -19,6 +19,11 @@ namespace IdentityModel.Client
         public string Authority { get; set; }
 
         /// <summary>
+        /// The path of the discovery document. Defaults to /.well-known/openid-configuration.
+        /// </summary>
+        public string DiscoveryDocumentPath { get; set; }
+
+        /// <summary>
         /// Strategy used to validate issuer name and endpoints based on expected authority.
         /// Defaults to <see cref="AuthorityUrlValidationStrategy"/>.
         /// </summary>
