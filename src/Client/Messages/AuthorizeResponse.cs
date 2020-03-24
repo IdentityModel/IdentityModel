@@ -154,7 +154,7 @@ namespace IdentityModel.Client
                 fragments = new[] { "", Raw };
             }
 
-            var qparams = fragments[1].Split('&');
+            var qparams = fragments[1].Split(new[] { '&' }, StringSplitOptions.RemoveEmptyEntries);
 
             foreach (var param in qparams)
             {
