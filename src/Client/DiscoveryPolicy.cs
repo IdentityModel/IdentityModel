@@ -19,8 +19,7 @@ namespace IdentityModel.Client
         public string Authority { get; set; }
 
         /// <summary>
-        /// The path of the discovery docuemnt. Usually this is /.well-known/openid-configuration,
-        /// but sometimes it differs.
+        /// The path of the discovery document. Defaults to /.well-known/openid-configuration.
         /// </summary>
         public string DiscoveryDocumentPath { get; set; }
 
