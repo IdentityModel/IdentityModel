@@ -3,10 +3,10 @@
 
 using IdentityModel.Internal;
 using IdentityModel.Jwk;
-using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 #pragma warning disable 1591
@@ -34,7 +34,7 @@ namespace IdentityModel.Client
 
             if (validationError.IsPresent())
             {
-                Json = null;
+                Json = default;
 
                 ErrorType = ResponseErrorType.PolicyViolation;
                 ErrorMessage = validationError;
@@ -76,7 +76,7 @@ namespace IdentityModel.Client
         public IEnumerable<string> TokenEndpointAuthenticationMethodsSupported => TryGetStringArray(OidcConstants.Discovery.TokenEndpointAuthenticationMethodsSupported);
 
         // generic
-        public JToken TryGetValue(string name) => Json.TryGetValue(name);
+        public JsonElement TryGetValue(string name) => Json.TryGetValue(name);
         public string TryGetString(string name) => Json.TryGetString(name);
         public bool? TryGetBoolean(string name) => Json.TryGetBoolean(name);
         public IEnumerable<string> TryGetStringArray(string name) => Json.TryGetStringArray(name);
@@ -148,7 +148,7 @@ namespace IdentityModel.Client
         /// <param name="json">The json.</param>
         /// <param name="policy">The policy.</param>
         /// <returns></returns>
-        public string ValidateEndpoints(JObject json, DiscoveryPolicy policy)
+        public string ValidateEndpoints(JsonElement json, DiscoveryPolicy policy)
         {
             // allowed hosts
             var allowedHosts = new HashSet<string>(policy.AdditionalEndpointBaseAddresses.Select(e => new Uri(e).Authority))
@@ -161,39 +161,39 @@ namespace IdentityModel.Client
             {
                 policy.Authority
             };
-
-            foreach (var element in json)
+            
+            foreach (var element in json.EnumerateObject())
             {
-                if (element.Key.EndsWith("endpoint", StringComparison.OrdinalIgnoreCase) ||
-                    element.Key.Equals(OidcConstants.Discovery.JwksUri, StringComparison.OrdinalIgnoreCase) ||
-                    element.Key.Equals(OidcConstants.Discovery.CheckSessionIframe, StringComparison.OrdinalIgnoreCase))
+                if (element.Name.EndsWith("endpoint", StringComparison.OrdinalIgnoreCase) ||
+                    element.Name.Equals(OidcConstants.Discovery.JwksUri, StringComparison.OrdinalIgnoreCase) ||
+                    element.Name.Equals(OidcConstants.Discovery.CheckSessionIframe, StringComparison.OrdinalIgnoreCase))
                 {
                     var endpoint = element.Value.ToString();
-
+            
                     var isValidUri = Uri.TryCreate(endpoint, UriKind.Absolute, out Uri uri);
                     if (!isValidUri)
                     {
                         return $"Malformed endpoint: {endpoint}";
                     }
-
+            
                     if (!DiscoveryEndpoint.IsValidScheme(uri))
                     {
                         return $"Malformed endpoint: {endpoint}";
                     }
-
+            
                     if (!DiscoveryEndpoint.IsSecureScheme(uri, policy))
                     {
                         return $"Endpoint does not use HTTPS: {endpoint}";
                     }
-
+            
                     if (policy.ValidateEndpoints)
                     {
                         // if endpoint is on exclude list, don't validate
-                        if (policy.EndpointValidationExcludeList.Contains(element.Key))
+                        if (policy.EndpointValidationExcludeList.Contains(element.Name))
                         {
                             continue;
                         }
-
+            
                         bool isAllowed = false;
                         foreach (var host in allowedHosts)
                         {
@@ -202,12 +202,12 @@ namespace IdentityModel.Client
                                 isAllowed = true;
                             }
                         }
-
+            
                         if (!isAllowed)
                         {
                             return $"Endpoint is on a different host than authority: {endpoint}";
                         }
-
+            
                         IAuthorityValidationStrategy strategy = policy.AuthorityValidationStrategy ?? DiscoveryPolicy.DefaultAuthorityValidationStrategy;
                         AuthorityValidationResult endpointValidationResult = strategy.IsEndpointValid(endpoint, allowedAuthorities);
                         if (!endpointValidationResult.Success)

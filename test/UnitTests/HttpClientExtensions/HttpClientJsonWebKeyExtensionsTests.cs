@@ -3,12 +3,12 @@
 
 using FluentAssertions;
 using IdentityModel.Client;
-using Newtonsoft.Json;
 using System;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Text.Json;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -157,7 +157,7 @@ namespace IdentityModel.UnitTests
             jwk.HttpStatusCode.Should().Be(HttpStatusCode.InternalServerError);
             jwk.Error.Should().Contain("Internal Server Error");
             jwk.Raw.Should().Be("not_json");
-            jwk.Json.Should().BeNull();
+            jwk.Json.ValueKind.Should().Be(JsonValueKind.Undefined);
         }
 
         [Fact]
@@ -169,7 +169,7 @@ namespace IdentityModel.UnitTests
                 bar = "bar"
             };
 
-            var handler = new NetworkHandler(JsonConvert.SerializeObject(content), HttpStatusCode.InternalServerError);
+            var handler = new NetworkHandler(JsonSerializer.Serialize(content), HttpStatusCode.InternalServerError);
 
             var client = new HttpClient(handler)
             {

@@ -1,11 +1,11 @@
 ﻿// Copyright (c) Brock Allen & Dominick Baier. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
 
-using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace IdentityModel.Client
@@ -31,12 +31,12 @@ namespace IdentityModel.Client
                 var scope = Json.TryGetValue("scope");
 
                 // scope element exists
-                if (scope != null)
-                {
+                // if (scope != null)
+                // {
                     // it's an array
-                    if (scope is JArray scopeArray)
+                    if (scope.ValueKind == JsonValueKind.Array)
                     {
-                        foreach (var item in scopeArray)
+                        foreach (var item in scope.EnumerateArray())
                         {
                             claims.Add(new Claim("scope", item.ToString()));
                         }
@@ -52,7 +52,7 @@ namespace IdentityModel.Client
                             claims.Add(new Claim("scope", scopeValue));
                         }
                     }
-                }
+                // }
 
                 Claims = claims;
             }

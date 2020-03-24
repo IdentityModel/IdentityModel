@@ -3,12 +3,12 @@
 
 using FluentAssertions;
 using IdentityModel.Client;
-using Newtonsoft.Json;
 using System;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Text.Json;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -182,7 +182,7 @@ namespace IdentityModel.UnitTests
             disco.IsError.Should().BeFalse();
 
             disco.TryGetValue(OidcConstants.Discovery.AuthorizationEndpoint).Should().NotBeNull();
-            disco.TryGetValue("unknown").Should().BeNull();
+            disco.TryGetValue("unknown").ValueKind.Should().Be(JsonValueKind.Undefined);
 
             disco.TryGetString(OidcConstants.Discovery.AuthorizationEndpoint).Should().Be("https://demo.identityserver.io/connect/authorize");
             disco.TryGetString("unknown").Should().BeNull();
@@ -230,7 +230,7 @@ namespace IdentityModel.UnitTests
             disco.HttpStatusCode.Should().Be(HttpStatusCode.InternalServerError);
             disco.Error.Should().Contain("Internal Server Error");
             disco.Raw.Should().Be("not_json");
-            disco.Json.Should().BeNull();
+            disco.Json.ValueKind.Should().Be(JsonValueKind.Undefined);
         }
 
         [Fact]
@@ -242,7 +242,7 @@ namespace IdentityModel.UnitTests
                 bar = "bar"
             };
 
-            var handler = new NetworkHandler(JsonConvert.SerializeObject(content), HttpStatusCode.InternalServerError);
+            var handler = new NetworkHandler(JsonSerializer.Serialize(content), HttpStatusCode.InternalServerError);
 
             var client = new HttpClient(handler)
             {
@@ -300,7 +300,7 @@ namespace IdentityModel.UnitTests
             disco.HttpStatusCode.Should().Be(HttpStatusCode.InternalServerError);
             disco.Error.Should().Contain("Internal Server Error");
             disco.Raw.Should().Be("not_json");
-            disco.Json.Should().BeNull();
+            disco.Json.ValueKind.Should().Be(JsonValueKind.Undefined);
         }
 
         [Fact]
@@ -330,7 +330,7 @@ namespace IdentityModel.UnitTests
 
                     response = new HttpResponseMessage(HttpStatusCode.InternalServerError)
                     {
-                        Content = new StringContent(JsonConvert.SerializeObject(content))
+                        Content = new StringContent(JsonSerializer.Serialize(content))
                     }; 
                 }
 

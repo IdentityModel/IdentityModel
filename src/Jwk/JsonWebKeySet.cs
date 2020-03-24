@@ -27,7 +27,7 @@
 
 using System;
 using System.Collections.Generic;
-using Newtonsoft.Json;
+using System.Text.Json;
 
 namespace IdentityModel.Jwk
 {
@@ -53,7 +53,7 @@ namespace IdentityModel.Jwk
         {
             if (string.IsNullOrWhiteSpace(json)) throw new ArgumentNullException("json");
 
-            var jwebKeys = JsonConvert.DeserializeObject<JsonWebKeySet>(json);
+            var jwebKeys = JsonSerializer.Deserialize<JsonWebKeySet>(json);
             _keys = jwebKeys._keys;
         }
 
