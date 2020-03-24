@@ -85,6 +85,20 @@ namespace IdentityModel.UnitTests
         }
 
         [Fact]
+        public void AccessToken_Response_with_QueryString_and_Empty_Entry()
+        {
+            var url = "http://server/callback?access_token=foo&&sid=123&";
+
+            var response = new AuthorizeResponse(url);
+
+            response.IsError.Should().BeFalse();
+            response.AccessToken.Should().Be("foo");
+
+            response.Values["sid"].Should().Be("123");
+            response.TryGet("sid").Should().Be("123");
+        }
+
+        [Fact]
         public void form_post_format_should_parse()
         {
             var form = "id_token=foo&code=bar&scope=baz&session_state=quux";
