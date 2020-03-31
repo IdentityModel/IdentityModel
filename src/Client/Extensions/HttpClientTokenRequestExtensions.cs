@@ -104,6 +104,31 @@ namespace IdentityModel.Client
 
             return await client.RequestTokenAsync(clone, cancellationToken).ConfigureAwait();
         }
+        
+        /// <summary>
+        /// Sends a token exchange request.
+        /// </summary>
+        /// <param name="client">The client.</param>
+        /// <param name="request">The request.</param>
+        /// <param name="cancellationToken">The cancellation token.</param>
+        /// <returns></returns>
+        public static async Task<TokenResponse> RequestRefreshTokenAsync(this HttpMessageInvoker client, TokenExchangeTokenRequest request, CancellationToken cancellationToken = default)
+        {
+            var clone = request.Clone();
+
+            clone.Parameters.AddRequired(OidcConstants.TokenRequest.GrantType, OidcConstants.GrantTypes.TokenExchange);
+            clone.Parameters.AddRequired(OidcConstants.TokenRequest.SubjectToken, request.SubjectToken);
+            clone.Parameters.AddRequired(OidcConstants.TokenRequest.SubjectTokenType, request.SubjectTokenType);
+            
+            clone.Parameters.AddOptional(OidcConstants.TokenRequest.Resource, request.Resource);
+            clone.Parameters.AddOptional(OidcConstants.TokenRequest.Audience, request.Audience);
+            clone.Parameters.AddOptional(OidcConstants.TokenRequest.Scope, request.Scope);
+            clone.Parameters.AddOptional(OidcConstants.TokenRequest.RequestedTokenType, request.RequestedTokenType);
+            clone.Parameters.AddOptional(OidcConstants.TokenRequest.ActorToken, request.ActorToken);
+            clone.Parameters.AddOptional(OidcConstants.TokenRequest.ActorTokenType, request.ActorTokenType);
+            
+            return await client.RequestTokenAsync(clone, cancellationToken).ConfigureAwait();
+        }
 
         /// <summary>
         /// Sends a token request.
