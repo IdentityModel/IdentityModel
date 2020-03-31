@@ -343,6 +343,52 @@ namespace IdentityModel.UnitTests
 
             act.Should().Throw<ArgumentException>().And.ParamName.Should().Be("refresh_token");
         }
+        
+        [Fact]
+        public async Task TokenExchange_request_should_have_correct_format()
+        {
+            var response = await _client.RequestTokenExchangeTokenAsync(new TokenExchangeTokenRequest
+            {
+                ClientId = "client",
+                
+                SubjectToken = "subject_token",
+                SubjectTokenType = "subject_token_type",
+                
+                Scope = "scope",
+                Resource = "resource",
+                Audience = "audience",
+                
+                ActorToken = "actor_token",
+                ActorTokenType = "actor_token_type"
+            });
+
+            response.IsError.Should().BeFalse();
+
+            var fields = QueryHelpers.ParseQuery(_handler.Body);
+            fields.TryGetValue("grant_type", out var grant_type).Should().BeTrue();
+            grant_type.First().Should().Be(OidcConstants.GrantTypes.TokenExchange);
+
+            fields.TryGetValue("subject_token", out var subject_token).Should().BeTrue();
+            subject_token.First().Should().Be("subject_token");
+
+            fields.TryGetValue("subject_token_type", out var subject_token_type).Should().BeTrue();
+            subject_token_type.First().Should().Be("subject_token_type");
+
+            fields.TryGetValue("scope", out var scope).Should().BeTrue();
+            scope.First().Should().Be("scope");
+            
+            fields.TryGetValue("resource", out var resource).Should().BeTrue();
+            resource.First().Should().Be("resource");
+            
+            fields.TryGetValue("audience", out var audience).Should().BeTrue();
+            audience.First().Should().Be("audience");
+            
+            fields.TryGetValue("actor_token", out var actor_token).Should().BeTrue();
+            actor_token.First().Should().Be("actor_token");
+            
+            fields.TryGetValue("actor_token_type", out var actor_token_type).Should().BeTrue();
+            actor_token_type.First().Should().Be("actor_token_type");
+        }
 
         [Fact]
         public void Setting_no_grant_type_should_fail()
