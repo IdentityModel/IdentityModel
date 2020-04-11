@@ -39,7 +39,7 @@ namespace build
                 Run("dotnet", $"test -c Release --no-build");
             });
 
-            Target(Targets.Pack, DependsOn(Targets.Test), () =>
+            Target(Targets.Pack, DependsOn(Targets.Build), () =>
             {
                 var project = Directory.GetFiles("./src", "*.csproj", SearchOption.TopDirectoryOnly).First();
 
