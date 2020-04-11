@@ -1,7 +1,6 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
-using McMaster.Extensions.CommandLineUtils;
 using static Bullseye.Targets;
 using static SimpleExec.Command;
 
@@ -14,6 +13,8 @@ namespace build
             public const string Build = "build";
             public const string Test = "test";
             public const string Pack = "pack";
+            public const string SignBinary = "sign-binary";
+            public const string SignPackage = "sign-package";
         }
 
         static string BinaryToSign = "IdentityModel.dll";
@@ -21,46 +22,40 @@ namespace build
         
         static void Main(string[] args)
         {
-            var app = new CommandLineApplication(throwOnUnexpectedArg: false);
-            var sign = app.Option<(bool hasValue, int theValue)>("--sign", "Sign binaries and nuget package", CommandOptionType.SingleOrNoValue);
-
             CleanArtifacts();
 
-            app.OnExecute(() =>
+            Target(Targets.Build, () =>
             {
-                Target(Targets.Build, () => 
-                {
-                    Run("dotnet", $"build -c Release");
-
-                    if (sign.HasValue())
-                    {
-                        Sign(BinaryToSign, "./src/bin/release");
-                    }
-                });
-
-                Target(Targets.Test, DependsOn(Targets.Build), () => 
-                {
-                    Run("dotnet", $"test -c Release --no-build");
-                });
-                
-                Target(Targets.Pack, DependsOn(Targets.Test), () => 
-                {
-                    var project = Directory.GetFiles("./src", "*.csproj", SearchOption.TopDirectoryOnly).First();
-
-                    Run("dotnet", $"pack {project} -c Release -o ./artifacts --no-build");
-                    
-                    if (sign.HasValue())
-                    {
-                        Sign("*.nupkg", $"./artifacts");
-                    }
-                });
-
-
-                Target("default", DependsOn(Targets.Test, Targets.Pack));
-                RunTargetsAndExit(app.RemainingArguments);
+                Run("dotnet", $"build -c Release");
             });
 
-            app.Execute(args);
+            Target(Targets.SignBinary, DependsOn(Targets.Build), () =>
+            {
+                Sign(BinaryToSign, "./src/bin/release");
+            });
+
+            Target(Targets.Test, DependsOn(Targets.Build), () =>
+            {
+                Run("dotnet", $"test -c Release --no-build");
+            });
+
+            Target(Targets.Pack, DependsOn(Targets.Test), () =>
+            {
+                var project = Directory.GetFiles("./src", "*.csproj", SearchOption.TopDirectoryOnly).First();
+
+                Run("dotnet", $"pack {project} -c Release -o ./artifacts --no-build");
+            });
+
+            Target(Targets.SignPackage, DependsOn(Targets.Pack), () =>
+            {
+                Sign("*.nupkg", $"./artifacts");
+            });
+
+            Target("default", DependsOn(Targets.Test, Targets.Pack));
+
+            Target("sign", DependsOn(Targets.SignBinary, Targets.Test, Targets.SignPackage));
+
+            RunTargetsAndExit(args);
         }
 
         private static void Sign(string extension, string directory)
