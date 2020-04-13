@@ -20,8 +20,6 @@ namespace build
 
         internal static void Main(string[] args)
         {
-            CleanArtifacts();
-
             Target(Targets.Build, () =>
             {
                 Run("dotnet", "build -c Release");
@@ -29,7 +27,7 @@ namespace build
 
             Target(Targets.SignBinary, DependsOn(Targets.Build), () =>
             {
-                Sign("./src/bin/release", "IdentityModel.dll");
+                Sign("./src/bin/Release", "IdentityModel.dll");
             });
 
             Target(Targets.Test, DependsOn(Targets.Build), () =>
@@ -39,12 +37,12 @@ namespace build
 
             Target(Targets.Pack, DependsOn(Targets.Build), () =>
             {
-                Run("dotnet", "pack ./src/IdentityModel.csproj -c Release -o ./artifacts --no-build");
+                Run("dotnet", "pack ./src/IdentityModel.csproj -c Release --no-build");
             });
 
             Target(Targets.SignPackage, DependsOn(Targets.Pack), () =>
             {
-                Sign("./artifacts", "*.nupkg");
+                Sign("./src/bin/Release", "*.nupkg");
             });
 
             Target("default", DependsOn(Targets.Test, Targets.Pack));
@@ -73,14 +71,6 @@ namespace build
             {
                 Console.WriteLine($"  Signing {file}");
                 Run("dotnet", $"SignClient sign -c {signClientConfig} -i {file} -r sc-ids@dotnetfoundation.org -s \"{signClientSecret}\" -n 'IdentityServer4'", noEcho: true);
-            }
-        }
-
-        private static void CleanArtifacts()
-        {
-            foreach (var file in Directory.CreateDirectory("./artifacts").GetFiles())
-            {
-                file.Delete();
             }
         }
     }

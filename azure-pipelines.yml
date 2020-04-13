@@ -46,7 +46,7 @@ jobs:
     displayName: 'Push package to Github'
     inputs:
       command: push
-      packagesToPush: 'artifacts/*.nupkg'
+      packagesToPush: 'src/bin/Release/*.nupkg'
       nuGetFeedType: external
       publishFeedCredentials: 'GitHub Packages'
     condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
