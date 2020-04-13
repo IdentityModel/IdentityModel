@@ -1,13 +1,14 @@
 ﻿using System;
 using System.IO;
-using System.Linq;
 using static Bullseye.Targets;
 using static SimpleExec.Command;
 
 namespace build
 {
-    class Program
+    internal static class Program
     {
+        private const string envVarMissing = " environment variable is missing. Aborting.";
+
         private static class Targets
         {
             public const string Build = "build";
@@ -17,78 +18,69 @@ namespace build
             public const string SignPackage = "sign-package";
         }
 
-        static string BinaryToSign = "IdentityModel.dll";
-
-        
-        static void Main(string[] args)
+        internal static void Main(string[] args)
         {
             CleanArtifacts();
 
             Target(Targets.Build, () =>
             {
-                Run("dotnet", $"build -c Release");
+                Run("dotnet", "build -c Release");
             });
 
             Target(Targets.SignBinary, DependsOn(Targets.Build), () =>
             {
-                Sign(BinaryToSign, "./src/bin/release");
+                Sign("./src/bin/release", "IdentityModel.dll");
             });
 
             Target(Targets.Test, DependsOn(Targets.Build), () =>
             {
-                Run("dotnet", $"test -c Release --no-build");
+                Run("dotnet", "test -c Release --no-build");
             });
 
             Target(Targets.Pack, DependsOn(Targets.Build), () =>
             {
-                var project = Directory.GetFiles("./src", "*.csproj", SearchOption.TopDirectoryOnly).First();
-
-                Run("dotnet", $"pack {project} -c Release -o ./artifacts --no-build");
+                Run("dotnet", "pack ./src/IdentityModel.csproj -c Release -o ./artifacts --no-build");
             });
 
             Target(Targets.SignPackage, DependsOn(Targets.Pack), () =>
             {
-                Sign("*.nupkg", $"./artifacts");
+                Sign("./artifacts", "*.nupkg");
             });
 
             Target("default", DependsOn(Targets.Test, Targets.Pack));
 
             Target("sign", DependsOn(Targets.SignBinary, Targets.Test, Targets.SignPackage));
 
-            RunTargetsAndExit(args);
+            RunTargetsAndExit(args, ex => ex is SimpleExec.NonZeroExitCodeException || ex.Message.EndsWith(envVarMissing));
         }
 
-        private static void Sign(string extension, string directory)
+        private static void Sign(string path, string searchTerm)
         {
             var signClientConfig = Environment.GetEnvironmentVariable("SignClientConfig");
             var signClientSecret = Environment.GetEnvironmentVariable("SignClientSecret");
 
             if (string.IsNullOrWhiteSpace(signClientConfig))
             {
-                throw new Exception("SignClientConfig environment variable is missing. Aborting.");
+                throw new Exception($"SignClientConfig{envVarMissing}");
             }
 
             if (string.IsNullOrWhiteSpace(signClientSecret))
             {
-                throw new Exception("SignClientSecret environment variable is missing. Aborting.");
+                throw new Exception($"SignClientSecret{envVarMissing}");
             }
 
-            var files = Directory.GetFiles(directory, extension, SearchOption.AllDirectories);
-
-            foreach (var file in files)
+            foreach (var file in Directory.GetFiles(path, searchTerm, SearchOption.AllDirectories))
             {
-                Console.WriteLine("  Signing " + file);
+                Console.WriteLine($"  Signing {file}");
                 Run("dotnet", $"SignClient sign -c {signClientConfig} -i {file} -r sc-ids@dotnetfoundation.org -s \"{signClientSecret}\" -n 'IdentityServer4'", noEcho: true);
             }
         }
 
         private static void CleanArtifacts()
         {
-            Directory.CreateDirectory($"./artifacts");
-
-            foreach (var file in Directory.GetFiles($"./artifacts"))
+            foreach (var file in Directory.CreateDirectory("./artifacts").GetFiles())
             {
-                File.Delete(file);
+                file.Delete();
             }
         }
     }
