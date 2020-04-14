@@ -79,13 +79,5 @@ namespace build
                 Run("dotnet", $"SignClient sign -c {signClientConfig} -i {file} -r sc-ids@dotnetfoundation.org -s \"{signClientSecret}\" -n 'IdentityServer4'", noEcho: true);
             }
         }
-
-        private static void CleanArtifacts()
-        {
-            foreach (var file in Directory.CreateDirectory("./artifacts").GetFiles())
-            {
-                file.Delete();
-            }
-        }
     }
 }
