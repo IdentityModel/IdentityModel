@@ -11,6 +11,7 @@ namespace build
 
         private static class Targets
         {
+            public const string Clean = "clean";
             public const string Build = "build";
             public const string Test = "test";
             public const string Pack = "pack";
@@ -20,9 +21,12 @@ namespace build
 
         internal static void Main(string[] args)
         {
-            CleanArtifacts();
+            Target(Targets.Clean, () =>
+            {
+                Run("git", "clean -fX -e .idea -e .vs");
+            });
 
-            Target(Targets.Build, () =>
+            Target(Targets.Build, DependsOn(Targets.Clean), () =>
             {
                 Run("dotnet", "build -c Release");
             });
