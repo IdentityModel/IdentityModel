@@ -23,7 +23,7 @@ namespace build
         {
             Target(Targets.Clean, () =>
             {
-                Run("git", "clean -fX -e .idea -e .vs");
+                Run("git", "clean -fXd -e .idea -e .vs");
             });
 
             Target(Targets.Build, DependsOn(Targets.Clean), () =>
