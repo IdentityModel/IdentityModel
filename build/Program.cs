@@ -12,6 +12,7 @@ namespace build
 
         private static class Targets
         {
+            public const string RestoreTools = "restore-tools";
             public const string CleanBuildOutput = "clean-build-output";
             public const string CleanPackOutput = "clean-pack-output";
             public const string Build = "build";
@@ -23,6 +24,11 @@ namespace build
 
         internal static void Main(string[] args)
         {
+            Target(Targets.RestoreTools, () =>
+            {
+                Run("dotnet", "tool restore");
+            });
+
             Target(Targets.CleanBuildOutput, () =>
             {
                 Run("dotnet", "clean -c Release -v m --nologo");
@@ -33,7 +39,7 @@ namespace build
                 Run("dotnet", "build -c Release");
             });
 
-            Target(Targets.SignBinary, DependsOn(Targets.Build), () =>
+            Target(Targets.SignBinary, DependsOn(Targets.Build, Targets.RestoreTools), () =>
             {
                 Sign("./src/bin/Release", "IdentityModel.dll");
             });
@@ -56,7 +62,7 @@ namespace build
                 Run("dotnet", $"pack ./src/IdentityModel.csproj -c Release -o {Directory.CreateDirectory(packOutput).FullName} --no-build");
             });
 
-            Target(Targets.SignPackage, DependsOn(Targets.Pack), () =>
+            Target(Targets.SignPackage, DependsOn(Targets.Pack, Targets.RestoreTools), () =>
             {
                 Sign(packOutput, "*.nupkg");
             });
