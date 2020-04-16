@@ -36,7 +36,7 @@ namespace build
 
             Target(Targets.Build, DependsOn(Targets.CleanBuildOutput), () =>
             {
-                Run("dotnet", "build -c Release");
+                Run("dotnet", "build -c Release --nologo");
             });
 
             Target(Targets.SignBinary, DependsOn(Targets.Build, Targets.RestoreTools), () =>
@@ -46,7 +46,7 @@ namespace build
 
             Target(Targets.Test, DependsOn(Targets.Build), () =>
             {
-                Run("dotnet", "test -c Release --no-build");
+                Run("dotnet", "test -c Release --no-build --nologo");
             });
 
             Target(Targets.CleanPackOutput, () =>
