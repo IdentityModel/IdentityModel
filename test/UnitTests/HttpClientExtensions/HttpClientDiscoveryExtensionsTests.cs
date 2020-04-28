@@ -212,6 +212,9 @@ namespace IdentityModel.UnitTests
             responseModes.Should().Contain("form_post");
             responseModes.Should().Contain("query");
             responseModes.Should().Contain("fragment");
+
+            disco.KeySet.Keys.Count.Should().Be(1);
+            disco.KeySet.Keys.First().Kid.Should().Be("a3rMUgMFv9tPclLa6yF3zAkfquE");
         }
 
         [Fact]
