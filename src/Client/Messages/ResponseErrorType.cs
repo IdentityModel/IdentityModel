@@ -31,6 +31,11 @@ namespace IdentityModel.Client
         /// <summary>
         /// A policy violation - a configured policy was violated.
         /// </summary>
-        PolicyViolation
+        PolicyViolation,
+
+        /// <summary>
+        /// There was no content returned in the HTTP response
+        /// </summary>
+        MissingContent
     }
 }

@@ -76,6 +76,13 @@ namespace IdentityModel.Client
                 response.Exception = ex;
             }
 
+            if (!content.IsPresent()
+                && typeof(T) == typeof(TokenResponse))
+            {
+                response.ErrorType = ResponseErrorType.MissingContent;
+                response.ErrorMessage = "Missing Http content";
+            }
+
             await response.InitializeAsync(initializationData).ConfigureAwait();
             return response;
         }

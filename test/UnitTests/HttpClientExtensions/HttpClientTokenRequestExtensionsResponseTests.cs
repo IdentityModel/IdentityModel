@@ -167,5 +167,17 @@ namespace IdentityModel.UnitTests
             response.Json.TryGetString("foo").Should().Be("foo");
             response.Json.TryGetString("bar").Should().Be("bar");
         }
+
+        [Fact]
+        public async Task Empty_token_response_should_be_handled_correctly()
+        {
+            var emptyHttpResponse = new HttpResponseMessage();
+            // It defaults to HttpStatusCode.OK
+            emptyHttpResponse.IsSuccessStatusCode.Should().BeTrue();
+            var tokenResponse = await ProtocolResponse.FromHttpResponseAsync<TokenResponse>(emptyHttpResponse);
+            tokenResponse.IsError.Should().BeTrue();
+            tokenResponse.ErrorType.Should().Be(ResponseErrorType.MissingContent);
+            tokenResponse.Error.Should().Be("Missing Http content");
+        }
     }
 }
