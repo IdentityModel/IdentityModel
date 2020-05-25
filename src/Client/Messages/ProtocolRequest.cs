@@ -78,7 +78,7 @@ namespace IdentityModel.Client
         /// <value>
         /// The parameters.
         /// </value>
-        public IDictionary<string, string> Parameters { get; set; } = new Dictionary<string, string>();
+        public Parameters Parameters { get; set; } = new Parameters();
 
         /// <summary>
         /// Clones this instance.
@@ -106,7 +106,7 @@ namespace IdentityModel.Client
                 ClientCredentialStyle = ClientCredentialStyle,
                 ClientId = ClientId,
                 ClientSecret = ClientSecret,
-                Parameters = new Dictionary<string, string>(),
+                Parameters = new Parameters()
             };
 
             if (Parameters != null)

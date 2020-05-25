@@ -73,6 +73,6 @@ namespace IdentityModel.Client
         /// <value>
         /// The parameters.
         /// </value>
-        public IDictionary<string, string> Parameters { get; set; } = new Dictionary<string, string>();
+        public Parameters Parameters { get; set; } = new Parameters();
     }
 }

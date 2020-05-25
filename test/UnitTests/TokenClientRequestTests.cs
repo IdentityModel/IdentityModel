@@ -229,7 +229,7 @@ namespace IdentityModel.UnitTests
         {
             var tokenClient = new TokenClient(_client, new TokenClientOptions());
 
-            var parameters = new Dictionary<string, string>
+            var parameters = new Parameters
             {
                 { "client_id", "custom" },
                 { "client_secret", "custom" },
@@ -261,7 +261,7 @@ namespace IdentityModel.UnitTests
         {
             var tokenClient = new TokenClient(_client, new TokenClientOptions { Parameters = { { "global", "global" } } });
 
-            var parameters = new Dictionary<string, string>
+            var parameters = new Parameters
             {
                 { "client_id", "custom" },
                 { "client_secret", "custom" },
@@ -297,16 +297,17 @@ namespace IdentityModel.UnitTests
             var globalOptions = new TokenClientOptions { Parameters = { { "global", "value" } } };
             var tokenClient = new TokenClient(_client, globalOptions);
 
-            var localParameters = new Dictionary<string, string>
+            var localParameters = new Parameters
             {
                 { "client_id", "custom" },
                 { "client_secret", "custom" },
                 { "custom", "custom" }
             };
+            
             _ = await tokenClient.RequestTokenAsync(grantType: "test", parameters: localParameters);
 
             globalOptions.Parameters.Should().HaveCount(1);
-            globalOptions.Parameters.TryGetValue("global", out var globalValue);
+            var globalValue = globalOptions.Parameters.FirstOrDefault(p => p.Key == "global");
             globalValue.Should().Be("value");
         }
 

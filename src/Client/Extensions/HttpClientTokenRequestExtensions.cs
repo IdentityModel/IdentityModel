@@ -141,7 +141,7 @@ namespace IdentityModel.Client
         {
             var clone = request.Clone();
 
-            if (!clone.Parameters.ContainsKey(OidcConstants.TokenRequest.GrantType))
+            if (!clone.Parameters.Contains(OidcConstants.TokenRequest.GrantType))
             {
                 clone.Parameters.AddRequired(OidcConstants.TokenRequest.GrantType, request.GrantType);
             }
@@ -158,7 +158,7 @@ namespace IdentityModel.Client
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
         /// <exception cref="ArgumentNullException">parameters</exception>
-        public static async Task<TokenResponse> RequestTokenRawAsync(this HttpMessageInvoker client, string address, IDictionary<string, string> parameters, CancellationToken cancellationToken = default)
+        public static async Task<TokenResponse> RequestTokenRawAsync(this HttpMessageInvoker client, string address, Parameters parameters, CancellationToken cancellationToken = default)
         {
             if (parameters == null) throw new ArgumentNullException(nameof(parameters));
 

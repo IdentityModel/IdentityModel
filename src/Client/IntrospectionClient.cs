@@ -42,7 +42,7 @@ namespace IdentityModel.Client
         /// </summary>
         /// <param name="request">The request.</param>
         /// <param name="parameters">The parameters.</param>
-        internal void ApplyRequestParameters(TokenIntrospectionRequest request, IDictionary<string, string> parameters)
+        internal void ApplyRequestParameters(TokenIntrospectionRequest request, Parameters parameters)
         {
             request.Address = _options.Address;
             request.ClientId = _options.ClientId;
@@ -50,7 +50,7 @@ namespace IdentityModel.Client
             request.ClientAssertion = _options.ClientAssertion;
             request.ClientCredentialStyle = _options.ClientCredentialStyle;
             request.AuthorizationHeaderStyle = _options.AuthorizationHeaderStyle;
-            request.Parameters = new Dictionary<string, string>(_options.Parameters);
+            request.Parameters = new Parameters(_options.Parameters);
 
             if (parameters != null)
             {
@@ -69,7 +69,7 @@ namespace IdentityModel.Client
         /// <param name="parameters"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public Task<TokenIntrospectionResponse> Introspect(string token, string tokenTypeHint = null, IDictionary<string, string> parameters = null, CancellationToken cancellationToken = default)
+        public Task<TokenIntrospectionResponse> Introspect(string token, string tokenTypeHint = null, Parameters parameters = null, CancellationToken cancellationToken = default)
         {
             var request = new TokenIntrospectionRequest
             {

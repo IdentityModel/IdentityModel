@@ -457,7 +457,7 @@ namespace IdentityModel.UnitTests
         [Fact]
         public async Task Sending_raw_parameters_should_create_correct_format()
         {
-            var response = await _client.RequestTokenRawAsync("https://token/", new Dictionary<string, string>
+            var response = await _client.RequestTokenRawAsync("https://token/", new Parameters
             {
                 { "grant_type", "test" },
                 { "client_id", "client" },
