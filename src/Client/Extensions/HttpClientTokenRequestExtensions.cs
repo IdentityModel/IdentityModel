@@ -84,6 +84,11 @@ namespace IdentityModel.Client
             clone.Parameters.AddRequired(OidcConstants.TokenRequest.RedirectUri, request.RedirectUri);
             clone.Parameters.AddOptional(OidcConstants.TokenRequest.CodeVerifier, request.CodeVerifier);
 
+            foreach (var resource in request.Resource)
+            {
+                clone.Parameters.AddRequired(OidcConstants.TokenRequest.Resource, resource, allowDuplicates: true);
+            }
+
             return await client.RequestTokenAsync(clone, cancellationToken).ConfigureAwait();
         }
 
@@ -101,6 +106,11 @@ namespace IdentityModel.Client
             clone.Parameters.AddRequired(OidcConstants.TokenRequest.GrantType, OidcConstants.GrantTypes.RefreshToken);
             clone.Parameters.AddRequired(OidcConstants.TokenRequest.RefreshToken, request.RefreshToken);
             clone.Parameters.AddOptional(OidcConstants.TokenRequest.Scope, request.Scope);
+            
+            foreach (var resource in request.Resource)
+            {
+                clone.Parameters.AddRequired(OidcConstants.TokenRequest.Resource, resource, allowDuplicates: true);
+            }
 
             return await client.RequestTokenAsync(clone, cancellationToken).ConfigureAwait();
         }

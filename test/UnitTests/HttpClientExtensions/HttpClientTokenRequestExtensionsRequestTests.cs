@@ -272,7 +272,8 @@ namespace IdentityModel.UnitTests
                 ClientId = "client",
                 Code = "code",
                 RedirectUri = "uri",
-                CodeVerifier = "verifier"
+                CodeVerifier = "verifier",
+                Resource = { "resource1", "resource2" }
             });
 
             response.IsError.Should().BeFalse();
@@ -289,6 +290,11 @@ namespace IdentityModel.UnitTests
 
             fields.TryGetValue("code_verifier", out var code_verifier).Should().BeTrue();
             code_verifier.First().Should().Be("verifier");
+            
+            fields.TryGetValue("resource", out var resource).Should().BeTrue();
+            resource.Count.Should().Be(2);
+            resource[0].Should().Be("resource1");
+            resource[1].Should().Be("resource2");
         }
 
         [Fact]
@@ -320,7 +326,8 @@ namespace IdentityModel.UnitTests
             {
                 ClientId = "client",
                 RefreshToken = "rt",
-                Scope = "scope"
+                Scope = "scope",
+                Resource = { "resource1", "resource2" }
             });
 
             response.IsError.Should().BeFalse();
@@ -334,6 +341,11 @@ namespace IdentityModel.UnitTests
 
             fields.TryGetValue("scope", out var redirect_uri).Should().BeTrue();
             redirect_uri.First().Should().Be("scope");
+            
+            fields.TryGetValue("resource", out var resource).Should().BeTrue();
+            resource.Count.Should().Be(2);
+            resource[0].Should().Be("resource1");
+            resource[1].Should().Be("resource2");
         }
 
         [Fact]
