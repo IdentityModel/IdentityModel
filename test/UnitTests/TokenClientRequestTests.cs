@@ -307,7 +307,7 @@ namespace IdentityModel.UnitTests
             _ = await tokenClient.RequestTokenAsync(grantType: "test", parameters: localParameters);
 
             globalOptions.Parameters.Should().HaveCount(1);
-            var globalValue = globalOptions.Parameters.FirstOrDefault(p => p.Key == "global");
+            var globalValue = globalOptions.Parameters.FirstOrDefault(p => p.Key == "global").Value;
             globalValue.Should().Be("value");
         }
 
