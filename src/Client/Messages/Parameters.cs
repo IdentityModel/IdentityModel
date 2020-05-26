@@ -103,5 +103,24 @@ namespace IdentityModel.Client
                 throw new ArgumentException($"Parameter is required", key);
             }
         }
+        
+        /// <summary>
+        /// Merge two parameter sets
+        /// </summary>
+        /// <param name="additionalValues"></param>
+        /// <returns></returns>
+        public Parameters Merge(Parameters additionalValues = null)
+        {
+             if (additionalValues != null)
+             {
+                 var merged =
+                     this.Concat(additionalValues.Where(add => !this.Contains(add.Key)))
+                         .Select(s => new KeyValuePair<string, string>(s.Key, s.Value));
+            
+                 return new Parameters(merged.ToList());
+             }
+
+            return this;
+        }
     }
 }

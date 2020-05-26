@@ -25,7 +25,7 @@ namespace IdentityModel.UnitTests
         {
             var request = new RequestUrl("http://server/authorize");
 
-            var values = new Dictionary<string, string>();
+            var values = new Parameters();
             var url = request.Create(values);
 
             url.Should().Be("http://server/authorize");
@@ -36,13 +36,13 @@ namespace IdentityModel.UnitTests
         {
             var request = new RequestUrl("http://server/authorize");
 
-            var parmeters = new
+            var parameters = new Parameters
             {
-                foo = "foo",
-                bar = "bar"
+                { "foo", "foo" },
+                { "bar", "bar" }
             };
 
-            var url = request.Create(parmeters);
+            var url = request.Create(parameters);
 
             url.Should().Be("http://server/authorize?foo=foo&bar=bar");
         }
@@ -52,10 +52,10 @@ namespace IdentityModel.UnitTests
         {
             var request = new RequestUrl("http://server/authorize");
 
-            var parmeters = new
+            var parmeters = new Parameters
             {
-                scope = "a b c",
-                clientId = "a+b+c"
+                { "scope", "a b c" },
+                { "clientId" , "a+b+c" }
             };
 
             var url = request.Create(parmeters);
@@ -68,13 +68,13 @@ namespace IdentityModel.UnitTests
         {
             var request = new RequestUrl("/authorize");
 
-            var parmeters = new
+            var parameters = new Parameters
             {
-                foo = "foo",
-                bar = "bar"
+                { "foo", "foo" },
+                { "bar", "bar" }
             };
 
-            var url = request.Create(parmeters);
+            var url = request.Create(parameters);
 
             url.Should().Be("/authorize?foo=foo&bar=bar");
         }
@@ -84,7 +84,7 @@ namespace IdentityModel.UnitTests
         {
             var request = new RequestUrl("/authorize");
 
-            var parameters = new Dictionary<string, string>
+            var parameters = new Parameters
             {
                 { "foo", "foo" },
                 { "bar", null }
