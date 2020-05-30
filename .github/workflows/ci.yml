@@ -2,7 +2,7 @@ on:
   push:
     branches:
     - master
-    - release-*
+    - features/*
     tags:
     - '*.*.*'
   pull_request:
