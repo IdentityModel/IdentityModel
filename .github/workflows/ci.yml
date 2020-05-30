@@ -1,0 +1,26 @@
+on:
+  push:
+    branches:
+    - master
+    - release-*
+    tags:
+    - '*.*.*'
+  pull_request:
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        runs-on: [macOS-latest, ubuntu-latest, windows-latest]
+    name: ${{ matrix.runs-on }}
+    runs-on: ${{ matrix.runs-on }}
+    steps:
+    - uses: actions/setup-dotnet@b7821147f564527086410e8edd122d89b4b9602f
+      with:
+        dotnet-version: '3.1.201'
+    - run: dotnet --info
+    - uses: actions/checkout@af513c7a016048ae468971c52ed77d9562c7c819
+    - if: contains(matrix.runs-on, 'windows')
+      run: ./build.cmd
+    - if: contains(matrix.runs-on, 'macOS') || contains(matrix.runs-on, 'ubuntu')
+      run: ./build.sh
