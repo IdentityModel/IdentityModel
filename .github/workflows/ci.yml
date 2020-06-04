@@ -19,6 +19,8 @@ jobs:
       with:
         dotnet-version: '3.1.201'
         source-url: https://www.myget.org/F/identity/api/v2/package
+      env:
+        NUGET_AUTH_TOKEN: ${{secrets.MYGET_KEY}}
     - run: dotnet --info
     - run: echo running on branch ${GITHUB_REF##*/}
     - uses: actions/checkout@af513c7a016048ae468971c52ed77d9562c7c819
