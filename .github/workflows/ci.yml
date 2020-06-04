@@ -24,7 +24,7 @@ jobs:
       run: ./build.cmd
     - if: contains(matrix.runs-on, 'macOS') || contains(matrix.runs-on, 'ubuntu')
       run: ./build.sh
-    - if: matrix.runs-on == 'ubuntu-latest' && $GITHUB_REF == 'refs/heads/master'
+    - if: matrix.runs-on == 'ubuntu-latest' && ${GITHUB_REF##*/} == 'master'
       env:
         NUGET_AUTH_TOKEN: ${{secrets.MYGET_KEY}}
       run: dotnet nuget push artifacts/*.nupkg
