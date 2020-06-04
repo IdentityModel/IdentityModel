@@ -8,7 +8,7 @@ namespace IdentityModel
     /// <summary>
     /// Base64Url encoder/decoder
     /// </summary>
-    public static class Base64Url
+    public static c lass Base64Url
     {
         /// <summary>
         /// Encodes the specified byte array.
