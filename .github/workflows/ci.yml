@@ -17,7 +17,7 @@ jobs:
     steps:
     - uses: actions/setup-dotnet@b7821147f564527086410e8edd122d89b4b9602f
       with:
-        dotnet-version: '3.1.201'
+        dotnet-version: '3.1.301'
     - run: dotnet --info
     - uses: actions/checkout@af513c7a016048ae468971c52ed77d9562c7c819
     - if: contains(matrix.runs-on, 'windows')
@@ -25,4 +25,4 @@ jobs:
     - if: contains(matrix.runs-on, 'macOS') || contains(matrix.runs-on, 'ubuntu')
       run: ./build.sh
     - if: (matrix.runs-on == 'windows-latest') && (github.ref == 'refs/heads/main')
-      run: dotnet nuget push .\artifacts\*.nupkg -s https://www.myget.org/F/identity/api/v2/package -k ${{secrets.MYGET_KEY}}
+      run: dotnet nuget push .\artifacts\*.nupkg -s https://www.myget.org/F/identity/api/v2/package -k ${{ secrets.MYGET }}
