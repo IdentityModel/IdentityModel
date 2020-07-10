@@ -6,6 +6,8 @@ on:
     tags:
     - '*.*.*'
   pull_request:
+env:
+  DOTNET_NOLOGO: true
 jobs:
   build:
     strategy:
@@ -21,7 +23,7 @@ jobs:
     - run: dotnet --info
     - uses: actions/checkout@af513c7a016048ae468971c52ed77d9562c7c819
     - if: contains(matrix.runs-on, 'windows')
-      run: ./build.cmd
+      run: ./build.cmd sign
     - if: contains(matrix.runs-on, 'macOS') || contains(matrix.runs-on, 'ubuntu')
       run: ./build.sh
     - if: (matrix.runs-on == 'windows-latest') && (github.ref == 'refs/heads/main')
