@@ -6,8 +6,10 @@ on:
     tags:
     - '*.*.*'
   pull_request:
+
 env:
   DOTNET_NOLOGO: true
+
 jobs:
   build:
     strategy:
@@ -18,9 +20,6 @@ jobs:
     runs-on: ${{ matrix.runs-on }}
     steps:
     - uses: actions/checkout@v2
-    - uses: actions/setup-dotnet@b7821147f564527086410e8edd122d89b4b9602f
-      with:
-        dotnet-version: '3.1.301'
     - run: dotnet --info
     
     - if: contains(matrix.runs-on, 'macOS') || contains(matrix.runs-on, 'ubuntu')
