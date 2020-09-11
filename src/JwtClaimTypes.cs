@@ -179,7 +179,7 @@ namespace IdentityModel
             /// <summary>
             /// JWT secured authorization request
             /// </summary>
-            public const string AuthorizationRequest = "oauth.authz.req+jwt";
+            public const string AuthorizationRequest = "oauth-authz-req+jwt";
         }
     }
 }
