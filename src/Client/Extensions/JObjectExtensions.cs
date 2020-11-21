@@ -18,9 +18,10 @@ namespace IdentityModel.Client
         /// Converts a JSON claims object to a list of Claim
         /// </summary>
         /// <param name="json">The json.</param>
+        /// <param name="issuer">Optional issuer name to add to claims.</param>
         /// <param name="excludeKeys">Claims that should be excluded.</param>
         /// <returns></returns>
-        public static IEnumerable<Claim> ToClaims(this JObject json, params string[] excludeKeys)
+        public static IEnumerable<Claim> ToClaims(this JObject json, string issuer = null, params string[] excludeKeys)
         {
             var claims = new List<Claim>();
             var excludeList = excludeKeys.ToList();
@@ -33,12 +34,12 @@ namespace IdentityModel.Client
                 {
                     foreach (var item in array)
                     {
-                        claims.Add(new Claim(x.Key, Stringify(item)));
+                        claims.Add(new Claim(x.Key, Stringify(item), ClaimValueTypes.String, issuer));
                     }
                 }
                 else
                 {
-                    claims.Add(new Claim(x.Key, Stringify(x.Value)));
+                    claims.Add(new Claim(x.Key, Stringify(x.Value), ClaimValueTypes.String, issuer));
                 }
             }
 
