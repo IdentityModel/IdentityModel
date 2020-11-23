@@ -24,10 +24,15 @@ jobs:
     - name: Setup dotnet (main)
       uses: actions/setup-dotnet@v1
       
-    - name: Setup dotnet (testing)
+    - name: Setup dotnet (testing netcore3)
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: '3.1.x'
+
+    - name: Setup dotnet (testing netcore2)
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: '2.1.x'
 
     - run: dotnet --info
     
