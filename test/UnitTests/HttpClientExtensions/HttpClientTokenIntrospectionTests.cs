@@ -93,6 +93,50 @@ namespace IdentityModel.UnitTests
             var scopes = response.Claims.Where(c => c.Type == "scope");
             scopes.Count().Should().Be(2);
             scopes.First().Value.Should().Be("api1");
+            scopes.First().Issuer.Should().Be("https://idsvr4");
+            scopes.Skip(1).First().Value.Should().Be("api2");
+            scopes.Skip(1).First().Issuer.Should().Be("https://idsvr4");
+        }
+
+        [Fact]
+        public async Task Success_protocol_response_without_issuer_should_be_handled_correctly()
+        {
+            var document = File.ReadAllText(FileName.Create("success_introspection_response_no_issuer.json"));
+            var handler = new NetworkHandler(document, HttpStatusCode.OK);
+
+            var client = new HttpClient(handler)
+            {
+                BaseAddress = new Uri(Endpoint)
+            };
+
+            var response = await client.IntrospectTokenAsync(new TokenIntrospectionRequest
+            {
+                Token = "token"
+            });
+
+            response.IsError.Should().BeFalse();
+            response.ErrorType.Should().Be(ResponseErrorType.None);
+            response.HttpStatusCode.Should().Be(HttpStatusCode.OK);
+            response.IsActive.Should().BeTrue();
+            response.Claims.Should().NotBeEmpty();
+
+            var audiences = response.Claims.Where(c => c.Type == "aud");
+            audiences.Count().Should().Be(2);
+            audiences.First().Value.Should().Be("https://idsvr4/resources");
+            audiences.Skip(1).First().Value.Should().Be("api1");
+
+            response.Claims.First(c => c.Type == "nbf").Value.Should().Be("1475824871");
+            response.Claims.First(c => c.Type == "exp").Value.Should().Be("1475828471");
+            response.Claims.First(c => c.Type == "client_id").Value.Should().Be("client");
+            response.Claims.First(c => c.Type == "sub").Value.Should().Be("1");
+            response.Claims.First(c => c.Type == "auth_time").Value.Should().Be("1475824871");
+            response.Claims.First(c => c.Type == "idp").Value.Should().Be("local");
+            response.Claims.First(c => c.Type == "amr").Value.Should().Be("password");
+            response.Claims.First(c => c.Type == "active").Value.Should().Be("true");
+
+            var scopes = response.Claims.Where(c => c.Type == "scope");
+            scopes.Count().Should().Be(2);
+            scopes.First().Value.Should().Be("api1");
             scopes.Skip(1).First().Value.Should().Be("api2");
         }
 
@@ -138,7 +182,9 @@ namespace IdentityModel.UnitTests
             var scopes = response.Claims.Where(c => c.Type == "scope");
             scopes.Count().Should().Be(2);
             scopes.First().Value.Should().Be("api1");
+            scopes.First().Issuer.Should().Be("https://idsvr4");
             scopes.Skip(1).First().Value.Should().Be("api2");
+            scopes.Skip(1).First().Issuer.Should().Be("https://idsvr4");
 
             // repeat
             response = await client.IntrospectTokenAsync(request);
@@ -167,7 +213,9 @@ namespace IdentityModel.UnitTests
             scopes = response.Claims.Where(c => c.Type == "scope");
             scopes.Count().Should().Be(2);
             scopes.First().Value.Should().Be("api1");
+            scopes.First().Issuer.Should().Be("https://idsvr4");
             scopes.Skip(1).First().Value.Should().Be("api2");
+            scopes.Skip(1).First().Issuer.Should().Be("https://idsvr4");
         }
 
         [Fact]
@@ -278,8 +326,9 @@ namespace IdentityModel.UnitTests
             var scopes = response.Claims.Where(c => c.Type == "scope");
             scopes.Count().Should().Be(2);
             scopes.First().Value.Should().Be("api1");
+            scopes.First().Issuer.Should().Be("https://idsvr4");
             scopes.Skip(1).First().Value.Should().Be("api2");
-
+            scopes.Skip(1).First().Issuer.Should().Be("https://idsvr4");
         }
 
         [Fact]
