@@ -97,7 +97,7 @@ namespace IdentityModel.Client
         /// The auth time.
         /// </value>
         /// <remarks>JSON number representing the number of seconds from 1970-01-01T0:0:0Z as measured in UTC until the date/time.</remarks>
-        public long AuthTime
+        public long? AuthTime
         {
             get
             {
@@ -111,7 +111,7 @@ namespace IdentityModel.Client
                     }
                 }
 
-                return 0;
+                return null;
             }
         }
     }
