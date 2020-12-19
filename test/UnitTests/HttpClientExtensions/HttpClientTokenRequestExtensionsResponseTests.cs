@@ -35,6 +35,7 @@ namespace IdentityModel.UnitTests
             response.ErrorType.Should().Be(ResponseErrorType.None);
             response.HttpStatusCode.Should().Be(HttpStatusCode.OK);
             response.ExpiresIn.Should().Be(16078989860);
+            response.AuthTime.Should().Be(1607898926);
             response.AccessToken.Should().Be("access_token");
             response.RefreshToken.Should().Be("refresh_token");
             response.TryGet("custom").Should().Be("custom");

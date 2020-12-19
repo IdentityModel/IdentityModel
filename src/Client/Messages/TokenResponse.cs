@@ -89,5 +89,30 @@ namespace IdentityModel.Client
                 return 0;
             }
         }
+
+        /// <summary>
+        /// Gets the authentication time.
+        /// </summary>
+        /// <value>
+        /// The auth time.
+        /// </value>
+        /// <remarks>JSON number representing the number of seconds from 1970-01-01T0:0:0Z as measured in UTC until the date/time.</remarks>
+        public long AuthTime
+        {
+            get
+            {
+                var value = TryGet(OidcConstants.TokenResponse.AuthTime);
+
+                if (value != null)
+                {
+                    if (long.TryParse(value, out var theValue))
+                    {
+                        return theValue;
+                    }
+                }
+
+                return 0;
+            }
+        }
     }
 }

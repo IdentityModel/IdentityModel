@@ -152,6 +152,7 @@ namespace IdentityModel
             public const string BearerTokenType = "Bearer";
             public const string IssuedTokenType = "issued_token_type";
             public const string Scope = "scope";
+            public const string AuthTime = "auth_time";
         }
 
         public static class TokenIntrospectionRequest
