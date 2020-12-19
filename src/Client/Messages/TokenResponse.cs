@@ -71,7 +71,8 @@ namespace IdentityModel.Client
         /// <value>
         /// The expires in.
         /// </value>
-        public int ExpiresIn
+        /// <remarks>JSON number representing the number of seconds from 1970-01-01T0:0:0Z as measured in UTC until the date/time.</remarks>
+        public long ExpiresIn
         {
             get
             {
@@ -79,7 +80,7 @@ namespace IdentityModel.Client
 
                 if (value != null)
                 {
-                    if (int.TryParse(value, out var theValue))
+                    if (long.TryParse(value, out var theValue))
                     {
                         return theValue;
                     }
