@@ -113,7 +113,8 @@ namespace IdentityModel.UnitTests
             var response = await _client.RequestClientCredentialsTokenAsync(new ClientCredentialsTokenRequest
             {
                 ClientId = "client",
-                Scope = "scope"
+                Scope = "scope",
+                Resource =  { "resource1", "resource2" }
             });
 
             response.IsError.Should().BeFalse();
@@ -124,6 +125,11 @@ namespace IdentityModel.UnitTests
 
             fields.TryGetValue("scope", out var scope).Should().BeTrue();
             scope.First().Should().Be("scope");
+            
+            fields.TryGetValue("resource", out var resource).Should().BeTrue();
+            resource.Count.Should().Be(2);
+            resource[0].Should().Be("resource1");
+            resource[1].Should().Be("resource2");
         }
 
         [Fact]
@@ -214,7 +220,8 @@ namespace IdentityModel.UnitTests
                 ClientId = "client",
                 UserName = "user",
                 Password = "password",
-                Scope = "scope"
+                Scope = "scope",
+                Resource = { "resource1", "resource2" }
             });
 
             response.IsError.Should().BeFalse();
@@ -231,6 +238,11 @@ namespace IdentityModel.UnitTests
 
             fields.TryGetValue("scope", out var scope).Should().BeTrue();
             scope.First().Should().Be("scope");
+            
+            fields.TryGetValue("resource", out var resource).Should().BeTrue();
+            resource.Count.Should().Be(2);
+            resource[0].Should().Be("resource1");
+            resource[1].Should().Be("resource2");
         }
 
         [Fact]
@@ -272,7 +284,7 @@ namespace IdentityModel.UnitTests
                 Code = "code",
                 RedirectUri = "uri",
                 CodeVerifier = "verifier",
-                Resource = { "resource1", "resource2" }
+                Resource = { "resource1", "resource2" },
             });
 
             response.IsError.Should().BeFalse();
