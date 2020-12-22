@@ -27,6 +27,11 @@ namespace IdentityModel.Client
 
             clone.Parameters.AddRequired(OidcConstants.TokenRequest.GrantType, OidcConstants.GrantTypes.ClientCredentials);
             clone.Parameters.AddOptional(OidcConstants.TokenRequest.Scope, request.Scope);
+            
+            foreach (var resource in request.Resource)
+            {
+                clone.Parameters.AddRequired(OidcConstants.TokenRequest.Resource, resource, allowDuplicates: true);
+            }
 
             return await client.RequestTokenAsync(clone, cancellationToken).ConfigureAwait();
         }
@@ -44,7 +49,7 @@ namespace IdentityModel.Client
 
             clone.Parameters.AddRequired(OidcConstants.TokenRequest.GrantType, OidcConstants.GrantTypes.DeviceCode);
             clone.Parameters.AddRequired(OidcConstants.TokenRequest.DeviceCode, request.DeviceCode);
-
+            
             return await client.RequestTokenAsync(clone, cancellationToken).ConfigureAwait();
         }
 
@@ -63,6 +68,11 @@ namespace IdentityModel.Client
             clone.Parameters.AddRequired(OidcConstants.TokenRequest.UserName, request.UserName);
             clone.Parameters.AddRequired(OidcConstants.TokenRequest.Password, request.Password, allowEmpty: true);
             clone.Parameters.AddOptional(OidcConstants.TokenRequest.Scope, request.Scope);
+            
+            foreach (var resource in request.Resource)
+            {
+                clone.Parameters.AddRequired(OidcConstants.TokenRequest.Resource, resource, allowDuplicates: true);
+            }
 
             return await client.RequestTokenAsync(clone, cancellationToken).ConfigureAwait();
         }

@@ -33,6 +33,14 @@ namespace IdentityModel.Client
         /// The scope.
         /// </value>
         public string Scope { get; set; }
+        
+        /// <summary>
+        /// List of requested resources
+        /// </summary>
+        /// <value>
+        /// The scope.
+        /// </value>
+        public ICollection<string> Resource { get; set; } = new HashSet<string>();
     }
 
     /// <summary>
@@ -79,6 +87,14 @@ namespace IdentityModel.Client
         /// The scope.
         /// </value>
         public string Scope { get; set; }
+        
+        /// <summary>
+        /// List of requested resources
+        /// </summary>
+        /// <value>
+        /// The scope.
+        /// </value>
+        public ICollection<string> Resource { get; set; } = new HashSet<string>();
     }
 
     /// <summary>

@@ -70,7 +70,7 @@ namespace IdentityModel.Client
                 Add(key, value);
             }
         }
-        
+
         /// <summary>
         /// Adds a required parameter
         /// </summary>
