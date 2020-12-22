@@ -35,12 +35,12 @@ namespace IdentityModel.Client
                 {
                     foreach (var item in x.Value.EnumerateArray())
                     {
-                        claims.Add(new Claim(x.Key, Stringify(item), ClaimValueTypes.String, issuer));
+                        claims.Add(new Claim(x.Name, Stringify(item), ClaimValueTypes.String, issuer));
                     }
                 }
                 else
                 {
-                    claims.Add(new Claim(x.Key, Stringify(x.Value), ClaimValueTypes.String, issuer));
+                    claims.Add(new Claim(x.Name, Stringify(x.Value), ClaimValueTypes.String, issuer));
                 }
             }
 

@@ -25,7 +25,7 @@ namespace IdentityModel.Client
         {
             if (!IsError)
             {
-                var issuer = Json.GetValue("iss")?.ToString();
+                var issuer = Json.TryGetString("iss");
                 var claims = Json.ToClaims(issuer, "scope").ToList();
 
                 // due to a bug in identityserver - we need to be able to deal with the scope list both in array as well as space-separated list format
