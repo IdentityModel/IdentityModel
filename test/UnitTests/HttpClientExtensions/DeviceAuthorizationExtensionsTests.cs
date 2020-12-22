@@ -15,9 +15,9 @@ using Xunit;
 
 namespace IdentityModel.UnitTests
 {
-    public class HttpClientDeviceAuthorizationExtensionsTests
+    public class DeviceAuthorizationExtensionsTests
     {
-        const string Endpoint = "http://server/device";
+        private const string Endpoint = "http://server/device";
 
         [Fact]
         public async Task Http_request_should_have_correct_format()

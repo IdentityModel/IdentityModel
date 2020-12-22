@@ -13,9 +13,9 @@ using Xunit;
 
 namespace IdentityModel.UnitTests
 {
-    public class HttpClientTokenRequestExtensionsResponseTests
+    public class TokenRequestExtensionsResponseTests
     {
-        const string Endpoint = "http://server/token";
+        private const string Endpoint = "http://server/token";
 
         [Fact]
         public async Task Valid_protocol_response_should_be_handled_correctly()

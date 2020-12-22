@@ -5,7 +5,6 @@ using FluentAssertions;
 using IdentityModel.Client;
 using Microsoft.AspNetCore.WebUtilities;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -15,14 +14,14 @@ using Xunit;
 
 namespace IdentityModel.UnitTests
 {
-    public class HttpClientTokenRequestExtensionsRequestTests
+    public class TokenRequestExtensionsRequestTests
     {
-        const string Endpoint = "http://server/token";
+        private const string Endpoint = "http://server/token";
 
-        HttpClient _client;
-        NetworkHandler _handler;
+        private readonly HttpClient _client;
+        private readonly NetworkHandler _handler;
 
-        public HttpClientTokenRequestExtensionsRequestTests()
+        public TokenRequestExtensionsRequestTests()
         {
             var document = File.ReadAllText(FileName.Create("success_token_response.json"));
             _handler = new NetworkHandler(document, HttpStatusCode.OK);

@@ -14,13 +14,13 @@ using Xunit;
 
 namespace IdentityModel.UnitTests
 {
-    public class HttpClientDiscoveryExtensionsTests
+    public class DiscoveryExtensionsTests
     {
-        NetworkHandler _successHandler;
-        string _endpoint = "https://demo.identityserver.io/.well-known/openid-configuration";
-        string _authority = "https://demo.identityserver.io";
+        private readonly NetworkHandler _successHandler;
+        private readonly string _endpoint = "https://demo.identityserver.io/.well-known/openid-configuration";
+        private readonly string _authority = "https://demo.identityserver.io";
 
-        public HttpClientDiscoveryExtensionsTests()
+        public DiscoveryExtensionsTests()
         {
             var discoFileName = FileName.Create("discovery.json");
             var document = File.ReadAllText(discoFileName);
@@ -47,7 +47,7 @@ namespace IdentityModel.UnitTests
             var client = new HttpClient(handler);
             var request = new DiscoveryDocumentRequest
             {
-                Address = _endpoint,
+                Address = _endpoint
             };
 
             request.Headers.Add("custom", "custom");
@@ -160,7 +160,7 @@ namespace IdentityModel.UnitTests
             var client = new HttpClient(handler);
             var disco = await client.GetDiscoveryDocumentAsync(new DiscoveryDocumentRequest
             {
-                Address = _endpoint,
+                Address = _endpoint
             });
 
             disco.IsError.Should().BeTrue();
@@ -207,7 +207,7 @@ namespace IdentityModel.UnitTests
             disco.FrontChannelLogoutSupported.Should().Be(true);
             disco.FrontChannelLogoutSessionSupported.Should().Be(true);
 
-            var responseModes = disco.ResponseModesSupported;
+            var responseModes = disco.ResponseModesSupported.ToList();
 
             responseModes.Should().Contain("form_post");
             responseModes.Should().Contain("query");

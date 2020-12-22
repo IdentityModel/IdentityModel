@@ -3,7 +3,6 @@
 
 using FluentAssertions;
 using IdentityModel.Client;
-using System.Collections.Generic;
 using Xunit;
 
 namespace IdentityModel.UnitTests

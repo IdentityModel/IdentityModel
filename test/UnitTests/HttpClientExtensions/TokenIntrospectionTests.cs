@@ -14,9 +14,9 @@ using Xunit;
 
 namespace IdentityModel.UnitTests
 {
-    public class HttpClientTokenIntrospectionTests
+    public class TokenIntrospectionTests
     {
-        const string Endpoint = "http://server/token";
+        private const string Endpoint = "http://server/token";
 
         [Fact]
         public async Task Http_request_should_have_correct_format()
@@ -75,7 +75,7 @@ namespace IdentityModel.UnitTests
             response.IsActive.Should().BeTrue();
             response.Claims.Should().NotBeEmpty();
 
-            var audiences = response.Claims.Where(c => c.Type == "aud");
+            var audiences = response.Claims.Where(c => c.Type == "aud").ToList();
             audiences.Count().Should().Be(2);
             audiences.First().Value.Should().Be("https://idsvr4/resources");
             audiences.Skip(1).First().Value.Should().Be("api1");
@@ -90,7 +90,7 @@ namespace IdentityModel.UnitTests
             response.Claims.First(c => c.Type == "amr").Value.Should().Be("password");
             response.Claims.First(c => c.Type == "active").Value.Should().Be("true");
 
-            var scopes = response.Claims.Where(c => c.Type == "scope");
+            var scopes = response.Claims.Where(c => c.Type == "scope").ToList();
             scopes.Count().Should().Be(2);
             scopes.First().Value.Should().Be("api1");
             scopes.First().Issuer.Should().Be("https://idsvr4");
@@ -120,7 +120,7 @@ namespace IdentityModel.UnitTests
             response.IsActive.Should().BeTrue();
             response.Claims.Should().NotBeEmpty();
 
-            var audiences = response.Claims.Where(c => c.Type == "aud");
+            var audiences = response.Claims.Where(c => c.Type == "aud").ToList();
             audiences.Count().Should().Be(2);
             audiences.First().Value.Should().Be("https://idsvr4/resources");
             audiences.Skip(1).First().Value.Should().Be("api1");
@@ -134,7 +134,7 @@ namespace IdentityModel.UnitTests
             response.Claims.First(c => c.Type == "amr").Value.Should().Be("password");
             response.Claims.First(c => c.Type == "active").Value.Should().Be("true");
 
-            var scopes = response.Claims.Where(c => c.Type == "scope");
+            var scopes = response.Claims.Where(c => c.Type == "scope").ToList();
             scopes.Count().Should().Be(2);
             scopes.First().Value.Should().Be("api1");
             scopes.Skip(1).First().Value.Should().Be("api2");
@@ -164,7 +164,7 @@ namespace IdentityModel.UnitTests
             response.IsActive.Should().BeTrue();
             response.Claims.Should().NotBeEmpty();
 
-            var audiences = response.Claims.Where(c => c.Type == "aud");
+            var audiences = response.Claims.Where(c => c.Type == "aud").ToList();
             audiences.Count().Should().Be(2);
             audiences.First().Value.Should().Be("https://idsvr4/resources");
             audiences.Skip(1).First().Value.Should().Be("api1");
@@ -179,7 +179,7 @@ namespace IdentityModel.UnitTests
             response.Claims.First(c => c.Type == "amr").Value.Should().Be("password");
             response.Claims.First(c => c.Type == "active").Value.Should().Be("true");
 
-            var scopes = response.Claims.Where(c => c.Type == "scope");
+            var scopes = response.Claims.Where(c => c.Type == "scope").ToList();
             scopes.Count().Should().Be(2);
             scopes.First().Value.Should().Be("api1");
             scopes.First().Issuer.Should().Be("https://idsvr4");
@@ -195,7 +195,7 @@ namespace IdentityModel.UnitTests
             response.IsActive.Should().BeTrue();
             response.Claims.Should().NotBeEmpty();
 
-            audiences = response.Claims.Where(c => c.Type == "aud");
+            audiences = response.Claims.Where(c => c.Type == "aud").ToList();
             audiences.Count().Should().Be(2);
             audiences.First().Value.Should().Be("https://idsvr4/resources");
             audiences.Skip(1).First().Value.Should().Be("api1");
@@ -210,7 +210,7 @@ namespace IdentityModel.UnitTests
             response.Claims.First(c => c.Type == "amr").Value.Should().Be("password");
             response.Claims.First(c => c.Type == "active").Value.Should().Be("true");
 
-            scopes = response.Claims.Where(c => c.Type == "scope");
+            scopes = response.Claims.Where(c => c.Type == "scope").ToList();
             scopes.Count().Should().Be(2);
             scopes.First().Value.Should().Be("api1");
             scopes.First().Issuer.Should().Be("https://idsvr4");
@@ -308,7 +308,7 @@ namespace IdentityModel.UnitTests
             response.IsActive.Should().BeTrue();
             response.Claims.Should().NotBeEmpty();
 
-            var audiences = response.Claims.Where(c => c.Type == "aud");
+            var audiences = response.Claims.Where(c => c.Type == "aud").ToList();
             audiences.Count().Should().Be(2);
             audiences.First().Value.Should().Be("https://idsvr4/resources");
             audiences.Skip(1).First().Value.Should().Be("api1");
@@ -323,7 +323,7 @@ namespace IdentityModel.UnitTests
             response.Claims.First(c => c.Type == "amr").Value.Should().Be("password");
             response.Claims.First(c => c.Type == "active").Value.Should().Be("true");
 
-            var scopes = response.Claims.Where(c => c.Type == "scope");
+            var scopes = response.Claims.Where(c => c.Type == "scope").ToList();
             scopes.Count().Should().Be(2);
             scopes.First().Value.Should().Be("api1");
             scopes.First().Issuer.Should().Be("https://idsvr4");

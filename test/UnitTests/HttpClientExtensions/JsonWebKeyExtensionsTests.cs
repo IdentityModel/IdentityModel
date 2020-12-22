@@ -14,12 +14,12 @@ using Xunit;
 
 namespace IdentityModel.UnitTests
 {
-    public class HttpClientJsonWebkeyExtensionsTests
+    public class JsonWebkeyExtensionsTests
     {
-        readonly NetworkHandler _successHandler;
-        readonly string _endpoint = "https://demo.identityserver.io/.well-known/openid-configuration/jwks";
+        private readonly NetworkHandler _successHandler;
+        private readonly string _endpoint = "https://demo.identityserver.io/.well-known/openid-configuration/jwks";
         
-        public HttpClientJsonWebkeyExtensionsTests()
+        public JsonWebkeyExtensionsTests()
         {
             var discoFileName = FileName.Create("discovery.json");
             var document = File.ReadAllText(discoFileName);
@@ -46,7 +46,7 @@ namespace IdentityModel.UnitTests
             var client = new HttpClient(handler);
             var request = new JsonWebKeySetRequest
             {
-                Address = _endpoint,
+                Address = _endpoint
             };
 
             request.Headers.Add("custom", "custom");

@@ -3,7 +3,6 @@
 
 using System;
 using System.Net.Http;
-using System.Runtime.CompilerServices;
 using System.Text.Json;
 using System.Threading.Tasks;
 using FluentAssertions;
@@ -37,7 +36,7 @@ namespace IdentityModel.UnitTests
         [InlineData("https://sub.demo.identityserver.io:5000/sub")]
         public async Task Valid_Urls_with_default_policy_should_succeed(string input)
         {
-            DiscoveryPolicy policy = ForceTestedAuthorityValidationStrategy(new DiscoveryPolicy()
+            var policy = ForceTestedAuthorityValidationStrategy(new DiscoveryPolicy
             {
                 RequireHttps = true,
                 AllowHttpOnLoopback = true
@@ -56,7 +55,7 @@ namespace IdentityModel.UnitTests
         [Fact]
         public async Task Connecting_to_http_should_return_error()
         {
-            DiscoveryPolicy policy = ForceTestedAuthorityValidationStrategy(new DiscoveryPolicy()
+            var policy = ForceTestedAuthorityValidationStrategy(new DiscoveryPolicy
             {
                 RequireHttps = true,
                 AllowHttpOnLoopback = true
@@ -79,7 +78,7 @@ namespace IdentityModel.UnitTests
         [Fact]
         public async Task If_policy_allows_http_non_http_must_not_return_error()
         {
-            DiscoveryPolicy policy = ForceTestedAuthorityValidationStrategy(new DiscoveryPolicy()
+            var policy = ForceTestedAuthorityValidationStrategy(new DiscoveryPolicy
             {
                 RequireHttps = false
             });
@@ -100,7 +99,7 @@ namespace IdentityModel.UnitTests
         [InlineData("http://127.0.0.1")]
         public async Task Http_on_loopback_must_not_return_error(string input)
         {
-            DiscoveryPolicy policy = ForceTestedAuthorityValidationStrategy(new DiscoveryPolicy()
+            var policy = ForceTestedAuthorityValidationStrategy(new DiscoveryPolicy
             {
                 RequireHttps = true,
                 AllowHttpOnLoopback = true
@@ -120,7 +119,7 @@ namespace IdentityModel.UnitTests
         [Fact]
         public async Task Invalid_issuer_name_must_return_policy_error()
         {
-            DiscoveryPolicy policy = ForceTestedAuthorityValidationStrategy(new DiscoveryPolicy()
+            var policy = ForceTestedAuthorityValidationStrategy(new DiscoveryPolicy
             {
                 ValidateIssuerName = true
             });
@@ -141,7 +140,7 @@ namespace IdentityModel.UnitTests
         [Fact]
         public async Task Excluded_endpoints_should_not_fail_validation()
         {
-            DiscoveryPolicy policy = ForceTestedAuthorityValidationStrategy(new DiscoveryPolicy()
+            var policy = ForceTestedAuthorityValidationStrategy(new DiscoveryPolicy
             {
                 ValidateEndpoints = true,
                 EndpointValidationExcludeList =
@@ -153,7 +152,7 @@ namespace IdentityModel.UnitTests
                         "end_session_endpoint",
                         "check_session_iframe",
                         "revocation_endpoint",
-                        "introspection_endpoint",
+                        "introspection_endpoint"
                     }
             });
 
@@ -172,7 +171,7 @@ namespace IdentityModel.UnitTests
         [Fact]
         public async Task Valid_issuer_name_must_return_no_error()
         {
-            DiscoveryPolicy policy = ForceTestedAuthorityValidationStrategy(new DiscoveryPolicy()
+            var policy = ForceTestedAuthorityValidationStrategy(new DiscoveryPolicy
             {
                 ValidateIssuerName = true
             });
@@ -192,7 +191,7 @@ namespace IdentityModel.UnitTests
         [Fact]
         public async Task Authority_comparison_may_be_case_insensitive()
         {
-            DiscoveryPolicy policy = new DiscoveryPolicy()
+            var policy = new DiscoveryPolicy
             {
                 ValidateIssuerName = true,
                 AuthorityValidationStrategy = new StringComparisonAuthorityValidationStrategy(StringComparison.OrdinalIgnoreCase)
@@ -213,7 +212,7 @@ namespace IdentityModel.UnitTests
         [Fact]
         public async Task Endpoints_not_using_https_should_return_policy_error()
         {
-            DiscoveryPolicy policy = ForceTestedAuthorityValidationStrategy(new DiscoveryPolicy()
+            var policy = ForceTestedAuthorityValidationStrategy(new DiscoveryPolicy
             {
                 RequireHttps = true,
                 ValidateIssuerName = true,
@@ -240,7 +239,7 @@ namespace IdentityModel.UnitTests
         [InlineData("https://authority/sub1", "https://authority/sub2")]
         public async Task Endpoints_not_beneath_authority_must_return_policy_error(string authority, string endpointBase)
         {
-            DiscoveryPolicy policy = ForceTestedAuthorityValidationStrategy(new DiscoveryPolicy()
+            var policy = ForceTestedAuthorityValidationStrategy(new DiscoveryPolicy
             {
                 RequireHttps = true,
                 ValidateIssuerName = true,
@@ -267,7 +266,7 @@ namespace IdentityModel.UnitTests
         [InlineData("https://authority/sub1", "https://authority/sub2")]
         public async Task Endpoints_not_beneath_authority_must_be_allowed_if_whitelisted(string authority, string endpointBase)
         {
-            DiscoveryPolicy policy = ForceTestedAuthorityValidationStrategy(new DiscoveryPolicy()
+            var policy = ForceTestedAuthorityValidationStrategy(new DiscoveryPolicy
             {
                 RequireHttps = true,
                 ValidateIssuerName = true,
@@ -299,7 +298,7 @@ namespace IdentityModel.UnitTests
         [InlineData("https://127.0.0.1", "https://localhost")]
         public async Task Endpoints_not_belonging_to_authority_host_must_return_policy_error(string authority, string endpointBase)
         {
-            DiscoveryPolicy policy = ForceTestedAuthorityValidationStrategy(new DiscoveryPolicy()
+            var policy = ForceTestedAuthorityValidationStrategy(new DiscoveryPolicy
             {
                 RequireHttps = true,
                 ValidateIssuerName = true,
@@ -329,7 +328,7 @@ namespace IdentityModel.UnitTests
         [InlineData("https://127.0.0.1", "https://localhost")]
         public async Task Endpoints_not_belonging_to_authority_host_must_be_allowed_if_whitelisted(string authority, string endpointBase)
         {
-            DiscoveryPolicy policy = ForceTestedAuthorityValidationStrategy(new DiscoveryPolicy()
+            var policy = ForceTestedAuthorityValidationStrategy(new DiscoveryPolicy
             {
                 RequireHttps = true,
                 ValidateIssuerName = true,
@@ -356,7 +355,7 @@ namespace IdentityModel.UnitTests
         [Fact]
         public async Task Issuer_and_endpoint_can_be_unrelated_if_allowed()
         {
-            DiscoveryPolicy policy = ForceTestedAuthorityValidationStrategy(new DiscoveryPolicy()
+            var policy = ForceTestedAuthorityValidationStrategy(new DiscoveryPolicy
             {
                 RequireHttps = true,
                 ValidateIssuerName = true,
@@ -378,7 +377,7 @@ namespace IdentityModel.UnitTests
         [Fact]
         public async Task Issuer_and_endpoint_can_be_unrelated_if_allowed_but_https_is_still_enforced()
         {
-            DiscoveryPolicy policy = ForceTestedAuthorityValidationStrategy(new DiscoveryPolicy()
+            var policy = ForceTestedAuthorityValidationStrategy(new DiscoveryPolicy
             {
                 RequireHttps = true,
                 ValidateIssuerName = true,

@@ -1,7 +1,5 @@
 ﻿using FluentAssertions;
-using IdentityModel.Internal;
 using System;
-using System.Collections.Generic;
 using IdentityModel.Client;
 using Xunit;
 

@@ -2,7 +2,6 @@
 using IdentityModel.Client;
 using Microsoft.AspNetCore.WebUtilities;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -14,10 +13,10 @@ namespace IdentityModel.UnitTests
 {
     public class TokenClientRequestTests
     {
-        const string Endpoint = "http://server/token";
+        private const string Endpoint = "http://server/token";
 
-        HttpClient _client;
-        NetworkHandler _handler;
+        private readonly HttpClient _client;
+        private readonly NetworkHandler _handler;
 
         public TokenClientRequestTests()
         {
@@ -105,7 +104,7 @@ namespace IdentityModel.UnitTests
             username.First().Should().Be("user");
 
             fields.TryGetValue("password", out var password).Should().BeTrue();
-            grant_type.First().Should().Be("password");
+            password.First().Should().Be("password");
 
             fields.TryGetValue("scope", out var scope).Should().BeTrue();
             scope.First().Should().Be("scope");
@@ -402,9 +401,6 @@ namespace IdentityModel.UnitTests
             });
 
             var response = await tokenClient.RequestTokenAsync(grantType: "test");
-
-            var request = _handler.Request;
-
             var fields = QueryHelpers.ParseQuery(_handler.Body);
 
             fields["grant_type"].First().Should().Be("test");

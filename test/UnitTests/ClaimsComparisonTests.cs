@@ -11,7 +11,7 @@ namespace IdentityModel.UnitTests
 {
     public class ClaimComparisonTests
     {
-        List<Claim> _claims = new List<Claim>
+        private readonly List<Claim> _claims = new List<Claim>
         {
             new Claim("claim_type1", "value", ClaimValueTypes.String, "issuer1"),
             new Claim("claim_type1", "value", ClaimValueTypes.String, "issuer1"),
@@ -27,7 +27,7 @@ namespace IdentityModel.UnitTests
 
             new Claim("Claim_type1", "value", ClaimValueTypes.String, "issuer2"),
             new Claim("Claim_type1", "value", ClaimValueTypes.String, "issuer2"),
-            new Claim("Claim_type1", "Value", ClaimValueTypes.String, "issuer2"),
+            new Claim("Claim_type1", "Value", ClaimValueTypes.String, "issuer2")
         };
 
 

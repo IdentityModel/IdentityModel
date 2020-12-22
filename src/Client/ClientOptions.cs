@@ -1,6 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace IdentityModel.Client
+﻿namespace IdentityModel.Client
 {
     /// <summary>
     /// Options for TokenClient

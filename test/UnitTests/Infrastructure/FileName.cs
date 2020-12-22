@@ -5,7 +5,7 @@ using System.IO;
 
 namespace IdentityModel.UnitTests
 {
-    static class FileName
+    internal static class FileName
     {
         public static string Create(string name)
         {
