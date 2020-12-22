@@ -45,6 +45,22 @@ namespace IdentityModel.UnitTests
 
             url.Should().Be("http://server/authorize?foo=foo&bar=bar");
         }
+        
+        [Fact]
+        public void Multiple_parameter_names_should_behave_as_expected()
+        {
+            var request = new RequestUrl("http://server/authorize");
+
+            var parameters = new Parameters
+            {
+                { "foo", "foo" },
+                { "foo", "bar" }
+            };
+
+            var url = request.Create(parameters);
+
+            url.Should().Be("http://server/authorize?foo=foo&foo=bar");
+        }
 
         [Fact]
         public void Special_characters_in_query_param_should_be_encoded_correctly()
