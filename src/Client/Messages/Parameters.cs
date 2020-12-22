@@ -13,14 +13,14 @@ namespace IdentityModel.Client
         /// <summary>
         /// ctor
         /// </summary>
-        public Parameters() : base()
+        public Parameters()
         { }
         
         /// <summary>
         /// ctor
         /// </summary>
         /// <param name="values"></param>
-        public Parameters(List<KeyValuePair<string, string>> values)
+        public Parameters(IEnumerable<KeyValuePair<string, string>> values)
             : base(values)
         { }
         
@@ -99,7 +99,7 @@ namespace IdentityModel.Client
             }
             else
             {
-                throw new ArgumentException($"Parameter is required", key);
+                throw new ArgumentException("Parameter is required", key);
             }
         }
         
@@ -119,7 +119,7 @@ namespace IdentityModel.Client
                  return new Parameters(merged.ToList());
              }
 
-            return this;
+             return this;
         }
     }
 }

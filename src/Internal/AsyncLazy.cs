@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace IdentityModel.Internal
 {
-    class AsyncLazy<T> : Lazy<Task<T>>
+	internal class AsyncLazy<T> : Lazy<Task<T>>
     {
         public AsyncLazy(Func<Task<T>> taskFactory) :
             base(() => GetTaskAsync(taskFactory).Unwrap())

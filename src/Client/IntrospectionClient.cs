@@ -28,7 +28,7 @@ namespace IdentityModel.Client
         /// <summary>
         /// ctor
         /// </summary>
-        /// <param name="client func"></param>
+        /// <param name="client"></param>
         /// <param name="options"></param>
         public IntrospectionClient(Func<HttpMessageInvoker> client, IntrospectionClientOptions options)
         {

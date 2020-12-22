@@ -163,13 +163,10 @@ namespace IdentityModel.Client
                 }
             }
 
-            if (ClientAssertion != null)
+            if (ClientAssertion?.Type != null && ClientAssertion.Value != null)
             {
-                if (ClientAssertion.Type != null && ClientAssertion.Value != null)
-                {
-                    Parameters.AddOptional(OidcConstants.TokenRequest.ClientAssertionType, ClientAssertion.Type);
-                    Parameters.AddOptional(OidcConstants.TokenRequest.ClientAssertion, ClientAssertion.Value);
-                }
+                Parameters.AddOptional(OidcConstants.TokenRequest.ClientAssertionType, ClientAssertion.Type);
+                Parameters.AddOptional(OidcConstants.TokenRequest.ClientAssertion, ClientAssertion.Value);
             }
 
             if (Address.IsPresent())

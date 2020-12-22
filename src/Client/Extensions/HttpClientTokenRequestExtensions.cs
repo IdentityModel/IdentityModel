@@ -171,7 +171,7 @@ namespace IdentityModel.Client
         {
             if (parameters == null) throw new ArgumentNullException(nameof(parameters));
 
-            var request = new TokenRequest()
+            var request = new TokenRequest
             {
                 Address = address,
                 Parameters = parameters
