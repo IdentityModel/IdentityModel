@@ -165,5 +165,21 @@ namespace IdentityModel
         /// The confirmation
         /// </summary>
         public const string Confirmation = "cnf";
+
+        /// <summary>
+        /// Values for strongly typed JWTs
+        /// </summary>
+        public class JwtTypes
+        {
+            /// <summary>
+            /// OAuth 2.0 access token
+            /// </summary>
+            public const string AccessToken = "at+jwt";
+
+            /// <summary>
+            /// JWT secured authorization request
+            /// </summary>
+            public const string AuthorizationRequest = "oauth-authz-req+jwt";
+        }
     }
 }

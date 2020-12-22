@@ -25,7 +25,8 @@ namespace IdentityModel.Client
         {
             if (!IsError)
             {
-                var claims = Json.ToClaims(excludeKeys: "scope").ToList();
+                var issuer = Json.GetValue("iss")?.ToString();
+                var claims = Json.ToClaims(issuer, "scope").ToList();
 
                 // due to a bug in identityserver - we need to be able to deal with the scope list both in array as well as space-separated list format
                 var scope = Json.TryGetValue("scope");
@@ -38,7 +39,7 @@ namespace IdentityModel.Client
                     {
                         foreach (var item in scope.EnumerateArray())
                         {
-                            claims.Add(new Claim("scope", item.ToString()));
+                            claims.Add(new Claim("scope", item.ToString(), ClaimValueTypes.String, issuer));
                         }
                     }
                     else
@@ -49,7 +50,7 @@ namespace IdentityModel.Client
                         var scopes = scopeString.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
                         foreach (var scopeValue in scopes)
                         {
-                            claims.Add(new Claim("scope", scopeValue));
+                            claims.Add(new Claim("scope", scopeValue, ClaimValueTypes.String, issuer));
                         }
                     }
                 // }
@@ -79,6 +80,6 @@ namespace IdentityModel.Client
         /// The claims.
         /// </value>
         public IEnumerable<Claim> Claims { get; protected set; }
-        
+
     }
 }

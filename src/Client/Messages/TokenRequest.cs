@@ -152,7 +152,7 @@ namespace IdentityModel.Client
     }
     
     /// <summary>
-    /// Request for token using refresh_token
+    /// Request for token using urn:ietf:params:oauth:grant-type:token-exchange
     /// </summary>
     /// <seealso cref="TokenRequest" />
     public class TokenExchangeTokenRequest : TokenRequest
