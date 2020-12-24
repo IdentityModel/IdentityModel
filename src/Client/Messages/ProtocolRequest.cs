@@ -175,7 +175,7 @@ namespace IdentityModel.Client
 
             if (Address.IsPresent())
             {
-                RequestUri = new Uri(Address);
+                RequestUri = new Uri(Address, UriKind.RelativeOrAbsolute);
             }
 
             if (Parameters.Any())
