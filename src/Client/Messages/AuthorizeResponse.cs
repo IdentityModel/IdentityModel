@@ -94,6 +94,22 @@ namespace IdentityModel.Client
         /// The state.
         /// </value>
         public string State => TryGet(OidcConstants.AuthorizeResponse.State);
+        
+        /// <summary>
+        /// Gets the session state.
+        /// </summary>
+        /// <value>
+        /// The session state.
+        /// </value>
+        public string SessionState => TryGet(OidcConstants.AuthorizeResponse.SessionState);
+        
+        /// <summary>
+        /// Gets the issuer name.
+        /// </summary>
+        /// <value>
+        /// The issuer name.
+        /// </value>
+        public string Issuer => TryGet(OidcConstants.AuthorizeResponse.Issuer);
 
         /// <summary>
         /// Gets the error description.
