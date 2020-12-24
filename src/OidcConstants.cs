@@ -27,6 +27,7 @@ namespace IdentityModel
             public const string CodeChallengeMethod = "code_challenge_method";
             public const string Request = "request";
             public const string RequestUri = "request_uri";
+            public const string Resource = "resource";
         }
 
         public static class AuthorizeErrors
@@ -88,6 +89,7 @@ namespace IdentityModel
             public const string State = "state";
             public const string Sid = "sid";
             public const string Issuer = "iss";
+            public const string UiLocales = "ui_locales";
         }
 
         public static class TokenRequest
