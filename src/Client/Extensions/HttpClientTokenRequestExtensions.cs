@@ -3,7 +3,6 @@
 
 using IdentityModel.Internal;
 using System;
-using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
@@ -28,6 +27,11 @@ namespace IdentityModel.Client
 
             clone.Parameters.AddRequired(OidcConstants.TokenRequest.GrantType, OidcConstants.GrantTypes.ClientCredentials);
             clone.Parameters.AddOptional(OidcConstants.TokenRequest.Scope, request.Scope);
+            
+            foreach (var resource in request.Resource)
+            {
+                clone.Parameters.AddRequired(OidcConstants.TokenRequest.Resource, resource, allowDuplicates: true);
+            }
 
             return await client.RequestTokenAsync(clone, cancellationToken).ConfigureAwait();
         }
@@ -45,7 +49,7 @@ namespace IdentityModel.Client
 
             clone.Parameters.AddRequired(OidcConstants.TokenRequest.GrantType, OidcConstants.GrantTypes.DeviceCode);
             clone.Parameters.AddRequired(OidcConstants.TokenRequest.DeviceCode, request.DeviceCode);
-
+            
             return await client.RequestTokenAsync(clone, cancellationToken).ConfigureAwait();
         }
 
@@ -64,6 +68,11 @@ namespace IdentityModel.Client
             clone.Parameters.AddRequired(OidcConstants.TokenRequest.UserName, request.UserName);
             clone.Parameters.AddRequired(OidcConstants.TokenRequest.Password, request.Password, allowEmpty: true);
             clone.Parameters.AddOptional(OidcConstants.TokenRequest.Scope, request.Scope);
+            
+            foreach (var resource in request.Resource)
+            {
+                clone.Parameters.AddRequired(OidcConstants.TokenRequest.Resource, resource, allowDuplicates: true);
+            }
 
             return await client.RequestTokenAsync(clone, cancellationToken).ConfigureAwait();
         }
@@ -84,6 +93,11 @@ namespace IdentityModel.Client
             clone.Parameters.AddRequired(OidcConstants.TokenRequest.RedirectUri, request.RedirectUri);
             clone.Parameters.AddOptional(OidcConstants.TokenRequest.CodeVerifier, request.CodeVerifier);
 
+            foreach (var resource in request.Resource)
+            {
+                clone.Parameters.AddRequired(OidcConstants.TokenRequest.Resource, resource, allowDuplicates: true);
+            }
+
             return await client.RequestTokenAsync(clone, cancellationToken).ConfigureAwait();
         }
 
@@ -101,6 +115,11 @@ namespace IdentityModel.Client
             clone.Parameters.AddRequired(OidcConstants.TokenRequest.GrantType, OidcConstants.GrantTypes.RefreshToken);
             clone.Parameters.AddRequired(OidcConstants.TokenRequest.RefreshToken, request.RefreshToken);
             clone.Parameters.AddOptional(OidcConstants.TokenRequest.Scope, request.Scope);
+            
+            foreach (var resource in request.Resource)
+            {
+                clone.Parameters.AddRequired(OidcConstants.TokenRequest.Resource, resource, allowDuplicates: true);
+            }
 
             return await client.RequestTokenAsync(clone, cancellationToken).ConfigureAwait();
         }
@@ -141,7 +160,7 @@ namespace IdentityModel.Client
         {
             var clone = request.Clone();
 
-            if (!clone.Parameters.ContainsKey(OidcConstants.TokenRequest.GrantType))
+            if (!clone.Parameters.Contains(OidcConstants.TokenRequest.GrantType))
             {
                 clone.Parameters.AddRequired(OidcConstants.TokenRequest.GrantType, request.GrantType);
             }
@@ -158,11 +177,11 @@ namespace IdentityModel.Client
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
         /// <exception cref="ArgumentNullException">parameters</exception>
-        public static async Task<TokenResponse> RequestTokenRawAsync(this HttpMessageInvoker client, string address, IDictionary<string, string> parameters, CancellationToken cancellationToken = default)
+        public static async Task<TokenResponse> RequestTokenRawAsync(this HttpMessageInvoker client, string address, Parameters parameters, CancellationToken cancellationToken = default)
         {
             if (parameters == null) throw new ArgumentNullException(nameof(parameters));
 
-            var request = new TokenRequest()
+            var request = new TokenRequest
             {
                 Address = address,
                 Parameters = parameters

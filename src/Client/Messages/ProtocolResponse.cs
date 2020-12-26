@@ -2,10 +2,10 @@
 // Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
 
 using IdentityModel.Internal;
-using Newtonsoft.Json.Linq;
 using System;
 using System.Net;
 using System.Net.Http;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace IdentityModel.Client
@@ -48,7 +48,7 @@ namespace IdentityModel.Client
                 {
                     try
                     {
-                        response.Json = JObject.Parse(content);
+                        response.Json = JsonDocument.Parse(content).RootElement;
                     }
                     catch { }
                 }
@@ -67,7 +67,7 @@ namespace IdentityModel.Client
             {
                 if (content.IsPresent())
                 {
-                    response.Json = JObject.Parse(content);
+                    response.Json = JsonDocument.Parse(content).RootElement;
                 }
             }
             catch (Exception ex)
@@ -131,7 +131,7 @@ namespace IdentityModel.Client
         /// <value>
         /// The json.
         /// </value>
-        public JObject Json { get; protected set; }
+        public JsonElement Json { get; protected set; }
 
         /// <summary>
         /// Gets the exception (if present).

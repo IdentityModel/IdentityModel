@@ -5,7 +5,6 @@ using FluentAssertions;
 using IdentityModel.Client;
 using Microsoft.AspNetCore.WebUtilities;
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -15,14 +14,14 @@ using Xunit;
 
 namespace IdentityModel.UnitTests
 {
-    public class HttpClientTokenRequestExtensionsRequestTests
+    public class TokenRequestExtensionsRequestTests
     {
-        const string Endpoint = "http://server/token";
+        private const string Endpoint = "http://server/token";
 
-        HttpClient _client;
-        NetworkHandler _handler;
+        private readonly HttpClient _client;
+        private readonly NetworkHandler _handler;
 
-        public HttpClientTokenRequestExtensionsRequestTests()
+        public TokenRequestExtensionsRequestTests()
         {
             var document = File.ReadAllText(FileName.Create("success_token_response.json"));
             _handler = new NetworkHandler(document, HttpStatusCode.OK);
@@ -114,7 +113,8 @@ namespace IdentityModel.UnitTests
             var response = await _client.RequestClientCredentialsTokenAsync(new ClientCredentialsTokenRequest
             {
                 ClientId = "client",
-                Scope = "scope"
+                Scope = "scope",
+                Resource =  { "resource1", "resource2" }
             });
 
             response.IsError.Should().BeFalse();
@@ -125,6 +125,11 @@ namespace IdentityModel.UnitTests
 
             fields.TryGetValue("scope", out var scope).Should().BeTrue();
             scope.First().Should().Be("scope");
+            
+            fields.TryGetValue("resource", out var resource).Should().BeTrue();
+            resource.Count.Should().Be(2);
+            resource[0].Should().Be("resource1");
+            resource[1].Should().Be("resource2");
         }
 
         [Fact]
@@ -215,7 +220,8 @@ namespace IdentityModel.UnitTests
                 ClientId = "client",
                 UserName = "user",
                 Password = "password",
-                Scope = "scope"
+                Scope = "scope",
+                Resource = { "resource1", "resource2" }
             });
 
             response.IsError.Should().BeFalse();
@@ -232,6 +238,11 @@ namespace IdentityModel.UnitTests
 
             fields.TryGetValue("scope", out var scope).Should().BeTrue();
             scope.First().Should().Be("scope");
+            
+            fields.TryGetValue("resource", out var resource).Should().BeTrue();
+            resource.Count.Should().Be(2);
+            resource[0].Should().Be("resource1");
+            resource[1].Should().Be("resource2");
         }
 
         [Fact]
@@ -272,7 +283,8 @@ namespace IdentityModel.UnitTests
                 ClientId = "client",
                 Code = "code",
                 RedirectUri = "uri",
-                CodeVerifier = "verifier"
+                CodeVerifier = "verifier",
+                Resource = { "resource1", "resource2" },
             });
 
             response.IsError.Should().BeFalse();
@@ -289,6 +301,11 @@ namespace IdentityModel.UnitTests
 
             fields.TryGetValue("code_verifier", out var code_verifier).Should().BeTrue();
             code_verifier.First().Should().Be("verifier");
+            
+            fields.TryGetValue("resource", out var resource).Should().BeTrue();
+            resource.Count.Should().Be(2);
+            resource[0].Should().Be("resource1");
+            resource[1].Should().Be("resource2");
         }
 
         [Fact]
@@ -320,7 +337,8 @@ namespace IdentityModel.UnitTests
             {
                 ClientId = "client",
                 RefreshToken = "rt",
-                Scope = "scope"
+                Scope = "scope",
+                Resource = { "resource1", "resource2" }
             });
 
             response.IsError.Should().BeFalse();
@@ -334,6 +352,11 @@ namespace IdentityModel.UnitTests
 
             fields.TryGetValue("scope", out var redirect_uri).Should().BeTrue();
             redirect_uri.First().Should().Be("scope");
+            
+            fields.TryGetValue("resource", out var resource).Should().BeTrue();
+            resource.Count.Should().Be(2);
+            resource[0].Should().Be("resource1");
+            resource[1].Should().Be("resource2");
         }
 
         [Fact]
@@ -457,7 +480,7 @@ namespace IdentityModel.UnitTests
         [Fact]
         public async Task Sending_raw_parameters_should_create_correct_format()
         {
-            var response = await _client.RequestTokenRawAsync("https://token/", new Dictionary<string, string>
+            var response = await _client.RequestTokenRawAsync("https://token/", new Parameters
             {
                 { "grant_type", "test" },
                 { "client_id", "client" },

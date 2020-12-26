@@ -3,23 +3,23 @@
 
 using FluentAssertions;
 using IdentityModel.Client;
-using Newtonsoft.Json;
 using System;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Text.Json;
 using System.Threading.Tasks;
 using Xunit;
 
 namespace IdentityModel.UnitTests
 {
-    public class HttpClientJsonWebkeyExtensionsTests
+    public class JsonWebkeyExtensionsTests
     {
-        readonly NetworkHandler _successHandler;
-        readonly string _endpoint = "https://demo.identityserver.io/.well-known/openid-configuration/jwks";
+        private readonly NetworkHandler _successHandler;
+        private readonly string _endpoint = "https://demo.identityserver.io/.well-known/openid-configuration/jwks";
         
-        public HttpClientJsonWebkeyExtensionsTests()
+        public JsonWebkeyExtensionsTests()
         {
             var discoFileName = FileName.Create("discovery.json");
             var document = File.ReadAllText(discoFileName);
@@ -46,7 +46,7 @@ namespace IdentityModel.UnitTests
             var client = new HttpClient(handler);
             var request = new JsonWebKeySetRequest
             {
-                Address = _endpoint,
+                Address = _endpoint
             };
 
             request.Headers.Add("custom", "custom");
@@ -157,7 +157,7 @@ namespace IdentityModel.UnitTests
             jwk.HttpStatusCode.Should().Be(HttpStatusCode.InternalServerError);
             jwk.Error.Should().Contain("Internal Server Error");
             jwk.Raw.Should().Be("not_json");
-            jwk.Json.Should().BeNull();
+            jwk.Json.ValueKind.Should().Be(JsonValueKind.Undefined);
         }
 
         [Fact]
@@ -169,7 +169,7 @@ namespace IdentityModel.UnitTests
                 bar = "bar"
             };
 
-            var handler = new NetworkHandler(JsonConvert.SerializeObject(content), HttpStatusCode.InternalServerError);
+            var handler = new NetworkHandler(JsonSerializer.Serialize(content), HttpStatusCode.InternalServerError);
 
             var client = new HttpClient(handler)
             {

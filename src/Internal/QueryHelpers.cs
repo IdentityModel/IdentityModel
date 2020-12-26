@@ -59,7 +59,7 @@ namespace IdentityModel.Internal
             return AddQueryString(uri, (IEnumerable<KeyValuePair<string, string>>)queryString);
         }
 
-        private static string AddQueryString(
+        public static string AddQueryString(
             string uri,
             IEnumerable<KeyValuePair<string, string>> queryString)
         {

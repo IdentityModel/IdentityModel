@@ -27,7 +27,8 @@
 
 using System;
 using System.Collections.Generic;
-using Newtonsoft.Json;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 
 namespace IdentityModel.Jwk
 {
@@ -51,21 +52,16 @@ namespace IdentityModel.Jwk
         /// <exception cref="ArgumentNullException">if 'json' is null or whitespace.</exception>
         public JsonWebKeySet(string json)
         {
-            if (string.IsNullOrWhiteSpace(json)) throw new ArgumentNullException("json");
+            if (string.IsNullOrWhiteSpace(json)) throw new ArgumentNullException(nameof(json));
 
-            var jwebKeys = JsonConvert.DeserializeObject<JsonWebKeySet>(json);
-            _keys = jwebKeys._keys;
+            var jwebKeys = JsonSerializer.Deserialize<JsonWebKeySet>(json);
+            Keys = jwebKeys.Keys;
         }
-
+        
         /// <summary>
-        /// Gets the <see cref="IList{JsonWebKey}"/>.
-        /// </summary>       
-        public IList<JsonWebKey> Keys
-        {
-            get
-            {
-                return _keys;
-            }
-        }
+        /// A list of JSON web keys
+        /// </summary>
+        [JsonPropertyName("keys")]
+        public List<JsonWebKey> Keys { get; set; }
     }
 }

@@ -3,19 +3,19 @@
 
 using FluentAssertions;
 using IdentityModel.Client;
-using Newtonsoft.Json;
 using System;
 using System.IO;
 using System.Net;
 using System.Net.Http;
+using System.Text.Json;
 using System.Threading.Tasks;
 using Xunit;
 
 namespace IdentityModel.UnitTests
 {
-    public class HttpClientTokenRequestExtensionsResponseTests
+    public class TokenRequestExtensionsResponseTests
     {
-        const string Endpoint = "http://server/token";
+        private const string Endpoint = "http://server/token";
 
         [Fact]
         public async Task Valid_protocol_response_should_be_handled_correctly()
@@ -149,7 +149,7 @@ namespace IdentityModel.UnitTests
                 bar = "bar"
             };
 
-            var handler = new NetworkHandler(JsonConvert.SerializeObject(content), HttpStatusCode.Unauthorized);
+            var handler = new NetworkHandler(JsonSerializer.Serialize(content), HttpStatusCode.Unauthorized);
 
             var client = new HttpClient(handler);
             var response = await client.RequestTokenAsync(new TokenRequest

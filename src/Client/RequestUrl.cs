@@ -25,17 +25,16 @@ namespace IdentityModel.Client
         /// <summary>
         /// Creates URL based on key/value input pairs.
         /// </summary>
-        /// <param name="values">The values (either as a Dictionary of string/string or as a type with properties).</param>
+        /// <param name="parameters">The query string parameters.</param>
         /// <returns></returns>
-        public string Create(object values)
+        public string Create(Parameters parameters)
         {
-            var dictionary = ValuesHelper.ObjectToDictionary(values);
-            if (dictionary == null || !dictionary.Any())
+            if (parameters == null || !parameters.Any())
             {
                 return _baseUrl;
             }
 
-            return QueryHelpers.AddQueryString(_baseUrl, dictionary);
+            return QueryHelpers.AddQueryString(_baseUrl, parameters);
         }
     }
 }

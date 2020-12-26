@@ -1,7 +1,6 @@
 ﻿using FluentAssertions;
-using IdentityModel.Internal;
 using System;
-using System.Collections.Generic;
+using IdentityModel.Client;
 using Xunit;
 
 namespace IdentityModel.UnitTests
@@ -13,7 +12,7 @@ namespace IdentityModel.UnitTests
         {
             var key = "";
             var value = "custom";
-            var parameters = new Dictionary<string, string>();
+            var parameters = new Parameters();
 
             Action act = () => parameters.AddOptional(key, value);
             act.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be("key");
@@ -24,7 +23,8 @@ namespace IdentityModel.UnitTests
         {
 	        var key = "custom";
 	        var value = "";
-	        var parameters = new Dictionary<string, string>();
+	        var parameters = new Parameters();
+	        
 	        parameters.AddOptional(key, value);
 	        parameters.Should().BeEmpty();
         }
@@ -34,7 +34,8 @@ namespace IdentityModel.UnitTests
         {
 	        var key = "custom";
 	        var value = "custom";
-	        var parameters = new Dictionary<string, string>();
+	        var parameters = new Parameters();
+	        
 	        parameters.AddOptional(key, value);
 
 	        Action act = () => parameters.AddOptional(key, value);
@@ -46,7 +47,7 @@ namespace IdentityModel.UnitTests
         {
 	        var key = "";
 	        var value = "custom";
-	        var parameters = new Dictionary<string, string>();
+	        var parameters = new Parameters();
 
 	        Action act = () => parameters.AddRequired(key, value);
 	        act.Should().Throw<ArgumentNullException>().And.ParamName.Should().Be("key");
@@ -57,7 +58,8 @@ namespace IdentityModel.UnitTests
         {
 	        var key = "custom";
 	        var value = "";
-	        var parameters = new Dictionary<string, string>();
+	        var parameters = new Parameters();
+	        
 	        Action act = () => parameters.AddRequired(key, value);
 	        act.Should().Throw<ArgumentException>().And.ParamName.Should().Be(key);
         }
@@ -67,8 +69,9 @@ namespace IdentityModel.UnitTests
         {
 	        var key = "custom";
 	        var value = "";
-	        var parameters = new Dictionary<string, string>();
-	        parameters.AddRequired(key, value, true);
+	        var parameters = new Parameters();
+	        
+	        parameters.AddRequired(key, value, allowEmpty: true);
 	        parameters.Should().HaveCount(1);
         }
 
@@ -77,7 +80,8 @@ namespace IdentityModel.UnitTests
         {
 	        var key = "custom";
 	        var value = "custom";
-	        var parameters = new Dictionary<string, string>();
+	        var parameters = new Parameters();
+	        
 	        parameters.AddRequired(key, value);
 
 	        Action act = () => parameters.AddRequired(key, value);

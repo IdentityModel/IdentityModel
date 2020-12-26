@@ -3,7 +3,6 @@
 
 using IdentityModel.Internal;
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -78,7 +77,7 @@ namespace IdentityModel.Client
         /// <value>
         /// The parameters.
         /// </value>
-        public IDictionary<string, string> Parameters { get; set; } = new Dictionary<string, string>();
+        public Parameters Parameters { get; set; } = new Parameters();
 
         /// <summary>
         /// Clones this instance.
@@ -106,7 +105,7 @@ namespace IdentityModel.Client
                 ClientCredentialStyle = ClientCredentialStyle,
                 ClientId = ClientId,
                 ClientSecret = ClientSecret,
-                Parameters = new Dictionary<string, string>(),
+                Parameters = new Parameters()
             };
 
             if (Parameters != null)
@@ -164,13 +163,10 @@ namespace IdentityModel.Client
                 }
             }
 
-            if (ClientAssertion != null)
+            if (ClientAssertion?.Type != null && ClientAssertion.Value != null)
             {
-                if (ClientAssertion.Type != null && ClientAssertion.Value != null)
-                {
-                    Parameters.AddOptional(OidcConstants.TokenRequest.ClientAssertionType, ClientAssertion.Type);
-                    Parameters.AddOptional(OidcConstants.TokenRequest.ClientAssertion, ClientAssertion.Value);
-                }
+                Parameters.AddOptional(OidcConstants.TokenRequest.ClientAssertionType, ClientAssertion.Type);
+                Parameters.AddOptional(OidcConstants.TokenRequest.ClientAssertion, ClientAssertion.Value);
             }
 
             if (Address.IsPresent())
