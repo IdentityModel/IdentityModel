@@ -40,6 +40,9 @@ namespace IdentityModel.Client
                 ErrorMessage = validationError;
             }
 
+            MtlsEndpointAliases =
+                new MtlsEndpointAliases(Json.TryGetValue(OidcConstants.Discovery.MtlsEndpointAliases));
+
             return Task.CompletedTask;
         }
 
@@ -50,6 +53,14 @@ namespace IdentityModel.Client
         /// The key set.
         /// </value>
         public JsonWebKeySet KeySet { get; set; }
+        
+        /// <summary>
+        /// Gets the MTLS endpoint aliases
+        /// </summary>
+        /// <value>
+        /// The key set.
+        /// </value>
+        public MtlsEndpointAliases MtlsEndpointAliases { get; internal set; }
         
         // strongly typed
         public string Issuer => TryGetString(OidcConstants.Discovery.Issuer);

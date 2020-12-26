@@ -215,6 +215,46 @@ namespace IdentityModel.UnitTests
 
             disco.KeySet.Keys.Count.Should().Be(1);
             disco.KeySet.Keys.First().Kid.Should().Be("a3rMUgMFv9tPclLa6yF3zAkfquE");
+            
+            disco.MtlsEndpointAliases.Should().NotBeNull();
+            disco.MtlsEndpointAliases.TokenEndpoint.Should().BeNull();
+        }
+        
+        [Fact]
+        public async Task Mtls_alias_accessors_should_behave_as_expected()
+        {
+            var discoFileName = FileName.Create("discovery_mtls.json");
+            var document = File.ReadAllText(discoFileName);
+
+            var jwksFileName = FileName.Create("discovery_jwks.json");
+            var jwks = File.ReadAllText(jwksFileName);
+
+            var handler = new NetworkHandler(request =>
+            {
+                if (request.RequestUri.AbsoluteUri.EndsWith("jwks"))
+                {
+                    return jwks;
+                }
+
+                return document;
+            }, HttpStatusCode.OK);
+            
+            var client = new HttpClient(handler)
+            {
+                BaseAddress = new Uri(_endpoint)
+            };
+
+            var disco = await client.GetDiscoveryDocumentAsync();
+
+            disco.IsError.Should().BeFalse();
+            disco.MtlsEndpointAliases.Should().NotBeNull();
+
+            disco.MtlsEndpointAliases.TokenEndpoint.Should().Be("https://mtls.identityserver.io/connect/token");
+            disco.MtlsEndpointAliases.Json.TryGetString(OidcConstants.Discovery.TokenEndpoint).Should().Be("https://mtls.identityserver.io/connect/token");
+            
+            disco.MtlsEndpointAliases.RevocationEndpoint.Should().Be("https://mtls.identityserver.io/connect/revocation");
+            disco.MtlsEndpointAliases.IntrospectionEndpoint.Should().Be("https://mtls.identityserver.io/connect/introspect");
+            disco.MtlsEndpointAliases.DeviceAuthorizationEndpoint.Should().Be("https://mtls.identityserver.io/connect/deviceauthorization");
         }
 
         [Fact]
