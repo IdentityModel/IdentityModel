@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using IdentityModel.Internal;
 
 namespace IdentityModel.Client
@@ -11,11 +12,42 @@ namespace IdentityModel.Client
     public class Parameters : List<KeyValuePair<string, string>>
     {
         /// <summary>
+        /// Turns anonymous type or dictionary in Parameters (mainly for backwards compatibility)
+        /// </summary>
+        /// <param name="values"></param>
+        /// <returns></returns>
+        public static Parameters FromObject(object values)
+        {
+            if (values == null)
+            {
+                return null;
+            }
+
+            if (values is Dictionary<string, string> dictionary)
+            {
+                return new Parameters(dictionary);
+            }
+
+            dictionary = new Dictionary<string, string>();
+
+            foreach (var prop in values.GetType().GetRuntimeProperties())
+            {
+                var value = prop.GetValue(values) as string;
+                if (value.IsPresent())
+                {
+                    dictionary.Add(prop.Name, value);
+                }
+            }
+
+            return new Parameters(dictionary);
+        }
+        
+        /// <summary>
         /// ctor
         /// </summary>
         public Parameters()
         { }
-        
+
         /// <summary>
         /// ctor
         /// </summary>
