@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.CompilerServices;
 using IdentityModel.Internal;
 
 namespace IdentityModel.Client
@@ -57,6 +58,15 @@ namespace IdentityModel.Client
         { }
         
         /// <summary>
+        /// Get parameter(s) based on name
+        /// </summary>
+        /// <param name="index"></param>
+        public IEnumerable<string> this[string index]
+        {
+            get { return this.Where(i => i.Key.Equals(index)).Select(i => i.Value); }
+        }
+        
+        /// <summary>
         /// Adds a key/value to the list
         /// </summary>
         /// <param name="key"></param>
@@ -77,6 +87,16 @@ namespace IdentityModel.Client
         }
 
         /// <summary>
+        /// Get parameter(s) based on name
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public IEnumerable<string> GetValues(string name)
+        {
+            return this[name];
+        }
+
+        /// <summary>
         /// Adds a parameter if it has a value
         /// </summary>
         /// <param name="key"></param>
@@ -84,7 +104,6 @@ namespace IdentityModel.Client
         /// <param name="allowDuplicates"></param>
         /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="InvalidOperationException"></exception>
-        /// <exception cref="ArgumentException"></exception>
         public void AddOptional(string key, string value, bool allowDuplicates = false)
         {
             if (key.IsMissing()) throw new ArgumentNullException(nameof(key));
