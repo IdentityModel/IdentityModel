@@ -72,10 +72,10 @@ namespace IdentityModel.UnitTests
             p.AddRequired("key1", "value");
             p.Should().HaveCount(1);
 
-            p.AddRequired("key1", "value");
+            p.AddRequired("key2", "value");
             p.Should().HaveCount(2);
             
-            p.AddRequired("key2", "value");
+            p.AddRequired("key3", "value");
             p.Should().HaveCount(3);
         }
 
