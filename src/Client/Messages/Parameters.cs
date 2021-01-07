@@ -172,5 +172,21 @@ namespace IdentityModel.Client
 
              return this;
         }
+
+        /// <summary>
+        /// Replaces parameter(s) with a new value
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="value"></param>
+        /// <exception cref="ArgumentNullException"></exception>
+        public void ReplaceAll(string key, string value)
+        {
+            if (key.IsMissing()) throw new ArgumentNullException(nameof(key));
+            if (value == null) throw new ArgumentNullException(nameof(value));
+            
+            this.Where(i => i.Key == key).ToList().ForEach(i => Remove(i));
+            
+            Add(key, value);
+        }
     }
 }
