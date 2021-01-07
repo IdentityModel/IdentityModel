@@ -37,8 +37,6 @@ namespace IdentityModel.Jwk
     /// </summary>
     public class JsonWebKeySet
     {
-        private List<JsonWebKey> _keys = new List<JsonWebKey>();
-
         /// <summary>
         /// Initializes an new instance of <see cref="JsonWebKeySet"/>.
         /// </summary>
@@ -57,11 +55,11 @@ namespace IdentityModel.Jwk
             var jwebKeys = JsonSerializer.Deserialize<JsonWebKeySet>(json);
             Keys = jwebKeys.Keys;
         }
-        
+
         /// <summary>
         /// A list of JSON web keys
         /// </summary>
         [JsonPropertyName("keys")]
-        public List<JsonWebKey> Keys { get; set; }
+        public List<JsonWebKey> Keys { get; set; } = new();
     }
 }
