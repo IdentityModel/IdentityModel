@@ -66,7 +66,7 @@ namespace IdentityModel.Client
 
             clone.Parameters.AddRequired(OidcConstants.TokenRequest.GrantType, OidcConstants.GrantTypes.Password);
             clone.Parameters.AddRequired(OidcConstants.TokenRequest.UserName, request.UserName);
-            clone.Parameters.AddRequired(OidcConstants.TokenRequest.Password, request.Password, allowEmpty: true);
+            clone.Parameters.AddRequired(OidcConstants.TokenRequest.Password, request.Password, allowEmptyValue: true);
             clone.Parameters.AddOptional(OidcConstants.TokenRequest.Scope, request.Scope);
             
             foreach (var resource in request.Resource)
@@ -160,7 +160,7 @@ namespace IdentityModel.Client
         {
             var clone = request.Clone();
 
-            if (!clone.Parameters.Contains(OidcConstants.TokenRequest.GrantType))
+            if (!clone.Parameters.ContainsKey(OidcConstants.TokenRequest.GrantType))
             {
                 clone.Parameters.AddRequired(OidcConstants.TokenRequest.GrantType, request.GrantType);
             }

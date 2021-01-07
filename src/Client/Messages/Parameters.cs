@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using System.Runtime.CompilerServices;
 using IdentityModel.Internal;
 
 namespace IdentityModel.Client
@@ -58,7 +57,34 @@ namespace IdentityModel.Client
         { }
         
         /// <summary>
-        /// Get parameter(s) based on name
+        /// Adds a key/value to the list
+        /// </summary>
+        /// <param name="key">The key.</param>
+        /// <param name="value">The value</param>
+        /// <param name="parameterReplace">Replace behavior.</param>
+        public void Add(string key, string value, ParameterReplaceBehavior parameterReplace = ParameterReplaceBehavior.None)
+        {
+            if (key.IsMissing()) throw new ArgumentNullException(nameof(key));
+
+            if (parameterReplace == ParameterReplaceBehavior.None)
+            {
+                Add(new KeyValuePair<string, string>(key, value));
+                return;
+            }
+
+            var existingItems = this.Where(i => i.Key == key).ToList();
+            if (existingItems.Count > 1 && parameterReplace == ParameterReplaceBehavior.Single)
+            {
+                throw new InvalidOperationException("More than one item found to replace.");
+            }
+
+            existingItems.ForEach(item => this.Remove(item));
+            
+            Add(new KeyValuePair<string, string>(key, value));
+        }
+        
+        /// <summary>
+        /// Get parameter value(s) based on name
         /// </summary>
         /// <param name="index"></param>
         public IEnumerable<string> this[string index]
@@ -67,27 +93,7 @@ namespace IdentityModel.Client
         }
         
         /// <summary>
-        /// Adds a key/value to the list
-        /// </summary>
-        /// <param name="key"></param>
-        /// <param name="value"></param>
-        public void Add(string key, string value)
-        {
-            Add(new KeyValuePair<string, string>(key, value));
-        }
-
-        /// <summary>
-        /// Checks the existence of a parameter
-        /// </summary>
-        /// <param name="key"></param>
-        /// <returns></returns>
-        public bool Contains(string key)
-        {
-            return (this.Any(k => string.Equals(k.Key, key)));
-        }
-
-        /// <summary>
-        /// Get parameter(s) based on name
+        /// Get parameter values based on name
         /// </summary>
         /// <param name="name"></param>
         /// <returns></returns>
@@ -95,13 +101,23 @@ namespace IdentityModel.Client
         {
             return this[name];
         }
+        
+        /// <summary>
+        /// Checks the existence of a parameter
+        /// </summary>
+        /// <param name="key"></param>
+        /// <returns></returns>
+        public bool ContainsKey(string key)
+        {
+            return (this.Any(k => string.Equals(k.Key, key)));
+        }
 
         /// <summary>
         /// Adds a parameter if it has a value
         /// </summary>
-        /// <param name="key"></param>
-        /// <param name="value"></param>
-        /// <param name="allowDuplicates"></param>
+        /// <param name="key">The key.</param>
+        /// <param name="value">The value.</param>
+        /// <param name="allowDuplicates">Allow multiple values of the same parameter.</param>
         /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="InvalidOperationException"></exception>
         public void AddOptional(string key, string value, bool allowDuplicates = false)
@@ -110,7 +126,7 @@ namespace IdentityModel.Client
             
             if (allowDuplicates == false)
             {
-                if (Contains(key))
+                if (ContainsKey(key))
                 {
                     throw new InvalidOperationException($"Duplicate parameter: {key}");
                 }
@@ -125,26 +141,26 @@ namespace IdentityModel.Client
         /// <summary>
         /// Adds a required parameter
         /// </summary>
-        /// <param name="key"></param>
-        /// <param name="value"></param>
-        /// <param name="allowDuplicates"></param>
-        /// <param name="allowEmpty"></param>
+        /// <param name="key">The key.</param>
+        /// <param name="value">The value.</param>
+        /// <param name="allowDuplicates">Allow multiple values of the same parameter.</param>
+        /// <param name="allowEmptyValue">Allow an empty value.</param>
         /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="InvalidOperationException"></exception>
         /// <exception cref="ArgumentException"></exception>
-        public void AddRequired(string key, string value, bool allowDuplicates = false, bool allowEmpty = false)
+        public void AddRequired(string key, string value, bool allowDuplicates = false, bool allowEmptyValue = false)
         {
             if (key.IsMissing()) throw new ArgumentNullException(nameof(key));
             
             if (allowDuplicates == false)
             {
-                if (Contains(key))
+                if (ContainsKey(key))
                 {
                     throw new InvalidOperationException($"Duplicate parameter: {key}");
                 }
             }
             
-            if (value.IsPresent() || allowEmpty)
+            if (value.IsPresent() || allowEmptyValue)
             {
                 Add(key, value);
             }
@@ -158,35 +174,19 @@ namespace IdentityModel.Client
         /// Merge two parameter sets
         /// </summary>
         /// <param name="additionalValues"></param>
-        /// <returns></returns>
+        /// <returns>Merged parameters</returns>
         public Parameters Merge(Parameters additionalValues = null)
         {
              if (additionalValues != null)
              {
                  var merged =
-                     this.Concat(additionalValues.Where(add => !this.Contains(add.Key)))
+                     this.Concat(additionalValues.Where(add => !this.ContainsKey(add.Key)))
                          .Select(s => new KeyValuePair<string, string>(s.Key, s.Value));
             
                  return new Parameters(merged.ToList());
              }
 
              return this;
-        }
-
-        /// <summary>
-        /// Replaces parameter(s) with a new value
-        /// </summary>
-        /// <param name="key"></param>
-        /// <param name="value"></param>
-        /// <exception cref="ArgumentNullException"></exception>
-        public void ReplaceAll(string key, string value)
-        {
-            if (key.IsMissing()) throw new ArgumentNullException(nameof(key));
-            if (value == null) throw new ArgumentNullException(nameof(value));
-            
-            this.Where(i => i.Key == key).ToList().ForEach(i => Remove(i));
-            
-            Add(key, value);
         }
     }
 }
