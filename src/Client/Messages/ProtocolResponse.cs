@@ -166,20 +166,20 @@ namespace IdentityModel.Client
         protected string ErrorMessage { get; set; }
 
         /// <summary>
-        /// Gets the HTTP status code.
+        /// Gets the HTTP status code - or <c>0</c> when <see cref="HttpResponse" /> is <see langword="null"/>.
         /// </summary>
         /// <value>
         /// The HTTP status code.
         /// </value>
-        public HttpStatusCode HttpStatusCode => HttpResponse.StatusCode;
+        public HttpStatusCode HttpStatusCode => this.HttpResponse?.StatusCode ?? default(HttpStatusCode);
 
         /// <summary>
-        /// Gets the HTTP error reason.
+        /// Gets the HTTP error reason - or <see langword="null"/> when <see cref="HttpResponse" /> is <see langword="null"/>.
         /// </summary>
         /// <value>
         /// The HTTP error reason.
         /// </value>
-        public string HttpErrorReason => HttpResponse.ReasonPhrase;
+        public string HttpErrorReason => this.HttpResponse?.ReasonPhrase ?? default;
 
         /// <summary>
         /// Gets the error.
