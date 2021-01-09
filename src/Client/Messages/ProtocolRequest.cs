@@ -3,6 +3,7 @@
 
 using IdentityModel.Internal;
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Net.Http.Headers;
@@ -119,6 +120,16 @@ namespace IdentityModel.Client
                 clone.Headers.TryAddWithoutValidation(header.Key, header.Value);
             }
 
+#if NET5_0
+            if (Options.Any())
+            {
+                foreach (var property in Options)
+                {
+                    clone.Options.TryAdd(property.Key, property.Value);
+                    
+                }
+            }          
+#else
             if (Properties != null && Properties.Any())
             {
                 foreach (var property in Properties)
@@ -126,7 +137,7 @@ namespace IdentityModel.Client
                     clone.Properties.Add(property);
                 }
             }
-
+#endif
             return clone;
         }
 
