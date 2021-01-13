@@ -126,7 +126,6 @@ namespace IdentityModel.Client
                 foreach (var property in Options)
                 {
                     clone.Options.TryAdd(property.Key, property.Value);
-                    
                 }
             }          
 #else
