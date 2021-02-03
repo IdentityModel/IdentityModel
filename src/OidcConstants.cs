@@ -422,6 +422,7 @@ namespace IdentityModel
             public const string UserInfoEncryptionEncValuesSupported = "userinfo_encryption_enc_values_supported";
             public const string UserInfoSigningAlgorithmsSupported = "userinfo_signing_alg_values_supported";
             public const string TlsClientCertificateBoundAccessTokens = "tls_client_certificate_bound_access_tokens";
+            public const string AuthorizationResponseIssParameterSupported = "authorization_response_iss_parameter_supported";
         }
 
         public static class Events
