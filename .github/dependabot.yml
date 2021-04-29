@@ -6,11 +6,7 @@ updates:
     interval: daily
   open-pull-requests-limit: 10
   assignees:
-  - leastprivilege
-  ignore:
-  - dependency-name: System.Text.Encodings.Web
-    versions:
-    - 5.0.1
+  - leastprivilege  
 - package-ecosystem: nuget
   directory: "/build"
   schedule:
