@@ -5,10 +5,3 @@ updates:
   schedule:
     interval: daily
   open-pull-requests-limit: 10
-  assignees:
-  - leastprivilege  
-- package-ecosystem: nuget
-  directory: "/build"
-  schedule:
-    interval: daily
-  open-pull-requests-limit: 10
