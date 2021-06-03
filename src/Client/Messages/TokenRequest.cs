@@ -151,8 +151,11 @@ namespace IdentityModel.Client
         public string RefreshToken { get; set; }
 
         /// <summary>
-        /// Space separated list of the requested scopes
+        /// Space separated list of the requested scopes.  The Scope attribute cannot be used to extend the scopes granted by the resource owner
         /// </summary>
+        /// <remarks>
+        /// See https://datatracker.ietf.org/doc/html/rfc6749#section-6 for further detail on restrictions
+        /// </remarks>
         /// <value>
         /// The scope.
         /// </value>
@@ -162,7 +165,7 @@ namespace IdentityModel.Client
         /// List of requested resources
         /// </summary>
         /// <value>
-        /// The scope.
+        /// The resources.
         /// </value>
         public ICollection<string> Resource { get; set; } = new HashSet<string>();
     }
