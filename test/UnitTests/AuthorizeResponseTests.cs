@@ -12,7 +12,7 @@ namespace IdentityModel.UnitTests
         [Fact]
         public void Error_Response_with_QueryString()
         {
-            var url = "http://server/callback?error=foo";
+            const string url = "http://server/callback?error=foo";
 
             var response = new AuthorizeResponse(url);
 
@@ -23,7 +23,7 @@ namespace IdentityModel.UnitTests
         [Fact]
         public void Error_Response_with_HashFragment()
         {
-            var url = "http://server/callback#error=foo";
+            const string url = "http://server/callback#error=foo";
 
             var response = new AuthorizeResponse(url);
 
@@ -34,7 +34,7 @@ namespace IdentityModel.UnitTests
         [Fact]
         public void Error_Response_with_QueryString_and_HashFragment()
         {
-            var url = "http://server/callback?error=foo#_=_";
+            const string url = "http://server/callback?error=foo#_=_";
 
             var response = new AuthorizeResponse(url);
 
@@ -45,7 +45,7 @@ namespace IdentityModel.UnitTests
         [Fact]
         public void Code_Response_with_QueryString()
         {
-            var url = "http://server/callback?code=foo&sid=123";
+            const string url = "http://server/callback?code=foo&sid=123";
 
             var response = new AuthorizeResponse(url);
 
@@ -59,7 +59,7 @@ namespace IdentityModel.UnitTests
         [Fact]
         public void AccessToken_Response_with_QueryString()
         {
-            var url = "http://server/callback#access_token=foo&sid=123";
+            const string url = "http://server/callback#access_token=foo&sid=123";
 
             var response = new AuthorizeResponse(url);
 
@@ -73,7 +73,21 @@ namespace IdentityModel.UnitTests
         [Fact]
         public void AccessToken_Response_with_QueryString_and_HashFragment()
         {
-            var url = "http://server/callback?access_token=foo&sid=123#_=_";
+            const string url = "http://server/callback?access_token=foo&sid=123#_=_";
+
+            var response = new AuthorizeResponse(url);
+
+            response.IsError.Should().BeFalse();
+            response.AccessToken.Should().Be("foo");
+
+            response.Values["sid"].Should().Be("123");
+            response.TryGet("sid").Should().Be("123");
+        }
+
+        [Fact]
+        public void AccessToken_Response_with_QueryString_and_Empty_Entry()
+        {
+            const string url = "http://server/callback?access_token=foo&&sid=123&";
 
             var response = new AuthorizeResponse(url);
 
@@ -87,7 +101,7 @@ namespace IdentityModel.UnitTests
         [Fact]
         public void form_post_format_should_parse()
         {
-            var form = "id_token=foo&code=bar&scope=baz&session_state=quux";
+            const string form = "id_token=foo&code=bar&scope=baz&session_state=quux";
             var response = new AuthorizeResponse(form);
 
             response.IsError.Should().BeFalse();

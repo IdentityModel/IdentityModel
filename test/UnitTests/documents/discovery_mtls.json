@@ -1,0 +1,29 @@
+﻿{
+  "issuer": "https://demo.identityserver.io",
+  "jwks_uri": "https://demo.identityserver.io/.well-known/jwks",
+  "authorization_endpoint": "https://demo.identityserver.io/connect/authorize",
+  "token_endpoint": "https://demo.identityserver.io/connect/token",
+  "userinfo_endpoint": "https://demo.identityserver.io/connect/userinfo",
+  "end_session_endpoint": "https://demo.identityserver.io/connect/endsession",
+  "check_session_iframe": "https://demo.identityserver.io/connect/checksession",
+  "revocation_endpoint": "https://demo.identityserver.io/connect/revocation",
+  "introspection_endpoint": "https://demo.identityserver.io/connect/introspect",
+  "frontchannel_logout_supported": true,
+  "frontchannel_logout_session_supported": true,
+  "scopes_supported": [ "openid", "profile", "email", "address", "phone", "offline_access", "api" ],
+  "claims_supported": [ "sub", "name", "family_name", "given_name", "middle_name", "nickname", "preferred_username", "profile", "picture", "website", "gender", "birthdate", "zoneinfo", "locale", "updated_at", "email", "email_verified", "address", "phone_number", "phone_number_verified" ],
+  "response_types_supported": [ "code", "token", "id_token", "id_token token", "code id_token", "code token", "code id_token token" ],
+  "response_modes_supported": [ "form_post", "query", "fragment" ],
+  "grant_types_supported": [ "authorization_code", "client_credentials", "password", "refresh_token", "implicit" ],
+  "subject_types_supported": [ "public" ],
+  "id_token_signing_alg_values_supported": [ "RS256" ],
+  "code_challenge_methods_supported": [ "plain", "S256" ],
+  "token_endpoint_auth_methods_supported": [ "client_secret_post", "client_secret_basic" ],
+
+  "mtls_endpoint_aliases": {
+    "token_endpoint": "https://mtls.identityserver.io/connect/token",
+    "revocation_endpoint": "https://mtls.identityserver.io/connect/revocation",
+    "introspection_endpoint": "https://mtls.identityserver.io/connect/introspect",
+    "device_authorization_endpoint": "https://mtls.identityserver.io/connect/deviceauthorization"
+  }
+}

@@ -1,11 +1,11 @@
 ﻿// Copyright (c) Brock Allen & Dominick Baier. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
 
-using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
+using System.Text.Json;
 using System.Threading.Tasks;
 
 namespace IdentityModel.Client
@@ -25,20 +25,21 @@ namespace IdentityModel.Client
         {
             if (!IsError)
             {
-                var claims = Json.ToClaims(excludeKeys: "scope").ToList();
+                var issuer = Json.TryGetString("iss");
+                var claims = Json.ToClaims(issuer, "scope").ToList();
 
                 // due to a bug in identityserver - we need to be able to deal with the scope list both in array as well as space-separated list format
                 var scope = Json.TryGetValue("scope");
 
                 // scope element exists
-                if (scope != null)
-                {
+                // if (scope != null)
+                // {
                     // it's an array
-                    if (scope is JArray scopeArray)
+                    if (scope.ValueKind == JsonValueKind.Array)
                     {
-                        foreach (var item in scopeArray)
+                        foreach (var item in scope.EnumerateArray())
                         {
-                            claims.Add(new Claim("scope", item.ToString()));
+                            claims.Add(new Claim("scope", item.ToString(), ClaimValueTypes.String, issuer));
                         }
                     }
                     else
@@ -49,10 +50,10 @@ namespace IdentityModel.Client
                         var scopes = scopeString.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
                         foreach (var scopeValue in scopes)
                         {
-                            claims.Add(new Claim("scope", scopeValue));
+                            claims.Add(new Claim("scope", scopeValue, ClaimValueTypes.String, issuer));
                         }
                     }
-                }
+                // }
 
                 Claims = claims;
             }
@@ -79,6 +80,6 @@ namespace IdentityModel.Client
         /// The claims.
         /// </value>
         public IEnumerable<Claim> Claims { get; protected set; }
-        
+
     }
 }

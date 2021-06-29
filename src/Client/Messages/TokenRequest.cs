@@ -1,6 +1,8 @@
 ﻿// Copyright (c) Brock Allen & Dominick Baier. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
 
+using System.Collections.Generic;
+
 namespace IdentityModel.Client
 {
     /// <summary>
@@ -31,6 +33,14 @@ namespace IdentityModel.Client
         /// The scope.
         /// </value>
         public string Scope { get; set; }
+        
+        /// <summary>
+        /// List of requested resources
+        /// </summary>
+        /// <value>
+        /// The scope.
+        /// </value>
+        public ICollection<string> Resource { get; set; } = new HashSet<string>();
     }
 
     /// <summary>
@@ -77,6 +87,14 @@ namespace IdentityModel.Client
         /// The scope.
         /// </value>
         public string Scope { get; set; }
+        
+        /// <summary>
+        /// List of requested resources
+        /// </summary>
+        /// <value>
+        /// The scope.
+        /// </value>
+        public ICollection<string> Resource { get; set; } = new HashSet<string>();
     }
 
     /// <summary>
@@ -100,6 +118,14 @@ namespace IdentityModel.Client
         /// The redirect URI.
         /// </value>
         public string RedirectUri { get; set; }
+        
+        /// <summary>
+        /// List of requested resources
+        /// </summary>
+        /// <value>
+        /// The scope.
+        /// </value>
+        public ICollection<string> Resource { get; set; } = new HashSet<string>();
 
         /// <summary>
         /// Gets or sets the code verifier.
@@ -125,11 +151,69 @@ namespace IdentityModel.Client
         public string RefreshToken { get; set; }
 
         /// <summary>
-        /// Space separated list of the requested scopes
+        /// Space separated list of the requested scopes.  The Scope attribute cannot be used to extend the scopes granted by the resource owner
         /// </summary>
+        /// <remarks>
+        /// See https://datatracker.ietf.org/doc/html/rfc6749#section-6 for further detail on restrictions
+        /// </remarks>
         /// <value>
         /// The scope.
         /// </value>
         public string Scope { get; set; }
+
+        /// <summary>
+        /// List of requested resources
+        /// </summary>
+        /// <value>
+        /// The resources.
+        /// </value>
+        public ICollection<string> Resource { get; set; } = new HashSet<string>();
+    }
+    
+    /// <summary>
+    /// Request for token using urn:ietf:params:oauth:grant-type:token-exchange
+    /// </summary>
+    /// <seealso cref="TokenRequest" />
+    public class TokenExchangeTokenRequest : TokenRequest
+    {
+        /// <summary>
+        /// OPTIONAL.  A URI that indicates the target service or resource.
+        /// </summary>
+        public string Resource { get; set; }
+
+        /// <summary>
+        /// OPTIONAL.  The logical name of the target service where the client intends to use the requested security token.
+        /// </summary>
+        public string Audience { get; set; }
+
+        /// <summary>
+        /// OPTIONAL. Space separated list of the requested scopes
+        /// </summary>
+        public string Scope { get; set; }
+        
+        /// <summary>
+        /// OPTIONAL.  An identifier for the type of the requested security token.
+        /// </summary>
+        public string RequestedTokenType { get; set; }
+
+        /// <summary>
+        /// REQUIRED.  A security token that represents the identity of the party on behalf of whom the request is being made.
+        /// </summary>
+        public string SubjectToken { get; set; }
+
+        /// <summary>
+        /// REQUIRED.  An identifier that indicates the type of the security token in the "subject_token" parameter.
+        /// </summary>
+        public string SubjectTokenType { get; set; }
+
+        /// <summary>
+        /// OPTIONAL.  A security token that represents the identity of the acting party.
+        /// </summary>
+        public string ActorToken { get; set; }
+
+        /// <summary>
+        /// An identifier that indicates the type of the security token in the "actor_token" parameter. This is REQUIRED when the "actor_token" parameter is present in the request but MUST NOT be included otherwise.
+        /// </summary>
+        public string ActorTokenType { get; set; }
     }
 }

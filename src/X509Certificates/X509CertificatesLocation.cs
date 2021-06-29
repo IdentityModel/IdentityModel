@@ -11,7 +11,7 @@ namespace IdentityModel
     [EditorBrowsable(EditorBrowsableState.Never)]
     public class X509CertificatesLocation
     {
-        readonly StoreLocation _location;
+        private readonly StoreLocation _location;
 
         public X509CertificatesLocation(StoreLocation location)
         {

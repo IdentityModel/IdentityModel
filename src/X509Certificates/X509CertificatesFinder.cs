@@ -13,9 +13,9 @@ namespace IdentityModel
     [EditorBrowsable(EditorBrowsableState.Never)]
     public class X509CertificatesFinder
     {
-        readonly StoreLocation _location;
-        readonly StoreName _name;
-        readonly X509FindType _findType;
+        private readonly StoreLocation _location;
+        private readonly StoreName _name;
+        private readonly X509FindType _findType;
 
         public X509CertificatesFinder(StoreLocation location, StoreName name, X509FindType findType)
         {

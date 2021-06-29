@@ -2,10 +2,10 @@
 // Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
 
 using IdentityModel.Internal;
-using Newtonsoft.Json;
 using System;
 using System.Net.Http;
 using System.Text;
+using System.Text.Json;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -28,7 +28,7 @@ namespace IdentityModel.Client
             var clone = request.Clone();
 
             clone.Method = HttpMethod.Post;
-            clone.Content = new StringContent(JsonConvert.SerializeObject(request.Document), Encoding.UTF8, "application/json");
+            clone.Content = new StringContent(JsonSerializer.Serialize(request.Document), Encoding.UTF8, "application/json");
             clone.Prepare();
 
             if (request.Token.IsPresent())

@@ -3,24 +3,24 @@
 
 using FluentAssertions;
 using IdentityModel.Client;
-using Newtonsoft.Json;
 using System;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Text.Json;
 using System.Threading.Tasks;
 using Xunit;
 
 namespace IdentityModel.UnitTests
 {
-    public class HttpClientDiscoveryExtensionsTests
+    public class DiscoveryExtensionsTests
     {
-        NetworkHandler _successHandler;
-        string _endpoint = "https://demo.identityserver.io/.well-known/openid-configuration";
-        string _authority = "https://demo.identityserver.io";
+        private readonly NetworkHandler _successHandler;
+        private readonly string _endpoint = "https://demo.identityserver.io/.well-known/openid-configuration";
+        private readonly string _authority = "https://demo.identityserver.io";
 
-        public HttpClientDiscoveryExtensionsTests()
+        public DiscoveryExtensionsTests()
         {
             var discoFileName = FileName.Create("discovery.json");
             var document = File.ReadAllText(discoFileName);
@@ -47,7 +47,7 @@ namespace IdentityModel.UnitTests
             var client = new HttpClient(handler);
             var request = new DiscoveryDocumentRequest
             {
-                Address = _endpoint,
+                Address = _endpoint
             };
 
             request.Headers.Add("custom", "custom");
@@ -160,7 +160,7 @@ namespace IdentityModel.UnitTests
             var client = new HttpClient(handler);
             var disco = await client.GetDiscoveryDocumentAsync(new DiscoveryDocumentRequest
             {
-                Address = _endpoint,
+                Address = _endpoint
             });
 
             disco.IsError.Should().BeTrue();
@@ -182,7 +182,7 @@ namespace IdentityModel.UnitTests
             disco.IsError.Should().BeFalse();
 
             disco.TryGetValue(OidcConstants.Discovery.AuthorizationEndpoint).Should().NotBeNull();
-            disco.TryGetValue("unknown").Should().BeNull();
+            disco.TryGetValue("unknown").ValueKind.Should().Be(JsonValueKind.Undefined);
 
             disco.TryGetString(OidcConstants.Discovery.AuthorizationEndpoint).Should().Be("https://demo.identityserver.io/connect/authorize");
             disco.TryGetString("unknown").Should().BeNull();
@@ -207,11 +207,54 @@ namespace IdentityModel.UnitTests
             disco.FrontChannelLogoutSupported.Should().Be(true);
             disco.FrontChannelLogoutSessionSupported.Should().Be(true);
 
-            var responseModes = disco.ResponseModesSupported;
+            var responseModes = disco.ResponseModesSupported.ToList();
 
             responseModes.Should().Contain("form_post");
             responseModes.Should().Contain("query");
             responseModes.Should().Contain("fragment");
+
+            disco.KeySet.Keys.Count.Should().Be(1);
+            disco.KeySet.Keys.First().Kid.Should().Be("a3rMUgMFv9tPclLa6yF3zAkfquE");
+            
+            disco.MtlsEndpointAliases.Should().NotBeNull();
+            disco.MtlsEndpointAliases.TokenEndpoint.Should().BeNull();
+        }
+        
+        [Fact]
+        public async Task Mtls_alias_accessors_should_behave_as_expected()
+        {
+            var discoFileName = FileName.Create("discovery_mtls.json");
+            var document = File.ReadAllText(discoFileName);
+
+            var jwksFileName = FileName.Create("discovery_jwks.json");
+            var jwks = File.ReadAllText(jwksFileName);
+
+            var handler = new NetworkHandler(request =>
+            {
+                if (request.RequestUri.AbsoluteUri.EndsWith("jwks"))
+                {
+                    return jwks;
+                }
+
+                return document;
+            }, HttpStatusCode.OK);
+            
+            var client = new HttpClient(handler)
+            {
+                BaseAddress = new Uri(_endpoint)
+            };
+
+            var disco = await client.GetDiscoveryDocumentAsync();
+
+            disco.IsError.Should().BeFalse();
+            disco.MtlsEndpointAliases.Should().NotBeNull();
+
+            disco.MtlsEndpointAliases.TokenEndpoint.Should().Be("https://mtls.identityserver.io/connect/token");
+            disco.MtlsEndpointAliases.Json.TryGetString(OidcConstants.Discovery.TokenEndpoint).Should().Be("https://mtls.identityserver.io/connect/token");
+            
+            disco.MtlsEndpointAliases.RevocationEndpoint.Should().Be("https://mtls.identityserver.io/connect/revocation");
+            disco.MtlsEndpointAliases.IntrospectionEndpoint.Should().Be("https://mtls.identityserver.io/connect/introspect");
+            disco.MtlsEndpointAliases.DeviceAuthorizationEndpoint.Should().Be("https://mtls.identityserver.io/connect/deviceauthorization");
         }
 
         [Fact]
@@ -230,7 +273,7 @@ namespace IdentityModel.UnitTests
             disco.HttpStatusCode.Should().Be(HttpStatusCode.InternalServerError);
             disco.Error.Should().Contain("Internal Server Error");
             disco.Raw.Should().Be("not_json");
-            disco.Json.Should().BeNull();
+            disco.Json.ValueKind.Should().Be(JsonValueKind.Undefined);
         }
 
         [Fact]
@@ -242,7 +285,7 @@ namespace IdentityModel.UnitTests
                 bar = "bar"
             };
 
-            var handler = new NetworkHandler(JsonConvert.SerializeObject(content), HttpStatusCode.InternalServerError);
+            var handler = new NetworkHandler(JsonSerializer.Serialize(content), HttpStatusCode.InternalServerError);
 
             var client = new HttpClient(handler)
             {
@@ -300,7 +343,7 @@ namespace IdentityModel.UnitTests
             disco.HttpStatusCode.Should().Be(HttpStatusCode.InternalServerError);
             disco.Error.Should().Contain("Internal Server Error");
             disco.Raw.Should().Be("not_json");
-            disco.Json.Should().BeNull();
+            disco.Json.ValueKind.Should().Be(JsonValueKind.Undefined);
         }
 
         [Fact]
@@ -330,7 +373,7 @@ namespace IdentityModel.UnitTests
 
                     response = new HttpResponseMessage(HttpStatusCode.InternalServerError)
                     {
-                        Content = new StringContent(JsonConvert.SerializeObject(content))
+                        Content = new StringContent(JsonSerializer.Serialize(content))
                     }; 
                 }
 

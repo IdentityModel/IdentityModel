@@ -14,6 +14,6 @@ namespace IdentityModel.Client
         /// <value>
         /// The policy.
         /// </value>
-        public DiscoveryPolicy Policy { get; set; } = new DiscoveryPolicy();
+        public DiscoveryPolicy Policy { get; set; } = new();
     }
 }

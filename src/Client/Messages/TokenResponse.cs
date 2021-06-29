@@ -26,6 +26,22 @@ namespace IdentityModel.Client
         public string IdentityToken => TryGet(OidcConstants.TokenResponse.IdentityToken);
 
         /// <summary>
+        /// Gets the scope.
+        /// </summary>
+        /// <value>
+        /// The scope.
+        /// </value>
+        public string Scope => TryGet(OidcConstants.TokenResponse.Scope);
+        
+        /// <summary>
+        /// Gets the issued token type.
+        /// </summary>
+        /// <value>
+        /// The issued token type.
+        /// </value>
+        public string IssuedTokenType => TryGet(OidcConstants.TokenResponse.IssuedTokenType);
+        
+        /// <summary>
         /// Gets the type of the token.
         /// </summary>
         /// <value>

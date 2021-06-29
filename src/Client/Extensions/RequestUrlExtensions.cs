@@ -1,9 +1,6 @@
 ﻿// Copyright (c) Brock Allen & Dominick Baier. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
 
-using IdentityModel.Internal;
-using System.Collections.Generic;
-
 namespace IdentityModel.Client
 {
     /// <summary>
@@ -15,11 +12,11 @@ namespace IdentityModel.Client
         /// Creates an authorize URL.
         /// </summary>
         /// <param name="request">The request.</param>
-        /// <param name="values">The values (either using a string Dictionary or an object's properties).</param>
+        /// <param name="parameters">The parameters.</param>
         /// <returns></returns>
-        public static string Create(this RequestUrl request, object values)
+        public static string Create(this RequestUrl request, Parameters parameters)
         {
-            return request.Create(ValuesHelper.ObjectToDictionary(values));
+            return request.Create(parameters);
         }
 
         /// <summary>
@@ -61,9 +58,9 @@ namespace IdentityModel.Client
             int? maxAge = null,
             string uiLocales = null,
             string idTokenHint = null,
-            object extra = null)
+            Parameters extra = null)
         {
-            var values = new Dictionary<string, string>
+            var values = new Parameters
             {
                 { OidcConstants.AuthorizeRequest.ClientId, clientId },
                 { OidcConstants.AuthorizeRequest.ResponseType, responseType }
@@ -84,7 +81,7 @@ namespace IdentityModel.Client
             values.AddOptional(OidcConstants.AuthorizeRequest.UiLocales, uiLocales);
             values.AddOptional(OidcConstants.AuthorizeRequest.IdTokenHint, idTokenHint);
 
-            return request.Create(ValuesHelper.Merge(values, ValuesHelper.ObjectToDictionary(extra)));
+            return request.Create(values.Merge(extra));
         }
 
         /// <summary>
@@ -100,15 +97,15 @@ namespace IdentityModel.Client
             string idTokenHint = null,
             string postLogoutRedirectUri = null,
             string state = null,
-            object extra = null)
+            Parameters extra = null)
         {
-            var values = new Dictionary<string, string>();
+            var values = new Parameters();
 
             values.AddOptional(OidcConstants.EndSessionRequest.IdTokenHint, idTokenHint);
             values.AddOptional(OidcConstants.EndSessionRequest.PostLogoutRedirectUri, postLogoutRedirectUri);
             values.AddOptional(OidcConstants.EndSessionRequest.State, state);
 
-            return request.Create(ValuesHelper.Merge(values, ValuesHelper.ObjectToDictionary(extra)));
+            return request.Create(values.Merge(extra));
         }
     }
 }
