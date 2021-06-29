@@ -12,12 +12,18 @@ namespace IdentityModel.Client
         /// Parses a URL and turns it into authority and discovery endpoint URL.
         /// </summary>
         /// <param name="input">The input.</param>
+        /// <param name="path">The path to the discovery document. If not specified this defaults to .well-known/open-id-configuration</param>
         /// <returns></returns>
         /// <exception cref="System.InvalidOperationException">
         /// Malformed URL
         /// </exception>
-        public static DiscoveryEndpoint ParseUrl(string input)
+        public static DiscoveryEndpoint ParseUrl(string input, string path = null)
         {
+            if (String.IsNullOrEmpty(path))
+            {
+                path = OidcConstants.Discovery.DiscoveryEndpoint;
+            }
+
             var success = Uri.TryCreate(input, UriKind.Absolute, out var uri);
             if (success == false)
             {
@@ -30,14 +36,18 @@ namespace IdentityModel.Client
             }
 
             var url = input.RemoveTrailingSlash();
-
-            if (url.EndsWith(OidcConstants.Discovery.DiscoveryEndpoint, StringComparison.OrdinalIgnoreCase))
+            if (path.StartsWith("/"))
             {
-                return new DiscoveryEndpoint(url.Substring(0, url.Length - OidcConstants.Discovery.DiscoveryEndpoint.Length - 1), url);
+                path = path.Substring(1);
+            }
+
+            if (url.EndsWith(path, StringComparison.OrdinalIgnoreCase))
+            {
+                return new DiscoveryEndpoint(url.Substring(0, url.Length - path.Length - 1), url);
             }
             else
             {
-                return new DiscoveryEndpoint(url, url.EnsureTrailingSlash() + OidcConstants.Discovery.DiscoveryEndpoint);
+                return new DiscoveryEndpoint(url, url.EnsureTrailingSlash() + path);
             }
         }
 

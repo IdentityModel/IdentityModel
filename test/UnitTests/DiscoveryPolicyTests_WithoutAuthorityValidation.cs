@@ -35,5 +35,19 @@ namespace IdentityModel.UnitTests
             result.Authority.Should().Be("https://server:123");
         }
 
+        [Theory]
+        [InlineData("https://server:123/strange-location/openid-configuration", "/strange-location/openid-configuration")]
+        [InlineData("https://server:123/strange-location/openid-configuration", "strange-location/openid-configuration")]
+        [InlineData("https://server:123/strange-location/openid-configuration/", "/strange-location/openid-configuration")]
+        [InlineData("https://server:123/", "/strange-location/openid-configuration")]
+        [InlineData("https://server:123", "/strange-location/openid-configuration")]
+        public void Custom_path_is_supported(string input, string documentPath)
+        {
+            var result = DiscoveryEndpoint.ParseUrl(input, documentPath);
+
+            // test parse URL logic
+            result.Url.Should().Be("https://server:123/strange-location/openid-configuration");
+            result.Authority.Should().Be("https://server:123");
+        }
     }
 }

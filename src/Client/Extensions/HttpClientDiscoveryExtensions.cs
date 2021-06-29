@@ -49,7 +49,7 @@ namespace IdentityModel.Client
                 throw new ArgumentException("An address is required.");
             }
 
-            var parsed = DiscoveryEndpoint.ParseUrl(address);
+            var parsed = DiscoveryEndpoint.ParseUrl(address, request.Policy.DiscoveryDocumentPath);
             var authority = parsed.Authority;
             var url = parsed.Url;
 
