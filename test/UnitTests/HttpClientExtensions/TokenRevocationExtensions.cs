@@ -14,9 +14,9 @@ using Xunit;
 
 namespace IdentityModel.UnitTests
 {
-    public class HttpClientTokenRevocationExtensionsTests
+    public class TokenRevocationExtensionsTests
     {
-        const string Endpoint = "http://server/endoint";
+        private const string Endpoint = "http://server/endoint";
 
         [Fact]
         public async Task Http_request_should_have_correct_format()

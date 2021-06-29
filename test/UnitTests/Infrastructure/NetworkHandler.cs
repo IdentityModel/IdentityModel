@@ -11,7 +11,7 @@ namespace IdentityModel.UnitTests
 {
     public class NetworkHandler : HttpMessageHandler
     {
-        enum Behavior
+        private enum Behavior
         {
             Throw,
             ReturnError,
@@ -26,8 +26,8 @@ namespace IdentityModel.UnitTests
         private readonly Func<HttpRequestMessage, string> _selector;
         private readonly Func<HttpRequestMessage, HttpResponseMessage> _action;
 
-        public HttpRequestMessage Request { get; set; }
-        public string Body { get; set; }
+        public HttpRequestMessage Request { get; private set; }
+        public string Body { get; private set; }
 
         public NetworkHandler(Exception exception)
         {

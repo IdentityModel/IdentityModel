@@ -1,0 +1,12 @@
+﻿{
+  "aud": [ "https://idsvr4/resources", "api1" ],
+  "nbf": 1475824871,
+  "exp": 1475828471,
+  "client_id": "client",
+  "sub": "1",
+  "auth_time": 1475824871,
+  "idp": "local",
+  "amr": "password",
+  "active": true,
+  "scope": "api1 api2"
+}

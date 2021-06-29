@@ -2,8 +2,8 @@
 // Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
 
 
-using Newtonsoft.Json;
 using System.Text;
+using System.Text.Json;
 
 namespace IdentityModel.Jwk
 {
@@ -19,7 +19,7 @@ namespace IdentityModel.Jwk
         /// <returns></returns>
         public static string ToJwkString(this JsonWebKey key)
         {
-            var json = JsonConvert.SerializeObject(key);            
+            var json = JsonSerializer.Serialize(key);            
             return Base64Url.Encode(Encoding.UTF8.GetBytes(json));
         }
     }

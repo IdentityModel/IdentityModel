@@ -28,7 +28,7 @@ namespace IdentityModel
             public bool IgnoreValueCase { get; set; } = false;
         }
 
-        private readonly Options _options = new Options();
+        private readonly Options _options = new();
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ClaimComparer"/> class with default options.
@@ -52,14 +52,13 @@ namespace IdentityModel
             if (x == null && y != null) return false;
             if (x != null && y == null) return false;
 
-            StringComparison valueComparison = StringComparison.Ordinal;
+            var valueComparison = StringComparison.Ordinal;
             if (_options.IgnoreValueCase == true) valueComparison = StringComparison.OrdinalIgnoreCase;
 
             var equal = (String.Equals(x.Type, y.Type, StringComparison.OrdinalIgnoreCase) &&
-                         String.Equals(x.Value, y.Value, valueComparison) &&
-                         String.Equals(x.ValueType, y.ValueType, StringComparison.Ordinal));
-
-
+                             String.Equals(x.Value, y.Value, valueComparison) &&
+                             String.Equals(x.ValueType, y.ValueType, StringComparison.Ordinal));
+            
             if (_options.IgnoreIssuer)
             {
                 return equal;

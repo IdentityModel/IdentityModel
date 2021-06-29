@@ -78,7 +78,7 @@ namespace IdentityModel.Client
         /// <value>
         /// The parameters.
         /// </value>
-        public IDictionary<string, string> Parameters { get; set; } = new Dictionary<string, string>();
+        public Parameters Parameters { get; set; } = new Parameters();
 
         /// <summary>
         /// Clones this instance.
@@ -106,7 +106,7 @@ namespace IdentityModel.Client
                 ClientCredentialStyle = ClientCredentialStyle,
                 ClientId = ClientId,
                 ClientSecret = ClientSecret,
-                Parameters = new Dictionary<string, string>(),
+                Parameters = new Parameters()
             };
 
             if (Parameters != null)
@@ -120,6 +120,15 @@ namespace IdentityModel.Client
                 clone.Headers.TryAddWithoutValidation(header.Key, header.Value);
             }
 
+#if NET5_0
+            if (Options.Any())
+            {
+                foreach (var property in Options)
+                {
+                    clone.Options.TryAdd(property.Key, property.Value);
+                }
+            }          
+#else
             if (Properties != null && Properties.Any())
             {
                 foreach (var property in Properties)
@@ -127,7 +136,7 @@ namespace IdentityModel.Client
                     clone.Properties.Add(property);
                 }
             }
-
+#endif
             return clone;
         }
 
@@ -164,18 +173,15 @@ namespace IdentityModel.Client
                 }
             }
 
-            if (ClientAssertion != null)
+            if (ClientAssertion?.Type != null && ClientAssertion.Value != null)
             {
-                if (ClientAssertion.Type != null && ClientAssertion.Value != null)
-                {
-                    Parameters.AddOptional(OidcConstants.TokenRequest.ClientAssertionType, ClientAssertion.Type);
-                    Parameters.AddOptional(OidcConstants.TokenRequest.ClientAssertion, ClientAssertion.Value);
-                }
+                Parameters.AddOptional(OidcConstants.TokenRequest.ClientAssertionType, ClientAssertion.Type);
+                Parameters.AddOptional(OidcConstants.TokenRequest.ClientAssertion, ClientAssertion.Value);
             }
 
             if (Address.IsPresent())
             {
-                RequestUri = new Uri(Address);
+                RequestUri = new Uri(Address, UriKind.RelativeOrAbsolute);
             }
 
             if (Parameters.Any())
@@ -183,27 +189,5 @@ namespace IdentityModel.Client
                 Content = new FormUrlEncodedContent(Parameters);
             }
         }
-    }
-
-    /// <summary>
-    /// Models a client assertion
-    /// </summary>
-    public class ClientAssertion
-    {
-        /// <summary>
-        /// Gets or sets the assertion type.
-        /// </summary>
-        /// <value>
-        /// The type.
-        /// </value>
-        public string Type { get; set; }
-
-        /// <summary>
-        /// Gets or sets the assertion value.
-        /// </summary>
-        /// <value>
-        /// The value.
-        /// </value>
-        public string Value { get; set; }
     }
 }

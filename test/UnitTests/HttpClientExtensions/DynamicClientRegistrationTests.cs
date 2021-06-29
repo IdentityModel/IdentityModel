@@ -13,9 +13,9 @@ using Xunit;
 
 namespace IdentityModel.UnitTests
 {
-    public class HttpClientDynamicClientRegistrationTests
+    public class DynamicClientRegistrationTests
     {
-        const string Endpoint = "http://server/register";
+        private const string Endpoint = "http://server/register";
 
         [Fact]
         public async Task Http_request_should_have_correct_format()

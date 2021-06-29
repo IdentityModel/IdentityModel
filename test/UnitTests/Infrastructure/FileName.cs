@@ -5,11 +5,11 @@ using System.IO;
 
 namespace IdentityModel.UnitTests
 {
-    static class FileName
+    internal static class FileName
     {
         public static string Create(string name)
         {
-#if NETCOREAPP2_1 || NETCOREAPP3_1
+#if NETCOREAPP2_1 || NETCOREAPP3_1 || NET5_0
             var fullName = Path.Combine(System.AppContext.BaseDirectory, "documents", name);
 #else
             var fullName = Path.Combine(Microsoft.Extensions.PlatformAbstractions.PlatformServices.Default.Application.ApplicationBasePath, "documents", name);

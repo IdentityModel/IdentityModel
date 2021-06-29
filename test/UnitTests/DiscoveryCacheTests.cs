@@ -10,8 +10,8 @@ namespace IdentityModel.UnitTests
 {
     public class DiscoveryCacheTests
     {
-        NetworkHandler _successHandler;
-        string _authority = "https://demo.identityserver.io";
+        private readonly NetworkHandler _successHandler;
+        private const string _authority = "https://demo.identityserver.io";
 
         public DiscoveryCacheTests()
         {

@@ -40,9 +40,9 @@ namespace IdentityModel.Client
             {
                 address = request.Address;
             }
-            else if (client is HttpClient)
+            else if (client is HttpClient httpClient)
             {
-                address = ((HttpClient)client).BaseAddress.AbsoluteUri;
+                address = httpClient.BaseAddress.AbsoluteUri;
             }
             else
             {
@@ -58,7 +58,7 @@ namespace IdentityModel.Client
                 request.Policy.Authority = authority;
             }
 
-            string jwkUrl = "";
+            var jwkUrl = "";
 
             if (!DiscoveryEndpoint.IsSecureScheme(new Uri(url), request.Policy))
             {

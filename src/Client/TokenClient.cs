@@ -2,7 +2,6 @@
 // Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
 
 using System;
-using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
@@ -44,7 +43,7 @@ namespace IdentityModel.Client
         /// </summary>
         /// <param name="request">The request.</param>
         /// <param name="parameters">The parameters.</param>
-        internal void ApplyRequestParameters(TokenRequest request, IDictionary<string, string> parameters)
+        internal void ApplyRequestParameters(TokenRequest request, Parameters parameters)
         {
             request.Address = _options.Address;
             request.ClientId = _options.ClientId;
@@ -52,7 +51,7 @@ namespace IdentityModel.Client
             request.ClientAssertion = _options.ClientAssertion;
             request.ClientCredentialStyle = _options.ClientCredentialStyle;
             request.AuthorizationHeaderStyle = _options.AuthorizationHeaderStyle;
-            request.Parameters = new Dictionary<string, string>(_options.Parameters);
+            request.Parameters = new Parameters(_options.Parameters);
 
             if (parameters != null)
             {
@@ -70,7 +69,7 @@ namespace IdentityModel.Client
         /// <param name="parameters">Extra parameters.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
-        public Task<TokenResponse> RequestClientCredentialsTokenAsync(string scope = null, IDictionary<string, string> parameters = null, CancellationToken cancellationToken = default)
+        public Task<TokenResponse> RequestClientCredentialsTokenAsync(string scope = null, Parameters parameters = null, CancellationToken cancellationToken = default)
         {
             var request = new ClientCredentialsTokenRequest
             {
@@ -88,7 +87,7 @@ namespace IdentityModel.Client
         /// <param name="parameters">Extra parameters.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
-        public Task<TokenResponse> RequestDeviceTokenAsync(string deviceCode, IDictionary<string, string> parameters = null, CancellationToken cancellationToken = default)
+        public Task<TokenResponse> RequestDeviceTokenAsync(string deviceCode, Parameters parameters = null, CancellationToken cancellationToken = default)
         {
             var request = new DeviceTokenRequest
             {
@@ -108,7 +107,7 @@ namespace IdentityModel.Client
         /// <param name="parameters">Extra parameters.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
-        public Task<TokenResponse> RequestPasswordTokenAsync(string userName, string password = null, string scope = null, IDictionary<string, string> parameters = null, CancellationToken cancellationToken = default)
+        public Task<TokenResponse> RequestPasswordTokenAsync(string userName, string password = null, string scope = null, Parameters parameters = null, CancellationToken cancellationToken = default)
         {
             var request = new PasswordTokenRequest
             {
@@ -130,7 +129,7 @@ namespace IdentityModel.Client
         /// <param name="parameters">The parameters.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
-        public Task<TokenResponse> RequestAuthorizationCodeTokenAsync(string code, string redirectUri, string codeVerifier = null, IDictionary<string, string> parameters = null, CancellationToken cancellationToken = default)
+        public Task<TokenResponse> RequestAuthorizationCodeTokenAsync(string code, string redirectUri, string codeVerifier = null, Parameters parameters = null, CancellationToken cancellationToken = default)
         {
             var request = new AuthorizationCodeTokenRequest
             {
@@ -151,7 +150,7 @@ namespace IdentityModel.Client
         /// <param name="parameters">Extra parameters.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
-        public Task<TokenResponse> RequestRefreshTokenAsync(string refreshToken, string scope = null, IDictionary<string, string> parameters = null, CancellationToken cancellationToken = default)
+        public Task<TokenResponse> RequestRefreshTokenAsync(string refreshToken, string scope = null, Parameters parameters = null, CancellationToken cancellationToken = default)
         {
             var request = new RefreshTokenRequest
             {
@@ -170,7 +169,7 @@ namespace IdentityModel.Client
         /// <param name="parameters">Extra parameters.</param>
         /// <param name="cancellationToken">The cancellation token.</param>
         /// <returns></returns>
-        public Task<TokenResponse> RequestTokenAsync(string grantType, IDictionary<string, string> parameters = null, CancellationToken cancellationToken = default)
+        public Task<TokenResponse> RequestTokenAsync(string grantType, Parameters parameters = null, CancellationToken cancellationToken = default)
         {
             var request = new TokenRequest
             {

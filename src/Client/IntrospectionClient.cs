@@ -2,7 +2,6 @@
 // Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
 
 using System;
-using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
@@ -29,7 +28,7 @@ namespace IdentityModel.Client
         /// <summary>
         /// ctor
         /// </summary>
-        /// <param name="client func"></param>
+        /// <param name="client"></param>
         /// <param name="options"></param>
         public IntrospectionClient(Func<HttpMessageInvoker> client, IntrospectionClientOptions options)
         {
@@ -42,7 +41,7 @@ namespace IdentityModel.Client
         /// </summary>
         /// <param name="request">The request.</param>
         /// <param name="parameters">The parameters.</param>
-        internal void ApplyRequestParameters(TokenIntrospectionRequest request, IDictionary<string, string> parameters)
+        internal void ApplyRequestParameters(TokenIntrospectionRequest request, Parameters parameters)
         {
             request.Address = _options.Address;
             request.ClientId = _options.ClientId;
@@ -50,7 +49,7 @@ namespace IdentityModel.Client
             request.ClientAssertion = _options.ClientAssertion;
             request.ClientCredentialStyle = _options.ClientCredentialStyle;
             request.AuthorizationHeaderStyle = _options.AuthorizationHeaderStyle;
-            request.Parameters = new Dictionary<string, string>(_options.Parameters);
+            request.Parameters = new Parameters(_options.Parameters);
 
             if (parameters != null)
             {
@@ -69,7 +68,7 @@ namespace IdentityModel.Client
         /// <param name="parameters"></param>
         /// <param name="cancellationToken"></param>
         /// <returns></returns>
-        public Task<TokenIntrospectionResponse> Introspect(string token, string tokenTypeHint = null, IDictionary<string, string> parameters = null, CancellationToken cancellationToken = default)
+        public Task<TokenIntrospectionResponse> Introspect(string token, string tokenTypeHint = null, Parameters parameters = null, CancellationToken cancellationToken = default)
         {
             var request = new TokenIntrospectionRequest
             {
