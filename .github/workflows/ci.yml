@@ -46,7 +46,7 @@ jobs:
       run: ./build.cmd
     - if: (matrix.runs-on == 'windows-latest') && (github.ref == 'refs/heads/main' || contains(github.ref, 'refs/tags/'))
       env:
-        SignClientSecret: ${{ secrets.SIGNCLIENT }}
+        SignClientSecret: ${{ secrets.SIGNCLIENTSECRET }}
       run: |
         ./build.cmd sign
         dotnet nuget push .\artifacts\*.nupkg -s https://www.myget.org/F/identity/api/v2/package -k ${{ secrets.MYGET }}

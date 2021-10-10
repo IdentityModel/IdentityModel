@@ -39,11 +39,6 @@ namespace build
                 Run("dotnet", "build -c Release --nologo");
             });
 
-            Target(Targets.SignBinary, DependsOn(Targets.Build, Targets.RestoreTools), () =>
-            {
-                Sign("./src/bin/Release", "IdentityModel.dll");
-            });
-
             Target(Targets.Test, DependsOn(Targets.Build), () =>
             {
                 Run("dotnet", "test -c Release --no-build --nologo");
@@ -64,17 +59,17 @@ namespace build
 
             Target(Targets.SignPackage, DependsOn(Targets.Pack, Targets.RestoreTools), () =>
             {
-                Sign(packOutput, "*.nupkg");
+                SignNuGet();
             });
 
             Target("default", DependsOn(Targets.Test, Targets.Pack));
 
-            Target("sign", DependsOn(Targets.SignBinary, Targets.Test, Targets.SignPackage));
+            Target("sign", DependsOn(Targets.Test, Targets.SignPackage));
 
             RunTargetsAndExit(args, ex => ex is SimpleExec.NonZeroExitCodeException || ex.Message.EndsWith(envVarMissing));
         }
 
-        private static void Sign(string path, string searchTerm)
+        private static void SignNuGet()
         {
             var signClientSecret = Environment.GetEnvironmentVariable("SignClientSecret");
 
@@ -83,10 +78,21 @@ namespace build
                 throw new Exception($"SignClientSecret{envVarMissing}");
             }
 
-            foreach (var file in Directory.GetFiles(path, searchTerm, SearchOption.AllDirectories))
+            foreach (var file in Directory.GetFiles(packOutput, "*.nupkg", SearchOption.AllDirectories))
             {
                 Console.WriteLine($"  Signing {file}");
-                Run("dotnet", $"SignClient sign -c signClient.json -i {file} -r sc-ids@dotnetfoundation.org -s \"{signClientSecret}\" -n 'IdentityServer4'", noEcho: true);
+
+                Run("dotnet",
+                        "NuGetKeyVaultSignTool " +
+                        $"sign {file} " +
+                        "--file-digest sha256 " +
+                        "--timestamp-rfc3161 http://timestamp.digicert.com " +
+                        "--azure-key-vault-url https://duendecodesigning.vault.azure.net/ " +
+                        "--azure-key-vault-client-id 18e3de68-2556-4345-8076-a46fad79e474 " +
+                        "--azure-key-vault-tenant-id ed3089f0-5401-4758-90eb-066124e2d907 " +
+                        $"--azure-key-vault-client-secret {signClientSecret} " +
+                        "--azure-key-vault-certificate CodeSigning"
+                        ,noEcho: true);
             }
         }
     }
