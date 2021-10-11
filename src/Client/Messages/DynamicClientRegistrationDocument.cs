@@ -57,6 +57,9 @@ namespace IdentityModel.Client
         [JsonPropertyName(OidcConstants.ClientMetadata.SubjectType)]
         public string SubjectType { get; set; }
 
+        [JsonPropertyName(OidcConstants.ClientMetadata.Scope)]
+        public string Scope { get; set; }
+
         [JsonPropertyName(OidcConstants.ClientMetadata.IdentityTokenSignedResponseAlgorithm)]
         public string IdentityTokenSignedResponseAlgorithm { get; set; }
 
