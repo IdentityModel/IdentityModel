@@ -11,8 +11,11 @@ using System.Text.Json.Serialization;
 namespace IdentityModel.Client
 {
     /// <summary>
-    /// Models an OpenID Connect dynamic client registration request
+    /// Models an OpenID Connect dynamic client registration request.
     /// </summary>
+    /// <remarks>
+    /// This class gets serialized. It may be inherited in order to extend it with custom properties.
+    /// </remarks>
     public class DynamicClientRegistrationDocument
     {
         [JsonPropertyName(OidcConstants.ClientMetadata.RedirectUris)]
