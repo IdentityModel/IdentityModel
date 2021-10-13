@@ -14,13 +14,17 @@ namespace IdentityModel.Client
     /// Models an OpenID Connect dynamic client registration request.
     /// </summary>
     /// <remarks>
-    /// This class gets serialized. It may be inherited in order to extend it with custom properties.
+    /// <para>This class gets serialized. It may be inherited in order to extend it with custom properties.</para>
+    /// <para>https://datatracker.ietf.org/doc/html/rfc7591</para>
     /// </remarks>
     public class DynamicClientRegistrationDocument
     {
         [JsonPropertyName(OidcConstants.ClientMetadata.RedirectUris)]
         public ICollection<string> RedirectUris { get; set; } = new HashSet<string>();
 
+        /// <summary>
+        /// List of the OAuth 2.0 response type strings that the client can use at the authorization endpoint.
+        /// </summary>
         [JsonPropertyName(OidcConstants.ClientMetadata.ResponseTypes)]
         public ICollection<string> ResponseTypes { get; set; } = new HashSet<string>();
 
@@ -30,21 +34,38 @@ namespace IdentityModel.Client
         [JsonPropertyName(OidcConstants.ClientMetadata.ApplicationType)]
         public string ApplicationType { get; set; }
 
+        /// <summary>
+        /// List of strings representing ways to contact people responsible for this client, typically email addresses.
+        /// </summary>
         [JsonPropertyName(OidcConstants.ClientMetadata.Contacts)]
         public ICollection<string> Contacts { get; set; } = new HashSet<string>();
 
+        /// <summary>
+        /// Human-readable string name of the client to be presented to the end-user during authorization.
+        /// </summary>
         [JsonPropertyName(OidcConstants.ClientMetadata.ClientName)]
         public string ClientName { get; set; }
 
         [JsonPropertyName(OidcConstants.ClientMetadata.LogoUri)]
         public string LogoUri { get; set; }
 
+        /// <summary>
+        /// Web page providing information about the client.
+        /// </summary>
         [JsonPropertyName(OidcConstants.ClientMetadata.ClientUri)]
         public string ClientUri { get; set; }
 
+        /// <summary>
+        /// Human-readable privacy policy document that describes how the deployment organization
+        /// collects, uses, retains, and discloses personal data.
+        /// </summary>
         [JsonPropertyName(OidcConstants.ClientMetadata.PolicyUri)]
         public string PolicyUri { get; set; }
 
+        /// <summary>
+        /// Human-readable terms of service document for the client that describes a contractual relationship
+        /// between the end-user and the client that the end-user accepts when authorizing the client.
+        /// </summary>
         [JsonPropertyName(OidcConstants.ClientMetadata.TosUri)]
         public string TosUri { get; set; }
 
@@ -60,6 +81,9 @@ namespace IdentityModel.Client
         [JsonPropertyName(OidcConstants.ClientMetadata.SubjectType)]
         public string SubjectType { get; set; }
 
+        /// <summary>
+        /// String containing a space-separated list of scope values that the client can use when requesting access tokens.
+        /// </summary>
         [JsonPropertyName(OidcConstants.ClientMetadata.Scope)]
         public string Scope { get; set; }
 
@@ -111,30 +135,15 @@ namespace IdentityModel.Client
         [JsonPropertyName(OidcConstants.ClientMetadata.RequestUris)]
         public ICollection<string> RequestUris { get; set; } = new HashSet<string>();
 
-        // don't serialize empty arrays
-        public bool ShouldSerializeRequestUris()
-        {
-            return RequestUris.Any();
-        }
+        // Don't serialize empty arrays
+        public bool ShouldSerializeRequestUris() => RequestUris.Any();
 
-        public bool ShouldSerializeDefaultAcrValues()
-        {
-            return DefaultAcrValues.Any();
-        }
+        public bool ShouldSerializeDefaultAcrValues() => DefaultAcrValues.Any();
 
-        public bool ShouldSerializeResponseTypes()
-        {
-            return ResponseTypes.Any();
-        }
+        public bool ShouldSerializeResponseTypes() => ResponseTypes.Any();
 
-        public bool ShouldSerializeGrantTypes()
-        {
-            return GrantTypes.Any();
-        }
+        public bool ShouldSerializeGrantTypes() => GrantTypes.Any();
 
-        public bool ShouldSerializeContacts()
-        {
-            return Contacts.Any();
-        }
+        public bool ShouldSerializeContacts() => Contacts.Any();
     }
 }
