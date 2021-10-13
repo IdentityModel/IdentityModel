@@ -2,6 +2,7 @@
 // Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
 
 using IdentityModel.Jwk;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json.Serialization;
@@ -47,7 +48,7 @@ namespace IdentityModel.Client
         public string ClientName { get; set; }
 
         [JsonPropertyName(OidcConstants.ClientMetadata.LogoUri)]
-        public string LogoUri { get; set; }
+        public Uri LogoUri { get; set; }
 
         /// <summary>
         /// Web page providing information about the client.
@@ -60,23 +61,23 @@ namespace IdentityModel.Client
         /// collects, uses, retains, and discloses personal data.
         /// </summary>
         [JsonPropertyName(OidcConstants.ClientMetadata.PolicyUri)]
-        public string PolicyUri { get; set; }
+        public Uri PolicyUri { get; set; }
 
         /// <summary>
         /// Human-readable terms of service document for the client that describes a contractual relationship
         /// between the end-user and the client that the end-user accepts when authorizing the client.
         /// </summary>
         [JsonPropertyName(OidcConstants.ClientMetadata.TosUri)]
-        public string TosUri { get; set; }
+        public Uri TosUri { get; set; }
 
         [JsonPropertyName(OidcConstants.ClientMetadata.JwksUri)]
-        public string JwksUri { get; set; }
+        public Uri JwksUri { get; set; }
 
         [JsonPropertyName(OidcConstants.ClientMetadata.Jwks)]
         public JsonWebKeySet Jwks { get; set; }
 
         [JsonPropertyName(OidcConstants.ClientMetadata.SectorIdentifierUri)]
-        public string SectorIdentifierUri { get; set; }
+        public Uri SectorIdentifierUri { get; set; }
 
         [JsonPropertyName(OidcConstants.ClientMetadata.SubjectType)]
         public string SubjectType { get; set; }
@@ -130,7 +131,7 @@ namespace IdentityModel.Client
         public ICollection<string> DefaultAcrValues { get; set; } = new HashSet<string>();
 
         [JsonPropertyName(OidcConstants.ClientMetadata.InitiateLoginUris)]
-        public string InitiateLoginUri { get; set; }
+        public Uri InitiateLoginUri { get; set; }
 
         [JsonPropertyName(OidcConstants.ClientMetadata.RequestUris)]
         public ICollection<string> RequestUris { get; set; } = new HashSet<string>();
