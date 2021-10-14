@@ -14,8 +14,7 @@ namespace IdentityModel.Client
     /// Models an OpenID Connect dynamic client registration request.
     /// </summary>
     /// <remarks>
-    /// <para>This class gets serialized. It may be inherited in order to extend it with custom properties.</para>
-    /// <para>https://datatracker.ietf.org/doc/html/rfc7591</para>
+    /// <see href="https://datatracker.ietf.org/doc/html/rfc7591" />
     /// </remarks>
     public class DynamicClientRegistrationDocument
     {
@@ -134,6 +133,12 @@ namespace IdentityModel.Client
 
         [JsonPropertyName(OidcConstants.ClientMetadata.RequestUris)]
         public ICollection<string> RequestUris { get; set; } = new HashSet<string>();
+        
+        /// <summary>
+        /// Custom client metadata fields to include in the serialization.
+        /// </summary>
+        [JsonExtensionData]
+        public IDictionary<string, object> ExtensionData { get; } = new Dictionary<string, object>();
 
         // Don't serialize empty arrays
         public bool ShouldSerializeRequestUris() => RequestUris.Any();
