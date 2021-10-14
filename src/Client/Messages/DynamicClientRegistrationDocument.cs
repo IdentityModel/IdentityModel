@@ -24,9 +24,18 @@ namespace IdentityModel.Client
         /// <summary>
         /// List of the OAuth 2.0 response type strings that the client can use at the authorization endpoint.
         /// </summary>
+        /// <remarks>
+        /// Example: "code" or "token".
+        /// </remarks>
         [JsonPropertyName(OidcConstants.ClientMetadata.ResponseTypes)]
         public ICollection<string> ResponseTypes { get; set; } = new HashSet<string>();
 
+        /// <summary>
+        /// List of OAuth 2.0 grant type strings that the client can use at the token endpoint.
+        /// </summary>
+        /// <remarks>
+        /// Example: "authorization_code", "implicit", "password", "client_credentials", "refresh_token".
+        /// </remarks>
         [JsonPropertyName(OidcConstants.ClientMetadata.GrantTypes)]
         public ICollection<string> GrantTypes { get; set; } = new HashSet<string>();
 
@@ -36,6 +45,9 @@ namespace IdentityModel.Client
         /// <summary>
         /// List of strings representing ways to contact people responsible for this client, typically email addresses.
         /// </summary>
+        /// <remarks>
+        /// The authorization server may make these contact addresses available to end-users for support requests for the client.
+        /// </remarks>
         [JsonPropertyName(OidcConstants.ClientMetadata.Contacts)]
         public ICollection<string> Contacts { get; set; } = new HashSet<string>();
 
@@ -45,6 +57,11 @@ namespace IdentityModel.Client
         [JsonPropertyName(OidcConstants.ClientMetadata.ClientName)]
         public string ClientName { get; set; }
 
+        /// <summary>
+        /// Logo for the client.
+        /// <remarks>
+        /// If present, the server should display this image to the end-user during approval.
+        /// </remarks>
         [JsonPropertyName(OidcConstants.ClientMetadata.LogoUri)]
         public string LogoUri { get; set; }
 
@@ -68,6 +85,14 @@ namespace IdentityModel.Client
         [JsonPropertyName(OidcConstants.ClientMetadata.TosUri)]
         public string TosUri { get; set; }
 
+        /// <summary>
+        /// JWK Set document which contains the client's public keys.
+        /// </summary>
+        /// <remarks>
+        /// Use of this parameter is preferred over the "jwks" parameter, as it allows for easier key rotation.
+        /// The <paramref name="JwksUri"/> and <paramref name="Jwks"/> parameters MUST NOT both be present in
+        /// the same request or response.
+        /// </remarks>
         [JsonPropertyName(OidcConstants.ClientMetadata.JwksUri)]
         public string JwksUri { get; set; }
 
@@ -83,6 +108,9 @@ namespace IdentityModel.Client
         /// <summary>
         /// String containing a space-separated list of scope values that the client can use when requesting access tokens.
         /// </summary>
+        /// <remarks>
+        /// If omitted, an authorization server may register a client with a default set of scopes.
+        /// </remarks>
         [JsonPropertyName(OidcConstants.ClientMetadata.Scope)]
         public string Scope { get; set; }
 
