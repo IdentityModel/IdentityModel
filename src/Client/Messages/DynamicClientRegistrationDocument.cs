@@ -166,7 +166,7 @@ namespace IdentityModel.Client
         /// Custom client metadata fields to include in the serialization.
         /// </summary>
         [JsonExtensionData]
-        public IDictionary<string, object> ExtensionData { get; } = new Dictionary<string, object>();
+        public IDictionary<string, object> Extensions { get; } = new Dictionary<string, object>();
 
         // Don't serialize empty arrays
         public bool ShouldSerializeRequestUris() => RequestUris.Any();
