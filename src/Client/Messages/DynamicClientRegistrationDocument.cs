@@ -59,6 +59,7 @@ namespace IdentityModel.Client
 
         /// <summary>
         /// Logo for the client.
+        /// </summary>
         /// <remarks>
         /// If present, the server should display this image to the end-user during approval.
         /// </remarks>
