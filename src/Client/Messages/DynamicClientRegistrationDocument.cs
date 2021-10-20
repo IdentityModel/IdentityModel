@@ -59,6 +59,7 @@ namespace IdentityModel.Client
 
         /// <summary>
         /// Logo for the client.
+        /// </summary>
         /// <remarks>
         /// If present, the server should display this image to the end-user during approval.
         /// </remarks>
@@ -90,7 +91,7 @@ namespace IdentityModel.Client
         /// </summary>
         /// <remarks>
         /// Use of this parameter is preferred over the "jwks" parameter, as it allows for easier key rotation.
-        /// The <paramref name="JwksUri"/> and <paramref name="Jwks"/> parameters MUST NOT both be present in
+        /// The <see cref="JwksUri"/> and <see cref="Jwks"/> parameters MUST NOT both be present in
         /// the same request or response.
         /// </remarks>
         [JsonPropertyName(OidcConstants.ClientMetadata.JwksUri)]
@@ -166,7 +167,7 @@ namespace IdentityModel.Client
         /// Custom client metadata fields to include in the serialization.
         /// </summary>
         [JsonExtensionData]
-        public IDictionary<string, object> ExtensionData { get; } = new Dictionary<string, object>();
+        public IDictionary<string, object> Extensions { get; } = new Dictionary<string, object>();
 
         // Don't serialize empty arrays
         public bool ShouldSerializeRequestUris() => RequestUris.Any();
