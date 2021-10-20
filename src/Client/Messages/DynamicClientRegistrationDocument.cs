@@ -91,7 +91,7 @@ namespace IdentityModel.Client
         /// </summary>
         /// <remarks>
         /// Use of this parameter is preferred over the "jwks" parameter, as it allows for easier key rotation.
-        /// The <paramref name="JwksUri"/> and <paramref name="Jwks"/> parameters MUST NOT both be present in
+        /// The <see cref="JwksUri"/> and <see cref="Jwks"/> parameters MUST NOT both be present in
         /// the same request or response.
         /// </remarks>
         [JsonPropertyName(OidcConstants.ClientMetadata.JwksUri)]
