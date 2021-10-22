@@ -192,6 +192,8 @@ namespace IdentityModel
             public const string Jwks = "jwks";
             public const string SectorIdentifierUri = "sector_identifier_uri";
             public const string Scope = "scope";
+            public const string SoftwareId = "software_id";
+            public const string SoftwareVersion = "software_version";
             public const string SubjectType = "subject_type";
             public const string TokenEndpointAuthenticationMethod = "token_endpoint_auth_method";
             public const string TokenEndpointAuthenticationSigningAlgorithm = "token_endpoint_auth_signing_alg";

@@ -18,6 +18,12 @@ namespace IdentityModel.Client
     /// </remarks>
     public class DynamicClientRegistrationDocument
     {
+        /// <summary>
+        /// List of redirection URI strings for use in redirect-based flows such as the authorization code and implicit flows.
+        /// </summary>
+        /// <remarks>
+        /// Clients using flows with redirection must register their redirection URI values.
+        /// </remarks>
         [JsonPropertyName(OidcConstants.ClientMetadata.RedirectUris)]
         public ICollection<string> RedirectUris { get; set; } = new HashSet<string>();
 
@@ -114,6 +120,22 @@ namespace IdentityModel.Client
         /// </remarks>
         [JsonPropertyName(OidcConstants.ClientMetadata.Scope)]
         public string Scope { get; set; }
+
+        /// <summary>
+        /// A unique identifier string (e.g., a <see cref="System.Guid"/>) assigned by the client developer or software
+        /// publisher used by registration endpoints to identify the client software to be dynamically registered.
+        /// </summary>
+        /// <remarks>
+        /// The value of this field is not intended to be human readable and is usually opaque to the client and authorization server.
+        /// </remarks>
+        [JsonPropertyName(OidcConstants.ClientMetadata.SoftwareId)]
+        public string SoftwareId { get; set; }
+
+        /// <summary>
+        /// A version identifier string for the client software identified by <see cref="SoftwareId"/>.
+        /// </summary>
+        [JsonPropertyName(OidcConstants.ClientMetadata.SoftwareVersion)]
+        public string SoftwareVersion { get; set; }
 
         [JsonPropertyName(OidcConstants.ClientMetadata.IdentityTokenSignedResponseAlgorithm)]
         public string IdentityTokenSignedResponseAlgorithm { get; set; }
