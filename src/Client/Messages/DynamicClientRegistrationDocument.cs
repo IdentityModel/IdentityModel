@@ -2,6 +2,7 @@
 // Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
 
 using IdentityModel.Jwk;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.Json.Serialization;
@@ -14,7 +15,7 @@ namespace IdentityModel.Client
     /// Models an OpenID Connect dynamic client registration request.
     /// </summary>
     /// <remarks>
-    /// <see href="https://datatracker.ietf.org/doc/html/rfc7591" />
+    /// <see href="https://datatracker.ietf.org/doc/html/rfc7591" /> and <see href="https://openid.net/specs/openid-connect-registration-1_0.html" />.
     /// </remarks>
     public class DynamicClientRegistrationDocument
     {
@@ -45,6 +46,12 @@ namespace IdentityModel.Client
         [JsonPropertyName(OidcConstants.ClientMetadata.GrantTypes)]
         public ICollection<string> GrantTypes { get; set; } = new HashSet<string>();
 
+        /// <summary>
+        /// Kind of the application.
+        /// </summary>
+        /// <remarks>
+        /// The defined values are "native" or "web".
+        /// </remarks>
         [JsonPropertyName(OidcConstants.ClientMetadata.ApplicationType)]
         public string ApplicationType { get; set; }
 
@@ -106,9 +113,18 @@ namespace IdentityModel.Client
         [JsonPropertyName(OidcConstants.ClientMetadata.Jwks)]
         public JsonWebKeySet Jwks { get; set; }
 
+        /// <summary>
+        /// URL using the https scheme to be used in calculating Pseudonymous Identifiers by the OpenID provider.
+        /// </summary>
+        /// <remarks>
+        /// The URL references a file with a single JSON array of <c>redirect_uri</c> values. 
+        /// </remarks>
         [JsonPropertyName(OidcConstants.ClientMetadata.SectorIdentifierUri)]
         public string SectorIdentifierUri { get; set; }
 
+        /// <remarks>
+        /// Valid types include "pairwise" and "public".
+        /// </remarks>
         [JsonPropertyName(OidcConstants.ClientMetadata.SubjectType)]
         public string SubjectType { get; set; }
 
@@ -170,18 +186,38 @@ namespace IdentityModel.Client
         [JsonPropertyName(OidcConstants.ClientMetadata.TokenEndpointAuthenticationSigningAlgorithm)]
         public string TokenEndpointAuthenticationSigningAlgorithm { get; set; }
 
+        /// <summary>
+        /// Default maximum authentication age.
+        /// </summary>
         [JsonPropertyName(OidcConstants.ClientMetadata.DefaultMaxAge)]
         public int DefaultMaxAge { get; set; }
 
+        /// <summary>
+        /// Whether the <c>auth_time</c> claim in the id token is required.
+        /// </summary>
         [JsonPropertyName(OidcConstants.ClientMetadata.RequireAuthenticationTime)]
         public bool RequireAuthenticationTime { get; set; }
 
+        /// <summary>
+        /// Default requested Authentication Context Class Reference values.
+        /// </summary>
         [JsonPropertyName(OidcConstants.ClientMetadata.DefaultAcrValues)]
         public ICollection<string> DefaultAcrValues { get; set; } = new HashSet<string>();
 
+        /// <summary>
+        /// URI using the https scheme that a third party can use to initiate a login by the relying party.
+        /// </summary>
+        /// <remarks>
+        /// The URI must accept requests via both GET and POST.
+        /// The client must understand the <c>login_hint</c> and iss parameters and should support the
+        /// <c>target_link_uri</c> parameter.
+        /// </remarks>
         [JsonPropertyName(OidcConstants.ClientMetadata.InitiateLoginUris)]
         public string InitiateLoginUri { get; set; }
 
+        /// <summary>
+        /// List of request URI values that are pre-registered by the relying party for use at the OpenID provider.
+        /// </summary>
         [JsonPropertyName(OidcConstants.ClientMetadata.RequestUris)]
         public ICollection<string> RequestUris { get; set; } = new HashSet<string>();
         
@@ -189,7 +225,7 @@ namespace IdentityModel.Client
         /// Custom client metadata fields to include in the serialization.
         /// </summary>
         [JsonExtensionData]
-        public IDictionary<string, object> Extensions { get; } = new Dictionary<string, object>();
+        public IDictionary<string, object> Extensions { get; } = new Dictionary<string, object>(StringComparer.Ordinal);
 
         // Don't serialize empty arrays
         public bool ShouldSerializeRequestUris() => RequestUris.Any();
