@@ -21,7 +21,7 @@ namespace IdentityModel.Client
     public class DynamicClientRegistrationDocument
     {
         [JsonPropertyName(OidcConstants.ClientMetadata.RedirectUris)]
-        public ICollection<string> RedirectUris { get; set; } = new HashSet<string>();
+        public ICollection<Uri> RedirectUris { get; set; } = new HashSet<string>();
 
         /// <summary>
         /// List of the OAuth 2.0 response type strings that the client can use at the authorization endpoint.
@@ -134,7 +134,7 @@ namespace IdentityModel.Client
         public Uri InitiateLoginUri { get; set; }
 
         [JsonPropertyName(OidcConstants.ClientMetadata.RequestUris)]
-        public ICollection<string> RequestUris { get; set; } = new HashSet<string>();
+        public ICollection<Uri> RequestUris { get; set; } = new HashSet<string>();
 
         // Don't serialize empty arrays
         public bool ShouldSerializeRequestUris() => RequestUris.Any();
