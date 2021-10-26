@@ -26,7 +26,7 @@ namespace IdentityModel.Client
         /// Clients using flows with redirection must register their redirection URI values.
         /// </remarks>
         [JsonPropertyName(OidcConstants.ClientMetadata.RedirectUris)]
-        public ICollection<Uri> RedirectUris { get; set; } = new HashSet<string>();
+        public ICollection<Uri> RedirectUris { get; set; } = new HashSet<Uri>();
 
         /// <summary>
         /// List of the OAuth 2.0 response type strings that the client can use at the authorization endpoint.
@@ -184,7 +184,7 @@ namespace IdentityModel.Client
         public Uri InitiateLoginUri { get; set; }
 
         [JsonPropertyName(OidcConstants.ClientMetadata.RequestUris)]
-        public ICollection<Uri> RequestUris { get; set; } = new HashSet<string>();
+        public ICollection<Uri> RequestUris { get; set; } = new HashSet<Uri>();
         
         /// <summary>
         /// Custom client metadata fields to include in the serialization.
