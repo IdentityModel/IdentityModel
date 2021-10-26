@@ -15,20 +15,34 @@ namespace IdentityModel.Client
     /// Models an OpenID Connect dynamic client registration request.
     /// </summary>
     /// <remarks>
-    /// <para>This class gets serialized. It may be inherited in order to extend it with custom properties.</para>
-    /// <para>https://datatracker.ietf.org/doc/html/rfc7591</para>
+    /// <see href="https://datatracker.ietf.org/doc/html/rfc7591" />
     /// </remarks>
     public class DynamicClientRegistrationDocument
     {
+        /// <summary>
+        /// List of redirection URI strings for use in redirect-based flows such as the authorization code and implicit flows.
+        /// </summary>
+        /// <remarks>
+        /// Clients using flows with redirection must register their redirection URI values.
+        /// </remarks>
         [JsonPropertyName(OidcConstants.ClientMetadata.RedirectUris)]
         public ICollection<Uri> RedirectUris { get; set; } = new HashSet<string>();
 
         /// <summary>
         /// List of the OAuth 2.0 response type strings that the client can use at the authorization endpoint.
         /// </summary>
+        /// <remarks>
+        /// Example: "code" or "token".
+        /// </remarks>
         [JsonPropertyName(OidcConstants.ClientMetadata.ResponseTypes)]
         public ICollection<string> ResponseTypes { get; set; } = new HashSet<string>();
 
+        /// <summary>
+        /// List of OAuth 2.0 grant type strings that the client can use at the token endpoint.
+        /// </summary>
+        /// <remarks>
+        /// Example: "authorization_code", "implicit", "password", "client_credentials", "refresh_token".
+        /// </remarks>
         [JsonPropertyName(OidcConstants.ClientMetadata.GrantTypes)]
         public ICollection<string> GrantTypes { get; set; } = new HashSet<string>();
 
@@ -38,6 +52,9 @@ namespace IdentityModel.Client
         /// <summary>
         /// List of strings representing ways to contact people responsible for this client, typically email addresses.
         /// </summary>
+        /// <remarks>
+        /// The authorization server may make these contact addresses available to end-users for support requests for the client.
+        /// </remarks>
         [JsonPropertyName(OidcConstants.ClientMetadata.Contacts)]
         public ICollection<string> Contacts { get; set; } = new HashSet<string>();
 
@@ -47,6 +64,12 @@ namespace IdentityModel.Client
         [JsonPropertyName(OidcConstants.ClientMetadata.ClientName)]
         public string ClientName { get; set; }
 
+        /// <summary>
+        /// Logo for the client.
+        /// </summary>
+        /// <remarks>
+        /// If present, the server should display this image to the end-user during approval.
+        /// </remarks>
         [JsonPropertyName(OidcConstants.ClientMetadata.LogoUri)]
         public Uri LogoUri { get; set; }
 
@@ -70,6 +93,14 @@ namespace IdentityModel.Client
         [JsonPropertyName(OidcConstants.ClientMetadata.TosUri)]
         public Uri TosUri { get; set; }
 
+        /// <summary>
+        /// JWK Set document which contains the client's public keys.
+        /// </summary>
+        /// <remarks>
+        /// Use of this parameter is preferred over the "jwks" parameter, as it allows for easier key rotation.
+        /// The <see cref="JwksUri"/> and <see cref="Jwks"/> parameters MUST NOT both be present in
+        /// the same request or response.
+        /// </remarks>
         [JsonPropertyName(OidcConstants.ClientMetadata.JwksUri)]
         public Uri JwksUri { get; set; }
 
@@ -85,8 +116,27 @@ namespace IdentityModel.Client
         /// <summary>
         /// String containing a space-separated list of scope values that the client can use when requesting access tokens.
         /// </summary>
+        /// <remarks>
+        /// If omitted, an authorization server may register a client with a default set of scopes.
+        /// </remarks>
         [JsonPropertyName(OidcConstants.ClientMetadata.Scope)]
         public string Scope { get; set; }
+
+        /// <summary>
+        /// A unique identifier string (e.g., a <see cref="System.Guid"/>) assigned by the client developer or software
+        /// publisher used by registration endpoints to identify the client software to be dynamically registered.
+        /// </summary>
+        /// <remarks>
+        /// The value of this field is not intended to be human readable and is usually opaque to the client and authorization server.
+        /// </remarks>
+        [JsonPropertyName(OidcConstants.ClientMetadata.SoftwareId)]
+        public string SoftwareId { get; set; }
+
+        /// <summary>
+        /// A version identifier string for the client software identified by <see cref="SoftwareId"/>.
+        /// </summary>
+        [JsonPropertyName(OidcConstants.ClientMetadata.SoftwareVersion)]
+        public string SoftwareVersion { get; set; }
 
         [JsonPropertyName(OidcConstants.ClientMetadata.IdentityTokenSignedResponseAlgorithm)]
         public string IdentityTokenSignedResponseAlgorithm { get; set; }
@@ -135,6 +185,12 @@ namespace IdentityModel.Client
 
         [JsonPropertyName(OidcConstants.ClientMetadata.RequestUris)]
         public ICollection<Uri> RequestUris { get; set; } = new HashSet<string>();
+        
+        /// <summary>
+        /// Custom client metadata fields to include in the serialization.
+        /// </summary>
+        [JsonExtensionData]
+        public IDictionary<string, object> Extensions { get; } = new Dictionary<string, object>();
 
         // Don't serialize empty arrays
         public bool ShouldSerializeRequestUris() => RequestUris.Any();
