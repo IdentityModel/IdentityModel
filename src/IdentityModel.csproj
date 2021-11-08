@@ -31,20 +31,20 @@
 
   <!--Conditional compilation-->
   <PropertyGroup Condition=" '$(OS)' == 'Windows_NT' ">
-    <TargetFrameworks>net461;net472;netstandard2.0;net5.0</TargetFrameworks>
+    <TargetFrameworks>net461;net472;netstandard2.0;net5.0;net6.0</TargetFrameworks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(OS)' != 'Windows_NT' ">
-    <TargetFrameworks>netstandard2.0;net5.0</TargetFrameworks>
+    <TargetFrameworks>netstandard2.0;net5.0;net6.0</TargetFrameworks>
   </PropertyGroup>
   
   <ItemGroup>
-    <PackageReference Include="minver" Version="2.5.0" PrivateAssets="All" />
+    <PackageReference Include="minver" Version="3.0.0-alpha.1" PrivateAssets="All" />
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.0.0" PrivateAssets="All" />
   </ItemGroup>
 
   <!--Conditional Package references -->
-  <ItemGroup Condition="'$(TargetFramework)' != 'net5.0'">
-    <PackageReference Include="System.Text.Json" Version="5.0.2" />
+  <ItemGroup Condition="'$(TargetFramework)' != 'net5.0' and '$(TargetFramework)' != 'net6.0'">
+    <PackageReference Include="System.Text.Json" Version="6.0.0" />
   </ItemGroup>   	
   
   <ItemGroup Condition=" '$(TargetFramework)' == 'net461' or '$(TargetFramework)' == 'net472'">
