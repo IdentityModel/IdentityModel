@@ -120,7 +120,7 @@ namespace IdentityModel.Client
                 clone.Headers.TryAddWithoutValidation(header.Key, header.Value);
             }
 
-#if NET5_0
+#if NET5_0_OR_GREATER
             if (Options.Any())
             {
                 foreach (var property in Options)
