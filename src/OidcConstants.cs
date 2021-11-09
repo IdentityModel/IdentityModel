@@ -122,6 +122,19 @@ namespace IdentityModel
             public const string ActorTokenType = "actor_token_type";
         }
 
+        public static class BackchannelAuthenticationRequest
+        {
+            public const string Scope = "scope";
+            public const string ClientNotificationToken = "client_notification_token";
+            public const string AcrValues = "acr_values";
+            public const string LoginHintToken = "login_hint_token";
+            public const string IdTokenHint = "id_token_hint";
+            public const string LoginHint = "login_hint";
+            public const string BindingMessage = "binding_message";
+            public const string UserCode = "user_code";
+            public const string RequestedExpiry = "requested_expiry";
+        }
+
         public static class TokenRequestTypes
         {
             public const string Bearer = "bearer";
@@ -252,6 +265,7 @@ namespace IdentityModel
             public const string JwtBearer = "urn:ietf:params:oauth:grant-type:jwt-bearer";
             public const string DeviceCode = "urn:ietf:params:oauth:grant-type:device_code";
             public const string TokenExchange = "urn:ietf:params:oauth:grant-type:token-exchange";
+            public const string Ciba = "urn:openid:params:grant-type:ciba";
         }
 
         public static class ClientAssertionTypes
@@ -426,6 +440,19 @@ namespace IdentityModel
             public const string UserInfoSigningAlgorithmsSupported = "userinfo_signing_alg_values_supported";
             public const string TlsClientCertificateBoundAccessTokens = "tls_client_certificate_bound_access_tokens";
             public const string AuthorizationResponseIssParameterSupported = "authorization_response_iss_parameter_supported";
+            
+            // CIBA
+            public const string BackchannelTokenDeliveryModesSupported = "backchannel_token_delivery_modes_supported";
+            public const string BackchannelAuthenticationEndpoint = "backchannel_authentication_endpoint";
+            public const string BackchannelAuthenticationRequestSigningAlgValuesSupported = "backchannel_authentication_request_signing_alg_values_supported";
+            public const string BackchannelUserCodeParameterSupported = "backchannel_user_code_parameter_supported";
+        }
+
+        public static class BackchannelTokenDeliveryModes
+        {
+            public const string Poll = "poll";
+            public const string Ping = "ping";
+            public const string Push = "push";
         }
 
         public static class Events
