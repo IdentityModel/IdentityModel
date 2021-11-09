@@ -6,47 +6,46 @@ using System;
 using System.Security.Cryptography;
 using System.Text;
 
-namespace IdentityModel
+namespace IdentityModel;
+
+/// <summary>
+/// Extensions for strings
+/// </summary>
+public static class StringExtensions
 {
     /// <summary>
-    /// Extensions for strings
+    /// Creates a SHA256 hash of the specified input.
     /// </summary>
-    public static class StringExtensions
+    /// <param name="input">The input.</param>
+    /// <returns>A hash</returns>
+    public static string ToSha256(this string input)
     {
-        /// <summary>
-        /// Creates a SHA256 hash of the specified input.
-        /// </summary>
-        /// <param name="input">The input.</param>
-        /// <returns>A hash</returns>
-        public static string ToSha256(this string input)
+        if (input.IsMissing()) return string.Empty;
+
+        using (var sha = SHA256.Create())
         {
-            if (input.IsMissing()) return string.Empty;
+            var bytes = Encoding.UTF8.GetBytes(input);
+            var hash = sha.ComputeHash(bytes);
 
-            using (var sha = SHA256.Create())
-            {
-                var bytes = Encoding.UTF8.GetBytes(input);
-                var hash = sha.ComputeHash(bytes);
-
-                return Convert.ToBase64String(hash);
-            }
+            return Convert.ToBase64String(hash);
         }
+    }
 
-        /// <summary>
-        /// Creates a SHA512 hash of the specified input.
-        /// </summary>
-        /// <param name="input">The input.</param>
-        /// <returns>A hash</returns>
-        public static string ToSha512(this string input)
+    /// <summary>
+    /// Creates a SHA512 hash of the specified input.
+    /// </summary>
+    /// <param name="input">The input.</param>
+    /// <returns>A hash</returns>
+    public static string ToSha512(this string input)
+    {
+        if (input.IsMissing()) return string.Empty;
+
+        using (var sha = SHA512.Create())
         {
-            if (input.IsMissing()) return string.Empty;
+            var bytes = Encoding.UTF8.GetBytes(input);
+            var hash = sha.ComputeHash(bytes);
 
-            using (var sha = SHA512.Create())
-            {
-                var bytes = Encoding.UTF8.GetBytes(input);
-                var hash = sha.ComputeHash(bytes);
-
-                return Convert.ToBase64String(hash);
-            }
+            return Convert.ToBase64String(hash);
         }
     }
 }

@@ -30,36 +30,35 @@ using System.Collections.Generic;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 
-namespace IdentityModel.Jwk
+namespace IdentityModel.Jwk;
+
+/// <summary>
+/// Contains a collection of <see cref="JsonWebKey"/> that can be populated from a json string.
+/// </summary>
+public class JsonWebKeySet
 {
     /// <summary>
-    /// Contains a collection of <see cref="JsonWebKey"/> that can be populated from a json string.
+    /// Initializes an new instance of <see cref="JsonWebKeySet"/>.
     /// </summary>
-    public class JsonWebKeySet
+    public JsonWebKeySet()
+    { }
+
+    /// <summary>
+    /// Initializes an new instance of <see cref="JsonWebKeySet"/> from a json string.
+    /// </summary>
+    /// <param name="json">a json string containing values.</param>
+    /// <exception cref="ArgumentNullException">if 'json' is null or whitespace.</exception>
+    public JsonWebKeySet(string json)
     {
-        /// <summary>
-        /// Initializes an new instance of <see cref="JsonWebKeySet"/>.
-        /// </summary>
-        public JsonWebKeySet()
-        { }
+        if (string.IsNullOrWhiteSpace(json)) throw new ArgumentNullException(nameof(json));
 
-        /// <summary>
-        /// Initializes an new instance of <see cref="JsonWebKeySet"/> from a json string.
-        /// </summary>
-        /// <param name="json">a json string containing values.</param>
-        /// <exception cref="ArgumentNullException">if 'json' is null or whitespace.</exception>
-        public JsonWebKeySet(string json)
-        {
-            if (string.IsNullOrWhiteSpace(json)) throw new ArgumentNullException(nameof(json));
-
-            var jwebKeys = JsonSerializer.Deserialize<JsonWebKeySet>(json);
-            Keys = jwebKeys.Keys;
-        }
-
-        /// <summary>
-        /// A list of JSON web keys
-        /// </summary>
-        [JsonPropertyName("keys")]
-        public List<JsonWebKey> Keys { get; set; } = new();
+        var jwebKeys = JsonSerializer.Deserialize<JsonWebKeySet>(json);
+        Keys = jwebKeys.Keys;
     }
+
+    /// <summary>
+    /// A list of JSON web keys
+    /// </summary>
+    [JsonPropertyName("keys")]
+    public List<JsonWebKey> Keys { get; set; } = new();
 }
