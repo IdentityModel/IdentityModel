@@ -9,9 +9,13 @@
     <PropertyGroup Condition=" '$(OS)' == 'Windows_NT' ">
         <TargetFrameworks>net461;net472;netcoreapp3.1;net5.0;net6.0</TargetFrameworks>
     </PropertyGroup>
-  
-    <PropertyGroup Condition=" '$(OS)' != 'Windows_NT' ">
+
+    <PropertyGroup Condition=" '$(OS)' != 'Windows_NT' and '$(NETCoreSdkPortableRuntimeIdentifier)' != 'osx-arm64' ">
         <TargetFrameworks>netcoreapp3.1;net5.0;net6.0</TargetFrameworks>
+    </PropertyGroup>
+
+    <PropertyGroup Condition=" '$(NETCoreSdkPortableRuntimeIdentifier)' == 'osx-arm64' ">
+        <TargetFrameworks>net6.0</TargetFrameworks>
     </PropertyGroup>
 
     <ItemGroup>
