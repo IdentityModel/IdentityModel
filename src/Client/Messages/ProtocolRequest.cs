@@ -175,6 +175,12 @@ public class ProtocolRequest : HttpRequestMessage
 
         if (ClientAssertion?.Type != null && ClientAssertion.Value != null)
         {
+            if (ClientCredentialStyle == ClientCredentialStyle.AuthorizationHeader)
+            {
+                throw new InvalidOperationException(
+                    "CredentialStyle.AuthorizationHeader and client assertions are not compatible");
+            }
+            
             Parameters.AddOptional(OidcConstants.TokenRequest.ClientAssertionType, ClientAssertion.Type);
             Parameters.AddOptional(OidcConstants.TokenRequest.ClientAssertion, ClientAssertion.Value);
         }
