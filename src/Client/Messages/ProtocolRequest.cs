@@ -62,7 +62,7 @@ public class ProtocolRequest : HttpRequestMessage
     /// <value>
     /// The client credential style.
     /// </value>
-    public ClientCredentialStyle ClientCredentialStyle { get; set; } = ClientCredentialStyle.PostBody;
+    public ClientCredentialStyle ClientCredentialStyle { get; set; } = ClientCredentialStyle.AuthorizationHeader;
 
     /// <summary>
     /// Gets or sets the basic authentication header style (classic HTTP vs OAuth 2).

@@ -57,7 +57,7 @@ namespace IdentityModel.UnitTests
             httpRequest.Content.Should().NotBeNull();
 
             var headers = httpRequest.Headers;
-            headers.Count().Should().Be(2);
+            headers.Count().Should().Be(3);
             headers.Should().Contain(h => h.Key == "custom" && h.Value.First() == "custom");
 
             var properties = httpRequest.Properties;
@@ -175,7 +175,7 @@ namespace IdentityModel.UnitTests
         }
 
         [Fact]
-        public void Explicit_null_parameters_should__not_fail_()
+        public void Explicit_null_parameters_should_not_fail_()
         {
             Func<Task> act = async () => await _client.RequestClientCredentialsTokenAsync(new ClientCredentialsTokenRequest { ClientId = "client", Parameters = null });
 
@@ -196,10 +196,7 @@ namespace IdentityModel.UnitTests
             var fields = QueryHelpers.ParseQuery(_handler.Body);
             fields.TryGetValue("grant_type", out var grant_type).Should().BeTrue();
             grant_type.First().Should().Be(OidcConstants.GrantTypes.DeviceCode);
-
-            fields.TryGetValue("client_id", out var client_id).Should().BeTrue();
-            client_id.First().Should().Be("device");
-
+            
             fields.TryGetValue("device_code", out var device_code).Should().BeTrue();
             device_code.First().Should().Be("device_code");
         }

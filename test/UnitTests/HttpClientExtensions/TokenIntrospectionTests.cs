@@ -352,9 +352,8 @@ namespace IdentityModel.UnitTests
 
             // check request
             var fields = QueryHelpers.ParseQuery(handler.Body);
-            fields.Count.Should().Be(4);
-
-            fields["client_id"].First().Should().Be("client");
+            fields.Count.Should().Be(3);
+            
             fields["token"].First().Should().Be("token");
             fields["scope"].First().Should().Be("scope1 scope2");
             fields["foo"].First().Should().Be("bar");
