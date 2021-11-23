@@ -18,7 +18,23 @@ public class BackchannelAuthenticationResponse : ProtocolResponse
     /// <summary>
     /// REQUIRED. A JSON number with a positive integer value indicating the expiration time of the "auth_req_id" in seconds since the authentication request was received.
     /// </summary>
-    public int? ExpiresIn => Json.TryGetInt(OidcConstants.BackchannelAuthenticationResponse.ExpiresIn);
+    public int ExpiresIn
+    {
+        get
+        {
+            var value = TryGet(OidcConstants.BackchannelAuthenticationResponse.ExpiresIn);
+
+            if (value != null)
+            {
+                if (int.TryParse(value, out var theValue))
+                {
+                    return theValue;
+                }
+            }
+
+            return 0;
+        }
+    }
 
     /// <summary>
     /// OPTIONAL. A JSON number with a positive integer value indicating the minimum amount of time in seconds that the Client MUST wait between polling requests to the token endpoint.
