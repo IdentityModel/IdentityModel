@@ -133,6 +133,7 @@ public static class OidcConstants
         public const string BindingMessage = "binding_message";
         public const string UserCode = "user_code";
         public const string RequestedExpiry = "requested_expiry";
+        public const string Request = "request";
     }
 
     public static class TokenRequestTypes
@@ -169,6 +170,13 @@ public static class OidcConstants
         public const string BearerTokenType = "Bearer";
         public const string IssuedTokenType = "issued_token_type";
         public const string Scope = "scope";
+    }
+
+    public static class BackchannelAuthenticationResponse
+    {
+        public const string AuthenticationRequestId = "auth_req_id";
+        public const string ExpiresIn = "expires_in";
+        public const string Interval = "interval";
     }
 
     public static class TokenIntrospectionRequest
