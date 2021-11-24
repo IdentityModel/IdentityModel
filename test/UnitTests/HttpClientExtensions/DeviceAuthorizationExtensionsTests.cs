@@ -34,16 +34,15 @@ namespace IdentityModel.UnitTests
             request.Headers.Add("custom", "custom");
             request.Properties.Add("custom", "custom");
 
-            var response = await client.RequestDeviceAuthorizationAsync(request);
+            var _ = await client.RequestDeviceAuthorizationAsync(request);
 
             var httpRequest = handler.Request;
 
             httpRequest.Method.Should().Be(HttpMethod.Post);
             httpRequest.RequestUri.Should().Be(new Uri(Endpoint));
-            httpRequest.Content.Should().NotBeNull();
 
             var headers = httpRequest.Headers;
-            headers.Count().Should().Be(2);
+            headers.Count().Should().Be(3);
             headers.Should().Contain(h => h.Key == "custom" && h.Value.First() == "custom");
 
             var properties = httpRequest.Properties;

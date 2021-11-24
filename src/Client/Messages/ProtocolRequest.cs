@@ -62,7 +62,7 @@ public class ProtocolRequest : HttpRequestMessage
     /// <value>
     /// The client credential style.
     /// </value>
-    public ClientCredentialStyle ClientCredentialStyle { get; set; } = ClientCredentialStyle.PostBody;
+    public ClientCredentialStyle ClientCredentialStyle { get; set; } = ClientCredentialStyle.AuthorizationHeader;
 
     /// <summary>
     /// Gets or sets the basic authentication header style (classic HTTP vs OAuth 2).
@@ -175,6 +175,12 @@ public class ProtocolRequest : HttpRequestMessage
 
         if (ClientAssertion?.Type != null && ClientAssertion.Value != null)
         {
+            if (ClientCredentialStyle == ClientCredentialStyle.AuthorizationHeader)
+            {
+                throw new InvalidOperationException(
+                    "CredentialStyle.AuthorizationHeader and client assertions are not compatible");
+            }
+            
             Parameters.AddOptional(OidcConstants.TokenRequest.ClientAssertionType, ClientAssertion.Type);
             Parameters.AddOptional(OidcConstants.TokenRequest.ClientAssertion, ClientAssertion.Value);
         }

@@ -57,7 +57,7 @@ namespace IdentityModel.UnitTests
             httpRequest.Content.Should().NotBeNull();
 
             var headers = httpRequest.Headers;
-            headers.Count().Should().Be(2);
+            headers.Count().Should().Be(3);
             headers.Should().Contain(h => h.Key == "custom" && h.Value.First() == "custom");
 
             var properties = httpRequest.Properties;
@@ -71,8 +71,9 @@ namespace IdentityModel.UnitTests
         [Fact]
         public async Task No_explicit_endpoint_address_should_use_base_addess()
         {
-            var response = await _client.RequestClientCredentialsTokenAsync(new ClientCredentialsTokenRequest { ClientId = "client" });
-            
+            var response = await _client.RequestClientCredentialsTokenAsync(new ClientCredentialsTokenRequest
+                { ClientId = "client" });
+
             response.IsError.Should().BeFalse();
             _handler.Request.RequestUri.AbsoluteUri.Should().Be(Endpoint);
         }
@@ -114,7 +115,7 @@ namespace IdentityModel.UnitTests
             {
                 ClientId = "client",
                 Scope = "scope",
-                Resource =  { "resource1", "resource2" }
+                Resource = { "resource1", "resource2" }
             });
 
             response.IsError.Should().BeFalse();
@@ -125,7 +126,7 @@ namespace IdentityModel.UnitTests
 
             fields.TryGetValue("scope", out var scope).Should().BeTrue();
             scope.First().Should().Be("scope");
-            
+
             fields.TryGetValue("resource", out var resource).Should().BeTrue();
             resource.Count.Should().Be(2);
             resource[0].Should().Be("resource1");
@@ -150,7 +151,7 @@ namespace IdentityModel.UnitTests
             var headers = _handler.Request.Headers;
             var foo = headers.FirstOrDefault(h => h.Key == "foo");
             foo.Should().NotBeNull();
-            foo.Value.Single().Should().Be("bar");    
+            foo.Value.Single().Should().Be("bar");
         }
 
         [Fact]
@@ -175,9 +176,11 @@ namespace IdentityModel.UnitTests
         }
 
         [Fact]
-        public void Explicit_null_parameters_should__not_fail_()
+        public void Explicit_null_parameters_should_not_fail_()
         {
-            Func<Task> act = async () => await _client.RequestClientCredentialsTokenAsync(new ClientCredentialsTokenRequest { ClientId = "client", Parameters = null });
+            Func<Task> act = async () =>
+                await _client.RequestClientCredentialsTokenAsync(new ClientCredentialsTokenRequest
+                    { ClientId = "client", Parameters = null });
 
             act.Should().NotThrow();
         }
@@ -197,9 +200,6 @@ namespace IdentityModel.UnitTests
             fields.TryGetValue("grant_type", out var grant_type).Should().BeTrue();
             grant_type.First().Should().Be(OidcConstants.GrantTypes.DeviceCode);
 
-            fields.TryGetValue("client_id", out var client_id).Should().BeTrue();
-            client_id.First().Should().Be("device");
-
             fields.TryGetValue("device_code", out var device_code).Should().BeTrue();
             device_code.First().Should().Be("device_code");
         }
@@ -207,7 +207,8 @@ namespace IdentityModel.UnitTests
         [Fact]
         public void Device_request_without_device_code_should_fail()
         {
-            Func<Task> act = async () => await _client.RequestDeviceTokenAsync(new DeviceTokenRequest { ClientId = "device" });
+            Func<Task> act = async () =>
+                await _client.RequestDeviceTokenAsync(new DeviceTokenRequest { ClientId = "device" });
 
             act.Should().Throw<ArgumentException>().And.ParamName.Should().Be("device_code");
         }
@@ -238,7 +239,7 @@ namespace IdentityModel.UnitTests
 
             fields.TryGetValue("scope", out var scope).Should().BeTrue();
             scope.First().Should().Be("scope");
-            
+
             fields.TryGetValue("resource", out var resource).Should().BeTrue();
             resource.Count.Should().Be(2);
             resource[0].Should().Be("resource1");
@@ -270,7 +271,7 @@ namespace IdentityModel.UnitTests
         [Fact]
         public void Password_request_without_username_should_fail()
         {
-           Func<Task> act = async () => await _client.RequestPasswordTokenAsync(new PasswordTokenRequest());
+            Func<Task> act = async () => await _client.RequestPasswordTokenAsync(new PasswordTokenRequest());
 
             act.Should().Throw<ArgumentException>().And.ParamName.Should().Be("username");
         }
@@ -301,7 +302,7 @@ namespace IdentityModel.UnitTests
 
             fields.TryGetValue("code_verifier", out var code_verifier).Should().BeTrue();
             code_verifier.First().Should().Be("verifier");
-            
+
             fields.TryGetValue("resource", out var resource).Should().BeTrue();
             resource.Count.Should().Be(2);
             resource[0].Should().Be("resource1");
@@ -311,10 +312,11 @@ namespace IdentityModel.UnitTests
         [Fact]
         public void Code_request_without_code_should_fail()
         {
-            Func<Task> act = async () => await _client.RequestAuthorizationCodeTokenAsync(new AuthorizationCodeTokenRequest
-            {
-                RedirectUri = "uri"
-            });
+            Func<Task> act = async () => await _client.RequestAuthorizationCodeTokenAsync(
+                new AuthorizationCodeTokenRequest
+                {
+                    RedirectUri = "uri"
+                });
 
             act.Should().Throw<ArgumentException>().And.ParamName.Should().Be("code");
         }
@@ -322,10 +324,11 @@ namespace IdentityModel.UnitTests
         [Fact]
         public void Code_request_without_redirect_uri_should_fail()
         {
-            Func<Task> act = async () => await _client.RequestAuthorizationCodeTokenAsync(new AuthorizationCodeTokenRequest
-            {
-                Code = "code"
-            });
+            Func<Task> act = async () => await _client.RequestAuthorizationCodeTokenAsync(
+                new AuthorizationCodeTokenRequest
+                {
+                    Code = "code"
+                });
 
             act.Should().Throw<ArgumentException>().And.ParamName.Should().Be("redirect_uri");
         }
@@ -352,7 +355,7 @@ namespace IdentityModel.UnitTests
 
             fields.TryGetValue("scope", out var redirect_uri).Should().BeTrue();
             redirect_uri.First().Should().Be("scope");
-            
+
             fields.TryGetValue("resource", out var resource).Should().BeTrue();
             resource.Count.Should().Be(2);
             resource[0].Should().Be("resource1");
@@ -366,21 +369,21 @@ namespace IdentityModel.UnitTests
 
             act.Should().Throw<ArgumentException>().And.ParamName.Should().Be("refresh_token");
         }
-        
+
         [Fact]
         public async Task TokenExchange_request_should_have_correct_format()
         {
             var response = await _client.RequestTokenExchangeTokenAsync(new TokenExchangeTokenRequest
             {
                 ClientId = "client",
-                
+
                 SubjectToken = "subject_token",
                 SubjectTokenType = "subject_token_type",
-                
+
                 Scope = "scope",
                 Resource = "resource",
                 Audience = "audience",
-                
+
                 ActorToken = "actor_token",
                 ActorTokenType = "actor_token_type"
             });
@@ -399,16 +402,16 @@ namespace IdentityModel.UnitTests
 
             fields.TryGetValue("scope", out var scope).Should().BeTrue();
             scope.First().Should().Be("scope");
-            
+
             fields.TryGetValue("resource", out var resource).Should().BeTrue();
             resource.First().Should().Be("resource");
-            
+
             fields.TryGetValue("audience", out var audience).Should().BeTrue();
             audience.First().Should().Be("audience");
-            
+
             fields.TryGetValue("actor_token", out var actor_token).Should().BeTrue();
             actor_token.First().Should().Be("actor_token");
-            
+
             fields.TryGetValue("actor_token_type", out var actor_token_type).Should().BeTrue();
             actor_token_type.First().Should().Be("actor_token_type");
         }
@@ -487,7 +490,7 @@ namespace IdentityModel.UnitTests
                 { "client_secret", "secret" },
                 { "scope", "scope" }
             });
-            
+
             var request = _handler.Request;
 
             request.RequestUri.AbsoluteUri.Should().Be("https://token/");
@@ -523,7 +526,8 @@ namespace IdentityModel.UnitTests
 
             request.Headers.Authorization.Should().NotBeNull();
             request.Headers.Authorization.Scheme.Should().Be("Basic");
-            request.Headers.Authorization.Parameter.Should().Be(BasicAuthenticationOAuthHeaderValue.EncodeCredential("client", "secret"));
+            request.Headers.Authorization.Parameter.Should()
+                .Be(BasicAuthenticationOAuthHeaderValue.EncodeCredential("client", "secret"));
         }
 
         [Fact]
@@ -543,9 +547,8 @@ namespace IdentityModel.UnitTests
             var fields = QueryHelpers.ParseQuery(_handler.Body);
             fields["client_id"].First().Should().Be("client");
             fields["client_secret"].First().Should().Be("secret");
-
         }
-        
+
         [Fact]
         public async Task Setting_client_id_only_and_post_should_put_client_id_in_post_body()
         {
@@ -578,11 +581,27 @@ namespace IdentityModel.UnitTests
 
             request.Headers.Authorization.Should().NotBeNull();
             request.Headers.Authorization.Scheme.Should().Be("Basic");
-            request.Headers.Authorization.Parameter.Should().Be(BasicAuthenticationOAuthHeaderValue.EncodeCredential("client", ""));
+            request.Headers.Authorization.Parameter.Should()
+                .Be(BasicAuthenticationOAuthHeaderValue.EncodeCredential("client", ""));
 
             var fields = QueryHelpers.ParseQuery(_handler.Body);
             fields.TryGetValue("client_secret", out _).Should().BeFalse();
             fields.TryGetValue("client_id", out _).Should().BeFalse();
+        }
+
+        [Fact]
+        public async Task Setting_client_id_and_assertion_with_authorization_header_should_fail()
+        {
+            Func<Task> act = () => _client.RequestTokenAsync(new TokenRequest
+            {
+                GrantType = "test",
+                ClientId = "client",
+                ClientAssertion = { Type = "type", Value = "value" },
+                ClientCredentialStyle = ClientCredentialStyle.AuthorizationHeader
+            });
+
+            await act.Should().ThrowAsync<InvalidOperationException>()
+                .WithMessage("CredentialStyle.AuthorizationHeader and client assertions are not compatible");
         }
 
         [Fact]
@@ -592,7 +611,8 @@ namespace IdentityModel.UnitTests
             {
                 GrantType = "test",
                 ClientId = "client",
-                ClientAssertion = { Type = "type", Value = "value" }
+                ClientAssertion = { Type = "type", Value = "value" },
+                ClientCredentialStyle = ClientCredentialStyle.PostBody
             });
 
             var request = _handler.Request;

@@ -56,7 +56,7 @@ namespace IdentityModel.UnitTests
             httpRequest.Content.Should().NotBeNull();
 
             var headers = httpRequest.Headers;
-            headers.Count().Should().Be(2);
+            headers.Count().Should().Be(3);
             headers.Should().Contain(h => h.Key == "custom" && h.Value.First() == "custom");
 
             var properties = httpRequest.Properties;
