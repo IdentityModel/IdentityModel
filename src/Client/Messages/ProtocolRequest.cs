@@ -175,7 +175,7 @@ public class ProtocolRequest : HttpRequestMessage
 
         if (ClientAssertion?.Type != null && ClientAssertion.Value != null)
         {
-            if (ClientCredentialStyle == ClientCredentialStyle.AuthorizationHeader)
+            if (ClientCredentialStyle == ClientCredentialStyle.AuthorizationHeader && !string.IsNullOrEmpty(ClientId))
             {
                 throw new InvalidOperationException(
                     "CredentialStyle.AuthorizationHeader and client assertions are not compatible");

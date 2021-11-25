@@ -624,5 +624,24 @@ namespace IdentityModel.UnitTests
             fields["client_assertion_type"].First().Should().Be("type");
             fields["client_assertion"].First().Should().Be("value");
         }
+        
+        [Fact]
+        public async Task Setting_assertion_without_client_id_and_authz_header_should_have_correct_format()
+        {
+            var response = await _client.RequestTokenAsync(new TokenRequest
+            {
+                GrantType = "test",
+                ClientAssertion = { Type = "type", Value = "value" },
+                ClientCredentialStyle = ClientCredentialStyle.AuthorizationHeader
+            });
+
+            var request = _handler.Request;
+
+            var fields = QueryHelpers.ParseQuery(_handler.Body);
+
+            fields["grant_type"].First().Should().Be("test");
+            fields["client_assertion_type"].First().Should().Be("type");
+            fields["client_assertion"].First().Should().Be("value");
+        }
     }
 }
