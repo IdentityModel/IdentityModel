@@ -148,6 +148,28 @@ public static class HttpClientTokenRequestExtensions
             
         return await client.RequestTokenAsync(clone, cancellationToken).ConfigureAwait();
     }
+    
+    /// <summary>
+    /// Sends a token request using the urn:openid:params:grant-type:ciba grant type.
+    /// </summary>
+    /// <param name="client">The client.</param>
+    /// <param name="request">The request.</param>
+    /// <param name="cancellationToken">The cancellation token.</param>
+    /// <returns></returns>
+    public static async Task<TokenResponse> RequestBackchannelAuthenticationTokenAsync(this HttpMessageInvoker client, BackchannelAuthenticationTokenRequest request, CancellationToken cancellationToken = default)
+    {
+        var clone = request.Clone();
+
+        clone.Parameters.AddRequired(OidcConstants.TokenRequest.GrantType, OidcConstants.GrantTypes.Ciba);
+        clone.Parameters.AddRequired(OidcConstants.TokenRequest.AuthenticationRequestId, request.AuthenticationRequestId);
+            
+        // foreach (var resource in request.Resource)
+        // {
+        //     clone.Parameters.AddRequired(OidcConstants.TokenRequest.Resource, resource, allowDuplicates: true);
+        // }
+
+        return await client.RequestTokenAsync(clone, cancellationToken).ConfigureAwait();
+    }
 
     /// <summary>
     /// Sends a token request.

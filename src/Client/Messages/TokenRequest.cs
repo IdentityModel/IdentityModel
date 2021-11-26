@@ -216,3 +216,15 @@ public class TokenExchangeTokenRequest : TokenRequest
     /// </summary>
     public string ActorTokenType { get; set; }
 }
+
+/// <summary>
+/// Request for token using urn:openid:params:grant-type:ciba grant type
+/// </summary>
+/// <seealso cref="TokenRequest" />
+public class BackchannelAuthenticationTokenRequest : TokenRequest
+{
+    /// <summary>
+    /// REQUIRED. It is the unique identifier to identify the authentication request (transaction) made by the Client.
+    /// </summary>
+    public string AuthenticationRequestId { get; set; }
+}

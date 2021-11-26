@@ -120,6 +120,9 @@ public static class OidcConstants
         public const string SubjectTokenType = "subject_token_type";
         public const string ActorToken = "actor_token";
         public const string ActorTokenType = "actor_token_type";
+        
+        // ciba
+        public const string AuthenticationRequestId = "auth_req_id";
     }
 
     public static class BackchannelAuthenticationRequest

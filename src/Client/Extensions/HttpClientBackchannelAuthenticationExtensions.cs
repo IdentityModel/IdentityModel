@@ -34,7 +34,7 @@ public static class HttpClientBackchannelAuthenticationExtensions
         clone.Parameters.AddOptional(OidcConstants.BackchannelAuthenticationRequest.BindingMessage, request.BindingMessage);
         clone.Parameters.AddOptional(OidcConstants.BackchannelAuthenticationRequest.UserCode, request.UserCode);
         clone.Parameters.AddOptional(OidcConstants.BackchannelAuthenticationRequest.RequestedExpiry, request.RequestedExpiry.ToString());
-        clone.Parameters.AddOptional(OidcConstants.BackchannelAuthenticationRequest.Request, request.Request);
+        clone.Parameters.AddOptional(OidcConstants.BackchannelAuthenticationRequest.Request, request.RequestObject);
         
         clone.Method = HttpMethod.Post;
         clone.Prepare();

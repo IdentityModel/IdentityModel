@@ -42,14 +42,14 @@ namespace IdentityModel.UnitTests
             {
                 Address = Endpoint,
                 ClientId = "client",
+                
                 GrantType = "grant"
             };
 
             request.Headers.Add("custom", "custom");
             request.Properties.Add("custom", "custom");
 
-            var response = await client.RequestTokenAsync(request);
-
+            var _ = await client.RequestTokenAsync(request);
             var httpRequest = handler.Request;
 
             httpRequest.Method.Should().Be(HttpMethod.Post);
@@ -414,6 +414,25 @@ namespace IdentityModel.UnitTests
 
             fields.TryGetValue("actor_token_type", out var actor_token_type).Should().BeTrue();
             actor_token_type.First().Should().Be("actor_token_type");
+        }
+        
+        [Fact]
+        public async Task Backchannel_authentication_request_should_have_correct_format()
+        {
+            var response = await _client.RequestBackchannelAuthenticationTokenAsync(new BackchannelAuthenticationTokenRequest()
+            {
+                ClientId = "client",
+                AuthenticationRequestId = "id"
+            });
+
+            response.IsError.Should().BeFalse();
+
+            var fields = QueryHelpers.ParseQuery(_handler.Body);
+            fields.TryGetValue("grant_type", out var grant_type).Should().BeTrue();
+            grant_type.First().Should().Be(OidcConstants.GrantTypes.Ciba);
+
+            fields.TryGetValue("auth_req_id", out var id).Should().BeTrue();
+            id.First().Should().Be("id");
         }
 
         [Fact]

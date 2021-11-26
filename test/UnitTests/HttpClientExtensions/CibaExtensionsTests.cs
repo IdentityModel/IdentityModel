@@ -41,7 +41,7 @@ namespace IdentityModel.UnitTests
                 LoginHintToken = "login_hint_token",
                 LoginHint = "login_hint",
                 
-                Request = "request",
+                RequestObject = "request",
             };
 
             request.Headers.Add("custom", "custom");
