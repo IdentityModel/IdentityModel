@@ -42,6 +42,12 @@ namespace IdentityModel.UnitTests
                 LoginHint = "login_hint",
                 
                 RequestObject = "request",
+                
+                Resource =
+                {
+                    "resource1",
+                    "resource2"
+                }
             };
 
             request.Headers.Add("custom", "custom");
@@ -96,6 +102,11 @@ namespace IdentityModel.UnitTests
             
             fields.TryGetValue(OidcConstants.BackchannelAuthenticationRequest.Request, out var ro).Should().BeTrue();
             ro.First().Should().Be("request");
+            
+            fields.TryGetValue(OidcConstants.BackchannelAuthenticationRequest.Resource, out var resource).Should().BeTrue();
+            resource.Count.Should().Be(2);
+            resource.First().Should().Be("resource1");
+            resource.Skip(1).First().Should().Be("resource2");
         }
         
         [Fact]

@@ -137,6 +137,23 @@ public static class OidcConstants
         public const string UserCode = "user_code";
         public const string RequestedExpiry = "requested_expiry";
         public const string Request = "request";
+        public const string Resource = "resource";
+    }
+
+    public static class BackchannelAuthenticationRequestErrors
+    {
+        public const string InvalidRequestObject = "invalid_request_object";
+        public const string InvalidRequest = "invalid_request";
+        public const string InvalidScope = "invalid_scope";
+        public const string ExpiredLoginHintToken = "expired_login_hint_token";
+        public const string UnknownUserId = "unknown_user_id";
+        public const string UnauthorizedClient = "unauthorized_client";
+        public const string MissingUserCode = "missing_user_code";
+        public const string InvalidUserCode = "invalid_user_code";
+        public const string InvalidBindingMessage = "invalid_binding_message";
+        public const string InvalidClient = "invalid_client";
+        public const string AccessDenied = "access_denied";
+        public const string InvalidTarget = "invalid_target";
     }
 
     public static class TokenRequestTypes

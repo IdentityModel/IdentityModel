@@ -422,7 +422,13 @@ namespace IdentityModel.UnitTests
             var response = await _client.RequestBackchannelAuthenticationTokenAsync(new BackchannelAuthenticationTokenRequest()
             {
                 ClientId = "client",
-                AuthenticationRequestId = "id"
+                AuthenticationRequestId = "id",
+                
+                Resource =
+                {
+                    "resource1",
+                    "resource2"
+                }
             });
 
             response.IsError.Should().BeFalse();
@@ -433,6 +439,11 @@ namespace IdentityModel.UnitTests
 
             fields.TryGetValue("auth_req_id", out var id).Should().BeTrue();
             id.First().Should().Be("id");
+            
+            fields.TryGetValue(OidcConstants.TokenRequest.Resource, out var resource).Should().BeTrue();
+            resource.Count.Should().Be(2);
+            resource.First().Should().Be("resource1");
+            resource.Skip(1).First().Should().Be("resource2");
         }
 
         [Fact]

@@ -163,10 +163,10 @@ public static class HttpClientTokenRequestExtensions
         clone.Parameters.AddRequired(OidcConstants.TokenRequest.GrantType, OidcConstants.GrantTypes.Ciba);
         clone.Parameters.AddRequired(OidcConstants.TokenRequest.AuthenticationRequestId, request.AuthenticationRequestId);
             
-        // foreach (var resource in request.Resource)
-        // {
-        //     clone.Parameters.AddRequired(OidcConstants.TokenRequest.Resource, resource, allowDuplicates: true);
-        // }
+        foreach (var resource in request.Resource)
+        {
+            clone.Parameters.AddRequired(OidcConstants.TokenRequest.Resource, resource, allowDuplicates: true);
+        }
 
         return await client.RequestTokenAsync(clone, cancellationToken).ConfigureAwait();
     }

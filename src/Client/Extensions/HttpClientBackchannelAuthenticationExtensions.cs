@@ -36,6 +36,11 @@ public static class HttpClientBackchannelAuthenticationExtensions
         clone.Parameters.AddOptional(OidcConstants.BackchannelAuthenticationRequest.RequestedExpiry, request.RequestedExpiry.ToString());
         clone.Parameters.AddOptional(OidcConstants.BackchannelAuthenticationRequest.Request, request.RequestObject);
         
+        foreach (var resource in request.Resource)
+        {
+            clone.Parameters.AddRequired(OidcConstants.TokenRequest.Resource, resource, allowDuplicates: true);
+        }
+        
         clone.Method = HttpMethod.Post;
         clone.Prepare();
                         
