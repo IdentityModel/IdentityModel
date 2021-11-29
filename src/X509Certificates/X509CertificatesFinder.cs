@@ -8,24 +8,24 @@ using System.Security.Cryptography.X509Certificates;
 
 #pragma warning disable 1591
 
-namespace IdentityModel
+namespace IdentityModel;
+
+[EditorBrowsable(EditorBrowsableState.Never)]
+public class X509CertificatesFinder
 {
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    public class X509CertificatesFinder
+    private readonly StoreLocation _location;
+    private readonly StoreName _name;
+    private readonly X509FindType _findType;
+
+    public X509CertificatesFinder(StoreLocation location, StoreName name, X509FindType findType)
     {
-        private readonly StoreLocation _location;
-        private readonly StoreName _name;
-        private readonly X509FindType _findType;
+        _location = location;
+        _name = name;
+        _findType = findType;
+    }
 
-        public X509CertificatesFinder(StoreLocation location, StoreName name, X509FindType findType)
-        {
-            _location = location;
-            _name = name;
-            _findType = findType;
-        }
-
-        public IEnumerable<X509Certificate2> Find(object findValue, bool validOnly = true)
-        {
+    public IEnumerable<X509Certificate2> Find(object findValue, bool validOnly = true)
+    {
 #if NET452
             var store = new X509Store(_name, _location);
             store.Open(OpenFlags.ReadOnly);
@@ -41,14 +41,13 @@ namespace IdentityModel
                 store.Close();
             }
 #else
-            using (var store = new X509Store(_name, _location))
-            {
-                store.Open(OpenFlags.ReadOnly);
+        using (var store = new X509Store(_name, _location))
+        {
+            store.Open(OpenFlags.ReadOnly);
 
-                var certColl = store.Certificates.Find(_findType, findValue, validOnly);
-                return certColl.Cast<X509Certificate2>();
-            }
-#endif
+            var certColl = store.Certificates.Find(_findType, findValue, validOnly);
+            return certColl.Cast<X509Certificate2>();
         }
+#endif
     }
 }

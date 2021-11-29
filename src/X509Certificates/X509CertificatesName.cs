@@ -6,23 +6,22 @@ using System.Security.Cryptography.X509Certificates;
 
 #pragma warning disable 1591
 
-namespace IdentityModel
+namespace IdentityModel;
+
+[EditorBrowsable(EditorBrowsableState.Never)]
+public class X509CertificatesName
 {
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    public class X509CertificatesName
+    private readonly StoreLocation _location;
+    private readonly StoreName _name;
+
+    public X509CertificatesName(StoreLocation location, StoreName name)
     {
-        private readonly StoreLocation _location;
-        private readonly StoreName _name;
-
-        public X509CertificatesName(StoreLocation location, StoreName name)
-        {
-            _location = location;
-            _name = name;
-        }
-
-        public X509CertificatesFinder Thumbprint => new X509CertificatesFinder(_location, _name, X509FindType.FindByThumbprint);
-        public X509CertificatesFinder SubjectDistinguishedName => new X509CertificatesFinder(_location, _name, X509FindType.FindBySubjectDistinguishedName);
-        public X509CertificatesFinder SerialNumber => new X509CertificatesFinder(_location, _name, X509FindType.FindBySerialNumber);
-        public X509CertificatesFinder IssuerName => new X509CertificatesFinder(_location, _name, X509FindType.FindByIssuerName);
+        _location = location;
+        _name = name;
     }
+
+    public X509CertificatesFinder Thumbprint => new X509CertificatesFinder(_location, _name, X509FindType.FindByThumbprint);
+    public X509CertificatesFinder SubjectDistinguishedName => new X509CertificatesFinder(_location, _name, X509FindType.FindBySubjectDistinguishedName);
+    public X509CertificatesFinder SerialNumber => new X509CertificatesFinder(_location, _name, X509FindType.FindBySerialNumber);
+    public X509CertificatesFinder IssuerName => new X509CertificatesFinder(_location, _name, X509FindType.FindByIssuerName);
 }

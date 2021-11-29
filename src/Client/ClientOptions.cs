@@ -1,76 +1,75 @@
-﻿namespace IdentityModel.Client
+﻿namespace IdentityModel.Client;
+
+/// <summary>
+/// Options for TokenClient
+/// </summary>
+public class TokenClientOptions : ClientOptions
+{ }
+
+/// <summary>
+/// Options for IntrospectionClient
+/// </summary>
+public class IntrospectionClientOptions : ClientOptions
+{ }
+
+/// <summary>
+/// Base-class protocol client options
+/// </summary>
+public abstract class ClientOptions
 {
     /// <summary>
-    /// Options for TokenClient
+    /// Gets or sets the address.
     /// </summary>
-    public class TokenClientOptions : ClientOptions
-    { }
+    /// <value>
+    /// The address.
+    /// </value>
+    public string Address { get; set; }
 
     /// <summary>
-    /// Options for IntrospectionClient
+    /// Gets or sets the client identifier.
     /// </summary>
-    public class IntrospectionClientOptions : ClientOptions
-    { }
+    /// <value>
+    /// The client identifier.
+    /// </value>
+    public string ClientId { get; set; }
 
     /// <summary>
-    /// Base-class protocol client options
+    /// Gets or sets the client secret.
     /// </summary>
-    public abstract class ClientOptions
-    {
-        /// <summary>
-        /// Gets or sets the address.
-        /// </summary>
-        /// <value>
-        /// The address.
-        /// </value>
-        public string Address { get; set; }
+    /// <value>
+    /// The client secret.
+    /// </value>
+    public string ClientSecret { get; set; }
 
-        /// <summary>
-        /// Gets or sets the client identifier.
-        /// </summary>
-        /// <value>
-        /// The client identifier.
-        /// </value>
-        public string ClientId { get; set; }
+    /// <summary>
+    /// Gets or sets the client assertion.
+    /// </summary>
+    /// <value>
+    /// The assertion.
+    /// </value>
+    public ClientAssertion ClientAssertion { get; set; } = new ClientAssertion();
 
-        /// <summary>
-        /// Gets or sets the client secret.
-        /// </summary>
-        /// <value>
-        /// The client secret.
-        /// </value>
-        public string ClientSecret { get; set; }
+    /// <summary>
+    /// Gets or sets the client credential style.
+    /// </summary>
+    /// <value>
+    /// The client credential style.
+    /// </value>
+    public ClientCredentialStyle ClientCredentialStyle { get; set; } = ClientCredentialStyle.PostBody;
 
-        /// <summary>
-        /// Gets or sets the client assertion.
-        /// </summary>
-        /// <value>
-        /// The assertion.
-        /// </value>
-        public ClientAssertion ClientAssertion { get; set; } = new ClientAssertion();
+    /// <summary>
+    /// Gets or sets the basic authentication header style.
+    /// </summary>
+    /// <value>
+    /// The basic authentication header style.
+    /// </value>
+    public BasicAuthenticationHeaderStyle AuthorizationHeaderStyle { get; set; } = BasicAuthenticationHeaderStyle.Rfc6749;
 
-        /// <summary>
-        /// Gets or sets the client credential style.
-        /// </summary>
-        /// <value>
-        /// The client credential style.
-        /// </value>
-        public ClientCredentialStyle ClientCredentialStyle { get; set; } = ClientCredentialStyle.PostBody;
-
-        /// <summary>
-        /// Gets or sets the basic authentication header style.
-        /// </summary>
-        /// <value>
-        /// The basic authentication header style.
-        /// </value>
-        public BasicAuthenticationHeaderStyle AuthorizationHeaderStyle { get; set; } = BasicAuthenticationHeaderStyle.Rfc6749;
-
-        /// <summary>
-        /// Gets or sets additional request parameters (must not conflict with locally set parameters)
-        /// </summary>
-        /// <value>
-        /// The parameters.
-        /// </value>
-        public Parameters Parameters { get; set; } = new Parameters();
-    }
+    /// <summary>
+    /// Gets or sets additional request parameters (must not conflict with locally set parameters)
+    /// </summary>
+    /// <value>
+    /// The parameters.
+    /// </value>
+    public Parameters Parameters { get; set; } = new Parameters();
 }

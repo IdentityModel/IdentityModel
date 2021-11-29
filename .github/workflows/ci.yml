@@ -20,23 +20,24 @@ jobs:
         runs-on: [macOS-latest, ubuntu-latest, windows-latest]
     name: ${{ matrix.runs-on }}
     runs-on: ${{ matrix.runs-on }}
+    
     steps:
-    - uses: actions/checkout@af513c7a016048ae468971c52ed77d9562c7c819
+    - uses: actions/checkout@v2.4.0
 
-    - name: Setup dotnet (main)
+    - name: Setup net6
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: '6.0.x'
+
+    - name: Setup net5
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: '5.0.x'
       
-    - name: Setup dotnet (testing netcore3)
+    - name: Setup net3
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: '3.1.x'
-
-    - name: Setup dotnet (testing netcore2)
-      uses: actions/setup-dotnet@v1
-      with:
-        dotnet-version: '2.1.x'
 
     - run: dotnet --info
     
