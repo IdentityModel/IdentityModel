@@ -70,7 +70,8 @@ public class DiscoveryDocumentResponse : ProtocolResponse
     public string IntrospectionEndpoint => TryGetString(OidcConstants.Discovery.IntrospectionEndpoint);
     public string RevocationEndpoint => TryGetString(OidcConstants.Discovery.RevocationEndpoint);
     public string DeviceAuthorizationEndpoint => TryGetString(OidcConstants.Discovery.DeviceAuthorizationEndpoint);
-
+    public string BackchannelAuthenticationEndpoint => TryGetString(OidcConstants.Discovery.BackchannelAuthenticationEndpoint);
+    
     public string JwksUri => TryGetString(OidcConstants.Discovery.JwksUri);
     public string EndSessionEndpoint => TryGetString(OidcConstants.Discovery.EndSessionEndpoint);
     public string CheckSessionIframe => TryGetString(OidcConstants.Discovery.CheckSessionIframe);
