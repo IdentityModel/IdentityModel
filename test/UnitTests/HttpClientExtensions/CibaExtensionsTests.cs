@@ -41,8 +41,6 @@ namespace IdentityModel.UnitTests
                 LoginHintToken = "login_hint_token",
                 LoginHint = "login_hint",
                 
-                RequestObject = "request",
-                
                 Resource =
                 {
                     "resource1",
@@ -100,13 +98,80 @@ namespace IdentityModel.UnitTests
             fields.TryGetValue(OidcConstants.BackchannelAuthenticationRequest.LoginHint, out var login_hint).Should().BeTrue();
             login_hint.First().Should().Be("login_hint");
             
-            fields.TryGetValue(OidcConstants.BackchannelAuthenticationRequest.Request, out var ro).Should().BeTrue();
-            ro.First().Should().Be("request");
-            
             fields.TryGetValue(OidcConstants.BackchannelAuthenticationRequest.Resource, out var resource).Should().BeTrue();
             resource.Count.Should().Be(2);
             resource.First().Should().Be("resource1");
             resource.Skip(1).First().Should().Be("resource2");
+        }
+        
+        [Fact]
+        public async Task Http_request_with_request_object_should_have_correct_format()
+        {
+            var handler = new NetworkHandler(HttpStatusCode.NotFound, "not found");
+
+            var client = new HttpClient(handler);
+            var request = new BackchannelAuthenticationRequest
+            {
+                Address = Endpoint,
+                RequestObject = "request",
+                
+                ClientId = "client",
+                
+                Scope = "scope",
+                AcrValues = "acr_values",
+                BindingMessage = "binding_message",
+                ClientNotificationToken = "client_notification_token",
+                UserCode = "user_code",
+                
+                RequestedExpiry = 1,
+                
+                IdTokenHint = "id_token_hint",
+                LoginHintToken = "login_hint_token",
+                LoginHint = "login_hint",
+                
+                Resource =
+                {
+                    "resource1",
+                    "resource2"
+                }
+            };
+
+            request.Headers.Add("custom", "custom");
+            request.Properties.Add("custom", "custom");
+
+            var response = await client.RequestBackchannelAuthenticationAsync(request);
+
+            var httpRequest = handler.Request;
+
+            httpRequest.Method.Should().Be(HttpMethod.Post);
+            httpRequest.RequestUri.Should().Be(new Uri(Endpoint));
+            httpRequest.Content.Should().NotBeNull();
+
+            var headers = httpRequest.Headers;
+            headers.Count().Should().Be(3);
+            headers.Should().Contain(h => h.Key == "custom" && h.Value.First() == "custom");
+
+            var properties = httpRequest.Properties;
+            properties.Count.Should().Be(1);
+
+            var prop = properties.First();
+            prop.Key.Should().Be("custom");
+            ((string)prop.Value).Should().Be("custom");
+            
+            var fields = QueryHelpers.ParseQuery(handler.Body);
+            fields.TryGetValue(OidcConstants.BackchannelAuthenticationRequest.Scope, out var scope).Should().BeFalse();
+            fields.TryGetValue(OidcConstants.BackchannelAuthenticationRequest.AcrValues, out var _).Should().BeFalse();
+            fields.TryGetValue(OidcConstants.BackchannelAuthenticationRequest.BindingMessage, out _).Should().BeFalse();
+            fields.TryGetValue(OidcConstants.BackchannelAuthenticationRequest.ClientNotificationToken, out _).Should().BeFalse();
+            fields.TryGetValue(OidcConstants.BackchannelAuthenticationRequest.UserCode, out _).Should().BeFalse();
+            fields.TryGetValue(OidcConstants.BackchannelAuthenticationRequest.RequestedExpiry, out _).Should().BeFalse();
+            fields.TryGetValue(OidcConstants.BackchannelAuthenticationRequest.IdTokenHint, out _).Should().BeFalse();
+            fields.TryGetValue(OidcConstants.BackchannelAuthenticationRequest.LoginHintToken, out _).Should().BeFalse();
+            fields.TryGetValue(OidcConstants.BackchannelAuthenticationRequest.LoginHint, out _).Should().BeFalse();
+            fields.TryGetValue(OidcConstants.BackchannelAuthenticationRequest.Resource, value: out var resource).Should().BeFalse();
+            
+            fields.TryGetValue(OidcConstants.BackchannelAuthenticationRequest.Request, out var ro).Should().BeTrue();
+            ro.First().Should().Be("request");
         }
         
         [Fact]

@@ -54,7 +54,7 @@ public class BackchannelAuthenticationRequest : ProtocolRequest
     /// <summary>
     /// OPTIONAL. A positive integer allowing the client to request the expires_in value for the auth_req_id the server will return.
     /// </summary>
-    public int RequestedExpiry { get; set; }
+    public int? RequestedExpiry { get; set; }
 
     /// <summary>
     /// OPTIONAL. A signed authentication request is made by encoding all of the authentication request parameters as claims of a signed JWT with each parameter name as the claim name and its value as a JSON string.
