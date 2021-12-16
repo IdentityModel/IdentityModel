@@ -86,7 +86,9 @@ public class DiscoveryDocumentResponse : ProtocolResponse
     public IEnumerable<string> ResponseTypesSupported => TryGetStringArray(OidcConstants.Discovery.ResponseTypesSupported);
     public IEnumerable<string> ClaimsSupported => TryGetStringArray(OidcConstants.Discovery.ClaimsSupported);
     public IEnumerable<string> TokenEndpointAuthenticationMethodsSupported => TryGetStringArray(OidcConstants.Discovery.TokenEndpointAuthenticationMethodsSupported);
-
+    public IEnumerable<string> BackchannelTokenDeliveryModesSupported => TryGetStringArray(OidcConstants.Discovery.BackchannelTokenDeliveryModesSupported);
+    public bool? BackchannelUserCodeParameterSupported => TryGetBoolean(OidcConstants.Discovery.BackchannelUserCodeParameterSupported);
+    
     // generic
     public JsonElement TryGetValue(string name) => Json.TryGetValue(name);
     public string TryGetString(string name) => Json.TryGetString(name);
@@ -150,10 +152,7 @@ public class DiscoveryDocumentResponse : ProtocolResponse
     {
         return validationStrategy.IsIssuerNameValid(issuer, authority).Success;
     }
-
-
-
-
+    
     /// <summary>
     /// Validates the endoints and jwks_uri according to the security policy.
     /// </summary>
