@@ -168,7 +168,7 @@ namespace IdentityModel.UnitTests
             fields.TryGetValue(OidcConstants.BackchannelAuthenticationRequest.IdTokenHint, out _).Should().BeFalse();
             fields.TryGetValue(OidcConstants.BackchannelAuthenticationRequest.LoginHintToken, out _).Should().BeFalse();
             fields.TryGetValue(OidcConstants.BackchannelAuthenticationRequest.LoginHint, out _).Should().BeFalse();
-            fields.TryGetValue(OidcConstants.BackchannelAuthenticationRequest.Resource, value: out var resource).Should().BeFalse();
+            fields.TryGetValue(OidcConstants.BackchannelAuthenticationRequest.Resource, out _).Should().BeFalse();
             
             fields.TryGetValue(OidcConstants.BackchannelAuthenticationRequest.Request, out var ro).Should().BeTrue();
             ro.First().Should().Be("request");
