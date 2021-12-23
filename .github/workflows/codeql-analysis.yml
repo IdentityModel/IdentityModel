@@ -35,11 +35,23 @@ jobs:
 
     steps:
     - name: Checkout repository
-      uses: actions/checkout@v2
-    
-    - name: Setup dotnet (main)
+      uses: actions/checkout@v2.4.0
+
+    - name: Setup net6
       uses: actions/setup-dotnet@v1
-      
+      with:
+        dotnet-version: '6.0.x'
+
+    - name: Setup net5
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: '5.0.x'
+
+    - name: Setup net3
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: '3.1.x'
+        
     - run: dotnet --info
 
     # Initializes the CodeQL tools for scanning.

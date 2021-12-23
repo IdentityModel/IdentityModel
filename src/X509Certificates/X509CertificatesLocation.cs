@@ -6,22 +6,21 @@ using System.Security.Cryptography.X509Certificates;
 
 #pragma warning disable 1591
 
-namespace IdentityModel
+namespace IdentityModel;
+
+[EditorBrowsable(EditorBrowsableState.Never)]
+public class X509CertificatesLocation
 {
-    [EditorBrowsable(EditorBrowsableState.Never)]
-    public class X509CertificatesLocation
+    private readonly StoreLocation _location;
+
+    public X509CertificatesLocation(StoreLocation location)
     {
-        private readonly StoreLocation _location;
-
-        public X509CertificatesLocation(StoreLocation location)
-        {
-            _location = location;
-        }
-
-        public X509CertificatesName My => new X509CertificatesName(_location, StoreName.My);
-        public X509CertificatesName AddressBook => new X509CertificatesName(_location, StoreName.AddressBook);
-        public X509CertificatesName TrustedPeople => new X509CertificatesName(_location, StoreName.TrustedPeople);
-        public X509CertificatesName TrustedPublisher => new X509CertificatesName(_location, StoreName.TrustedPublisher);
-        public X509CertificatesName CertificateAuthority => new X509CertificatesName(_location, StoreName.CertificateAuthority);
+        _location = location;
     }
+
+    public X509CertificatesName My => new X509CertificatesName(_location, StoreName.My);
+    public X509CertificatesName AddressBook => new X509CertificatesName(_location, StoreName.AddressBook);
+    public X509CertificatesName TrustedPeople => new X509CertificatesName(_location, StoreName.TrustedPeople);
+    public X509CertificatesName TrustedPublisher => new X509CertificatesName(_location, StoreName.TrustedPublisher);
+    public X509CertificatesName CertificateAuthority => new X509CertificatesName(_location, StoreName.CertificateAuthority);
 }

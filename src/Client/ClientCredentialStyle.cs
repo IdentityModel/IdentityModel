@@ -1,21 +1,20 @@
 ﻿// Copyright (c) Brock Allen & Dominick Baier. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
 
-namespace IdentityModel.Client
+namespace IdentityModel.Client;
+
+/// <summary>
+/// Specifies how the client will transmit client ID and secret
+/// </summary>
+public enum ClientCredentialStyle
 {
     /// <summary>
-    /// Specifies how the client will transmit client ID and secret
+    /// HTTP basic authentication
     /// </summary>
-    public enum ClientCredentialStyle
-    {
-        /// <summary>
-        /// HTTP basic authentication
-        /// </summary>
-        AuthorizationHeader,
+    AuthorizationHeader,
 
-        /// <summary>
-        /// Post values in body
-        /// </summary>
-        PostBody
-    };
-}
+    /// <summary>
+    /// Post values in body
+    /// </summary>
+    PostBody
+};

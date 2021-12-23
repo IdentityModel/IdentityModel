@@ -5,11 +5,10 @@ using System.Security.Cryptography.X509Certificates;
 
 #pragma warning disable 1591
 
-namespace IdentityModel
+namespace IdentityModel;
+
+public static class X509
 {
-    public static class X509
-    {
-        public static X509CertificatesLocation CurrentUser => new X509CertificatesLocation(StoreLocation.CurrentUser);
-        public static X509CertificatesLocation LocalMachine => new X509CertificatesLocation(StoreLocation.LocalMachine);
-    }
+    public static X509CertificatesLocation CurrentUser => new X509CertificatesLocation(StoreLocation.CurrentUser);
+    public static X509CertificatesLocation LocalMachine => new X509CertificatesLocation(StoreLocation.LocalMachine);
 }

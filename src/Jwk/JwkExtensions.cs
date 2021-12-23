@@ -5,22 +5,21 @@
 using System.Text;
 using System.Text.Json;
 
-namespace IdentityModel.Jwk
+namespace IdentityModel.Jwk;
+
+/// <summary>
+/// Extensions for JsonWebKey
+/// </summary>
+public static class JsonWebKeyExtensions
 {
     /// <summary>
-    /// Extensions for JsonWebKey
+    /// Converts a JSON web key to a URL safe string.
     /// </summary>
-    public static class JsonWebKeyExtensions
+    /// <param name="key">The key.</param>
+    /// <returns></returns>
+    public static string ToJwkString(this JsonWebKey key)
     {
-        /// <summary>
-        /// Converts a JSON web key to a URL safe string.
-        /// </summary>
-        /// <param name="key">The key.</param>
-        /// <returns></returns>
-        public static string ToJwkString(this JsonWebKey key)
-        {
-            var json = JsonSerializer.Serialize(key);            
-            return Base64Url.Encode(Encoding.UTF8.GetBytes(json));
-        }
+        var json = JsonSerializer.Serialize(key);            
+        return Base64Url.Encode(Encoding.UTF8.GetBytes(json));
     }
 }
