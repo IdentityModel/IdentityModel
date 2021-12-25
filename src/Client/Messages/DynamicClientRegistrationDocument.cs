@@ -26,7 +26,7 @@ public class DynamicClientRegistrationDocument
     /// Clients using flows with redirection must register their redirection URI values.
     /// </remarks>
     [JsonPropertyName(OidcConstants.ClientMetadata.RedirectUris)]
-    public ICollection<string> RedirectUris { get; set; } = new HashSet<string>();
+    public ICollection<Uri> RedirectUris { get; set; } = new HashSet<Uri>();
 
     /// <summary>
     /// List of the OAuth 2.0 response type strings that the client can use at the authorization endpoint.
@@ -77,27 +77,27 @@ public class DynamicClientRegistrationDocument
     /// If present, the server should display this image to the end-user during approval.
     /// </remarks>
     [JsonPropertyName(OidcConstants.ClientMetadata.LogoUri)]
-    public string LogoUri { get; set; }
+    public Uri LogoUri { get; set; }
 
     /// <summary>
     /// Web page providing information about the client.
     /// </summary>
     [JsonPropertyName(OidcConstants.ClientMetadata.ClientUri)]
-    public string ClientUri { get; set; }
+    public Uri ClientUri { get; set; }
 
     /// <summary>
     /// Human-readable privacy policy document that describes how the deployment organization
     /// collects, uses, retains, and discloses personal data.
     /// </summary>
     [JsonPropertyName(OidcConstants.ClientMetadata.PolicyUri)]
-    public string PolicyUri { get; set; }
+    public Uri PolicyUri { get; set; }
 
     /// <summary>
     /// Human-readable terms of service document for the client that describes a contractual relationship
     /// between the end-user and the client that the end-user accepts when authorizing the client.
     /// </summary>
     [JsonPropertyName(OidcConstants.ClientMetadata.TosUri)]
-    public string TosUri { get; set; }
+    public Uri TosUri { get; set; }
 
     /// <summary>
     /// JWK Set document which contains the client's public keys.
@@ -108,7 +108,7 @@ public class DynamicClientRegistrationDocument
     /// the same request or response.
     /// </remarks>
     [JsonPropertyName(OidcConstants.ClientMetadata.JwksUri)]
-    public string JwksUri { get; set; }
+    public Uri JwksUri { get; set; }
 
     [JsonPropertyName(OidcConstants.ClientMetadata.Jwks)]
     public JsonWebKeySet Jwks { get; set; }
@@ -120,7 +120,7 @@ public class DynamicClientRegistrationDocument
     /// The URL references a file with a single JSON array of <c>redirect_uri</c> values. 
     /// </remarks>
     [JsonPropertyName(OidcConstants.ClientMetadata.SectorIdentifierUri)]
-    public string SectorIdentifierUri { get; set; }
+    public Uri SectorIdentifierUri { get; set; }
 
     /// <remarks>
     /// Valid types include "pairwise" and "public".
@@ -213,13 +213,13 @@ public class DynamicClientRegistrationDocument
     /// <c>target_link_uri</c> parameter.
     /// </remarks>
     [JsonPropertyName(OidcConstants.ClientMetadata.InitiateLoginUris)]
-    public string InitiateLoginUri { get; set; }
+    public Uri InitiateLoginUri { get; set; }
 
     /// <summary>
     /// List of request URI values that are pre-registered by the relying party for use at the OpenID provider.
     /// </summary>
     [JsonPropertyName(OidcConstants.ClientMetadata.RequestUris)]
-    public ICollection<string> RequestUris { get; set; } = new HashSet<string>();
+    public ICollection<Uri> RequestUris { get; set; } = new HashSet<Uri>();
     
     /// <summary>
     /// Custom client metadata fields to include in the serialization.
