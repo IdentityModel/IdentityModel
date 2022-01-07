@@ -22,17 +22,22 @@ jobs:
     runs-on: ${{ matrix.runs-on }}
     
     steps:
-      - uses: actions/checkout@v2.4.0
-        with:
-          fetch-depth: 0
+    - uses: actions/checkout@v2.4.0
 
-      - name: Setup dotnet
-        uses: actions/setup-dotnet@v1
-        with:
-          dotnet-version: |
-            3.1.x
-            5.0.x
-            6.0.x
+    - name: Setup net6
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: '6.0.x'
+
+    - name: Setup net5
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: '5.0.x'
+      
+    - name: Setup net3
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: '3.1.x'
 
     - run: dotnet --info
     
