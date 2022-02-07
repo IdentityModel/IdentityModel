@@ -4,6 +4,7 @@
 using IdentityModel.Internal;
 using System;
 using System.Net.Http;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace IdentityModel.Client;
@@ -19,6 +20,7 @@ public class DiscoveryCache : IDiscoveryCache
     private readonly DiscoveryPolicy _policy;
     private readonly Func<HttpMessageInvoker> _getHttpClient;
     private readonly string _authority;
+    private readonly SemaphoreSlim _semaphoreSlim = new(1, 1);
 
     /// <summary>
     /// Initialize instance of DiscoveryCache with passed authority.
@@ -54,14 +56,22 @@ public class DiscoveryCache : IDiscoveryCache
     /// Get the DiscoveryResponse either from cache or from discovery endpoint.
     /// </summary>
     /// <returns></returns>
-    public Task<DiscoveryDocumentResponse> GetAsync()
+    public async Task<DiscoveryDocumentResponse> GetAsync()
     {
-        if (_nextReload <= DateTime.UtcNow)
-        {
-            Refresh();
-        }
+        await _semaphoreSlim.WaitAsync()
+            .ConfigureAwait(false);
 
-        return _lazyResponse.Value;
+        try
+        {
+            var discoveryDocument = await GetAsyncCore()
+                .ConfigureAwait(false);
+
+            return discoveryDocument;
+        }
+        finally
+        {
+            _semaphoreSlim.Release(1);
+        }
     }
 
     /// <summary>
@@ -72,13 +82,27 @@ public class DiscoveryCache : IDiscoveryCache
         _lazyResponse = new AsyncLazy<DiscoveryDocumentResponse>(GetResponseAsync);
     }
 
+    private async Task<DiscoveryDocumentResponse> GetAsyncCore()
+    {
+
+        if (_nextReload <= DateTime.UtcNow)
+        {
+            Refresh();
+        }
+
+        var discoveryDocument = await _lazyResponse.Value
+            .ConfigureAwait(false);
+
+        return discoveryDocument;
+    }
+
     private async Task<DiscoveryDocumentResponse> GetResponseAsync()
     {
         var result = await _getHttpClient().GetDiscoveryDocumentAsync(new DiscoveryDocumentRequest
         {
             Address = _authority,
             Policy = _policy
-        }).ConfigureAwait();
+        }).ConfigureAwait(false);
 
         if (result.IsError)
         {
