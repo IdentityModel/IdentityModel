@@ -62,6 +62,10 @@ public static class HttpClientJsonWebKeySetExtensions
                 return await ProtocolResponse.FromHttpResponseAsync<JsonWebKeySetResponse>(response, $"Error connecting to {clone.RequestUri.AbsoluteUri}: {response.ReasonPhrase}").ConfigureAwait();
             }
         }
+        catch (OperationCanceledException)
+        {
+            throw;
+        }
         catch (Exception ex)
         {
             return ProtocolResponse.FromException<JsonWebKeySetResponse>(ex, $"Error connecting to {clone.RequestUri.AbsoluteUri}. {ex.Message}.");

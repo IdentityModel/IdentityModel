@@ -35,6 +35,10 @@ public static class HttpClientTokenIntrospectionExtensions
         {
             response = await client.SendAsync(clone, cancellationToken).ConfigureAwait();
         }
+        catch (OperationCanceledException)
+        {
+            throw;
+        }
         catch (Exception ex)
         {
             return ProtocolResponse.FromException<TokenIntrospectionResponse>(ex);

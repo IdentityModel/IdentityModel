@@ -41,6 +41,10 @@ public static class HttpClientDynamicRegistrationExtensions
         {
             response = await client.SendAsync(clone, cancellationToken).ConfigureAwait();
         }
+        catch (OperationCanceledException)
+        {
+            throw;
+        }
         catch (Exception ex)
         {
             return ProtocolResponse.FromException<DynamicClientRegistrationResponse>(ex);

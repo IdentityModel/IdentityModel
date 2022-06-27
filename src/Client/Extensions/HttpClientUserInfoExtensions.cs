@@ -36,6 +36,10 @@ public static class HttpClientUserInfoExtensions
         {
             response = await client.SendAsync(clone, cancellationToken).ConfigureAwait();
         }
+        catch (OperationCanceledException)
+        {
+            throw;
+        }
         catch (Exception ex)
         {
             return ProtocolResponse.FromException<UserInfoResponse>(ex);
