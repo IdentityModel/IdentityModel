@@ -54,6 +54,8 @@ public class JsonWebKeySet
 
         var jwebKeys = JsonSerializer.Deserialize<JsonWebKeySet>(json);
         Keys = jwebKeys.Keys;
+        
+        RawData = json;
     }
 
     /// <summary>
@@ -61,4 +63,10 @@ public class JsonWebKeySet
     /// </summary>
     [JsonPropertyName("keys")]
     public List<JsonWebKey> Keys { get; set; } = new();
+    
+    /// <summary>
+    /// The JSON string used to deserialize this object
+    /// </summary>
+    [JsonIgnore]
+    public string RawData { get; set; };
 }
