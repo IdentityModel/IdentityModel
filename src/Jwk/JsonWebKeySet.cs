@@ -68,5 +68,5 @@ public class JsonWebKeySet
     /// The JSON string used to deserialize this object
     /// </summary>
     [JsonIgnore]
-    public string RawData { get; set; };
+    public string RawData { get; set; }
 }
