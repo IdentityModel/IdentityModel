@@ -6,6 +6,7 @@ using System;
 using System.Net.Http;
 using System.Text;
 using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -27,8 +28,13 @@ public static class HttpClientDynamicRegistrationExtensions
     {
         var clone = request.Clone();
 
+        var options = new JsonSerializerOptions
+        {
+            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
+        };
+
         clone.Method = HttpMethod.Post;
-        clone.Content = new StringContent(JsonSerializer.Serialize(request.Document), Encoding.UTF8, "application/json");
+        clone.Content = new StringContent(JsonSerializer.Serialize(request.Document, options), Encoding.UTF8, "application/json");
         clone.Prepare();
 
         if (request.Token.IsPresent())

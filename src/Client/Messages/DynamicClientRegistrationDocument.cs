@@ -190,7 +190,7 @@ public class DynamicClientRegistrationDocument
     /// Default maximum authentication age.
     /// </summary>
     [JsonPropertyName(OidcConstants.ClientMetadata.DefaultMaxAge)]
-    public int DefaultMaxAge { get; set; }
+    public int? DefaultMaxAge { get; set; }
 
     /// <summary>
     /// Whether the <c>auth_time</c> claim in the id token is required.
