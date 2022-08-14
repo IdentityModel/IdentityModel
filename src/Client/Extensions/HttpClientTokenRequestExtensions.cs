@@ -222,6 +222,10 @@ public static class HttpClientTokenRequestExtensions
         {
             response = await client.SendAsync(request, cancellationToken).ConfigureAwait();
         }
+        catch (OperationCanceledException)
+		{
+            throw;
+		}
         catch (Exception ex)
         {
             return ProtocolResponse.FromException<TokenResponse>(ex);

@@ -59,6 +59,10 @@ public static class HttpClientBackchannelAuthenticationExtensions
         {
             response = await client.SendAsync(clone, cancellationToken).ConfigureAwait();
         }
+        catch (OperationCanceledException)
+        {
+            throw;
+        }
         catch (Exception ex)
         {
             return ProtocolResponse.FromException<BackchannelAuthenticationResponse>(ex);

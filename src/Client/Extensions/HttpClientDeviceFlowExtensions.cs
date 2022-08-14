@@ -34,6 +34,10 @@ public static class HttpClientDeviceFlowExtensions
         {
             response = await client.SendAsync(clone, cancellationToken).ConfigureAwait();
         }
+        catch (OperationCanceledException)
+        {
+            throw;
+        }
         catch (Exception ex)
         {
             return ProtocolResponse.FromException<DeviceAuthorizationResponse>(ex);
