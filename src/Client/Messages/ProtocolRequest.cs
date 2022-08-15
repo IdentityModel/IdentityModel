@@ -38,7 +38,7 @@ public class ProtocolRequest : HttpRequestMessage
     /// <value>
     /// The client identifier.
     /// </value>
-    public string ClientId { get; set; }
+    public string ClientId { get; set; } = default!;
 
     /// <summary>
     /// Gets or sets the client secret.

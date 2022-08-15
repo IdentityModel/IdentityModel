@@ -12,5 +12,5 @@ public class DeviceTokenRequest : TokenRequest
     /// <value>
     /// The scope.
     /// </value>
-    public string DeviceCode { get; set; }
+    public string DeviceCode { get; set; } = default!;
 }

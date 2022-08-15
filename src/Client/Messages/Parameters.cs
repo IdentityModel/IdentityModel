@@ -16,7 +16,7 @@ public class Parameters : List<KeyValuePair<string, string>>
     /// </summary>
     /// <param name="values"></param>
     /// <returns></returns>
-    public static Parameters FromObject(object values)
+    public static Parameters? FromObject(object values)
     {
         if (values == null)
         {

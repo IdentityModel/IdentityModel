@@ -12,7 +12,7 @@ public class BackchannelAuthenticationResponse : ProtocolResponse
     /// <summary>
     /// REQUIRED. This is a unique identifier to identify the authentication request made by the Client.
     /// </summary>
-    public string AuthenticationRequestId =>
+    public string? AuthenticationRequestId =>
         Json.TryGetString(OidcConstants.BackchannelAuthenticationResponse.AuthenticationRequestId);
 
     /// <summary>

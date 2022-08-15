@@ -30,7 +30,7 @@ public class ProtocolResponse
         };
 
         // try to read content
-        string content = null;
+        string? content = null;
         try
         {
             content = await httpResponse.Content.ReadAsStringAsync().ConfigureAwait();
