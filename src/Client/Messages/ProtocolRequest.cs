@@ -30,7 +30,7 @@ public class ProtocolRequest : HttpRequestMessage
     /// <value>
     /// The address.
     /// </value>
-    public string Address { get; set; }
+    public string? Address { get; set; }
 
     /// <summary>
     /// Gets or sets the client identifier.
@@ -46,7 +46,7 @@ public class ProtocolRequest : HttpRequestMessage
     /// <value>
     /// The client secret.
     /// </value>
-    public string ClientSecret { get; set; }
+    public string? ClientSecret { get; set; }
 
     /// <summary>
     /// Gets or sets the client assertion.
@@ -54,7 +54,7 @@ public class ProtocolRequest : HttpRequestMessage
     /// <value>
     /// The assertion.
     /// </value>
-    public ClientAssertion ClientAssertion { get; set; } = new ClientAssertion();
+    public ClientAssertion ClientAssertion { get; set; } = new();
 
     /// <summary>
     /// Gets or sets the client credential style (post body vs authorization header).

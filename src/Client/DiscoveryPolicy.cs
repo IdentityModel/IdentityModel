@@ -20,7 +20,7 @@ public class DiscoveryPolicy
     /// <summary>
     /// The path of the discovery document. Defaults to /.well-known/openid-configuration.
     /// </summary>
-    public string DiscoveryDocumentPath { get; set; }
+    public string? DiscoveryDocumentPath { get; set; }
 
     /// <summary>
     /// Strategy used to validate issuer name and endpoints based on expected authority.

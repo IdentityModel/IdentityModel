@@ -51,12 +51,6 @@ public static class HttpClientJsonWebKeySetExtensions
         {
             response = await client.SendAsync(clone, cancellationToken).ConfigureAwait();
 
-            string responseContent = null;
-            if (response.Content != null)
-            {
-                responseContent = await response.Content.ReadAsStringAsync().ConfigureAwait();
-            }
-
             if (!response.IsSuccessStatusCode)
             {
                 return await ProtocolResponse.FromHttpResponseAsync<JsonWebKeySetResponse>(response, $"Error connecting to {clone.RequestUri.AbsoluteUri}: {response.ReasonPhrase}").ConfigureAwait();

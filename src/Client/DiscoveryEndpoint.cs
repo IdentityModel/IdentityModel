@@ -19,6 +19,8 @@ public class DiscoveryEndpoint
     /// </exception>
     public static DiscoveryEndpoint ParseUrl(string input, string? path = null)
     {
+        if (input == null) throw new ArgumentNullException(nameof(input));
+        
         if (String.IsNullOrEmpty(path))
         {
             path = OidcConstants.Discovery.DiscoveryEndpoint;
@@ -36,7 +38,7 @@ public class DiscoveryEndpoint
         }
 
         var url = input.RemoveTrailingSlash();
-        if (path.StartsWith("/"))
+        if (path!.StartsWith("/"))
         {
             path = path.Substring(1);
         }

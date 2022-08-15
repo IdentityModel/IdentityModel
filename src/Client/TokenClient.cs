@@ -43,12 +43,12 @@ public class TokenClient
     /// </summary>
     /// <param name="request">The request.</param>
     /// <param name="parameters">The parameters.</param>
-    internal void ApplyRequestParameters(TokenRequest request, Parameters parameters)
+    internal void ApplyRequestParameters(TokenRequest request, Parameters? parameters)
     {
         request.Address = _options.Address;
         request.ClientId = _options.ClientId;
-        request.ClientSecret = _options.ClientSecret;
-        request.ClientAssertion = _options.ClientAssertion;
+        request.ClientSecret = _options.ClientSecret!;
+        request.ClientAssertion = _options.ClientAssertion!;
         request.ClientCredentialStyle = _options.ClientCredentialStyle;
         request.AuthorizationHeaderStyle = _options.AuthorizationHeaderStyle;
         request.Parameters = new Parameters(_options.Parameters);

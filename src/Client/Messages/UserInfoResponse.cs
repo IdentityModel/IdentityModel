@@ -39,5 +39,5 @@ public class UserInfoResponse : ProtocolResponse
     /// <value>
     /// The claims.
     /// </value>
-    public IEnumerable<Claim> Claims { get; private set; }
+    public IEnumerable<Claim> Claims { get; private set; } = default!;
 }
