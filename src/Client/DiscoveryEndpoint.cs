@@ -17,7 +17,7 @@ public class DiscoveryEndpoint
     /// <exception cref="System.InvalidOperationException">
     /// Malformed URL
     /// </exception>
-    public static DiscoveryEndpoint ParseUrl(string input, string path = null)
+    public static DiscoveryEndpoint ParseUrl(string input, string? path = null)
     {
         if (String.IsNullOrEmpty(path))
         {

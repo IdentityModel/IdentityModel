@@ -22,7 +22,7 @@ public class ProtocolResponse
     /// <param name="httpResponse">The HTTP response.</param>
     /// <param name="initializationData">The initialization data.</param>
     /// <returns></returns>
-    public static async Task<T> FromHttpResponseAsync<T>(HttpResponseMessage httpResponse, object initializationData = null) where T: ProtocolResponse, new()
+    public static async Task<T> FromHttpResponseAsync<T>(HttpResponseMessage httpResponse, object? initializationData = null) where T: ProtocolResponse, new()
     {
         var response = new T
         {
@@ -87,7 +87,7 @@ public class ProtocolResponse
     /// <param name="ex">The ex.</param>
     /// <param name="errorMessage">The error message.</param>
     /// <returns></returns>
-    public static T FromException<T>(Exception ex, string errorMessage = null) where T : ProtocolResponse, new()
+    public static T FromException<T>(Exception ex, string? errorMessage = null) where T : ProtocolResponse, new()
     {
         var response = new T
         {
@@ -104,7 +104,7 @@ public class ProtocolResponse
     /// </summary>
     /// <param name="initializationData">The initialization data.</param>
     /// <returns></returns>
-    protected virtual Task InitializeAsync(object initializationData = null)
+    protected virtual Task InitializeAsync(object? initializationData = null)
     {
         return Task.CompletedTask;
     }

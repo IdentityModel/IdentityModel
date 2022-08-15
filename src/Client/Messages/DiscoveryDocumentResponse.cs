@@ -20,7 +20,7 @@ public class DiscoveryDocumentResponse : ProtocolResponse
 {
     public DiscoveryPolicy Policy { get; set; }
 
-    protected override Task InitializeAsync(object initializationData = null)
+    protected override Task InitializeAsync(object? initializationData = null)
     {
         if (!HttpResponse.IsSuccessStatusCode)
         {

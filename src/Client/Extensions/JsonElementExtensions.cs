@@ -21,7 +21,7 @@ public static class JsonElementExtensions
     /// <param name="excludeKeys">Claims that should be excluded.</param>
     /// <returns></returns>
 
-    public static IEnumerable<Claim> ToClaims(this JsonElement json, string issuer = null, params string[] excludeKeys)
+    public static IEnumerable<Claim> ToClaims(this JsonElement json, string? issuer = null, params string[] excludeKeys)
     {
         var claims = new List<Claim>();
         var excludeList = excludeKeys.ToList();

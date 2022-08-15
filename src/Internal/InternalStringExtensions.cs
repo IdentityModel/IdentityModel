@@ -31,7 +31,7 @@ internal static class InternalStringExtensions
     }
 
     [DebuggerStepThrough]
-    public static string RemoveTrailingSlash(this string url)
+    public static string? RemoveTrailingSlash(this string? url)
     {
         if (url != null && url.EndsWith("/"))
         {

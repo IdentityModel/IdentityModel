@@ -68,7 +68,7 @@ public class IntrospectionClient
     /// <param name="parameters"></param>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
-    public Task<TokenIntrospectionResponse> Introspect(string token, string tokenTypeHint = null, Parameters parameters = null, CancellationToken cancellationToken = default)
+    public Task<TokenIntrospectionResponse> Introspect(string token, string? tokenTypeHint = null, Parameters? parameters = null, CancellationToken cancellationToken = default)
     {
         var request = new TokenIntrospectionRequest
         {

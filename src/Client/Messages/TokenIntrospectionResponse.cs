@@ -21,7 +21,7 @@ public class TokenIntrospectionResponse : ProtocolResponse
     /// </summary>
     /// <param name="initializationData">The initialization data.</param>
     /// <returns></returns>
-    protected override Task InitializeAsync(object initializationData = null)
+    protected override Task InitializeAsync(object? initializationData = null)
     {
         if (!IsError)
         {

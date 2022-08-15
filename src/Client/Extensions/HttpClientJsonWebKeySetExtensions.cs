@@ -22,7 +22,7 @@ public static class HttpClientJsonWebKeySetExtensions
     /// <param name="address"></param>
     /// <param name="cancellationToken">The cancellation token.</param>
     /// <returns></returns>
-    public static async Task<JsonWebKeySetResponse> GetJsonWebKeySetAsync(this HttpMessageInvoker client, string address = null, CancellationToken cancellationToken = default)
+    public static async Task<JsonWebKeySetResponse> GetJsonWebKeySetAsync(this HttpMessageInvoker client, string? address = null, CancellationToken cancellationToken = default)
     {
         return await client.GetJsonWebKeySetAsync(new JsonWebKeySetRequest
         {

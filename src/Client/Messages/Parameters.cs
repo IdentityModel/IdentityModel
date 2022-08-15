@@ -120,7 +120,7 @@ public class Parameters : List<KeyValuePair<string, string>>
     /// <param name="allowDuplicates">Allow multiple values of the same parameter.</param>
     /// <exception cref="ArgumentNullException"></exception>
     /// <exception cref="InvalidOperationException"></exception>
-    public void AddOptional(string key, string value, bool allowDuplicates = false)
+    public void AddOptional(string key, string? value, bool allowDuplicates = false)
     {
         if (key.IsMissing()) throw new ArgumentNullException(nameof(key));
             
@@ -175,7 +175,7 @@ public class Parameters : List<KeyValuePair<string, string>>
     /// </summary>
     /// <param name="additionalValues"></param>
     /// <returns>Merged parameters</returns>
-    public Parameters Merge(Parameters additionalValues = null)
+    public Parameters Merge(Parameters? additionalValues = null)
     {
         if (additionalValues != null)
         {
