@@ -100,7 +100,7 @@ public static class JsonElementExtensions
     /// <param name="json">The json.</param>
     /// <param name="name">The name.</param>
     /// <returns></returns>
-    public static string TryGetString(this JsonElement json, string name)
+    public static string? TryGetString(this JsonElement json, string name)
     {
         JsonElement value = json.TryGetValue(name);
         return value.ValueKind == JsonValueKind.Undefined ? null : value.ToString();

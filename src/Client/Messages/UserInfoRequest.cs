@@ -14,5 +14,5 @@ public class UserInfoRequest : ProtocolRequest
     /// <value>
     /// The token.
     /// </value>
-    public string Token { get; set; }
+    public string? Token { get; set; }
 }

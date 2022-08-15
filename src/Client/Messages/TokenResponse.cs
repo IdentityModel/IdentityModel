@@ -15,7 +15,7 @@ public class TokenResponse : ProtocolResponse
     /// <value>
     /// The access token.
     /// </value>
-    public string AccessToken => TryGet(OidcConstants.TokenResponse.AccessToken);
+    public string? AccessToken => TryGet(OidcConstants.TokenResponse.AccessToken);
 
     /// <summary>
     /// Gets the identity token.
@@ -23,7 +23,7 @@ public class TokenResponse : ProtocolResponse
     /// <value>
     /// The identity token.
     /// </value>
-    public string IdentityToken => TryGet(OidcConstants.TokenResponse.IdentityToken);
+    public string? IdentityToken => TryGet(OidcConstants.TokenResponse.IdentityToken);
 
     /// <summary>
     /// Gets the scope.
@@ -39,7 +39,7 @@ public class TokenResponse : ProtocolResponse
     /// <value>
     /// The issued token type.
     /// </value>
-    public string IssuedTokenType => TryGet(OidcConstants.TokenResponse.IssuedTokenType);
+    public string? IssuedTokenType => TryGet(OidcConstants.TokenResponse.IssuedTokenType);
         
     /// <summary>
     /// Gets the type of the token.
@@ -47,7 +47,7 @@ public class TokenResponse : ProtocolResponse
     /// <value>
     /// The type of the token.
     /// </value>
-    public string TokenType => TryGet(OidcConstants.TokenResponse.TokenType);
+    public string? TokenType => TryGet(OidcConstants.TokenResponse.TokenType);
 
     /// <summary>
     /// Gets the refresh token.
@@ -55,7 +55,7 @@ public class TokenResponse : ProtocolResponse
     /// <value>
     /// The refresh token.
     /// </value>
-    public string RefreshToken => TryGet(OidcConstants.TokenResponse.RefreshToken);
+    public string? RefreshToken => TryGet(OidcConstants.TokenResponse.RefreshToken);
 
     /// <summary>
     /// Gets the error description.
@@ -63,7 +63,7 @@ public class TokenResponse : ProtocolResponse
     /// <value>
     /// The error description.
     /// </value>
-    public string ErrorDescription => TryGet(OidcConstants.TokenResponse.ErrorDescription);
+    public string? ErrorDescription => TryGet(OidcConstants.TokenResponse.ErrorDescription);
 
     /// <summary>
     /// Gets the expires in.

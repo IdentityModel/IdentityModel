@@ -115,7 +115,7 @@ public class ProtocolResponse
     /// <value>
     /// The HTTP response.
     /// </value>
-    public HttpResponseMessage HttpResponse { get; protected set; }
+    public HttpResponseMessage HttpResponse { get; protected set; } = default!;
         
     /// <summary>
     /// Gets the raw protocol response (if present).
@@ -123,7 +123,7 @@ public class ProtocolResponse
     /// <value>
     /// The raw.
     /// </value>
-    public string Raw { get; protected set; }
+    public string? Raw { get; protected set; }
 
     /// <summary>
     /// Gets the protocol response as JSON (if present).
@@ -139,7 +139,7 @@ public class ProtocolResponse
     /// <value>
     /// The exception.
     /// </value>
-    public Exception Exception { get; protected set; }
+    public Exception? Exception { get; protected set; }
 
     /// <summary>
     /// Gets a value indicating whether an error occurred.
@@ -163,7 +163,7 @@ public class ProtocolResponse
     /// <value>
     /// The type of the error.
     /// </value>
-    protected string ErrorMessage { get; set; }
+    protected string? ErrorMessage { get; set; }
 
     /// <summary>
     /// Gets the HTTP status code - or <c>0</c> when <see cref="HttpResponse" /> is <see langword="null"/>.
@@ -179,7 +179,7 @@ public class ProtocolResponse
     /// <value>
     /// The HTTP error reason.
     /// </value>
-    public string HttpErrorReason => this.HttpResponse?.ReasonPhrase ?? default;
+    public string? HttpErrorReason => this.HttpResponse?.ReasonPhrase ?? default;
 
     /// <summary>
     /// Gets the error.
@@ -187,7 +187,7 @@ public class ProtocolResponse
     /// <value>
     /// The error.
     /// </value>
-    public string Error
+    public string? Error
     {
         get
         {
@@ -213,5 +213,5 @@ public class ProtocolResponse
     /// </summary>
     /// <param name="name">The name.</param>
     /// <returns></returns>
-    public string TryGet(string name) => Json.TryGetString(name);
+    public string? TryGet(string name) => Json.TryGetString(name);
 }

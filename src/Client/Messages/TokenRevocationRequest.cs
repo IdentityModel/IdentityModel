@@ -15,7 +15,7 @@ public class TokenRevocationRequest : ProtocolRequest
     /// <value>
     /// The token.
     /// </value>
-    public string Token { get; set; }
+    public string Token { get; set; } = default!;
 
     /// <summary>
     /// Gets or sets the token type hint.
@@ -23,5 +23,5 @@ public class TokenRevocationRequest : ProtocolRequest
     /// <value>
     /// The token type hint.
     /// </value>
-    public string TokenTypeHint { get; set; }
+    public string TokenTypeHint { get; set; } = default!;
 }

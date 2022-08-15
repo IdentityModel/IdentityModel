@@ -15,7 +15,7 @@ public class DynamicClientRegistrationRequest : ProtocolRequest
     /// <value>
     /// The token.
     /// </value>
-    public string Token { get; set; }
+    public string? Token { get; set; }
 
     /// <summary>
     /// Gets or sets the registration request.
@@ -23,5 +23,5 @@ public class DynamicClientRegistrationRequest : ProtocolRequest
     /// <value>
     /// The registration request.
     /// </value>
-    public DynamicClientRegistrationDocument Document  { get; set; }
+    public DynamicClientRegistrationDocument Document { get; set; } = default!;
 }

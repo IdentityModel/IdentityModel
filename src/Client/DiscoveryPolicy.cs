@@ -15,7 +15,7 @@ public class DiscoveryPolicy
     /// <summary>
     /// Gets or sets the Authority on which the policy checks will be based on
     /// </summary>
-    public string Authority { get; set; }
+    public string Authority { get; set; } = default!;
 
     /// <summary>
     /// The path of the discovery document. Defaults to /.well-known/openid-configuration.
