@@ -52,7 +52,7 @@ public class DiscoveryDocumentResponse : ProtocolResponse
     /// <value>
     /// The key set.
     /// </value>
-    public JsonWebKeySet KeySet { get; set; }
+    public JsonWebKeySet? KeySet { get; set; }
         
     /// <summary>
     /// Gets the MTLS endpoint aliases
@@ -60,7 +60,7 @@ public class DiscoveryDocumentResponse : ProtocolResponse
     /// <value>
     /// The key set.
     /// </value>
-    public MtlsEndpointAliases MtlsEndpointAliases { get; internal set; }
+    public MtlsEndpointAliases? MtlsEndpointAliases { get; internal set; }
         
     // strongly typed
     public string? Issuer => TryGetString(OidcConstants.Discovery.Issuer);
@@ -101,7 +101,7 @@ public class DiscoveryDocumentResponse : ProtocolResponse
         {
             IAuthorityValidationStrategy strategy = policy.AuthorityValidationStrategy ?? DiscoveryPolicy.DefaultAuthorityValidationStrategy;
 
-            AuthorityValidationResult issuerValidationResult = strategy.IsIssuerNameValid(Issuer, policy.Authority);
+            AuthorityValidationResult issuerValidationResult = strategy.IsIssuerNameValid(Issuer!, policy.Authority);
 
             if (!issuerValidationResult.Success)
             {
@@ -181,18 +181,18 @@ public class DiscoveryDocumentResponse : ProtocolResponse
             {
                 var endpoint = element.Value.ToString();
             
-                var isValidUri = Uri.TryCreate(endpoint, UriKind.Absolute, out Uri uri);
+                var isValidUri = Uri.TryCreate(endpoint, UriKind.Absolute, out var uri);
                 if (!isValidUri)
                 {
                     return $"Malformed endpoint: {endpoint}";
                 }
             
-                if (!DiscoveryEndpoint.IsValidScheme(uri))
+                if (!DiscoveryEndpoint.IsValidScheme(uri!))
                 {
                     return $"Malformed endpoint: {endpoint}";
                 }
             
-                if (!DiscoveryEndpoint.IsSecureScheme(uri, policy))
+                if (!DiscoveryEndpoint.IsSecureScheme(uri!, policy))
                 {
                     return $"Endpoint does not use HTTPS: {endpoint}";
                 }
@@ -208,7 +208,7 @@ public class DiscoveryDocumentResponse : ProtocolResponse
                     bool isAllowed = false;
                     foreach (var host in allowedHosts)
                     {
-                        if (string.Equals(host, uri.Authority))
+                        if (string.Equals(host, uri!.Authority))
                         {
                             isAllowed = true;
                         }

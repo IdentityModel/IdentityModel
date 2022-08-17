@@ -14,7 +14,7 @@ namespace IdentityModel.Client;
 public class DiscoveryCache : IDiscoveryCache
 {
     private DateTime _nextReload = DateTime.MinValue;
-    private AsyncLazy<DiscoveryDocumentResponse> _lazyResponse;
+    private AsyncLazy<DiscoveryDocumentResponse>? _lazyResponse;
 
     private readonly DiscoveryPolicy _policy;
     private readonly Func<HttpMessageInvoker> _getHttpClient;
@@ -61,7 +61,7 @@ public class DiscoveryCache : IDiscoveryCache
             Refresh();
         }
 
-        return _lazyResponse.Value;
+        return _lazyResponse!.Value;
     }
 
     /// <summary>

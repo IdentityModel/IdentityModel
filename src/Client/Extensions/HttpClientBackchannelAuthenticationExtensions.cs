@@ -25,7 +25,7 @@ public static class HttpClientBackchannelAuthenticationExtensions
     {
         var clone = request.Clone();
 
-        if (request.RequestObject.IsPresent())
+        if (!string.IsNullOrWhiteSpace(request.RequestObject))
         {
             clone.Parameters.AddOptional(OidcConstants.BackchannelAuthenticationRequest.Request, request.RequestObject);
         }

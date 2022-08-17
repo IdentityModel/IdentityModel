@@ -32,7 +32,7 @@ public class DiscoveryEndpoint
             throw new InvalidOperationException("Malformed URL");
         }
 
-        if (!DiscoveryEndpoint.IsValidScheme(uri))
+        if (!DiscoveryEndpoint.IsValidScheme(uri!))
         {
             throw new InvalidOperationException("Malformed URL");
         }

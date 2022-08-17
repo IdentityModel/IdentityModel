@@ -31,7 +31,7 @@ public class TokenResponse : ProtocolResponse
     /// <value>
     /// The scope.
     /// </value>
-    public string Scope => TryGet(OidcConstants.TokenResponse.Scope);
+    public string? Scope => TryGet(OidcConstants.TokenResponse.Scope);
         
     /// <summary>
     /// Gets the issued token type.

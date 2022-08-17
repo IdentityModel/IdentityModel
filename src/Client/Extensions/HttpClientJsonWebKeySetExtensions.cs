@@ -53,7 +53,7 @@ public static class HttpClientJsonWebKeySetExtensions
 
             if (!response.IsSuccessStatusCode)
             {
-                return await ProtocolResponse.FromHttpResponseAsync<JsonWebKeySetResponse>(response, $"Error connecting to {clone.RequestUri.AbsoluteUri}: {response.ReasonPhrase}").ConfigureAwait();
+                return await ProtocolResponse.FromHttpResponseAsync<JsonWebKeySetResponse>(response, $"Error connecting to {clone.RequestUri!.AbsoluteUri}: {response.ReasonPhrase}").ConfigureAwait();
             }
         }
         catch (OperationCanceledException)
@@ -62,7 +62,7 @@ public static class HttpClientJsonWebKeySetExtensions
         }
         catch (Exception ex)
         {
-            return ProtocolResponse.FromException<JsonWebKeySetResponse>(ex, $"Error connecting to {clone.RequestUri.AbsoluteUri}. {ex.Message}.");
+            return ProtocolResponse.FromException<JsonWebKeySetResponse>(ex, $"Error connecting to {clone.RequestUri!.AbsoluteUri}. {ex.Message}.");
         }
 
         return await ProtocolResponse.FromHttpResponseAsync<JsonWebKeySetResponse>(response).ConfigureAwait();
