@@ -44,21 +44,21 @@ public static class RequestUrlExtensions
     public static string CreateAuthorizeUrl(this RequestUrl request,
         string clientId,
         string responseType,
-        string scope = null,
-        string redirectUri = null,
-        string state = null,
-        string nonce = null,
-        string loginHint = null,
-        string acrValues = null,
-        string prompt = null,
-        string responseMode = null,
-        string codeChallenge = null,
-        string codeChallengeMethod = null,
-        string display = null,
+        string? scope = null,
+        string? redirectUri = null,
+        string? state = null,
+        string? nonce = null,
+        string? loginHint = null,
+        string? acrValues = null,
+        string? prompt = null,
+        string? responseMode = null,
+        string? codeChallenge = null,
+        string? codeChallengeMethod = null,
+        string? display = null,
         int? maxAge = null,
-        string uiLocales = null,
-        string idTokenHint = null,
-        Parameters extra = null)
+        string? uiLocales = null,
+        string? idTokenHint = null,
+        Parameters? extra = null)
     {
         var values = new Parameters
         {
@@ -94,10 +94,10 @@ public static class RequestUrlExtensions
     /// <param name="extra">The extra parameters.</param>
     /// <returns></returns>
     public static string CreateEndSessionUrl(this RequestUrl request,
-        string idTokenHint = null,
-        string postLogoutRedirectUri = null,
-        string state = null,
-        Parameters extra = null)
+        string? idTokenHint = null,
+        string? postLogoutRedirectUri = null,
+        string? state = null,
+        Parameters? extra = null)
     {
         var values = new Parameters();
 

@@ -14,7 +14,7 @@ namespace IdentityModel.Client;
 public class DiscoveryCache : IDiscoveryCache
 {
     private DateTime _nextReload = DateTime.MinValue;
-    private AsyncLazy<DiscoveryDocumentResponse> _lazyResponse;
+    private AsyncLazy<DiscoveryDocumentResponse>? _lazyResponse;
 
     private readonly DiscoveryPolicy _policy;
     private readonly Func<HttpMessageInvoker> _getHttpClient;
@@ -25,7 +25,7 @@ public class DiscoveryCache : IDiscoveryCache
     /// </summary>
     /// <param name="authority">Base address or discovery document endpoint.</param>
     /// <param name="policy">The policy.</param>
-    public DiscoveryCache(string authority, DiscoveryPolicy policy = null)
+    public DiscoveryCache(string authority, DiscoveryPolicy? policy = null)
     {
         _authority = authority;
         _policy = policy ?? new DiscoveryPolicy();
@@ -38,7 +38,7 @@ public class DiscoveryCache : IDiscoveryCache
     /// <param name="authority">Base address or discovery document endpoint.</param>
     /// <param name="httpClientFunc">The HTTP client function.</param>
     /// <param name="policy">The policy.</param>
-    public DiscoveryCache(string authority, Func<HttpMessageInvoker> httpClientFunc, DiscoveryPolicy policy = null)
+    public DiscoveryCache(string authority, Func<HttpMessageInvoker> httpClientFunc, DiscoveryPolicy? policy = null)
     {
         _authority = authority;
         _policy = policy ?? new DiscoveryPolicy();
@@ -61,7 +61,7 @@ public class DiscoveryCache : IDiscoveryCache
             Refresh();
         }
 
-        return _lazyResponse.Value;
+        return _lazyResponse!.Value;
     }
 
     /// <summary>

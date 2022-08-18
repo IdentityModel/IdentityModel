@@ -17,8 +17,10 @@ public class DiscoveryEndpoint
     /// <exception cref="System.InvalidOperationException">
     /// Malformed URL
     /// </exception>
-    public static DiscoveryEndpoint ParseUrl(string input, string path = null)
+    public static DiscoveryEndpoint ParseUrl(string input, string? path = null)
     {
+        if (input == null) throw new ArgumentNullException(nameof(input));
+        
         if (String.IsNullOrEmpty(path))
         {
             path = OidcConstants.Discovery.DiscoveryEndpoint;
@@ -30,13 +32,13 @@ public class DiscoveryEndpoint
             throw new InvalidOperationException("Malformed URL");
         }
 
-        if (!DiscoveryEndpoint.IsValidScheme(uri))
+        if (!DiscoveryEndpoint.IsValidScheme(uri!))
         {
             throw new InvalidOperationException("Malformed URL");
         }
 
         var url = input.RemoveTrailingSlash();
-        if (path.StartsWith("/"))
+        if (path!.StartsWith("/"))
         {
             path = path.Substring(1);
         }

@@ -17,7 +17,7 @@ public class JsonWebKeySetResponse : ProtocolResponse
     /// </summary>
     /// <param name="initializationData"></param>
     /// <returns></returns>
-    protected override Task InitializeAsync(object initializationData = null)
+    protected override Task InitializeAsync(object? initializationData = null)
     {
         if (!HttpResponse.IsSuccessStatusCode)
         {
@@ -25,7 +25,7 @@ public class JsonWebKeySetResponse : ProtocolResponse
         }
         else
         {
-            KeySet = new JsonWebKeySet(Raw);
+            KeySet = new JsonWebKeySet(Raw!);
         }
 
         return Task.CompletedTask;
@@ -34,5 +34,5 @@ public class JsonWebKeySetResponse : ProtocolResponse
     /// <summary>
     /// The key set
     /// </summary>
-    public JsonWebKeySet KeySet { get; set; }
+    public JsonWebKeySet? KeySet { get; set; }
 }

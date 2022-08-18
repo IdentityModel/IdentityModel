@@ -41,12 +41,12 @@ public class IntrospectionClient
     /// </summary>
     /// <param name="request">The request.</param>
     /// <param name="parameters">The parameters.</param>
-    internal void ApplyRequestParameters(TokenIntrospectionRequest request, Parameters parameters)
+    internal void ApplyRequestParameters(TokenIntrospectionRequest request, Parameters? parameters)
     {
         request.Address = _options.Address;
         request.ClientId = _options.ClientId;
         request.ClientSecret = _options.ClientSecret;
-        request.ClientAssertion = _options.ClientAssertion;
+        request.ClientAssertion = _options.ClientAssertion!;
         request.ClientCredentialStyle = _options.ClientCredentialStyle;
         request.AuthorizationHeaderStyle = _options.AuthorizationHeaderStyle;
         request.Parameters = new Parameters(_options.Parameters);
@@ -68,7 +68,7 @@ public class IntrospectionClient
     /// <param name="parameters"></param>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
-    public Task<TokenIntrospectionResponse> Introspect(string token, string tokenTypeHint = null, Parameters parameters = null, CancellationToken cancellationToken = default)
+    public Task<TokenIntrospectionResponse> Introspect(string token, string? tokenTypeHint = null, Parameters? parameters = null, CancellationToken cancellationToken = default)
     {
         var request = new TokenIntrospectionRequest
         {

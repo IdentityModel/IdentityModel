@@ -21,7 +21,7 @@ public static class HttpClientDiscoveryExtensions
     /// <param name="address">The address.</param>
     /// <param name="cancellationToken">The cancellation token.</param>
     /// <returns></returns>
-    public static async Task<DiscoveryDocumentResponse> GetDiscoveryDocumentAsync(this HttpClient client, string address = null, CancellationToken cancellationToken = default)
+    public static async Task<DiscoveryDocumentResponse> GetDiscoveryDocumentAsync(this HttpClient client, string? address = null, CancellationToken cancellationToken = default)
     {
         return await client.GetDiscoveryDocumentAsync(new DiscoveryDocumentRequest { Address = address }, cancellationToken).ConfigureAwait();
     }
@@ -36,13 +36,13 @@ public static class HttpClientDiscoveryExtensions
     public static async Task<DiscoveryDocumentResponse> GetDiscoveryDocumentAsync(this HttpMessageInvoker client, DiscoveryDocumentRequest request, CancellationToken cancellationToken = default)
     {
         string address;
-        if (request.Address.IsPresent())
+        if (request.Address!.IsPresent())
         {
-            address = request.Address;
+            address = request.Address!;
         }
         else if (client is HttpClient httpClient)
         {
-            address = httpClient.BaseAddress.AbsoluteUri;
+            address = httpClient.BaseAddress!.AbsoluteUri;
         }
         else
         {
@@ -75,13 +75,6 @@ public static class HttpClientDiscoveryExtensions
             clone.RequestUri = new Uri(url);
 
             var response = await client.SendAsync(clone, cancellationToken).ConfigureAwait();
-
-            string responseContent = null;
-
-            if (response.Content != null)
-            {
-                responseContent = await response.Content.ReadAsStringAsync().ConfigureAwait();
-            }
 
             if (!response.IsSuccessStatusCode)
             {

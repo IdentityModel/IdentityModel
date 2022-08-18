@@ -46,18 +46,21 @@ public class ClaimComparer : EqualityComparer<Claim>
     }
 
     /// <inheritdoc/>
-    public override bool Equals(Claim x, Claim y)
+    public override bool Equals(Claim? x, Claim? y)
     {
         if (x == null && y == null) return true;
         if (x == null && y != null) return false;
         if (x != null && y == null) return false;
 
+        if (x == null) throw new ArgumentNullException(nameof(x));
+        if (y == null) throw new ArgumentNullException(nameof(y));
+
         var valueComparison = StringComparison.Ordinal;
         if (_options.IgnoreValueCase == true) valueComparison = StringComparison.OrdinalIgnoreCase;
 
         var equal = (String.Equals(x.Type, y.Type, StringComparison.OrdinalIgnoreCase) &&
-                     String.Equals(x.Value, y.Value, valueComparison) &&
-                     String.Equals(x.ValueType, y.ValueType, StringComparison.Ordinal));
+                         String.Equals(x.Value, y.Value, valueComparison) &&
+                         String.Equals(x.ValueType, y.ValueType, StringComparison.Ordinal));
             
         if (_options.IgnoreIssuer)
         {

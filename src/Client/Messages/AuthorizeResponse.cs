@@ -45,7 +45,7 @@ public class AuthorizeResponse
     /// <value>
     /// The authorization code.
     /// </value>
-    public string Code => TryGet(OidcConstants.AuthorizeResponse.Code);
+    public string? Code => TryGet(OidcConstants.AuthorizeResponse.Code);
 
     /// <summary>
     /// Gets the access token.
@@ -53,7 +53,7 @@ public class AuthorizeResponse
     /// <value>
     /// The access token.
     /// </value>
-    public string AccessToken => TryGet(OidcConstants.AuthorizeResponse.AccessToken);
+    public string? AccessToken => TryGet(OidcConstants.AuthorizeResponse.AccessToken);
 
     /// <summary>
     /// Gets the identity token.
@@ -61,7 +61,7 @@ public class AuthorizeResponse
     /// <value>
     /// The identity token.
     /// </value>
-    public string IdentityToken => TryGet(OidcConstants.AuthorizeResponse.IdentityToken);
+    public string? IdentityToken => TryGet(OidcConstants.AuthorizeResponse.IdentityToken);
 
     /// <summary>
     /// Gets the error.
@@ -69,7 +69,7 @@ public class AuthorizeResponse
     /// <value>
     /// The error.
     /// </value>
-    public string Error => TryGet(OidcConstants.AuthorizeResponse.Error);
+    public string? Error => TryGet(OidcConstants.AuthorizeResponse.Error);
 
     /// <summary>
     /// Gets the scope.
@@ -77,7 +77,7 @@ public class AuthorizeResponse
     /// <value>
     /// The scope.
     /// </value>
-    public string Scope => TryGet(OidcConstants.AuthorizeResponse.Scope);
+    public string? Scope => TryGet(OidcConstants.AuthorizeResponse.Scope);
 
     /// <summary>
     /// Gets the type of the token.
@@ -85,7 +85,7 @@ public class AuthorizeResponse
     /// <value>
     /// The type of the token.
     /// </value>
-    public string TokenType => TryGet(OidcConstants.AuthorizeResponse.TokenType);
+    public string? TokenType => TryGet(OidcConstants.AuthorizeResponse.TokenType);
 
     /// <summary>
     /// Gets the state.
@@ -93,7 +93,7 @@ public class AuthorizeResponse
     /// <value>
     /// The state.
     /// </value>
-    public string State => TryGet(OidcConstants.AuthorizeResponse.State);
+    public string? State => TryGet(OidcConstants.AuthorizeResponse.State);
         
     /// <summary>
     /// Gets the session state.
@@ -101,7 +101,7 @@ public class AuthorizeResponse
     /// <value>
     /// The session state.
     /// </value>
-    public string SessionState => TryGet(OidcConstants.AuthorizeResponse.SessionState);
+    public string? SessionState => TryGet(OidcConstants.AuthorizeResponse.SessionState);
         
     /// <summary>
     /// Gets the issuer name.
@@ -109,7 +109,7 @@ public class AuthorizeResponse
     /// <value>
     /// The issuer name.
     /// </value>
-    public string Issuer => TryGet(OidcConstants.AuthorizeResponse.Issuer);
+    public string? Issuer => TryGet(OidcConstants.AuthorizeResponse.Issuer);
 
     /// <summary>
     /// Gets the error description.
@@ -117,7 +117,7 @@ public class AuthorizeResponse
     /// <value>
     /// The error description.
     /// </value>
-    public string ErrorDescription => TryGet(OidcConstants.AuthorizeResponse.ErrorDescription);
+    public string? ErrorDescription => TryGet(OidcConstants.AuthorizeResponse.ErrorDescription);
 
     /// <summary>
     /// Gets a value indicating whether the response is an error.
@@ -125,7 +125,7 @@ public class AuthorizeResponse
     /// <value>
     ///   <c>true</c> if the response is an error; otherwise, <c>false</c>.
     /// </value>
-    public bool IsError => Error.IsPresent();
+    public bool IsError => Error!.IsPresent();
 
     /// <summary>
     /// Gets the expires in.
@@ -192,7 +192,7 @@ public class AuthorizeResponse
     /// </summary>
     /// <param name="type">The type.</param>
     /// <returns></returns>
-    public string TryGet(string type)
+    public string? TryGet(string type)
     {
         if (Values.TryGetValue(type, out var value))
         {

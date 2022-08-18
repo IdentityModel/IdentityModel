@@ -31,6 +31,7 @@ using System.Text.Json;
 using System.Text.Json.Serialization;
 
 #pragma warning disable 1591
+#nullable disable
 
 namespace IdentityModel.Jwk;
 
@@ -48,7 +49,8 @@ public class JsonWebKey
     /// Initializes an new instance of <see cref="JsonWebKey"/>.
     /// </summary>
     public JsonWebKey()
-    { }
+    {
+    }
 
     /// <summary>
     /// Initializes an new instance of <see cref="JsonWebKey"/> from a json string.
@@ -59,6 +61,8 @@ public class JsonWebKey
         if (string.IsNullOrWhiteSpace(json)) throw new ArgumentNullException(nameof(json));
 
         var key = JsonSerializer.Deserialize<JsonWebKey>(json);
+        if (key == null) throw new InvalidOperationException("malformed key");
+
         Copy(key);
     }
 
@@ -71,8 +75,6 @@ public class JsonWebKey
         this.DQ = key.DQ;
         this.E = key.E;
         this.K = key.K;
-        if (key.KeyOps != null)
-            _keyops = new List<string>(key.KeyOps);
         this.Kid = key.Kid;
         this.Kty = key.Kty;
         this.N = key.N;
@@ -81,13 +83,14 @@ public class JsonWebKey
         this.Q = key.Q;
         this.QI = key.QI;
         this.Use = key.Use;
-        if (key.X5c != null)
-            _certificateClauses = new List<string>(key.X5c);
         this.X5t = key.X5t;
         this.X5tS256 = key.X5tS256;
         this.X5u = key.X5u;
         this.X = key.X;
         this.Y = key.Y;
+
+        this._certificateClauses = new List<string>(key.X5c);
+        this._keyops = new List<string>(key.KeyOps);
     }
 
     /// <summary>
@@ -142,10 +145,7 @@ public class JsonWebKey
     [JsonPropertyName(JsonWebKeyParameterNames.KeyOps)]
     public IList<string> KeyOps
     {
-        get
-        {
-            return _keyops;
-        }
+        get { return _keyops; }
         set
         {
             if (value == null) throw new ArgumentNullException("KeyOps");
@@ -220,10 +220,7 @@ public class JsonWebKey
     [JsonPropertyName(JsonWebKeyParameterNames.X5c)]
     public IList<string> X5c
     {
-        get
-        {
-            return _certificateClauses;
-        }
+        get { return _certificateClauses; }
         set
         {
             //if (value == null)

@@ -16,7 +16,7 @@ public class Parameters : List<KeyValuePair<string, string>>
     /// </summary>
     /// <param name="values"></param>
     /// <returns></returns>
-    public static Parameters FromObject(object values)
+    public static Parameters? FromObject(object values)
     {
         if (values == null)
         {
@@ -33,9 +33,9 @@ public class Parameters : List<KeyValuePair<string, string>>
         foreach (var prop in values.GetType().GetRuntimeProperties())
         {
             var value = prop.GetValue(values) as string;
-            if (value.IsPresent())
+            if (value!.IsPresent())
             {
-                dictionary.Add(prop.Name, value);
+                dictionary.Add(prop.Name, value!);
             }
         }
 
@@ -120,7 +120,7 @@ public class Parameters : List<KeyValuePair<string, string>>
     /// <param name="allowDuplicates">Allow multiple values of the same parameter.</param>
     /// <exception cref="ArgumentNullException"></exception>
     /// <exception cref="InvalidOperationException"></exception>
-    public void AddOptional(string key, string value, bool allowDuplicates = false)
+    public void AddOptional(string key, string? value, bool allowDuplicates = false)
     {
         if (key.IsMissing()) throw new ArgumentNullException(nameof(key));
             
@@ -132,9 +132,9 @@ public class Parameters : List<KeyValuePair<string, string>>
             }
         }
 
-        if (value.IsPresent())
+        if (value!.IsPresent())
         {
-            Add(key, value);
+            Add(key, value!);
         }
     }
 
@@ -148,7 +148,7 @@ public class Parameters : List<KeyValuePair<string, string>>
     /// <exception cref="ArgumentNullException"></exception>
     /// <exception cref="InvalidOperationException"></exception>
     /// <exception cref="ArgumentException"></exception>
-    public void AddRequired(string key, string value, bool allowDuplicates = false, bool allowEmptyValue = false)
+    public void AddRequired(string key, string? value, bool allowDuplicates = false, bool allowEmptyValue = false)
     {
         if (key.IsMissing()) throw new ArgumentNullException(nameof(key));
             
@@ -160,9 +160,9 @@ public class Parameters : List<KeyValuePair<string, string>>
             }
         }
             
-        if (value.IsPresent() || allowEmptyValue)
+        if (value!.IsPresent() || allowEmptyValue)
         {
-            Add(key, value);
+            Add(key, value!);
         }
         else
         {
@@ -175,7 +175,7 @@ public class Parameters : List<KeyValuePair<string, string>>
     /// </summary>
     /// <param name="additionalValues"></param>
     /// <returns>Merged parameters</returns>
-    public Parameters Merge(Parameters additionalValues = null)
+    public Parameters Merge(Parameters? additionalValues = null)
     {
         if (additionalValues != null)
         {

@@ -37,9 +37,9 @@ public static class HttpClientDynamicRegistrationExtensions
         clone.Content = new StringContent(JsonSerializer.Serialize(request.Document, options), Encoding.UTF8, "application/json");
         clone.Prepare();
 
-        if (request.Token.IsPresent())
+        if (request.Token!.IsPresent())
         {
-            clone.SetBearerToken(request.Token);
+            clone.SetBearerToken(request.Token!);
         }
 
         HttpResponseMessage response;

@@ -21,7 +21,7 @@ public class TokenIntrospectionResponse : ProtocolResponse
     /// </summary>
     /// <param name="initializationData">The initialization data.</param>
     /// <returns></returns>
-    protected override Task InitializeAsync(object initializationData = null)
+    protected override Task InitializeAsync(object? initializationData = null)
     {
         if (!IsError)
         {
@@ -57,11 +57,7 @@ public class TokenIntrospectionResponse : ProtocolResponse
 
             Claims = claims;
         }
-        else
-        {
-            Claims = Enumerable.Empty<Claim>();
-        }
-
+        
         return Task.CompletedTask;
     }
 
@@ -71,7 +67,7 @@ public class TokenIntrospectionResponse : ProtocolResponse
     /// <value>
     ///   <c>true</c> if the token is active; otherwise, <c>false</c>.
     /// </value>
-    public bool IsActive => Json.TryGetBoolean("active").Value;
+    public bool IsActive => Json.TryGetBoolean("active") ?? false;
 
     /// <summary>
     /// Gets the claims.
@@ -79,6 +75,6 @@ public class TokenIntrospectionResponse : ProtocolResponse
     /// <value>
     /// The claims.
     /// </value>
-    public IEnumerable<Claim> Claims { get; protected set; }
+    public IEnumerable<Claim> Claims { get; protected set; } = Enumerable.Empty<Claim>();
 
 }

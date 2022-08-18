@@ -43,12 +43,12 @@ public class TokenClient
     /// </summary>
     /// <param name="request">The request.</param>
     /// <param name="parameters">The parameters.</param>
-    internal void ApplyRequestParameters(TokenRequest request, Parameters parameters)
+    internal void ApplyRequestParameters(TokenRequest request, Parameters? parameters)
     {
         request.Address = _options.Address;
         request.ClientId = _options.ClientId;
-        request.ClientSecret = _options.ClientSecret;
-        request.ClientAssertion = _options.ClientAssertion;
+        request.ClientSecret = _options.ClientSecret!;
+        request.ClientAssertion = _options.ClientAssertion!;
         request.ClientCredentialStyle = _options.ClientCredentialStyle;
         request.AuthorizationHeaderStyle = _options.AuthorizationHeaderStyle;
         request.Parameters = new Parameters(_options.Parameters);
@@ -69,7 +69,7 @@ public class TokenClient
     /// <param name="parameters">Extra parameters.</param>
     /// <param name="cancellationToken">The cancellation token.</param>
     /// <returns></returns>
-    public Task<TokenResponse> RequestClientCredentialsTokenAsync(string scope = null, Parameters parameters = null, CancellationToken cancellationToken = default)
+    public Task<TokenResponse> RequestClientCredentialsTokenAsync(string? scope = null, Parameters? parameters = null, CancellationToken cancellationToken = default)
     {
         var request = new ClientCredentialsTokenRequest
         {
@@ -87,7 +87,7 @@ public class TokenClient
     /// <param name="parameters">Extra parameters.</param>
     /// <param name="cancellationToken">The cancellation token.</param>
     /// <returns></returns>
-    public Task<TokenResponse> RequestDeviceTokenAsync(string deviceCode, Parameters parameters = null, CancellationToken cancellationToken = default)
+    public Task<TokenResponse> RequestDeviceTokenAsync(string deviceCode, Parameters? parameters = null, CancellationToken cancellationToken = default)
     {
         var request = new DeviceTokenRequest
         {
@@ -107,7 +107,7 @@ public class TokenClient
     /// <param name="parameters">Extra parameters.</param>
     /// <param name="cancellationToken">The cancellation token.</param>
     /// <returns></returns>
-    public Task<TokenResponse> RequestPasswordTokenAsync(string userName, string password = null, string scope = null, Parameters parameters = null, CancellationToken cancellationToken = default)
+    public Task<TokenResponse> RequestPasswordTokenAsync(string userName, string? password = null, string? scope = null, Parameters? parameters = null, CancellationToken cancellationToken = default)
     {
         var request = new PasswordTokenRequest
         {
@@ -129,7 +129,7 @@ public class TokenClient
     /// <param name="parameters">The parameters.</param>
     /// <param name="cancellationToken">The cancellation token.</param>
     /// <returns></returns>
-    public Task<TokenResponse> RequestAuthorizationCodeTokenAsync(string code, string redirectUri, string codeVerifier = null, Parameters parameters = null, CancellationToken cancellationToken = default)
+    public Task<TokenResponse> RequestAuthorizationCodeTokenAsync(string code, string redirectUri, string? codeVerifier = null, Parameters? parameters = null, CancellationToken cancellationToken = default)
     {
         var request = new AuthorizationCodeTokenRequest
         {
@@ -150,7 +150,7 @@ public class TokenClient
     /// <param name="parameters">Extra parameters.</param>
     /// <param name="cancellationToken">The cancellation token.</param>
     /// <returns></returns>
-    public Task<TokenResponse> RequestRefreshTokenAsync(string refreshToken, string scope = null, Parameters parameters = null, CancellationToken cancellationToken = default)
+    public Task<TokenResponse> RequestRefreshTokenAsync(string refreshToken, string? scope = null, Parameters? parameters = null, CancellationToken cancellationToken = default)
     {
         var request = new RefreshTokenRequest
         {
@@ -169,7 +169,7 @@ public class TokenClient
     /// <param name="parameters">Extra parameters.</param>
     /// <param name="cancellationToken">The cancellation token.</param>
     /// <returns></returns>
-    public Task<TokenResponse> RequestTokenAsync(string grantType, Parameters parameters = null, CancellationToken cancellationToken = default)
+    public Task<TokenResponse> RequestTokenAsync(string grantType, Parameters? parameters = null, CancellationToken cancellationToken = default)
     {
         var request = new TokenRequest
         {

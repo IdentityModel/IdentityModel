@@ -22,7 +22,7 @@ public static class HttpClientJsonWebKeySetExtensions
     /// <param name="address"></param>
     /// <param name="cancellationToken">The cancellation token.</param>
     /// <returns></returns>
-    public static async Task<JsonWebKeySetResponse> GetJsonWebKeySetAsync(this HttpMessageInvoker client, string address = null, CancellationToken cancellationToken = default)
+    public static async Task<JsonWebKeySetResponse> GetJsonWebKeySetAsync(this HttpMessageInvoker client, string? address = null, CancellationToken cancellationToken = default)
     {
         return await client.GetJsonWebKeySetAsync(new JsonWebKeySetRequest
         {
@@ -51,15 +51,9 @@ public static class HttpClientJsonWebKeySetExtensions
         {
             response = await client.SendAsync(clone, cancellationToken).ConfigureAwait();
 
-            string responseContent = null;
-            if (response.Content != null)
-            {
-                responseContent = await response.Content.ReadAsStringAsync().ConfigureAwait();
-            }
-
             if (!response.IsSuccessStatusCode)
             {
-                return await ProtocolResponse.FromHttpResponseAsync<JsonWebKeySetResponse>(response, $"Error connecting to {clone.RequestUri.AbsoluteUri}: {response.ReasonPhrase}").ConfigureAwait();
+                return await ProtocolResponse.FromHttpResponseAsync<JsonWebKeySetResponse>(response, $"Error connecting to {clone.RequestUri!.AbsoluteUri}: {response.ReasonPhrase}").ConfigureAwait();
             }
         }
         catch (OperationCanceledException)
@@ -68,7 +62,7 @@ public static class HttpClientJsonWebKeySetExtensions
         }
         catch (Exception ex)
         {
-            return ProtocolResponse.FromException<JsonWebKeySetResponse>(ex, $"Error connecting to {clone.RequestUri.AbsoluteUri}. {ex.Message}.");
+            return ProtocolResponse.FromException<JsonWebKeySetResponse>(ex, $"Error connecting to {clone.RequestUri!.AbsoluteUri}. {ex.Message}.");
         }
 
         return await ProtocolResponse.FromHttpResponseAsync<JsonWebKeySetResponse>(response).ConfigureAwait();

@@ -22,7 +22,7 @@ public class ProtocolResponse
     /// <param name="httpResponse">The HTTP response.</param>
     /// <param name="initializationData">The initialization data.</param>
     /// <returns></returns>
-    public static async Task<T> FromHttpResponseAsync<T>(HttpResponseMessage httpResponse, object initializationData = null) where T: ProtocolResponse, new()
+    public static async Task<T> FromHttpResponseAsync<T>(HttpResponseMessage httpResponse, object? initializationData = null) where T: ProtocolResponse, new()
     {
         var response = new T
         {
@@ -30,7 +30,7 @@ public class ProtocolResponse
         };
 
         // try to read content
-        string content = null;
+        string? content = null;
         try
         {
             content = await httpResponse.Content.ReadAsStringAsync().ConfigureAwait();
@@ -44,11 +44,11 @@ public class ProtocolResponse
         {
             response.ErrorType = ResponseErrorType.Http;
 
-            if (content.IsPresent())
+            if (content!.IsPresent())
             {
                 try
                 {
-                    response.Json = JsonDocument.Parse(content).RootElement;
+                    response.Json = JsonDocument.Parse(content!).RootElement;
                 }
                 catch { }
             }
@@ -65,9 +65,9 @@ public class ProtocolResponse
         // either 200 or 400 - both cases need a JSON response (if present), otherwise error
         try
         {
-            if (content.IsPresent())
+            if (content!.IsPresent())
             {
-                response.Json = JsonDocument.Parse(content).RootElement;
+                response.Json = JsonDocument.Parse(content!).RootElement;
             }
         }
         catch (Exception ex)
@@ -87,7 +87,7 @@ public class ProtocolResponse
     /// <param name="ex">The ex.</param>
     /// <param name="errorMessage">The error message.</param>
     /// <returns></returns>
-    public static T FromException<T>(Exception ex, string errorMessage = null) where T : ProtocolResponse, new()
+    public static T FromException<T>(Exception ex, string? errorMessage = null) where T : ProtocolResponse, new()
     {
         var response = new T
         {
@@ -104,7 +104,7 @@ public class ProtocolResponse
     /// </summary>
     /// <param name="initializationData">The initialization data.</param>
     /// <returns></returns>
-    protected virtual Task InitializeAsync(object initializationData = null)
+    protected virtual Task InitializeAsync(object? initializationData = null)
     {
         return Task.CompletedTask;
     }
@@ -115,7 +115,7 @@ public class ProtocolResponse
     /// <value>
     /// The HTTP response.
     /// </value>
-    public HttpResponseMessage HttpResponse { get; protected set; }
+    public HttpResponseMessage HttpResponse { get; protected set; } = default!;
         
     /// <summary>
     /// Gets the raw protocol response (if present).
@@ -123,7 +123,7 @@ public class ProtocolResponse
     /// <value>
     /// The raw.
     /// </value>
-    public string Raw { get; protected set; }
+    public string? Raw { get; protected set; }
 
     /// <summary>
     /// Gets the protocol response as JSON (if present).
@@ -139,7 +139,7 @@ public class ProtocolResponse
     /// <value>
     /// The exception.
     /// </value>
-    public Exception Exception { get; protected set; }
+    public Exception? Exception { get; protected set; }
 
     /// <summary>
     /// Gets a value indicating whether an error occurred.
@@ -147,7 +147,7 @@ public class ProtocolResponse
     /// <value>
     ///   <c>true</c> if an error occurred; otherwise, <c>false</c>.
     /// </value>
-    public bool IsError => Error.IsPresent();
+    public bool IsError => Error!.IsPresent();
 
     /// <summary>
     /// Gets the type of the error.
@@ -163,7 +163,7 @@ public class ProtocolResponse
     /// <value>
     /// The type of the error.
     /// </value>
-    protected string ErrorMessage { get; set; }
+    protected string? ErrorMessage { get; set; }
 
     /// <summary>
     /// Gets the HTTP status code - or <c>0</c> when <see cref="HttpResponse" /> is <see langword="null"/>.
@@ -179,7 +179,7 @@ public class ProtocolResponse
     /// <value>
     /// The HTTP error reason.
     /// </value>
-    public string HttpErrorReason => this.HttpResponse?.ReasonPhrase ?? default;
+    public string? HttpErrorReason => this.HttpResponse?.ReasonPhrase ?? default;
 
     /// <summary>
     /// Gets the error.
@@ -187,11 +187,11 @@ public class ProtocolResponse
     /// <value>
     /// The error.
     /// </value>
-    public string Error
+    public string? Error
     {
         get
         {
-            if (ErrorMessage.IsPresent())
+            if (ErrorMessage!.IsPresent())
             {
                 return ErrorMessage;
             }
@@ -201,7 +201,7 @@ public class ProtocolResponse
             }
             if (ErrorType == ResponseErrorType.Exception)
             {
-                return Exception.Message;
+                return Exception!.Message;
             }
 
             return TryGet(OidcConstants.TokenResponse.Error);
@@ -213,5 +213,5 @@ public class ProtocolResponse
     /// </summary>
     /// <param name="name">The name.</param>
     /// <returns></returns>
-    public string TryGet(string name) => Json.TryGetString(name);
+    public string? TryGet(string name) => Json.TryGetString(name);
 }
