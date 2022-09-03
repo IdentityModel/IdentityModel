@@ -26,8 +26,14 @@ public static class HttpClientUserInfoExtensions
         if (request.Token!.IsMissing()) throw new ArgumentNullException(nameof(request.Token));
 
         var clone = request.Clone();
-
+        
+        clone.ClientId = string.Empty;
+        clone.ClientSecret = string.Empty;
+        clone.ClientAssertion = new ClientAssertion();
+        clone.Parameters = new Parameters();
+        
         clone.Method = HttpMethod.Get;
+        
         clone.SetBearerToken(request.Token!);
         clone.Prepare();
 

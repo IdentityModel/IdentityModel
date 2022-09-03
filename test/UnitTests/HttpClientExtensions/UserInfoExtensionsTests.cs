@@ -127,5 +127,29 @@ namespace IdentityModel.UnitTests
             response.HttpStatusCode.Should().Be(HttpStatusCode.NotFound);
             response.Error.Should().Be("not found");
         }
+        
+        [Fact]
+        public async Task Ignore_extra_parameters_and_send_empty_body()
+        {
+            var handler = new NetworkHandler(HttpStatusCode.NotFound, "not found");
+
+            var client = new HttpClient(handler);
+            await client.GetUserInfoAsync(new UserInfoRequest
+            {
+                ClientCredentialStyle = ClientCredentialStyle.PostBody,
+                Address = Endpoint,
+                Token = "token",
+                ClientId = "testclient",
+                ClientSecret = "testsecret",
+                ClientAssertion = new ClientAssertion()
+                {
+                    Type = "testtype",
+                    Value = "testvalue"
+                },
+                Parameters = Parameters.FromObject(new {TenantId = "test Tenant"})! 
+            });
+
+            handler.Body.Should().BeNullOrEmpty();
+        }
     }
 }
