@@ -127,5 +127,25 @@ namespace IdentityModel.UnitTests
             response.HttpStatusCode.Should().Be(HttpStatusCode.NotFound);
             response.Error.Should().Be("not found");
         }
+
+        [Fact]
+        public async Task BadRequest_with_empty_body_should_be_handled_as_error()
+        {
+            var document = "";
+            var handler = new NetworkHandler(document, HttpStatusCode.BadRequest);
+
+            var client = new HttpClient(handler);
+            var response = await client.GetUserInfoAsync(new UserInfoRequest
+            {
+                Address = Endpoint,
+                Token = "token"
+            });
+
+            response.IsError.Should().BeTrue();
+            response.ErrorType.Should().Be(ResponseErrorType.Protocol);
+            response.Raw.Should().Be("");
+            response.Error.Should().BeNull();
+            response.Exception.Should().BeNull();
+        }
     }
 }
