@@ -65,10 +65,7 @@ public class ProtocolResponse
         // either 200 or 400 - both cases need a JSON response (if present), otherwise error
         try
         {
-            if (content!.IsPresent())
-            {
-                response.Json = JsonDocument.Parse(content!).RootElement;
-            }
+            response.Json = JsonDocument.Parse(content!).RootElement;
         }
         catch (Exception ex)
         {
