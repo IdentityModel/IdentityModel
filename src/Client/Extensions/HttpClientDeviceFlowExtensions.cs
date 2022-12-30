@@ -3,6 +3,7 @@
 
 using IdentityModel.Internal;
 using System;
+using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
@@ -27,8 +28,8 @@ public static class HttpClientDeviceFlowExtensions
 
         clone.Parameters.AddOptional(OidcConstants.AuthorizeRequest.Scope, request.Scope);
         clone.Method = HttpMethod.Post;
-        clone.Prepare();
-                        
+        clone.Prepare(requireUrlFormContent: true);
+
         HttpResponseMessage response;
         try
         {

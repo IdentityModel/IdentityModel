@@ -20,6 +20,34 @@ namespace IdentityModel.UnitTests
         private const string Endpoint = "http://server/device";
 
         [Fact]
+        public async Task Request_without_body_should_have_correct_format()
+        {
+            var handler = new NetworkHandler(HttpStatusCode.NotFound, "not found");
+
+            var client = new HttpClient(handler);
+            var request = new DeviceAuthorizationRequest
+            {
+                Address = Endpoint,
+                ClientId = "client",
+                
+                //ClientCredentialStyle = ClientCredentialStyle.PostBody
+            };
+
+            var _ = await client.RequestDeviceAuthorizationAsync(request);
+
+            var httpRequest = handler.Request;
+
+            httpRequest.Method.Should().Be(HttpMethod.Post);
+            httpRequest.RequestUri.Should().Be(new Uri(Endpoint));
+            httpRequest.Content.Should().BeOfType<FormUrlEncodedContent>();
+            
+            var headers = httpRequest.Headers;
+            headers.Count().Should().Be(2);
+            
+            
+        }
+        
+        [Fact]
         public async Task Http_request_should_have_correct_format()
         {
             var handler = new NetworkHandler(HttpStatusCode.NotFound, "not found");
