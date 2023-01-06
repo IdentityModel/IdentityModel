@@ -147,7 +147,7 @@ public class ProtocolResponse
     /// <value>
     ///   <c>true</c> if an error occurred; otherwise, <c>false</c>.
     /// </value>
-    public bool IsError => Error!.IsPresent();
+    public bool IsError => Error!.IsPresent() || ErrorType != ResponseErrorType.None;
 
     /// <summary>
     /// Gets the type of the error.
