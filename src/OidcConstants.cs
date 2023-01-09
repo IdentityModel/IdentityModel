@@ -188,6 +188,7 @@ public static class OidcConstants
         public const string Error = "error";
         public const string ErrorDescription = "error_description";
         public const string BearerTokenType = "Bearer";
+        public const string DPoPTokenType = "DPoP";
         public const string IssuedTokenType = "issued_token_type";
         public const string Scope = "scope";
     }
@@ -274,6 +275,8 @@ public static class OidcConstants
     public static class AuthenticationSchemes
     {
         public const string AuthorizationHeaderBearer = "Bearer";
+        public const string AuthorizationHeaderDPoP = "DPoP";
+        
         public const string FormPostBearer = "access_token";
         public const string QueryStringBearer = "access_token";
 
@@ -474,6 +477,9 @@ public static class OidcConstants
         public const string BackchannelAuthenticationEndpoint = "backchannel_authentication_endpoint";
         public const string BackchannelAuthenticationRequestSigningAlgValuesSupported = "backchannel_authentication_request_signing_alg_values_supported";
         public const string BackchannelUserCodeParameterSupported = "backchannel_user_code_parameter_supported";
+        
+        // DPoP
+        public const string DPoPSigningAlgorithmsSupported = "dpop_signing_alg_values_supported";
     }
 
     public static class BackchannelTokenDeliveryModes
@@ -507,5 +513,10 @@ public static class OidcConstants
         public const string Phone = "phone";
         /// <summary>This scope value MUST NOT be used with the OpenID Connect Implicit Client Implementer's Guide 1.0. See the OpenID Connect Basic Client Implementer's Guide 1.0 (http://openid.net/specs/openid-connect-implicit-1_0.html#OpenID.Basic) for its usage in that subset of OpenID Connect.</summary>
         public const string OfflineAccess = "offline_access";
+    }
+    
+    public static class HttpHeaders
+    {
+        public const string DPoP = "DPoP";
     }
 }
