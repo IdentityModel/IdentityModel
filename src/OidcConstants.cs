@@ -40,6 +40,7 @@ public static class OidcConstants
         public const string InvalidScope = "invalid_scope";
         public const string ServerError = "server_error";
         public const string TemporarilyUnavailable = "temporarily_unavailable";
+        public const string UnmetAuthenticationRequirements = "unmet_authentication_requirements";
 
         // OIDC errors
         public const string InteractionRequired = "interaction_required";
