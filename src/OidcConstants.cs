@@ -338,6 +338,7 @@ public static class OidcConstants
         public const string Login = "login";
         public const string Consent = "consent";
         public const string SelectAccount = "select_account";
+        public const string Create = "create";
     }
 
     public static class CodeChallengeMethods
@@ -472,7 +473,8 @@ public static class OidcConstants
         public const string UserInfoSigningAlgorithmsSupported = "userinfo_signing_alg_values_supported";
         public const string TlsClientCertificateBoundAccessTokens = "tls_client_certificate_bound_access_tokens";
         public const string AuthorizationResponseIssParameterSupported = "authorization_response_iss_parameter_supported";
-            
+        public const string PromptValuesSupported = "prompt_values_supported";
+
         // CIBA
         public const string BackchannelTokenDeliveryModesSupported = "backchannel_token_delivery_modes_supported";
         public const string BackchannelAuthenticationEndpoint = "backchannel_authentication_endpoint";
