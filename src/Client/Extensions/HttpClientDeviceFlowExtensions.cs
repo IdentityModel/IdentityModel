@@ -3,6 +3,7 @@
 
 using IdentityModel.Internal;
 using System;
+using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
@@ -28,7 +29,14 @@ public static class HttpClientDeviceFlowExtensions
         clone.Parameters.AddOptional(OidcConstants.AuthorizeRequest.Scope, request.Scope);
         clone.Method = HttpMethod.Post;
         clone.Prepare();
-                        
+        
+        // make sure to send form encoded body (even if no parameters are in the body)
+        // todo: test with real implementation, maybe turn into a more formal feature
+        if (clone.Content == null)
+        {
+            clone.Content = new FormUrlEncodedContent(new List<KeyValuePair<string, string>>());
+        }
+
         HttpResponseMessage response;
         try
         {
