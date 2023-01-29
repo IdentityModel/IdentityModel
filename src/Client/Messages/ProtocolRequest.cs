@@ -143,7 +143,7 @@ public class ProtocolRequest : HttpRequestMessage
     /// <summary>
     /// Applies protocol parameters to HTTP request
     /// </summary>
-    public void Prepare(bool requireUrlFormContent = false)
+    public void Prepare()
     {
         if (ClientId.IsPresent())
         {
@@ -193,14 +193,6 @@ public class ProtocolRequest : HttpRequestMessage
         if (Parameters.Any())
         {
             Content = new FormUrlEncodedContent(Parameters);
-        }
-
-        if (requireUrlFormContent)
-        {
-            if (Content == null)
-            {
-                Content = new FormUrlEncodedContent(new List<KeyValuePair<string, string>>());
-            }
         }
     }
 }
