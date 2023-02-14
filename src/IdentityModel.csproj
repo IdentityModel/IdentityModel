@@ -45,7 +45,7 @@
 
   <!--Conditional Package references -->
   <ItemGroup Condition="'$(TargetFramework)' != 'net6.0'">
-    <PackageReference Include="System.Text.Json" Version="6.0.0" />
+    <PackageReference Include="System.Text.Json" Version="7.0.2" />
   </ItemGroup>   	
   
   <ItemGroup Condition=" '$(TargetFramework)' == 'net461' or '$(TargetFramework)' == 'net472'">
