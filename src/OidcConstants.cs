@@ -28,6 +28,7 @@ public static class OidcConstants
         public const string Request = "request";
         public const string RequestUri = "request_uri";
         public const string Resource = "resource";
+        public const string DPoPKeyThumbprint = "dpop_jkt";
     }
 
     public static class AuthorizeErrors
@@ -139,6 +140,7 @@ public static class OidcConstants
         public const string RequestedExpiry = "requested_expiry";
         public const string Request = "request";
         public const string Resource = "resource";
+        public const string DPoPKeyThumbprint = "dpop_jkt";
     }
 
     public static class BackchannelAuthenticationRequestErrors
@@ -177,6 +179,8 @@ public static class OidcConstants
         public const string SlowDown = "slow_down";
         public const string ExpiredToken = "expired_token";
         public const string InvalidTarget = "invalid_target";
+        public const string InvalidDPoPProof = "invalid_dpop_proof";
+        public const string UseDPoPNonce = "use_dpop_nonce";
     }
 
     public static class TokenResponse
@@ -254,6 +258,7 @@ public static class OidcConstants
         public const string RequestObjectSigningAlgorithm = "request_object_signing_alg";
         public const string RequestObjectEncryptionAlgorithm = "request_object_encryption_alg";
         public const string RequestObjectEncryptionEncryption = "request_object_encryption_enc";
+        public const string AlwaysUseDPoPBoundAccessTokens = "dpop_bound_access_tokens";
     }
 
     public static class TokenTypes
