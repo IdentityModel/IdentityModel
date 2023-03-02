@@ -526,5 +526,6 @@ public static class OidcConstants
     public static class HttpHeaders
     {
         public const string DPoP = "DPoP";
+        public const string DPoPNonce = "DPoP-Nonce";
     }
 }
