@@ -138,6 +138,14 @@ public class DynamicClientRegistrationDocument
     public string? Scope { get; set; }
 
     /// <summary>
+    /// A software statement containing client metadata values about the client
+    /// software as claims.  This is a string value containing the entire signed
+    /// JWT.
+    /// </summary>
+    [JsonPropertyName(OidcConstants.ClientMetadata.SoftwareStatement)]
+    public string? SoftwareStatement { get; set; }
+
+    /// <summary>
     /// A unique identifier string (e.g., a <see cref="System.Guid"/>) assigned by the client developer or software
     /// publisher used by registration endpoints to identify the client software to be dynamically registered.
     /// </summary>

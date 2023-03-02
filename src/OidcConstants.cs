@@ -221,6 +221,7 @@ public static class OidcConstants
         public const string RegistrationClientUri = "registration_client_uri";
         public const string ClientIdIssuedAt = "client_id_issued_at";
         public const string ClientSecretExpiresAt = "client_secret_expires_at";
+        public const string SoftwareStatement = "software_statement";
     }
 
     public static class ClientMetadata
@@ -240,6 +241,7 @@ public static class OidcConstants
         public const string SectorIdentifierUri = "sector_identifier_uri";
         public const string Scope = "scope";
         public const string SoftwareId = "software_id";
+        public const string SoftwareStatement = "software_statement";
         public const string SoftwareVersion = "software_version";
         public const string SubjectType = "subject_type";
         public const string TokenEndpointAuthenticationMethod = "token_endpoint_auth_method";
