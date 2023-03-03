@@ -17,6 +17,9 @@ namespace IdentityModel.UnitTests
     {
         private const string Endpoint = "http://server/register";
 
+        // This is an example software statement, taken from RFC 7591
+        private const string SoftwareStatement = "eyJhbGciOiJSUzI1NiJ9.eyJzb2Z0d2FyZV9pZCI6IjROUkIxLTBYWkFCWkk5RTYtNVNNM1IiLCJjbGllbnRfbmFtZSI6IkV4YW1wbGUgU3RhdGVtZW50LWJhc2VkIENsaWVudCIsImNsaWVudF91cmkiOiJodHRwczovL2NsaWVudC5leGFtcGxlLm5ldC8ifQ.GHfL4QNIrQwL18BSRdE595T9jbzqa06R9BT8w409x9oIcKaZo_mt15riEXHa  zdISUvDIZhtiyNrSHQ8K4TvqWxH6uJgcmoodZdPwmWRIEYbQDLqPNxREtYn05X3AR7ia4FRjQ2ojZjk5fJqJdQ-JcfxyhK-P8BAWBd6I2LLA77IG32xtbhxYfHX7VhuU5ProJO8uvu3Ayv4XRhLZJY4yKfmyjiiKiPNe-Ia4SMy_d_QSWxskU5XIQl5Sa2YRPMbDRXttm2TfnZM1xx70DoYi8g6czz-CPGRi4SW_S2RKHIJfIjoI3zTJ0Y2oe0_EJAiXbL6OyF9S5tKxDXV8JIndSA";
+
         [Fact]
         public async Task Http_request_should_have_correct_format()
         {
@@ -57,12 +60,16 @@ namespace IdentityModel.UnitTests
         {
             var document = File.ReadAllText(FileName.Create("success_registration_response.json"));
             var handler = new NetworkHandler(document, HttpStatusCode.Created);
+            var softwareStatement = "this value must be returned unmodified";
 
             var client = new HttpClient(handler);
             var response = await client.RegisterClientAsync(new DynamicClientRegistrationRequest
             {
                 Address = Endpoint,
                 Document = new DynamicClientRegistrationDocument()
+                {
+                    SoftwareStatement = SoftwareStatement
+                }
             });
 
             response.IsError.Should().BeFalse();
@@ -76,6 +83,8 @@ namespace IdentityModel.UnitTests
             response.RegistrationAccessToken.Should().Be("this.is.an.access.token.value.ffx83");
             response.RegistrationClientUri.Should()
                 .Be("https://server.example.com/connect/register?client_id=s6BhdRkqt3");
+            // Spec requires that a software statement be echoed back unchanged
+            response.SoftwareStatement.Should().Be(SoftwareStatement);
 
             response.Json.TryGetString(OidcConstants.ClientMetadata.TokenEndpointAuthenticationMethod)
                 .Should()

@@ -18,4 +18,5 @@ public class DynamicClientRegistrationResponse : ProtocolResponse
     public string? RegistrationClientUri    => Json.TryGetString(OidcConstants.RegistrationResponse.RegistrationClientUri);
     public long? ClientIdIssuedAt           => Json.TryGetInt(OidcConstants.RegistrationResponse.ClientIdIssuedAt);
     public long? ClientSecretExpiresAt      => Json.TryGetInt(OidcConstants.RegistrationResponse.ClientSecretExpiresAt);
+    public string? SoftwareStatement        => Json.TryGetString(OidcConstants.RegistrationResponse.SoftwareStatement);
 }
