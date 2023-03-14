@@ -73,6 +73,11 @@ public class ProtocolRequest : HttpRequestMessage
     public BasicAuthenticationHeaderStyle AuthorizationHeaderStyle { get; set; } = BasicAuthenticationHeaderStyle.Rfc6749;
 
     /// <summary>
+    /// The DPoP proof token to use on the token endpoint.
+    /// </summary>
+    public string? DPoPProofToken { get; set; }
+
+    /// <summary>
     /// Gets or sets additional protocol parameters.
     /// </summary>
     /// <value>
@@ -106,6 +111,7 @@ public class ProtocolRequest : HttpRequestMessage
             ClientCredentialStyle = ClientCredentialStyle,
             ClientId = ClientId,
             ClientSecret = ClientSecret,
+            DPoPProofToken = DPoPProofToken,
             Parameters = new Parameters()
         };
 
@@ -188,6 +194,11 @@ public class ProtocolRequest : HttpRequestMessage
         if (Address!.IsPresent())
         {
             RequestUri = new Uri(Address!, UriKind.RelativeOrAbsolute);
+        }
+
+        if (DPoPProofToken!.IsPresent())
+        {
+            Headers.Add(OidcConstants.HttpHeaders.DPoP, DPoPProofToken);
         }
 
         if (Parameters.Any())
