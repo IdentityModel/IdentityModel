@@ -3,6 +3,7 @@
 
 using IdentityModel.Internal;
 using System;
+using System.Linq;
 using System.Net;
 using System.Net.Http;
 using System.Text.Json;
@@ -74,6 +75,14 @@ public class ProtocolResponse
         {
             response.ErrorType = ResponseErrorType.Exception;
             response.Exception = ex;
+        }
+
+        if (httpResponse.Headers.TryGetValues(OidcConstants.HttpHeaders.DPoPNonce, out var nonceHeaders))
+        {
+            if (nonceHeaders.Count() == 1)
+            {
+                response.DPoPNonce = nonceHeaders.First();
+            }
         }
 
         await response.InitializeAsync(initializationData).ConfigureAwait();
@@ -214,4 +223,9 @@ public class ProtocolResponse
     /// <param name="name">The name.</param>
     /// <returns></returns>
     public string? TryGet(string name) => Json.TryGetString(name);
+
+    /// <summary>
+    /// The returned DPoP nonce header.
+    /// </summary>
+    public string? DPoPNonce { get; set; }
 }

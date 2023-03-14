@@ -5,6 +5,7 @@ using FluentAssertions;
 using IdentityModel.Client;
 using Microsoft.AspNetCore.WebUtilities;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
@@ -18,8 +19,8 @@ namespace IdentityModel.UnitTests
     {
         private const string Endpoint = "http://server/token";
 
-        private readonly HttpClient _client;
-        private readonly NetworkHandler _handler;
+        private HttpClient _client;
+        private NetworkHandler _handler;
 
         public TokenRequestExtensionsRequestTests()
         {
@@ -174,6 +175,50 @@ namespace IdentityModel.UnitTests
             foo.Should().NotBeNull();
             foo.Should().Be("bar");
         }
+
+        [Fact]
+        public async Task dpop_proof_token_should_be_propagated()
+        {
+            var request = new ClientCredentialsTokenRequest
+            {
+                ClientId = "client",
+                Scope = "scope",
+                DPoPProofToken = "dpop_token"
+            };
+
+            var response = await _client.RequestClientCredentialsTokenAsync(request);
+
+            response.IsError.Should().BeFalse();
+            _handler.Request.Headers.Single(x => x.Key == "DPoP").Value.First().Should().Be("dpop_token");
+        }
+
+        [Fact]
+        public async Task dpop_nonce_should_be_returned()
+        {
+            _handler = new NetworkHandler(req =>
+            {
+                var resp = new HttpResponseMessage(HttpStatusCode.BadRequest);
+                resp.Headers.Add("DPoP-Nonce", "dpop_nonce");
+                resp.Content = new FormUrlEncodedContent(new Dictionary<string, string>());
+                return resp;
+            });
+            _client = new HttpClient(_handler)
+            {
+                BaseAddress = new Uri(Endpoint)
+            };
+
+            var request = new ClientCredentialsTokenRequest
+            {
+                ClientId = "client",
+                Scope = "scope",
+            };
+            
+            var response = await _client.RequestClientCredentialsTokenAsync(request);
+
+            response.IsError.Should().BeTrue();
+            response.DPoPNonce.Should().Be("dpop_nonce");
+        }
+
 
         [Fact]
         public void Explicit_null_parameters_should_not_fail_()
