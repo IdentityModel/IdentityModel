@@ -60,7 +60,6 @@ namespace IdentityModel.UnitTests
         {
             var document = File.ReadAllText(FileName.Create("success_registration_response.json"));
             var handler = new NetworkHandler(document, HttpStatusCode.Created);
-            var softwareStatement = "this value must be returned unmodified";
 
             var client = new HttpClient(handler);
             var response = await client.RegisterClientAsync(new DynamicClientRegistrationRequest
