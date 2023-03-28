@@ -3,6 +3,7 @@
 
 using System.Net.Http;
 using System.Net.Http.Headers;
+using static IdentityModel.OidcConstants;
 
 namespace IdentityModel.Client;
 
@@ -51,7 +52,7 @@ public static class AuthorizationHeaderExtensions
     /// <param name="token">The token.</param>
     public static void SetBearerToken(this HttpClient client, string token)
     {
-        client.SetToken("Bearer", token);
+        client.SetToken(AuthenticationSchemes.AuthorizationHeaderBearer, token);
     }
 
     /// <summary>
@@ -94,6 +95,6 @@ public static class AuthorizationHeaderExtensions
     /// <param name="token">The token.</param>
     public static void SetBearerToken(this HttpRequestMessage request, string token)
     {
-        request.SetToken("Bearer", token);
+        request.SetToken(AuthenticationSchemes.AuthorizationHeaderBearer, token);
     }
 }
