@@ -97,4 +97,21 @@ public static class AuthorizationHeaderExtensions
     {
         request.SetToken(AuthenticationSchemes.AuthorizationHeaderBearer, token);
     }
+
+    /// <summary>
+    /// Sets an authorization header with a DPoP token, and the DPoP proof token header with a proof token.
+    /// </summary>
+    /// <param name="request">The HTTP request message.</param>
+    /// <param name="accessToken">The access token.</param>
+    /// <param name="proofToken">The proof token.</param>
+    public static void SetDPoPToken(this HttpRequestMessage request, string accessToken, string proofToken)
+    {
+        request.SetToken(AuthenticationSchemes.AuthorizationHeaderDPoP, accessToken);
+
+        if (request.Headers.Contains(OidcConstants.HttpHeaders.DPoP))
+        {
+            request.Headers.Remove(OidcConstants.HttpHeaders.DPoP);
+        }
+        request.Headers.Add(OidcConstants.HttpHeaders.DPoP, proofToken);
+    }
 }
