@@ -165,12 +165,22 @@ public static class JwtClaimTypes
     /// The confirmation
     /// </summary>
     public const string Confirmation = "cnf";
-    
+
+    /// <summary>
+    /// The algorithm
+    /// </summary>
+    public const string Algorithm = "alg";
+
     /// <summary>
     /// JSON web key
     /// </summary>
     public const string JsonWebKey = "jwk";
     
+    /// <summary>
+    /// The token type
+    /// </summary>
+    public const string TokenType = "typ";
+
     /// <summary>
     /// DPoP HTTP method
     /// </summary>
