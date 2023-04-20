@@ -26,7 +26,7 @@ jobs:
       with:
         fetch-depth: 0
 
-    - name: Setup net6
+    - name: Setup SKDs
       uses: actions/setup-dotnet@v1
       with:
         dotnet-version: |
