@@ -7,11 +7,11 @@
 
     <!--Conditional compilation-->
     <PropertyGroup Condition=" '$(OS)' == 'Windows_NT' ">
-        <TargetFrameworks>net462;net472;netcoreapp3.1;net6.0</TargetFrameworks>
+        <TargetFrameworks>net462;net472;net6.0;net7.0</TargetFrameworks>
     </PropertyGroup>
 
     <PropertyGroup Condition=" '$(OS)' != 'Windows_NT' and '$(NETCoreSdkPortableRuntimeIdentifier)' != 'osx-arm64' ">
-        <TargetFrameworks>netcoreapp3.1;net6.0</TargetFrameworks>
+        <TargetFrameworks>net6.0;net7.0</TargetFrameworks>
     </PropertyGroup>
 
     <PropertyGroup Condition=" '$(NETCoreSdkPortableRuntimeIdentifier)' == 'osx-arm64' ">
@@ -35,15 +35,7 @@
         <PackageReference Include="FluentAssertions" Version="5.10.3" />
     </ItemGroup>
 
-    <ItemGroup Condition=" '$(TargetFramework)' == 'netcoreapp2.1' ">
-        <PackageReference Include="Microsoft.AspNetCore.WebUtilities" Version="2.2.0" />
-    </ItemGroup>
-
-    <ItemGroup Condition=" '$(TargetFramework)' == 'netcoreapp3.1' ">
-        <PackageReference Include="Microsoft.AspNetCore.WebUtilities" Version="2.2.0" />
-    </ItemGroup>
-
-    <ItemGroup Condition=" '$(TargetFramework)' == 'net6.0' ">
+    <ItemGroup Condition=" '$(TargetFramework)' == 'net6.0' or $(TargetFramework) == 'net7.0' ">
         <PackageReference Include="Microsoft.AspNetCore.WebUtilities" Version="2.2.0" />
     </ItemGroup>
 
