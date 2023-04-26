@@ -138,6 +138,43 @@ public class DynamicClientRegistrationDocument
     public string? Scope { get; set; }
 
     /// <summary>
+    /// List of post-logout redirection URIs for use in the end session
+    /// endpoint.
+    /// </summary>
+    [JsonPropertyName(OidcConstants.ClientMetadata.PostLogoutRedirectUris)]
+    public ICollection<Uri> PostLogoutRedirectUris { get; set; } = new HashSet<Uri>();
+
+    /// <summary>
+    /// RP URL that will cause the RP to log itself out when rendered in an
+    /// iframe by the OP.
+    /// </summary>
+    [JsonPropertyName(OidcConstants.ClientMetadata.FrontChannelLogoutUri)]
+    public string? FrontChannelLogoutUri { get; set; }
+
+    /// <summary>
+    /// Boolean value specifying whether the RP requires that a sid (session ID)
+    /// query parameter be included to identify the RP session with the OP when
+    /// the frontchannel_logout_uri is used.
+    /// </summary>
+    [JsonPropertyName(OidcConstants.ClientMetadata.FrontChannelLogoutSessionRequired)]
+    public bool? FrontChannelLogoutSessionRequired { get; set; }
+
+    /// <summary>
+    /// RP URL that will cause the RP to log itself out when sent a Logout Token
+    /// by the OP.
+    /// </summary>
+    [JsonPropertyName(OidcConstants.ClientMetadata.BackchannelLogoutUri)]
+    public string? BackChannelLogoutUri { get; set; }
+
+    /// <summary>
+    /// Boolean value specifying whether the RP requires that a sid (session ID)
+    /// Claim be included in the Logout Token to identify the RP session with
+    /// the OP when the backchannel_logout_uri is used.e
+    /// </summary>
+    [JsonPropertyName(OidcConstants.ClientMetadata.BackchannelLogoutSessionRequired)]
+    public bool? BackchannelLogoutSessionRequired { get; set; }
+
+    /// <summary>
     /// A software statement containing client metadata values about the client
     /// software as claims.  This is a string value containing the entire signed
     /// JWT.
@@ -188,6 +225,14 @@ public class DynamicClientRegistrationDocument
     [JsonPropertyName(OidcConstants.ClientMetadata.RequestObjectEncryptionEncryption)]
     public string? RequestObjectEncryptionEncryption { get; set; }
 
+    /// <summary>
+    /// Boolean value specifying whether authorization requests must be
+    /// protected as signed request objects and provided through either the
+    /// request or request_uri parameters.
+    /// </summary>
+    [JsonPropertyName(OidcConstants.ClientMetadata.RequireSignedRequestObject)]
+    public bool? RequireSignedRequestObject { get; set; }
+
     [JsonPropertyName(OidcConstants.ClientMetadata.TokenEndpointAuthenticationMethod)]
     public string? TokenEndpointAuthenticationMethod { get; set; }
 
@@ -213,14 +258,15 @@ public class DynamicClientRegistrationDocument
     public ICollection<string> DefaultAcrValues { get; set; } = new HashSet<string>();
 
     /// <summary>
-    /// URI using the https scheme that a third party can use to initiate a login by the relying party.
+    /// URI using the https scheme that a third party can use to initiate a
+    /// login by the relying party.
     /// </summary>
     /// <remarks>
-    /// The URI must accept requests via both GET and POST.
-    /// The client must understand the <c>login_hint</c> and iss parameters and should support the
-    /// <c>target_link_uri</c> parameter.
+    /// The URI must accept requests via both GET and POST. The client must
+    /// understand the <c>login_hint</c> and iss parameters and should support
+    /// the <c>target_link_uri</c> parameter.
     /// </remarks>
-    [JsonPropertyName(OidcConstants.ClientMetadata.InitiateLoginUris)]
+    [JsonPropertyName(OidcConstants.ClientMetadata.InitiateLoginUri)]
     public Uri? InitiateLoginUri { get; set; }
 
     /// <summary>
