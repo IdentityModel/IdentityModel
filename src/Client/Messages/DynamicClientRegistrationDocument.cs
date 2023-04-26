@@ -137,7 +137,6 @@ public class DynamicClientRegistrationDocument
     [JsonPropertyName(OidcConstants.ClientMetadata.Scope)]
     public string? Scope { get; set; }
 
-
     /// <summary>
     /// List of post-logout redirection URIs for use in the end session
     /// endpoint.
