@@ -240,6 +240,11 @@ public static class OidcConstants
         public const string Jwks = "jwks";
         public const string SectorIdentifierUri = "sector_identifier_uri";
         public const string Scope = "scope";
+        public const string PostLogoutRedirectUris = "post_logout_redirect_uris";
+        public const string FrontChannelLogoutUri = "frontchannel_logout_uri";
+        public const string FrontChannelLogoutSessionRequired = "frontchannel_logout_session_required";
+        public const string BackchannelLogoutUri = "backchannel_logout_uri";
+        public const string BackchannelLogoutSessionRequired = "backchannel_logout_session_required";
         public const string SoftwareId = "software_id";
         public const string SoftwareStatement = "software_statement";
         public const string SoftwareVersion = "software_version";
@@ -249,7 +254,7 @@ public static class OidcConstants
         public const string DefaultMaxAge = "default_max_age";
         public const string RequireAuthenticationTime = "require_auth_time";
         public const string DefaultAcrValues = "default_acr_values";
-        public const string InitiateLoginUris = "initiate_login_uri";
+        public const string InitiateLoginUri = "initiate_login_uri";
         public const string RequestUris = "request_uris";
         public const string IdentityTokenSignedResponseAlgorithm = "id_token_signed_response_alg";
         public const string IdentityTokenEncryptedResponseAlgorithm = "id_token_encrypted_response_alg";
@@ -260,6 +265,7 @@ public static class OidcConstants
         public const string RequestObjectSigningAlgorithm = "request_object_signing_alg";
         public const string RequestObjectEncryptionAlgorithm = "request_object_encryption_alg";
         public const string RequestObjectEncryptionEncryption = "request_object_encryption_enc";
+        public const string RequireSignedRequestObject = "require_signed_request_object";
         public const string AlwaysUseDPoPBoundAccessTokens = "dpop_bound_access_tokens";
     }
 
