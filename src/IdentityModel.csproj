@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup>
     <Authors>Dominick Baier;Brock Allen</Authors>
     <Description>OpenID Connect &amp; OAuth 2.0 client library</Description>
@@ -45,7 +45,7 @@
 
   <!--Conditional Package references -->
   <ItemGroup Condition="'$(TargetFramework)' != 'net6.0'">
-    <PackageReference Include="System.Text.Json" Version="6.0.0" />
+    <PackageReference Include="System.Text.Json" Version="7.0.3" />
   </ItemGroup>   	
   
   <ItemGroup Condition=" '$(TargetFramework)' == 'net461' or '$(TargetFramework)' == 'net472'">
