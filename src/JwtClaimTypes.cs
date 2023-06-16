@@ -157,6 +157,11 @@ public static class JwtClaimTypes
     public const string Role = "role";
 
     /// <summary>
+    /// The roles
+    /// </summary>
+    public const string Roles = "roles";
+
+    /// <summary>
     /// The reference token identifier
     /// </summary>
     public const string ReferenceTokenId = "reference_token_id";
