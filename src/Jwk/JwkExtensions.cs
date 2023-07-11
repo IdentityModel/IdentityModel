@@ -19,7 +19,7 @@ public static class JsonWebKeyExtensions
     /// <returns></returns>
     public static string ToJwkString(this JsonWebKey key)
     {
-        var json = JsonSerializer.Serialize(key);            
+        var json = JsonSerializer.Serialize(key, JwkSourceGenerationContext.Default.JsonWebKey);
         return Base64Url.Encode(Encoding.UTF8.GetBytes(json));
     }
 }
