@@ -125,7 +125,7 @@ public class AuthorizeResponse
     /// <value>
     ///   <c>true</c> if the response is an error; otherwise, <c>false</c>.
     /// </value>
-    public bool IsError => Error!.IsPresent();
+    public bool IsError => Error.IsPresent();
 
     /// <summary>
     /// Gets the expires in.

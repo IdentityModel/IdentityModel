@@ -10,13 +10,13 @@ namespace IdentityModel.Internal;
 internal static class InternalStringExtensions
 {
     [DebuggerStepThrough]
-    public static bool IsMissing(this string value)
+    public static bool IsMissing(this string? value)
     {
         return string.IsNullOrWhiteSpace(value);
     }
 
     [DebuggerStepThrough]
-    public static bool IsPresent(this string value)
+    public static bool IsPresent(this string? value)
     {
         return !(value.IsMissing());
     }

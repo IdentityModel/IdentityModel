@@ -36,7 +36,7 @@ public static class HttpClientDiscoveryExtensions
     public static async Task<DiscoveryDocumentResponse> GetDiscoveryDocumentAsync(this HttpMessageInvoker client, DiscoveryDocumentRequest request, CancellationToken cancellationToken = default)
     {
         string address;
-        if (request.Address!.IsPresent())
+        if (request.Address.IsPresent())
         {
             address = request.Address!;
         }
