@@ -2,11 +2,11 @@
 // Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
 
 using IdentityModel.Internal;
+using IdentityModel.Jwk;
 using System;
 using System.Net.Http;
 using System.Text;
 using System.Text.Json;
-using System.Text.Json.Serialization;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -24,17 +24,16 @@ public static class HttpClientDynamicRegistrationExtensions
     /// <param name="request">The request.</param>
     /// <param name="cancellationToken">The cancellation token.</param>
     /// <returns></returns>
-    public static async Task<DynamicClientRegistrationResponse> RegisterClientAsync(this HttpMessageInvoker client, DynamicClientRegistrationRequest request, CancellationToken cancellationToken = default)
+    public static async Task<DynamicClientRegistrationResponse> RegisterClientAsync(
+        this HttpMessageInvoker client, DynamicClientRegistrationRequest request, CancellationToken cancellationToken = default)
     {
         var clone = request.Clone();
 
-        var options = new JsonSerializerOptions
-        {
-            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
-        };
-
         clone.Method = HttpMethod.Post;
-        clone.Content = new StringContent(JsonSerializer.Serialize(request.Document, options), Encoding.UTF8, "application/json");
+        clone.Content = new StringContent(
+            JsonSerializer.Serialize(request.Document, ClientMessagesSourceGenerationContext.Default.DynamicClientRegistrationDocument),
+            Encoding.UTF8,
+            "application/json");
         clone.Prepare();
 
         if (request.Token!.IsPresent())
