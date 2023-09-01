@@ -191,12 +191,12 @@ public class ProtocolRequest : HttpRequestMessage
             Parameters.AddOptional(OidcConstants.TokenRequest.ClientAssertion, ClientAssertion.Value);
         }
 
-        if (Address!.IsPresent())
+        if (Address.IsPresent())
         {
             RequestUri = new Uri(Address!, UriKind.RelativeOrAbsolute);
         }
 
-        if (DPoPProofToken!.IsPresent())
+        if (DPoPProofToken.IsPresent())
         {
             Headers.Add(OidcConstants.HttpHeaders.DPoP, DPoPProofToken);
         }

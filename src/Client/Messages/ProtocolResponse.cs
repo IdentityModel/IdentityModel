@@ -45,7 +45,7 @@ public class ProtocolResponse
         {
             response.ErrorType = ResponseErrorType.Http;
 
-            if (content!.IsPresent())
+            if (content.IsPresent())
             {
                 try
                 {
@@ -66,7 +66,7 @@ public class ProtocolResponse
         // either 200 or 400 - both cases need a JSON response (if present), otherwise error
         try
         {
-            if (content!.IsPresent())
+            if (content.IsPresent())
             {
                 response.Json = JsonDocument.Parse(content!).RootElement;
             }
@@ -156,7 +156,7 @@ public class ProtocolResponse
     /// <value>
     ///   <c>true</c> if an error occurred; otherwise, <c>false</c>.
     /// </value>
-    public bool IsError => Error!.IsPresent() || ErrorType != ResponseErrorType.None;
+    public bool IsError => Error.IsPresent() || ErrorType != ResponseErrorType.None;
 
     /// <summary>
     /// Gets the type of the error.
@@ -200,7 +200,7 @@ public class ProtocolResponse
     {
         get
         {
-            if (ErrorMessage!.IsPresent())
+            if (ErrorMessage.IsPresent())
             {
                 return ErrorMessage;
             }

@@ -33,7 +33,7 @@ public class Parameters : List<KeyValuePair<string, string>>
         foreach (var prop in values.GetType().GetRuntimeProperties())
         {
             var value = prop.GetValue(values) as string;
-            if (value!.IsPresent())
+            if (value.IsPresent())
             {
                 dictionary.Add(prop.Name, value!);
             }
@@ -132,7 +132,7 @@ public class Parameters : List<KeyValuePair<string, string>>
             }
         }
 
-        if (value!.IsPresent())
+        if (value.IsPresent())
         {
             Add(key, value!);
         }
@@ -160,7 +160,7 @@ public class Parameters : List<KeyValuePair<string, string>>
             }
         }
             
-        if (value!.IsPresent() || allowEmptyValue)
+        if (value.IsPresent() || allowEmptyValue)
         {
             Add(key, value!);
         }

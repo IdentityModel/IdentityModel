@@ -36,7 +36,7 @@ public static class HttpClientDynamicRegistrationExtensions
             "application/json");
         clone.Prepare();
 
-        if (request.Token!.IsPresent())
+        if (request.Token.IsPresent())
         {
             clone.SetBearerToken(request.Token!);
         }

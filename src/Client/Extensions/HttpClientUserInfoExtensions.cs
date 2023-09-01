@@ -23,7 +23,7 @@ public static class HttpClientUserInfoExtensions
     /// <returns></returns>
     public static async Task<UserInfoResponse> GetUserInfoAsync(this HttpMessageInvoker client, UserInfoRequest request, CancellationToken cancellationToken = default)
     {
-        if (request.Token!.IsMissing()) throw new ArgumentNullException(nameof(request.Token));
+        if (request.Token.IsMissing()) throw new ArgumentNullException(nameof(request.Token));
 
         var clone = request.Clone();
 
