@@ -13,24 +13,15 @@ namespace IdentityModel;
 /// </summary>
 public static class Identity
 {
+    private static readonly ClaimsIdentity _anonymous = new ClaimsIdentity(new List<Claim> { new Claim(ClaimTypes.Name, "") });
+
     /// <summary>
     /// Creates an anonymous claims identity.
     /// </summary>
     /// <value>
     /// The anonymous.
     /// </value>
-    public static ClaimsIdentity Anonymous
-    {
-        get
-        {
-            var claims = new List<Claim>
-            {
-                new Claim(ClaimTypes.Name, "")
-            };
-
-            return new ClaimsIdentity(claims);
-        }
-    }
+    public static ClaimsIdentity Anonymous => _anonymous;
 
     /// <summary>
     /// Creates a ClaimsIdentity using the specified authentication type and claims.
