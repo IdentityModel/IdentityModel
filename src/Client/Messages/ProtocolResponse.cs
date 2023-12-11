@@ -30,6 +30,13 @@ public class ProtocolResponse
             HttpResponse = httpResponse
         };
 
+        // Probably a connection error, no HttpResponseMessage
+        if (httpResponse == null)
+        {
+            await response.InitializeAsync(initializationData).ConfigureAwait();
+            return response;
+        }
+
         // try to read content
         string? content = null;
         try
