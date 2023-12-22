@@ -279,7 +279,7 @@ public class DynamicClientRegistrationDocument
     /// Custom client metadata fields to include in the serialization.
     /// </summary>
     [JsonExtensionData]
-    public IDictionary<string, object>? Extensions { get; } = new Dictionary<string, object>(StringComparer.Ordinal);
+    public IDictionary<string, object>? Extensions { get; set; } = new Dictionary<string, object>(StringComparer.Ordinal);
 
     // Don't serialize empty arrays
     public bool ShouldSerializeRequestUris() => RequestUris.Any();

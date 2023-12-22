@@ -3,11 +3,15 @@
 
 using FluentAssertions;
 using IdentityModel.Client;
+using IdentityModel.Jwk;
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Text.Json;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -164,6 +168,27 @@ namespace IdentityModel.UnitTests
             response.Error.Should().Be("invalid_redirect_uri");
             response.ErrorDescription.Should().Be("One or more redirect_uri values are invalid");
             response.TryGet("custom").Should().Be("custom");
+        }
+
+        [Fact]
+        public async Task Extensions_should_be_serializable()
+        {
+            var request = new DynamicClientRegistrationRequest
+            {
+                Address = Endpoint,
+                Document = JsonSerializer.Deserialize<DynamicClientRegistrationDocument>(
+                    "{\"extension\":\"data\"}")
+            };
+            request.Document.Extensions.Should().NotBeEmpty();
+
+            var document = File.ReadAllText(FileName.Create("success_registration_response.json"));
+            var handler = new NetworkHandler(document, HttpStatusCode.Created);
+
+            var client = new HttpClient(handler);
+            var response = await client.RegisterClientAsync(request);
+            
+            // Mostly we just want to make sure that serialization didn't throw
+            response.Should().NotBeNull();
         }
     }
 }
