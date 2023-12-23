@@ -5,6 +5,7 @@ using IdentityModel.Jwk;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json;
 using System.Text.Json.Serialization;
 
 #pragma warning disable 1591
@@ -279,7 +280,7 @@ public class DynamicClientRegistrationDocument
     /// Custom client metadata fields to include in the serialization.
     /// </summary>
     [JsonExtensionData]
-    public IDictionary<string, object>? Extensions { get; } = new Dictionary<string, object>(StringComparer.Ordinal);
+    public IDictionary<string, JsonElement>? Extensions { get; set; } = new Dictionary<string, JsonElement>(StringComparer.Ordinal);
 
     // Don't serialize empty arrays
     public bool ShouldSerializeRequestUris() => RequestUris.Any();
