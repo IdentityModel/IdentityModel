@@ -70,9 +70,9 @@ namespace build
                 Run("dotnet", "publish test/TrimmableAnalysis -c Release -r win-x64");
             });
 
-            Target("default", DependsOn(Targets.Test, Targets.Pack));
+            Target("default", DependsOn(Targets.Test, Targets.Pack, Targets.TrimmableAnalysis));
 
-            Target("sign", DependsOn(Targets.Test, Targets.SignPackage));
+            Target("sign", DependsOn(Targets.Test, Targets.SignPackage, Targets.TrimmableAnalysis));
 
             await RunTargetsAndExitAsync(args, ex => ex is SimpleExec.ExitCodeException || ex.Message.EndsWith(envVarMissing));
         }
