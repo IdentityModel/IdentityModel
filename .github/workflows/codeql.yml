@@ -43,7 +43,8 @@ jobs:
         dotnet-version: |
           6.0.x
           7.0.x
-      
+          8.0.x
+
     - run: dotnet --info
 
     # Initializes the CodeQL tools for scanning.
