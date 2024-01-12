@@ -22,6 +22,7 @@ namespace build
             public const string Pack = "pack";
             public const string SignBinary = "sign-binary";
             public const string SignPackage = "sign-package";
+            public const string TrimmableAnalysis = "trimmable-analysis";
         }
 
         static async Task Main(string[] args)
@@ -62,6 +63,11 @@ namespace build
             Target(Targets.SignPackage, DependsOn(Targets.Pack, Targets.RestoreTools), () =>
             {
                 SignNuGet();
+            });
+
+            Target(Targets.TrimmableAnalysis, () =>
+            {
+                Run("dotnet", "publish test/TrimmableAnalysis -c Release -r win-x64");
             });
 
             Target("default", DependsOn(Targets.Test, Targets.Pack));
