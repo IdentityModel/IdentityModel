@@ -1,5 +1,8 @@
 using System;
 using System.Collections.Generic;
+#if NET6_0_OR_GREATER
+using System.Diagnostics.CodeAnalysis;
+#endif
 using System.Linq;
 using System.Reflection;
 using IdentityModel.Internal;
@@ -16,6 +19,9 @@ public class Parameters : List<KeyValuePair<string, string>>
     /// </summary>
     /// <param name="values"></param>
     /// <returns></returns>
+#if NET6_0_OR_GREATER
+    [RequiresUnreferencedCode("The FromObject method uses reflection in a way that is incompatible with trimming.")]
+#endif
     public static Parameters? FromObject(object values)
     {
         if (values == null)
