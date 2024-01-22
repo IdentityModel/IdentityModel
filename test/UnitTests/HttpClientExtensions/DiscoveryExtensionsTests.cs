@@ -203,6 +203,7 @@ namespace IdentityModel.UnitTests
             disco.TokenEndpoint.Should().Be("https://demo.identityserver.io/connect/token");
             disco.AuthorizeEndpoint.Should().Be("https://demo.identityserver.io/connect/authorize");
             disco.UserInfoEndpoint.Should().Be("https://demo.identityserver.io/connect/userinfo");
+            disco.PushedAuthorizationRequestEndpoint.Should().Be("https://demo.identityserver.io/connect/par");
 
             disco.FrontChannelLogoutSupported.Should().Be(true);
             disco.FrontChannelLogoutSessionSupported.Should().Be(true);
@@ -218,6 +219,8 @@ namespace IdentityModel.UnitTests
             
             disco.MtlsEndpointAliases.Should().NotBeNull();
             disco.MtlsEndpointAliases.TokenEndpoint.Should().BeNull();
+
+            disco.RequirePushedAuthorizationRequests.Should().BeTrue();
         }
         
         [Fact]

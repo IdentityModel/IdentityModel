@@ -446,6 +446,7 @@ public static class OidcConstants
         public const string CheckSessionIframe = "check_session_iframe";
         public const string RegistrationEndpoint = "registration_endpoint";
         public const string MtlsEndpointAliases = "mtls_endpoint_aliases";
+        public const string PushedAuthorizationRequestEndpoint = "pushed_authorization_request_endpoint";
 
         // common capabilities
         public const string FrontChannelLogoutSupported = "frontchannel_logout_supported";
@@ -496,6 +497,9 @@ public static class OidcConstants
         
         // DPoP
         public const string DPoPSigningAlgorithmsSupported = "dpop_signing_alg_values_supported";
+
+        // PAR
+        public const string RequirePushedAuthorizationRequests = "require_pushed_authorization_requests";
     }
 
     public static class BackchannelTokenDeliveryModes
