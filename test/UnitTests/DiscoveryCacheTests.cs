@@ -1,4 +1,5 @@
-﻿using FluentAssertions;
+using System;
+using FluentAssertions;
 using IdentityModel.Client;
 using System.IO;
 using System.Net;
@@ -41,6 +42,26 @@ namespace IdentityModel.UnitTests
             var disco = await cache.GetAsync();
 
             disco.IsError.Should().BeFalse();
+        }
+        
+        [Fact]
+        public async Task Authority_should_be_reevaluated_after_calling_refresh()
+        {
+            var numberOfTimesCalled = 0;
+            Func<string> authorityFunc = () => {
+                numberOfTimesCalled++;
+                return _authority;
+            };
+            
+            var client = new HttpClient(_successHandler);
+            var cache = new DiscoveryCache(authorityFunc, () => client);
+            
+            _ = await cache.GetAsync();
+            _ = await cache.GetAsync();
+            cache.Refresh();
+            _ = await cache.GetAsync();
+            
+            numberOfTimesCalled.Should().Be(2);
         }
     }
 }

@@ -18,7 +18,7 @@ public class DiscoveryCache : IDiscoveryCache
 
     private readonly DiscoveryPolicy _policy;
     private readonly Func<HttpMessageInvoker> _getHttpClient;
-    private readonly string _authority;
+    private readonly Func<string> _getAuthority;
 
     /// <summary>
     /// Initialize instance of DiscoveryCache with passed authority.
@@ -27,7 +27,7 @@ public class DiscoveryCache : IDiscoveryCache
     /// <param name="policy">The policy.</param>
     public DiscoveryCache(string authority, DiscoveryPolicy? policy = null)
     {
-        _authority = authority;
+        _getAuthority = () => authority;
         _policy = policy ?? new DiscoveryPolicy();
         _getHttpClient = () => new HttpClient();
     }
@@ -40,7 +40,20 @@ public class DiscoveryCache : IDiscoveryCache
     /// <param name="policy">The policy.</param>
     public DiscoveryCache(string authority, Func<HttpMessageInvoker> httpClientFunc, DiscoveryPolicy? policy = null)
     {
-        _authority = authority;
+        _getAuthority = () => authority;
+        _policy = policy ?? new DiscoveryPolicy();
+        _getHttpClient = httpClientFunc ?? throw new ArgumentNullException(nameof(httpClientFunc));
+    }
+    
+    /// <summary>
+    /// Initialize instance of DiscoveryCache with passed authority.
+    /// </summary>
+    /// <param name="authorityFunc">The function to get the base address or discovery document endpoint.</param>
+    /// <param name="httpClientFunc">The HTTP client function.</param>
+    /// <param name="policy">The policy.</param>
+    public DiscoveryCache(Func<string> authorityFunc, Func<HttpMessageInvoker> httpClientFunc, DiscoveryPolicy? policy = null)
+    {
+        _getAuthority = authorityFunc ?? throw new ArgumentNullException(nameof(authorityFunc));
         _policy = policy ?? new DiscoveryPolicy();
         _getHttpClient = httpClientFunc ?? throw new ArgumentNullException(nameof(httpClientFunc));
     }
@@ -76,7 +89,7 @@ public class DiscoveryCache : IDiscoveryCache
     {
         var result = await _getHttpClient().GetDiscoveryDocumentAsync(new DiscoveryDocumentRequest
         {
-            Address = _authority,
+            Address = _getAuthority(),
             Policy = _policy
         }).ConfigureAwait();
 
