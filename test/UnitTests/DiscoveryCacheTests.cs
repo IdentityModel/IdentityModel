@@ -1,4 +1,3 @@
-using System;
 using FluentAssertions;
 using IdentityModel.Client;
 using System.IO;
@@ -40,21 +39,36 @@ namespace IdentityModel.UnitTests
             var cache = new DiscoveryCache(_authority, () => client);
 
             var disco = await cache.GetAsync();
-
             disco.IsError.Should().BeFalse();
         }
         
         [Fact]
-        public async Task Authority_should_be_reevaluated_after_calling_refresh()
+        public async Task GetAsync_should_return_same_discovery_document_if_cached()
+        {
+            var client = new HttpClient(_successHandler);
+            var cache = new DiscoveryCache(_authority, () => client);
+            
+            var disco = await cache.GetAsync();
+            (await cache.GetAsync()).Should().BeSameAs(disco);
+        }
+        
+        [Fact]
+        public async Task Refresh_should_cause_subsequent_calls_to_return_new_discovery_document()
+        {
+            var client = new HttpClient(_successHandler);
+            var cache = new DiscoveryCache(_authority, () => client);
+            
+            var disco = await cache.GetAsync();
+            cache.Refresh();
+            (await cache.GetAsync()).Should().NotBeSameAs(disco);
+        }
+        
+        [Fact]
+        public async Task Refresh_should_cause_authority_to_be_reevaluated_on_subsequent_calls()
         {
             var numberOfTimesCalled = 0;
-            Func<string> authorityFunc = () => {
-                numberOfTimesCalled++;
-                return _authority;
-            };
-            
             var client = new HttpClient(_successHandler);
-            var cache = new DiscoveryCache(authorityFunc, () => client);
+            var cache = new DiscoveryCache(AuthorityFunc, () => client);
             
             _ = await cache.GetAsync();
             _ = await cache.GetAsync();
@@ -62,6 +76,12 @@ namespace IdentityModel.UnitTests
             _ = await cache.GetAsync();
             
             numberOfTimesCalled.Should().Be(2);
+            
+            string AuthorityFunc()
+            {
+                numberOfTimesCalled++;
+                return _authority;
+            }
         }
     }
 }
