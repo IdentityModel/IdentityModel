@@ -205,6 +205,12 @@ public static class OidcConstants
         public const string Interval = "interval";
     }
 
+    public static class PushedAuthorizationRequestResponse
+    {
+        public const string ExpiresIn = "expires_in";
+        public const string RequestUri = "request_uri";
+    }
+
     public static class TokenIntrospectionRequest
     {
         public const string Token = "token";
