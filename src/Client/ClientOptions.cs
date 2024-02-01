@@ -1,6 +1,12 @@
 ﻿namespace IdentityModel.Client;
 
 /// <summary>
+/// Options for ParClient
+/// </summary>
+public class PushedAuthorizationClientOptions : ClientOptions
+{ }
+
+/// <summary>
 /// Options for TokenClient
 /// </summary>
 public class TokenClientOptions : ClientOptions
