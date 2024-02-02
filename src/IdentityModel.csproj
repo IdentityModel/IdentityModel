@@ -47,9 +47,18 @@
   </ItemGroup>
 
   <!--Conditional Package references -->
-  <ItemGroup Condition="'$(TargetFramework)' != 'net6.0'">
+  
+  <!-- System.Text.Json is automatically included in net6.0, so we don't take an explicit dependency on it in the net6.0 build. -->
+  <!-- System.Text.Json version 7.0.0 dropped support for net461, so we use the older version there. -->
+  <ItemGroup Condition="'$(TargetFramework)' == 'net461'">
     <PackageReference Include="System.Text.Json" Version="6.0.0" />
   </ItemGroup>   	
+  <ItemGroup Condition="'$(TargetFramework)' == 'net472'">
+    <PackageReference Include="System.Text.Json" Version="8.0.0" />
+  </ItemGroup>   	
+  <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
+    <PackageReference Include="System.Text.Json" Version="8.0.0" />
+  </ItemGroup>  	
   
   <ItemGroup Condition=" '$(TargetFramework)' == 'net461' or '$(TargetFramework)' == 'net472'">
     <Reference Include="System.Net.Http" />
