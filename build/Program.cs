@@ -22,6 +22,7 @@ namespace build
             public const string Pack = "pack";
             public const string SignBinary = "sign-binary";
             public const string SignPackage = "sign-package";
+            public const string TrimmableAnalysis = "trimmable-analysis";
         }
 
         static async Task Main(string[] args)
@@ -64,9 +65,14 @@ namespace build
                 SignNuGet();
             });
 
-            Target("default", DependsOn(Targets.Test, Targets.Pack));
+            Target(Targets.TrimmableAnalysis, () =>
+            {
+                Run("dotnet", "publish test/TrimmableAnalysis -c Release -r win-x64");
+            });
 
-            Target("sign", DependsOn(Targets.Test, Targets.SignPackage));
+            Target("default", DependsOn(Targets.Test, Targets.Pack, Targets.TrimmableAnalysis));
+
+            Target("sign", DependsOn(Targets.Test, Targets.SignPackage, Targets.TrimmableAnalysis));
 
             await RunTargetsAndExitAsync(args, ex => ex is SimpleExec.ExitCodeException || ex.Message.EndsWith(envVarMissing));
         }
