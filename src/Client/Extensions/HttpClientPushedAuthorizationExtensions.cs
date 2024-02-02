@@ -21,7 +21,7 @@ public static class HttpClientPushedAuthorizationExtensions
     /// <param name="request"></param>
     /// <param name="cancellationToken">The cancellation token.</param>
     /// <returns></returns>
-    public static Task<PushedAuthorizationResponse> PushAuthorizationRequest(this HttpClient client, PushedAuthorizationRequest request, CancellationToken cancellationToken = default)
+    public static Task<PushedAuthorizationResponse> PushAuthorizationAsync(this HttpClient client, PushedAuthorizationRequest request, CancellationToken cancellationToken = default)
     {
         var clone = request.Clone();
     
@@ -41,11 +41,11 @@ public static class HttpClientPushedAuthorizationExtensions
         AddOptionalIfNotPresent(clone.Parameters, OidcConstants.AuthorizeRequest.UiLocales, request.UiLocales);
         AddOptionalIfNotPresent(clone.Parameters, OidcConstants.AuthorizeRequest.IdTokenHint, request.IdTokenHint);
 
-        return PushAuthorizationRequest(client, clone, cancellationToken);
+        return PushAuthorizationAsync(client, clone, cancellationToken);
     }
 
 
-    internal static async Task<PushedAuthorizationResponse> PushAuthorizationRequest(this HttpMessageInvoker client, ProtocolRequest request, CancellationToken cancellationToken = default)
+    internal static async Task<PushedAuthorizationResponse> PushAuthorizationAsync(this HttpMessageInvoker client, ProtocolRequest request, CancellationToken cancellationToken = default)
     {
         request.Prepare();
         request.Method = HttpMethod.Post;

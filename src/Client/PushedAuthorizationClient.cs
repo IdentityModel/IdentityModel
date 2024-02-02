@@ -66,11 +66,11 @@ public class PushedAuthorizationClient
     /// <param name="parameters"></param>
     /// <param name="cancellationToken"></param>
     /// <returns></returns>
-    public Task<PushedAuthorizationResponse> PushAuthorizationRequest(Parameters parameters, CancellationToken cancellationToken = default)
+    public Task<PushedAuthorizationResponse> PushAuthorizationAsync(Parameters parameters, CancellationToken cancellationToken = default)
     {
         var request = new PushedAuthorizationRequest();
         ApplyRequestParameters(request, parameters);
 
-        return _client().PushAuthorizationRequest(request, cancellationToken);
+        return _client().PushAuthorizationAsync(request, cancellationToken);
     }
 }
