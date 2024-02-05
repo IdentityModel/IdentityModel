@@ -30,7 +30,6 @@ public static class HttpClientPushedAuthorizationExtensions
         // parameters needed for client authentication. That means we might not always have a client_id 
         // parameter in the body (it could be in the client assertion or in the authorization header).
 
-        // TODO - Test this
         clone.Parameters.AddRequired(OidcConstants.AuthorizeRequest.ResponseType, request.ResponseType);
         
         clone.Parameters.AddOptional(OidcConstants.AuthorizeRequest.Scope, request.Scope);

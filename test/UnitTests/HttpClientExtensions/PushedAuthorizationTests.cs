@@ -169,5 +169,22 @@ namespace IdentityModel.UnitTests
             response.ErrorType.Should().Be(ResponseErrorType.None);
             response.HttpStatusCode.Should().Be(HttpStatusCode.OK);
         }
+
+        [Fact]
+        public void Pushed_authorization_without_response_type_should_fail()
+        {
+            var document = File.ReadAllText(FileName.Create("success_par_response.json"));
+            var handler = new NetworkHandler(document, HttpStatusCode.OK);
+            var client = new HttpClient(handler);
+            
+            Func<Task> act = async () => await client.PushAuthorizationAsync(
+                new PushedAuthorizationRequest
+                {
+                    ResponseType = null
+                });
+
+            act.Should().Throw<ArgumentException>().And.ParamName.Should().Be("response_type");
+        }
+
     }
 }
