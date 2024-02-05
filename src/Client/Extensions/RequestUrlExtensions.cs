@@ -1,6 +1,8 @@
 ﻿// Copyright (c) Brock Allen & Dominick Baier. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
 
+using System.Collections.Generic;
+
 namespace IdentityModel.Client;
 
 /// <summary>
@@ -22,7 +24,7 @@ public static class RequestUrlExtensions
     /// <summary>
     /// Creates an authorize URL.
     /// </summary>
-    /// <param name="request">The request.</param>
+    /// <param name="requestUrl">The instance of the RequestUrl helper class.</param>
     /// <param name="clientId">The client identifier.</param>
     /// <param name="responseType">The response type.</param>
     /// <param name="scope">The scope.</param>
@@ -39,9 +41,13 @@ public static class RequestUrlExtensions
     /// <param name="maxAge">The max age.</param>
     /// <param name="uiLocales">The ui locales.</param>
     /// <param name="idTokenHint">The id_token hint.</param>
+    /// <param name="request">The request.</param>
+    /// <param name="resource">The resource.</param>
+    /// <param name="requestUri">The request_uri.</param>
+    /// <param name="dpopKeyThumbprint">The dpop_jkt.</param>
     /// <param name="extra">Extra parameters.</param>
     /// <returns></returns>
-    public static string CreateAuthorizeUrl(this RequestUrl request,
+    public static string CreateAuthorizeUrl(this RequestUrl requestUrl,
         string clientId,
         string responseType,
         string? scope = null,
@@ -58,8 +64,14 @@ public static class RequestUrlExtensions
         int? maxAge = null,
         string? uiLocales = null,
         string? idTokenHint = null,
+        string? request = null,
+        ICollection<string>? resource = null,
+        string? requestUri = null,
+        string? dpopKeyThumbprint = null,
         Parameters? extra = null)
     {
+        var authorizeRedirect = new AuthorizeRedirect();
+
         var values = new Parameters
         {
             { OidcConstants.AuthorizeRequest.ClientId, clientId },
@@ -80,8 +92,48 @@ public static class RequestUrlExtensions
         values.AddOptional(OidcConstants.AuthorizeRequest.MaxAge, maxAge?.ToString());
         values.AddOptional(OidcConstants.AuthorizeRequest.UiLocales, uiLocales);
         values.AddOptional(OidcConstants.AuthorizeRequest.IdTokenHint, idTokenHint);
+        values.AddOptional(OidcConstants.AuthorizeRequest.Request, request);
+        foreach(var r in resource ?? [])
+        {
+            values.AddOptional(OidcConstants.AuthorizeRequest.Resource, r, allowDuplicates: true);
+        }
+        values.AddOptional(OidcConstants.AuthorizeRequest.RequestUri, requestUri);
+        values.AddOptional(OidcConstants.AuthorizeRequest.DPoPKeyThumbprint, dpopKeyThumbprint);
 
-        return request.Create(values.Merge(extra));
+        return requestUrl.Create(values.Merge(extra));
+    }
+
+    public static string CreateAuthorizeUrl(this RequestUrl requestUrl, AuthorizeRedirect authorizeRequest, Parameters? extra = null)
+    {
+        var values = new Parameters
+        {
+            { OidcConstants.AuthorizeRequest.ClientId, authorizeRequest.ClientId },
+            { OidcConstants.AuthorizeRequest.ResponseType, authorizeRequest.ResponseType }
+        };
+
+        values.AddOptional(OidcConstants.AuthorizeRequest.Scope, authorizeRequest.Scope);
+        values.AddOptional(OidcConstants.AuthorizeRequest.RedirectUri, authorizeRequest.RedirectUri);
+        values.AddOptional(OidcConstants.AuthorizeRequest.State, authorizeRequest.State);
+        values.AddOptional(OidcConstants.AuthorizeRequest.Nonce, authorizeRequest.Nonce);
+        values.AddOptional(OidcConstants.AuthorizeRequest.LoginHint, authorizeRequest.LoginHint);
+        values.AddOptional(OidcConstants.AuthorizeRequest.AcrValues, authorizeRequest.AcrValues);
+        values.AddOptional(OidcConstants.AuthorizeRequest.Prompt, authorizeRequest.Prompt);
+        values.AddOptional(OidcConstants.AuthorizeRequest.ResponseMode, authorizeRequest.ResponseMode);
+        values.AddOptional(OidcConstants.AuthorizeRequest.CodeChallenge, authorizeRequest.CodeChallenge);
+        values.AddOptional(OidcConstants.AuthorizeRequest.CodeChallengeMethod, authorizeRequest.CodeChallengeMethod);
+        values.AddOptional(OidcConstants.AuthorizeRequest.Display, authorizeRequest.Display);
+        values.AddOptional(OidcConstants.AuthorizeRequest.MaxAge, authorizeRequest.MaxAge?.ToString());
+        values.AddOptional(OidcConstants.AuthorizeRequest.UiLocales, authorizeRequest.UiLocales);
+        values.AddOptional(OidcConstants.AuthorizeRequest.IdTokenHint, authorizeRequest.IdTokenHint);
+        values.AddOptional(OidcConstants.AuthorizeRequest.Request, authorizeRequest.Request);
+        foreach(var r in authorizeRequest.Resource ?? [])
+        {
+            values.AddOptional(OidcConstants.AuthorizeRequest.Resource, r, allowDuplicates: true);
+        }
+        values.AddOptional(OidcConstants.AuthorizeRequest.RequestUri, authorizeRequest.RequestUri);
+        values.AddOptional(OidcConstants.AuthorizeRequest.DPoPKeyThumbprint, authorizeRequest.DPoPKeyThumbprint);
+
+        return requestUrl.Create(values.Merge(extra));
     }
 
     /// <summary>

@@ -26,6 +26,7 @@ namespace IdentityModel.UnitTests
             var client = new HttpClient(handler);
             var request = new PushedAuthorizationRequest
             {
+                ResponseType = OidcConstants.ResponseTypes.Code,
                 ClientId = "app1",
                 Address = Endpoint,
                 RedirectUri = "https://example.com/signin-oidc",
@@ -67,7 +68,10 @@ namespace IdentityModel.UnitTests
                 BaseAddress = new Uri(Endpoint)
             };
 
-            var response = await client.PushAuthorizationAsync(new PushedAuthorizationRequest());
+            var response = await client.PushAuthorizationAsync(new PushedAuthorizationRequest
+            {
+                ResponseType = OidcConstants.ResponseTypes.Code,
+            });
 
             response.IsError.Should().BeFalse();
             response.ErrorType.Should().Be(ResponseErrorType.None);
@@ -85,6 +89,7 @@ namespace IdentityModel.UnitTests
             var client = new HttpClient(handler);
             var response = await client.PushAuthorizationAsync(new PushedAuthorizationRequest
             {
+                ResponseType = OidcConstants.ResponseTypes.Code,
                 Address = Endpoint
             });
 
@@ -102,6 +107,7 @@ namespace IdentityModel.UnitTests
             var client = new HttpClient(handler);
             var response = await client.PushAuthorizationAsync(new PushedAuthorizationRequest
             {
+                ResponseType = OidcConstants.ResponseTypes.Code,
                 Address = Endpoint
             });
 
@@ -119,6 +125,7 @@ namespace IdentityModel.UnitTests
             var client = new HttpClient(handler);
             var response = await client.PushAuthorizationAsync(new PushedAuthorizationRequest
             {
+                ResponseType = OidcConstants.ResponseTypes.Code,
                 Address = Endpoint
             });
 
@@ -137,20 +144,22 @@ namespace IdentityModel.UnitTests
             var client = new HttpClient(handler);
             var response = await client.PushAuthorizationAsync(new PushedAuthorizationRequest
             {
+                ResponseType = OidcConstants.ResponseTypes.Code,
                 Address = Endpoint,
                 ClientId = "client",
                 AcrValues = "idp:example",
+                Scope = "scope1 scope2",
                 Parameters =
                 {
-                    { "scope", "scope1 scope2" },
                     { "foo", "bar" }
                 }
             });
 
             // check request
             var fields = QueryHelpers.ParseQuery(handler.Body);
-            fields.Count.Should().Be(3);
-            
+            fields.Count.Should().Be(4);
+
+            fields["response_type"].First().Should().Be("code");
             fields["scope"].First().Should().Be("scope1 scope2");
             fields["foo"].First().Should().Be("bar");
             fields["acr_values"].First().Should().Be("idp:example");

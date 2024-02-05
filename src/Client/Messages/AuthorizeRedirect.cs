@@ -1,17 +1,25 @@
 using System.Collections.Generic;
 
-namespace IdentityModel.Client;
-
-/// <summary>
-/// Request for PAR
-/// </summary>
-/// <seealso cref="ProtocolRequest" />
-public class PushedAuthorizationRequest : ProtocolRequest, IAuthorizeRequest
+public class AuthorizeRedirect : IAuthorizeRequest
 {
-    // TODO - Consider metadata to indicate that this is going to be signed as a JWT (for a future release)
+    //
+    // This parameter is only allowed when redirecting to the authorize endpoint
+    // (it can't be pushed to the PAR endpoint)
+    //    
+
+    /// <summary>
+    /// Gets or sets the request_uri protocol parameter.
+    /// </summary>
+    public string? RequestUri { get; set; }
+    
+    //
+    // The rest of these properties are from IAuthorizeRequest (shared with PAR) 
+    //
 
     /// <inheritdoc />
-    public string? ResponseType { get; set; }
+    public string ClientId { get; set; }
+    /// <inheritdoc />
+    public string ResponseType { get; set; }
     /// <inheritdoc />
     public string? Scope { get; set; }
     /// <inheritdoc />

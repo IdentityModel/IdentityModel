@@ -3,6 +3,7 @@
 
 using IdentityModel.Internal;
 using System;
+using System.Collections.ObjectModel;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
@@ -24,22 +25,35 @@ public static class HttpClientPushedAuthorizationExtensions
     public static Task<PushedAuthorizationResponse> PushAuthorizationAsync(this HttpClient client, PushedAuthorizationRequest request, CancellationToken cancellationToken = default)
     {
         var clone = request.Clone();
-    
-        AddOptionalIfNotPresent(clone.Parameters, OidcConstants.AuthorizeRequest.ResponseType, request.ResponseType);
-        AddOptionalIfNotPresent(clone.Parameters, OidcConstants.AuthorizeRequest.Scope, request.Scope);
-        AddOptionalIfNotPresent(clone.Parameters, OidcConstants.AuthorizeRequest.RedirectUri, request.RedirectUri);
-        AddOptionalIfNotPresent(clone.Parameters, OidcConstants.AuthorizeRequest.State, request.State);
-        AddOptionalIfNotPresent(clone.Parameters, OidcConstants.AuthorizeRequest.Nonce, request.Nonce);
-        AddOptionalIfNotPresent(clone.Parameters, OidcConstants.AuthorizeRequest.LoginHint, request.LoginHint);
-        AddOptionalIfNotPresent(clone.Parameters, OidcConstants.AuthorizeRequest.AcrValues, request.AcrValues);
-        AddOptionalIfNotPresent(clone.Parameters, OidcConstants.AuthorizeRequest.Prompt, request.Prompt);
-        AddOptionalIfNotPresent(clone.Parameters, OidcConstants.AuthorizeRequest.ResponseMode, request.ResponseMode);
-        AddOptionalIfNotPresent(clone.Parameters, OidcConstants.AuthorizeRequest.CodeChallenge, request.CodeChallenge);
-        AddOptionalIfNotPresent(clone.Parameters, OidcConstants.AuthorizeRequest.CodeChallengeMethod, request.CodeChallengeMethod);
-        AddOptionalIfNotPresent(clone.Parameters, OidcConstants.AuthorizeRequest.Display, request.Display);
-        AddOptionalIfNotPresent(clone.Parameters, OidcConstants.AuthorizeRequest.MaxAge, request.MaxAge.ToString());
-        AddOptionalIfNotPresent(clone.Parameters, OidcConstants.AuthorizeRequest.UiLocales, request.UiLocales);
-        AddOptionalIfNotPresent(clone.Parameters, OidcConstants.AuthorizeRequest.IdTokenHint, request.IdTokenHint);
+
+        // REVIEW - we aren't doing AddRequired for ClientId, because the later call to Prepare handles
+        // parameters needed for client authentication. That means we might not always have a client_id 
+        // parameter in the body (it could be in the client assertion or in the authorization header).
+
+        // TODO - Test this
+        clone.Parameters.AddRequired(OidcConstants.AuthorizeRequest.ResponseType, request.ResponseType);
+        
+        clone.Parameters.AddOptional(OidcConstants.AuthorizeRequest.Scope, request.Scope);
+        clone.Parameters.AddOptional(OidcConstants.AuthorizeRequest.RedirectUri, request.RedirectUri);
+        clone.Parameters.AddOptional(OidcConstants.AuthorizeRequest.State, request.State);
+        clone.Parameters.AddOptional(OidcConstants.AuthorizeRequest.Nonce, request.Nonce);
+        clone.Parameters.AddOptional(OidcConstants.AuthorizeRequest.LoginHint, request.LoginHint);
+        clone.Parameters.AddOptional(OidcConstants.AuthorizeRequest.AcrValues, request.AcrValues);
+        clone.Parameters.AddOptional(OidcConstants.AuthorizeRequest.Prompt, request.Prompt);
+        clone.Parameters.AddOptional(OidcConstants.AuthorizeRequest.ResponseMode, request.ResponseMode);
+        clone.Parameters.AddOptional(OidcConstants.AuthorizeRequest.CodeChallenge, request.CodeChallenge);
+        clone.Parameters.AddOptional(OidcConstants.AuthorizeRequest.CodeChallengeMethod, request.CodeChallengeMethod);
+        clone.Parameters.AddOptional(OidcConstants.AuthorizeRequest.Display, request.Display);
+        clone.Parameters.AddOptional(OidcConstants.AuthorizeRequest.MaxAge, request.MaxAge.ToString());
+        clone.Parameters.AddOptional(OidcConstants.AuthorizeRequest.UiLocales, request.UiLocales);
+        clone.Parameters.AddOptional(OidcConstants.AuthorizeRequest.IdTokenHint, request.IdTokenHint);
+        clone.Parameters.AddOptional(OidcConstants.AuthorizeRequest.Request, request.Request);
+        foreach(var resource in request.Resource ?? [])
+        {
+            clone.Parameters.AddOptional(OidcConstants.AuthorizeRequest.Resource, resource, allowDuplicates: true);
+        }
+        clone.Parameters.AddOptional(OidcConstants.AuthorizeRequest.DPoPKeyThumbprint, request.DPoPKeyThumbprint);
+
 
         return PushAuthorizationAsync(client, clone, cancellationToken);
     }
@@ -65,15 +79,5 @@ public static class HttpClientPushedAuthorizationExtensions
         }
 
         return await ProtocolResponse.FromHttpResponseAsync<PushedAuthorizationResponse>(response).ConfigureAwait();
-    }
-
-
-    // Differs from AddOptional with allowDuplicates: false in that duplicates are skipped instead of throwing
-    private static void AddOptionalIfNotPresent(Parameters clonedParameters, string key, string? value)
-    {
-        if (!clonedParameters.ContainsKey(key))
-        {
-            clonedParameters.AddOptional(key, value);
-        }
     }
 }
