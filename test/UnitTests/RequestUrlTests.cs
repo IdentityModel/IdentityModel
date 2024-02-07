@@ -137,5 +137,33 @@ namespace IdentityModel.UnitTests
             fields["client_id"].Single().Should().Be(ClientId);
             fields["request_uri"].Single().Should().Be(requestUri);
         }
+        
+        [Fact]
+        public void Create_authorize_url_for_non_par_should_succeed()
+        {
+            var request = new RequestUrl(Authority);
+            var redirectUri = "https://app.example.com/signin-oidc";
+            var scope = "api1";
+            var state = "state";
+
+            var urlString = request.CreateAuthorizeUrl(
+                clientId: ClientId, 
+                responseType: "code",
+                redirectUri: redirectUri,
+                scope: scope,
+                state: state
+            );
+            var url = new Uri(urlString);
+            
+            url.GetLeftPart(UriPartial.Path).Should().Be(Authority); 
+
+            var fields = QueryHelpers.ParseQuery(url.Query);
+            fields.Count.Should().Be(5);
+            fields["client_id"].Single().Should().Be(ClientId);
+            fields["response_type"].Single().Should().Be("code");
+            fields["redirect_uri"].Single().Should().Be(redirectUri);
+            fields["scope"].Single().Should().Be(scope);
+            fields["state"].Single().Should().Be(state);
+        }
     }
 }

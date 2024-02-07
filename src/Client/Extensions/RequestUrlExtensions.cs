@@ -1,6 +1,8 @@
 ﻿// Copyright (c) Brock Allen & Dominick Baier. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
 
+using IdentityModel.Internal;
+
 namespace IdentityModel.Client;
 
 /// <summary>
@@ -65,25 +67,32 @@ public static class RequestUrlExtensions
         var values = new Parameters
         {
             { OidcConstants.AuthorizeRequest.ClientId, clientId },
-            { OidcConstants.AuthorizeRequest.ResponseType, responseType }
         };
 
-        values.AddOptional(OidcConstants.AuthorizeRequest.Scope, scope);
-        values.AddOptional(OidcConstants.AuthorizeRequest.RedirectUri, redirectUri);
-        values.AddOptional(OidcConstants.AuthorizeRequest.State, state);
-        values.AddOptional(OidcConstants.AuthorizeRequest.Nonce, nonce);
-        values.AddOptional(OidcConstants.AuthorizeRequest.LoginHint, loginHint);
-        values.AddOptional(OidcConstants.AuthorizeRequest.AcrValues, acrValues);
-        values.AddOptional(OidcConstants.AuthorizeRequest.Prompt, prompt);
-        values.AddOptional(OidcConstants.AuthorizeRequest.ResponseMode, responseMode);
-        values.AddOptional(OidcConstants.AuthorizeRequest.CodeChallenge, codeChallenge);
-        values.AddOptional(OidcConstants.AuthorizeRequest.CodeChallengeMethod, codeChallengeMethod);
-        values.AddOptional(OidcConstants.AuthorizeRequest.Display, display);
-        values.AddOptional(OidcConstants.AuthorizeRequest.MaxAge, maxAge?.ToString());
-        values.AddOptional(OidcConstants.AuthorizeRequest.UiLocales, uiLocales);
-        values.AddOptional(OidcConstants.AuthorizeRequest.IdTokenHint, idTokenHint);
-        values.AddOptional(OidcConstants.AuthorizeRequest.RequestUri, requestUri);
-        
+        if (requestUri.IsPresent())
+        {
+            values.AddRequired(OidcConstants.AuthorizeRequest.RequestUri, requestUri);
+        }
+        else
+        {
+            values.AddRequired(OidcConstants.AuthorizeRequest.ResponseType, responseType);
+            values.AddOptional(OidcConstants.AuthorizeRequest.Scope, scope);
+            values.AddOptional(OidcConstants.AuthorizeRequest.RedirectUri, redirectUri);
+            values.AddOptional(OidcConstants.AuthorizeRequest.State, state);
+            values.AddOptional(OidcConstants.AuthorizeRequest.Nonce, nonce);
+            values.AddOptional(OidcConstants.AuthorizeRequest.LoginHint, loginHint);
+            values.AddOptional(OidcConstants.AuthorizeRequest.AcrValues, acrValues);
+            values.AddOptional(OidcConstants.AuthorizeRequest.Prompt, prompt);
+            values.AddOptional(OidcConstants.AuthorizeRequest.ResponseMode, responseMode);
+            values.AddOptional(OidcConstants.AuthorizeRequest.CodeChallenge, codeChallenge);
+            values.AddOptional(OidcConstants.AuthorizeRequest.CodeChallengeMethod, codeChallengeMethod);
+            values.AddOptional(OidcConstants.AuthorizeRequest.Display, display);
+            values.AddOptional(OidcConstants.AuthorizeRequest.MaxAge, maxAge?.ToString());
+            values.AddOptional(OidcConstants.AuthorizeRequest.UiLocales, uiLocales);
+            values.AddOptional(OidcConstants.AuthorizeRequest.IdTokenHint, idTokenHint);
+            values.AddOptional(OidcConstants.AuthorizeRequest.RequestUri, requestUri);
+        }
+
         return request.Create(values.Merge(extra));
     }
 
