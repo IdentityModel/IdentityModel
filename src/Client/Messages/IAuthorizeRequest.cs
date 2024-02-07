@@ -1,6 +1,13 @@
+// Copyright (c) Brock Allen & Dominick Baier. All rights reserved.
+// Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
+
 using System.Collections.Generic;
 
-public interface IAuthorizeRequest
+/// <summary>
+/// Models parameters that can be sent as part of any authorize request
+/// (redirects or pushed).
+/// </summary>
+public interface IAuthorizeRequestParameters
 {
     /// <summary>
     /// Gets or sets the client_id protocol parameter.
@@ -10,7 +17,7 @@ public interface IAuthorizeRequest
     /// <summary>
     /// Gets or sets the response_type protocol parameter.
     /// </summary>
-    public string? ResponseType { get; set; }
+    public string ResponseType { get; set; }
 
     /// <summary>
     /// Gets or sets the scope protocol parameter.
@@ -83,14 +90,9 @@ public interface IAuthorizeRequest
     public string? IdTokenHint { get; set; }
 
     /// <summary>
-    /// Gets or sets the request protocol parameter.
-    /// </summary>
-    public string? Request { get; set; }
-
-    /// <summary>
     /// Gets or sets the collection of resource protocol parameters.
     /// </summary>
-    public ICollection<string>? Resource { get; set; }
+    public ICollection<string> Resource { get; set; }
 
     /// <summary>
     /// Gets or sets the dpop_jkt protocol parameter.

@@ -123,7 +123,7 @@ public class Parameters : List<KeyValuePair<string, string>>
     public void AddOptional(string key, string? value, bool allowDuplicates = false)
     {
         if (key.IsMissing()) throw new ArgumentNullException(nameof(key));
-            
+        if (value.IsMissing()) return;
         if (allowDuplicates == false)
         {
             if (ContainsKey(key))
@@ -132,10 +132,7 @@ public class Parameters : List<KeyValuePair<string, string>>
             }
         }
 
-        if (value.IsPresent())
-        {
-            Add(key, value!);
-        }
+        Add(key, value!);
     }
 
     /// <summary>
@@ -148,26 +145,30 @@ public class Parameters : List<KeyValuePair<string, string>>
     /// <exception cref="ArgumentNullException"></exception>
     /// <exception cref="InvalidOperationException"></exception>
     /// <exception cref="ArgumentException"></exception>
-    public void AddRequired(string key, string? value, bool allowDuplicates = false, bool allowEmptyValue = false)
+    public void  AddRequired(string key, string? value, bool allowDuplicates = false, bool allowEmptyValue = false)
     {
         if (key.IsMissing()) throw new ArgumentNullException(nameof(key));
-            
-        if (allowDuplicates == false)
+
+        var valuePresent = value.IsPresent();
+        var parameterPresent = ContainsKey(key);
+
+        if (!valuePresent)
         {
-            if (ContainsKey(key))
+            if(parameterPresent)
             {
-                throw new InvalidOperationException($"Duplicate parameter: {key}");
+                return;
+            }
+            if(!allowEmptyValue)
+            {
+                throw new ArgumentException("Parameter is required", key);
             }
         }
-            
-        if (value.IsPresent() || allowEmptyValue)
+        else if (parameterPresent && !allowDuplicates)
         {
-            Add(key, value!);
+            throw new InvalidOperationException($"Duplicate parameter: {key}");
         }
-        else
-        {
-            throw new ArgumentException("Parameter is required", key);
-        }
+
+        Add(key, value!);
     }
         
     /// <summary>

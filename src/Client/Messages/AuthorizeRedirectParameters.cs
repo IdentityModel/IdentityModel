@@ -1,23 +1,25 @@
+// Copyright (c) Brock Allen & Dominick Baier. All rights reserved.
+// Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
+
 using System.Collections.Generic;
 
-public class AuthorizeRedirect : IAuthorizeRequest
+/// <summary>
+/// Models parameters that can be included when redirecting to the authorize
+/// endpoint when not using a JWT-Secured Authorization Request (JAR).
+/// </summary>
+public class AuthorizeRedirectParameters : IAuthorizeRequestParameters
 {
-    //
-    // This parameter is only allowed when redirecting to the authorize endpoint
-    // (it can't be pushed to the PAR endpoint)
-    //    
-
     /// <summary>
-    /// Gets or sets the request_uri protocol parameter.
+    /// ctor
     /// </summary>
-    public string? RequestUri { get; set; }
-    
-    //
-    // The rest of these properties are from IAuthorizeRequest (shared with PAR) 
-    //
+    public AuthorizeRedirectParameters(string clientId, string responseType)
+    {
+        ClientId = clientId;
+        ResponseType = responseType;
+    }
 
     /// <inheritdoc />
-    public string ClientId { get; set; }
+    public string ClientId { get; set; } 
     /// <inheritdoc />
     public string ResponseType { get; set; }
     /// <inheritdoc />
@@ -49,9 +51,7 @@ public class AuthorizeRedirect : IAuthorizeRequest
     /// <inheritdoc />
     public string? IdTokenHint { get; set; }
     /// <inheritdoc />
-    public string? Request { get; set; }
-    /// <inheritdoc />
-    public ICollection<string>? Resource { get; set; }
+    public ICollection<string> Resource { get; set; } = new HashSet<string>();
     /// <inheritdoc />
     public string? DPoPKeyThumbprint { get; set; }
 }

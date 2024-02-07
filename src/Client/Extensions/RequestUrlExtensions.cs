@@ -41,9 +41,7 @@ public static class RequestUrlExtensions
     /// <param name="maxAge">The max age.</param>
     /// <param name="uiLocales">The ui locales.</param>
     /// <param name="idTokenHint">The id_token hint.</param>
-    /// <param name="request">The request.</param>
     /// <param name="resource">The resource.</param>
-    /// <param name="requestUri">The request_uri.</param>
     /// <param name="dpopKeyThumbprint">The dpop_jkt.</param>
     /// <param name="extra">Extra parameters.</param>
     /// <returns></returns>
@@ -64,80 +62,88 @@ public static class RequestUrlExtensions
         int? maxAge = null,
         string? uiLocales = null,
         string? idTokenHint = null,
-        string? request = null,
         ICollection<string>? resource = null,
-        string? requestUri = null,
         string? dpopKeyThumbprint = null,
         Parameters? extra = null)
     {
-        var authorizeRedirect = new AuthorizeRedirect();
-
-        var values = new Parameters
+        var authorizeRedirect = new AuthorizeRedirectParameters(clientId, responseType)
         {
-            { OidcConstants.AuthorizeRequest.ClientId, clientId },
-            { OidcConstants.AuthorizeRequest.ResponseType, responseType }
+            Scope = scope,
+            RedirectUri = redirectUri,
+            State = state,
+            Nonce = nonce,
+            LoginHint = loginHint,
+            AcrValues = acrValues,
+            Prompt = prompt,
+            ResponseMode = responseMode,
+            CodeChallenge = codeChallenge,
+            CodeChallengeMethod = codeChallengeMethod,
+            Display = display,
+            MaxAge = maxAge,
+            UiLocales = uiLocales,
+            IdTokenHint = idTokenHint,
+            DPoPKeyThumbprint = dpopKeyThumbprint
         };
-
-        values.AddOptional(OidcConstants.AuthorizeRequest.Scope, scope);
-        values.AddOptional(OidcConstants.AuthorizeRequest.RedirectUri, redirectUri);
-        values.AddOptional(OidcConstants.AuthorizeRequest.State, state);
-        values.AddOptional(OidcConstants.AuthorizeRequest.Nonce, nonce);
-        values.AddOptional(OidcConstants.AuthorizeRequest.LoginHint, loginHint);
-        values.AddOptional(OidcConstants.AuthorizeRequest.AcrValues, acrValues);
-        values.AddOptional(OidcConstants.AuthorizeRequest.Prompt, prompt);
-        values.AddOptional(OidcConstants.AuthorizeRequest.ResponseMode, responseMode);
-        values.AddOptional(OidcConstants.AuthorizeRequest.CodeChallenge, codeChallenge);
-        values.AddOptional(OidcConstants.AuthorizeRequest.CodeChallengeMethod, codeChallengeMethod);
-        values.AddOptional(OidcConstants.AuthorizeRequest.Display, display);
-        values.AddOptional(OidcConstants.AuthorizeRequest.MaxAge, maxAge?.ToString());
-        values.AddOptional(OidcConstants.AuthorizeRequest.UiLocales, uiLocales);
-        values.AddOptional(OidcConstants.AuthorizeRequest.IdTokenHint, idTokenHint);
-        values.AddOptional(OidcConstants.AuthorizeRequest.Request, request);
-        foreach(var r in resource ?? [])
+        if(resource != null)
         {
-            values.AddOptional(OidcConstants.AuthorizeRequest.Resource, r, allowDuplicates: true);
+            authorizeRedirect.Resource = resource;
         }
-        values.AddOptional(OidcConstants.AuthorizeRequest.RequestUri, requestUri);
-        values.AddOptional(OidcConstants.AuthorizeRequest.DPoPKeyThumbprint, dpopKeyThumbprint);
 
-        return requestUrl.Create(values.Merge(extra));
+        return CreateAuthorizeUrl(requestUrl, authorizeRedirect, extra);
     }
 
-    public static string CreateAuthorizeUrl(this RequestUrl requestUrl, AuthorizeRedirect authorizeRequest, Parameters? extra = null)
+    /// <summary>
+    /// Creates an authorize URL.
+    /// </summary>
+    /// <param name="requestUrl">The instance of the RequestUrl helper class.</param>
+    /// <param name="redirectParameters">The parameters model.</param>
+    /// <param name="extra">Extra parameters.</param>
+    public static string CreateAuthorizeUrl(this RequestUrl requestUrl, AuthorizeRedirectParameters redirectParameters, Parameters? extra = null)
     {
-        var values = new Parameters
-        {
-            { OidcConstants.AuthorizeRequest.ClientId, authorizeRequest.ClientId },
-            { OidcConstants.AuthorizeRequest.ResponseType, authorizeRequest.ResponseType }
-        };
+        var values = new Parameters();
 
-        values.AddOptional(OidcConstants.AuthorizeRequest.Scope, authorizeRequest.Scope);
-        values.AddOptional(OidcConstants.AuthorizeRequest.RedirectUri, authorizeRequest.RedirectUri);
-        values.AddOptional(OidcConstants.AuthorizeRequest.State, authorizeRequest.State);
-        values.AddOptional(OidcConstants.AuthorizeRequest.Nonce, authorizeRequest.Nonce);
-        values.AddOptional(OidcConstants.AuthorizeRequest.LoginHint, authorizeRequest.LoginHint);
-        values.AddOptional(OidcConstants.AuthorizeRequest.AcrValues, authorizeRequest.AcrValues);
-        values.AddOptional(OidcConstants.AuthorizeRequest.Prompt, authorizeRequest.Prompt);
-        values.AddOptional(OidcConstants.AuthorizeRequest.ResponseMode, authorizeRequest.ResponseMode);
-        values.AddOptional(OidcConstants.AuthorizeRequest.CodeChallenge, authorizeRequest.CodeChallenge);
-        values.AddOptional(OidcConstants.AuthorizeRequest.CodeChallengeMethod, authorizeRequest.CodeChallengeMethod);
-        values.AddOptional(OidcConstants.AuthorizeRequest.Display, authorizeRequest.Display);
-        values.AddOptional(OidcConstants.AuthorizeRequest.MaxAge, authorizeRequest.MaxAge?.ToString());
-        values.AddOptional(OidcConstants.AuthorizeRequest.UiLocales, authorizeRequest.UiLocales);
-        values.AddOptional(OidcConstants.AuthorizeRequest.IdTokenHint, authorizeRequest.IdTokenHint);
-        values.AddOptional(OidcConstants.AuthorizeRequest.Request, authorizeRequest.Request);
-        foreach(var r in authorizeRequest.Resource ?? [])
-        {
-            values.AddOptional(OidcConstants.AuthorizeRequest.Resource, r, allowDuplicates: true);
-        }
-        values.AddOptional(OidcConstants.AuthorizeRequest.RequestUri, authorizeRequest.RequestUri);
-        values.AddOptional(OidcConstants.AuthorizeRequest.DPoPKeyThumbprint, authorizeRequest.DPoPKeyThumbprint);
+        values.AddRequired(OidcConstants.AuthorizeRequest.ClientId, redirectParameters.ClientId);
+        values.AddRequired(OidcConstants.AuthorizeRequest.ResponseType, redirectParameters.ResponseType);
+
+        redirectParameters.MergeInto(values);
 
         return requestUrl.Create(values.Merge(extra));
     }
 
     /// <summary>
-    /// Creates a end_session URL.
+    /// Creates an authorize URL using a request_uri parameter.
+    /// </summary>
+    /// <param name="requestUrl">The instance of the RequestUrl helper class.</param>
+    /// <param name="redirectParameters">The parameters model.</param>
+    /// <param name="extra">Extra parameters.</param>
+    public static string CreateAuthorizeUrl(this RequestUrl requestUrl, RequestUriRedirectParameters redirectParameters, Parameters? extra = null)
+    {
+        var values = new Parameters();
+
+        values.AddRequired(OidcConstants.AuthorizeRequest.ClientId, redirectParameters.ClientId);
+        values.AddRequired(OidcConstants.AuthorizeRequest.RequestUri, redirectParameters.RequestUri);
+
+        return requestUrl.Create(values.Merge(extra));
+    }
+
+    /// <summary>
+    /// Creates an authorize URL using a request parameter.
+    /// </summary>
+    /// <param name="requestUrl">The instance of the RequestUrl helper class.</param>
+    /// <param name="redirectParameters">The parameters model.</param>
+    /// <param name="extra">Extra parameters.</param>
+    public static string CreateAuthorizeUrl(this RequestUrl requestUrl, RequestObjectRedirectParameters redirectParameters, Parameters? extra = null)
+    {
+        var values = new Parameters();
+
+        values.AddRequired(OidcConstants.AuthorizeRequest.ClientId, redirectParameters.ClientId);
+        values.AddRequired(OidcConstants.AuthorizeRequest.Request, redirectParameters.Request);
+
+        return requestUrl.Create(values.Merge(extra));
+    }
+
+    /// <summary>
+    /// Creates an end_session URL.
     /// </summary>
     /// <param name="request">The request.</param>
     /// <param name="idTokenHint">The id_token hint.</param>

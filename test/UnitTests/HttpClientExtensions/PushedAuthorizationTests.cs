@@ -18,16 +18,19 @@ namespace IdentityModel.UnitTests
     {
         private const string Endpoint = "http://server/par";
 
+        private PushedAuthorizationRequest Request = new PushedAuthorizationRequest(clientId: "client", responseType: "code")
+        {
+            Address = Endpoint
+        };
+
         [Fact]
         public async Task Http_request_should_have_correct_format()
         {
             var handler = new NetworkHandler(HttpStatusCode.NotFound, "not found");
 
             var client = new HttpClient(handler);
-            var request = new PushedAuthorizationRequest
+            var request = new PushedAuthorizationRequest(clientId: "app1", responseType: "code")
             {
-                ResponseType = OidcConstants.ResponseTypes.Code,
-                ClientId = "app1",
                 Address = Endpoint,
                 RedirectUri = "https://example.com/signin-oidc",
                 Scope = "openid profile",
@@ -58,6 +61,45 @@ namespace IdentityModel.UnitTests
         }
 
         [Fact]
+        public async Task Http_request_for_PAR_with_JAR_should_have_correct_format()
+        {
+            var handler = new NetworkHandler(HttpStatusCode.NotFound, "not found");
+
+            var client = new HttpClient(handler);
+            var request = new PushedAuthorizationRequestWithRequestObject(clientId: "client", request: "request_object")
+            {
+                Address = Endpoint,
+            };
+            request.Headers.Add("custom", "custom");
+            request.Properties.Add("custom", "custom");
+
+            var response = await client.PushAuthorizationAsync(request);
+
+            var httpRequest = handler.Request;
+
+            httpRequest.Method.Should().Be(HttpMethod.Post);
+            httpRequest.RequestUri.Should().Be(new Uri(Endpoint));
+            httpRequest.Content.Should().NotBeNull();
+
+            var headers = httpRequest.Headers;
+            headers.Count().Should().Be(3);
+            headers.Should().Contain(h => h.Key == "custom" && h.Value.First() == "custom");
+
+            var properties = httpRequest.Properties;
+            properties.Count.Should().Be(1);
+
+            var prop = properties.First();
+            prop.Key.Should().Be("custom");
+            ((string)prop.Value).Should().Be("custom");
+
+            var fields = QueryHelpers.ParseQuery(handler.Body);
+            fields.Count.Should().Be(2);
+
+            fields["client_id"].First().Should().Be("client");
+            fields["request"].First().Should().Be("request_object");
+        }
+
+        [Fact]
         public async Task Success_protocol_response_should_be_handled_correctly()
         {
             var document = File.ReadAllText(FileName.Create("success_par_response.json"));
@@ -68,10 +110,7 @@ namespace IdentityModel.UnitTests
                 BaseAddress = new Uri(Endpoint)
             };
 
-            var response = await client.PushAuthorizationAsync(new PushedAuthorizationRequest
-            {
-                ResponseType = OidcConstants.ResponseTypes.Code,
-            });
+            var response = await client.PushAuthorizationAsync(Request);
 
             response.IsError.Should().BeFalse();
             response.ErrorType.Should().Be(ResponseErrorType.None);
@@ -87,11 +126,7 @@ namespace IdentityModel.UnitTests
             var handler = new NetworkHandler(document, HttpStatusCode.OK);
 
             var client = new HttpClient(handler);
-            var response = await client.PushAuthorizationAsync(new PushedAuthorizationRequest
-            {
-                ResponseType = OidcConstants.ResponseTypes.Code,
-                Address = Endpoint
-            });
+            var response = await client.PushAuthorizationAsync(Request);
 
             response.IsError.Should().BeTrue();
             response.ErrorType.Should().Be(ResponseErrorType.Exception);
@@ -105,11 +140,7 @@ namespace IdentityModel.UnitTests
             var handler = new NetworkHandler(new Exception("exception"));
 
             var client = new HttpClient(handler);
-            var response = await client.PushAuthorizationAsync(new PushedAuthorizationRequest
-            {
-                ResponseType = OidcConstants.ResponseTypes.Code,
-                Address = Endpoint
-            });
+            var response = await client.PushAuthorizationAsync(Request);
 
             response.IsError.Should().BeTrue();
             response.ErrorType.Should().Be(ResponseErrorType.Exception);
@@ -123,16 +154,12 @@ namespace IdentityModel.UnitTests
             var handler = new NetworkHandler(HttpStatusCode.NotFound, "not found");
 
             var client = new HttpClient(handler);
-            var response = await client.PushAuthorizationAsync(new PushedAuthorizationRequest
-            {
-                ResponseType = OidcConstants.ResponseTypes.Code,
-                Address = Endpoint
-            });
+            var response = await client.PushAuthorizationAsync(Request);
 
             response.IsError.Should().BeTrue();
+            response.Error.Should().Be("not found");
             response.ErrorType.Should().Be(ResponseErrorType.Http);
             response.HttpStatusCode.Should().Be(HttpStatusCode.NotFound);
-            response.Error.Should().Be("not found");
         }
 
         [Fact]
@@ -142,11 +169,9 @@ namespace IdentityModel.UnitTests
             var handler = new NetworkHandler(document, HttpStatusCode.OK);
 
             var client = new HttpClient(handler);
-            var response = await client.PushAuthorizationAsync(new PushedAuthorizationRequest
+            var response = await client.PushAuthorizationAsync(new PushedAuthorizationRequest(clientId: "client", responseType: "code")
             {
-                ResponseType = OidcConstants.ResponseTypes.Code,
                 Address = Endpoint,
-                ClientId = "client",
                 AcrValues = "idp:example",
                 Scope = "scope1 scope2",
                 Parameters =
@@ -157,12 +182,13 @@ namespace IdentityModel.UnitTests
 
             // check request
             var fields = QueryHelpers.ParseQuery(handler.Body);
-            fields.Count.Should().Be(4);
+            fields.Count.Should().Be(5);
 
+            fields["client_id"].First().Should().Be("client");
             fields["response_type"].First().Should().Be("code");
+            fields["acr_values"].First().Should().Be("idp:example");
             fields["scope"].First().Should().Be("scope1 scope2");
             fields["foo"].First().Should().Be("bar");
-            fields["acr_values"].First().Should().Be("idp:example");
 
             // check response
             response.IsError.Should().BeFalse();
@@ -176,12 +202,10 @@ namespace IdentityModel.UnitTests
             var document = File.ReadAllText(FileName.Create("success_par_response.json"));
             var handler = new NetworkHandler(document, HttpStatusCode.OK);
             var client = new HttpClient(handler);
-            
-            Func<Task> act = async () => await client.PushAuthorizationAsync(
-                new PushedAuthorizationRequest
-                {
-                    ResponseType = null
-                });
+
+            Request.ResponseType = null;
+
+            Func<Task> act = async () => await client.PushAuthorizationAsync(Request);
 
             act.Should().Throw<ArgumentException>().And.ParamName.Should().Be("response_type");
         }

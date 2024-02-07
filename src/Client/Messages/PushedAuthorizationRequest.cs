@@ -1,17 +1,27 @@
+// Copyright (c) Brock Allen & Dominick Baier. All rights reserved.
+// Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
+
 using System.Collections.Generic;
 
 namespace IdentityModel.Client;
 
 /// <summary>
-/// Request for PAR
+/// Models the parameters that can be pushed in a Pushed Authorization Request.
 /// </summary>
 /// <seealso cref="ProtocolRequest" />
-public class PushedAuthorizationRequest : ProtocolRequest, IAuthorizeRequest
+public class PushedAuthorizationRequest : ProtocolRequest, IAuthorizeRequestParameters
 {
-    // TODO - Consider metadata to indicate that this is going to be signed as a JWT (for a future release)
+    /// <summary>
+    /// ctor
+    /// </summary>
+    public PushedAuthorizationRequest(string clientId, string responseType)
+    {
+        ClientId = clientId;
+        ResponseType = responseType;
+    }
 
     /// <inheritdoc />
-    public string? ResponseType { get; set; }
+    public string ResponseType { get; set; }
     /// <inheritdoc />
     public string? Scope { get; set; }
     /// <inheritdoc />
@@ -41,9 +51,29 @@ public class PushedAuthorizationRequest : ProtocolRequest, IAuthorizeRequest
     /// <inheritdoc />
     public string? IdTokenHint { get; set; }
     /// <inheritdoc />
-    public string? Request { get; set; }
-    /// <inheritdoc />
-    public ICollection<string>? Resource { get; set; }
+    public ICollection<string> Resource { get; set; } = new HashSet<string>();
     /// <inheritdoc />
     public string? DPoPKeyThumbprint { get; set; }
+}
+
+/// <summary>
+/// Models the parameters that can be pushed in a Pushed Authorization Request
+/// as a JWT-Secure Authorization Request.
+/// </summary>
+/// <seealso cref="ProtocolRequest" />
+public class PushedAuthorizationRequestWithRequestObject : ProtocolRequest
+{
+    /// <summary>
+    /// ctor
+    /// </summary>
+    public PushedAuthorizationRequestWithRequestObject(string clientId, string request)
+    {
+        ClientId = clientId;
+        Request = request;
+    }
+
+    /// <summary>
+    /// Gets or sets the request protocol parameter.
+    /// </summary>
+    public string Request { get; set; }
 }

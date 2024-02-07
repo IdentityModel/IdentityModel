@@ -42,6 +42,37 @@ namespace IdentityModel.UnitTests
 	        act.Should().Throw<InvalidOperationException>().And.Message.Should().Be($"Duplicate parameter: {key}");
         }
 
+		[Fact]
+        public void AddOptional_with_duplicate_key_without_a_value_should_noop()
+        {
+	        var key = "custom";
+	        var value = "custom";
+	        var parameters = new Parameters
+			{
+				{ key, value}
+			};
+	        
+	        parameters.AddOptional(key, value: null);
+
+			parameters.Should().HaveCount(1);
+        }
+
+		[Fact]
+        public void AddOptional_with_duplicate_key_and_null_value_with_allow_duplicates_should_not_add_null_value_param()
+        {
+	        var key = "custom";
+	        var value = "custom";
+	        var parameters = new Parameters
+			{
+				{ key, value}
+			};
+	        
+	        parameters.AddOptional(key, value: null, allowDuplicates: true);
+
+			parameters.Should().HaveCount(1);
+			parameters.GetValues(key).Should().HaveCount(1);
+        }
+
         [Fact]
         public void AddRequired_empty_key_should_fail()
         {
@@ -86,6 +117,20 @@ namespace IdentityModel.UnitTests
 
 	        Action act = () => parameters.AddRequired(key, value);
 	        act.Should().Throw<InvalidOperationException>().And.Message.Should().Be($"Duplicate parameter: {key}");
+        }
+
+		[Fact]
+        public void AddRequired_with_null_value_but_key_already_set_should_succeed()
+        {
+	        var key = "custom";
+	        string value = null;
+	        var parameters = new Parameters
+			{
+				{ key, "value" }
+			};
+	        
+	        parameters.AddRequired(key, value);
+			parameters.Should().HaveCount(1);
         }
         
         [Fact]
