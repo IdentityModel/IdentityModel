@@ -23,40 +23,47 @@ public static class HttpClientPushedAuthorizationExtensions
     /// <returns></returns>
     public static Task<PushedAuthorizationResponse> PushAuthorizationAsync(this HttpClient client, PushedAuthorizationRequest request, CancellationToken cancellationToken = default)
     {
-        var clone = request.Clone();
-
-        // client id is always required, and will be added by the call to
-        // Prepare for other client credential styles  
-        if(request.ClientCredentialStyle == ClientCredentialStyle.AuthorizationHeader)
+        if(request.Parameters.ContainsKey(OidcConstants.AuthorizeRequest.RequestUri))
         {
-            clone.Parameters.AddRequired(OidcConstants.AuthorizeRequest.ClientId, request.ClientId);
+            throw new ArgumentException("request_uri cannot be used in a pushed authorization request", "request_uri");
         }
-        clone.Parameters.AddRequired(OidcConstants.AuthorizeRequest.ResponseType, request.ResponseType);
-        
-        request.MergeInto(clone.Parameters);
 
-        return PushAuthorizationAsync(client, clone, cancellationToken);
-    }
-
-    /// <summary>
-    /// Sends a pushed authorization request
-    /// </summary>
-    /// <param name="client">The HTTP client.</param>
-    /// <param name="request"></param>
-    /// <param name="cancellationToken">The cancellation token.</param>
-    /// <returns></returns>
-    public static Task<PushedAuthorizationResponse> PushAuthorizationAsync(this HttpClient client, PushedAuthorizationRequestWithRequestObject request, CancellationToken cancellationToken = default)
-    {
         var clone = request.Clone();
 
         // client id is always required, and will be added by the call to
-        // Prepare for other client credential styles  
+        // Prepare() for other client credential styles.
         if(request.ClientCredentialStyle == ClientCredentialStyle.AuthorizationHeader)
         {
             clone.Parameters.AddRequired(OidcConstants.AuthorizeRequest.ClientId, request.ClientId);
         }
 
-        clone.Parameters.AddRequired(OidcConstants.AuthorizeRequest.Request, request.Request);
+        if (request.Request.IsPresent() || request.Parameters.ContainsKey(OidcConstants.AuthorizeRequest.Request))
+        {
+            clone.Parameters.AddRequired(OidcConstants.AuthorizeRequest.Request, request.Request);
+        } 
+        else
+        {
+            clone.Parameters.AddRequired(OidcConstants.AuthorizeRequest.ResponseType, request.ResponseType);
+            clone.Parameters.AddOptional(OidcConstants.AuthorizeRequest.Scope, request.Scope);
+            clone.Parameters.AddOptional(OidcConstants.AuthorizeRequest.RedirectUri, request.RedirectUri);
+            clone.Parameters.AddOptional(OidcConstants.AuthorizeRequest.State, request.State);
+            clone.Parameters.AddOptional(OidcConstants.AuthorizeRequest.Nonce, request.Nonce);
+            clone.Parameters.AddOptional(OidcConstants.AuthorizeRequest.LoginHint, request.LoginHint);
+            clone.Parameters.AddOptional(OidcConstants.AuthorizeRequest.AcrValues, request.AcrValues);
+            clone.Parameters.AddOptional(OidcConstants.AuthorizeRequest.Prompt, request.Prompt);
+            clone.Parameters.AddOptional(OidcConstants.AuthorizeRequest.ResponseMode, request.ResponseMode);
+            clone.Parameters.AddOptional(OidcConstants.AuthorizeRequest.CodeChallenge, request.CodeChallenge);
+            clone.Parameters.AddOptional(OidcConstants.AuthorizeRequest.CodeChallengeMethod, request.CodeChallengeMethod);
+            clone.Parameters.AddOptional(OidcConstants.AuthorizeRequest.Display, request.Display);
+            clone.Parameters.AddOptional(OidcConstants.AuthorizeRequest.MaxAge, request.MaxAge.ToString());
+            clone.Parameters.AddOptional(OidcConstants.AuthorizeRequest.UiLocales, request.UiLocales);
+            clone.Parameters.AddOptional(OidcConstants.AuthorizeRequest.IdTokenHint, request.IdTokenHint);
+            foreach(var resource in request.Resource ?? [])
+            {
+                clone.Parameters.AddOptional(OidcConstants.AuthorizeRequest.Resource, resource, allowDuplicates: true);
+            }
+            clone.Parameters.AddOptional(OidcConstants.AuthorizeRequest.DPoPKeyThumbprint, request.DPoPKeyThumbprint);
+        }
 
         return PushAuthorizationAsync(client, clone, cancellationToken);
     }

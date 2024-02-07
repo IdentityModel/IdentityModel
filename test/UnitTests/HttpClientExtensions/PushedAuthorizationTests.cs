@@ -18,8 +18,10 @@ namespace IdentityModel.UnitTests
     {
         private const string Endpoint = "http://server/par";
 
-        private PushedAuthorizationRequest Request = new PushedAuthorizationRequest(clientId: "client", responseType: "code")
+        private PushedAuthorizationRequest Request = new PushedAuthorizationRequest
         {
+            ClientId = "client",
+            ResponseType = "code",
             Address = Endpoint
         };
 
@@ -29,8 +31,10 @@ namespace IdentityModel.UnitTests
             var handler = new NetworkHandler(HttpStatusCode.NotFound, "not found");
 
             var client = new HttpClient(handler);
-            var request = new PushedAuthorizationRequest(clientId: "app1", responseType: "code")
+            var request = new PushedAuthorizationRequest
             {
+                ClientId = "client",
+                ResponseType = "code",
                 Address = Endpoint,
                 RedirectUri = "https://example.com/signin-oidc",
                 Scope = "openid profile",
@@ -61,42 +65,27 @@ namespace IdentityModel.UnitTests
         }
 
         [Fact]
-        public async Task Http_request_for_PAR_with_JAR_should_have_correct_format()
+        public async Task Request_with_request_object_should_succeed()
         {
-            var handler = new NetworkHandler(HttpStatusCode.NotFound, "not found");
+            var document = File.ReadAllText(FileName.Create("success_par_response.json"));
+            var handler = new NetworkHandler(document, HttpStatusCode.OK);
 
             var client = new HttpClient(handler);
-            var request = new PushedAuthorizationRequestWithRequestObject(clientId: "client", request: "request_object")
+            var request = new PushedAuthorizationRequest
             {
+                ClientId = "client",
+                Request = "request object value",
                 Address = Endpoint,
             };
-            request.Headers.Add("custom", "custom");
-            request.Properties.Add("custom", "custom");
+            
+            await client.PushAuthorizationAsync(request);
 
-            var response = await client.PushAuthorizationAsync(request);
-
-            var httpRequest = handler.Request;
-
-            httpRequest.Method.Should().Be(HttpMethod.Post);
-            httpRequest.RequestUri.Should().Be(new Uri(Endpoint));
-            httpRequest.Content.Should().NotBeNull();
-
-            var headers = httpRequest.Headers;
-            headers.Count().Should().Be(3);
-            headers.Should().Contain(h => h.Key == "custom" && h.Value.First() == "custom");
-
-            var properties = httpRequest.Properties;
-            properties.Count.Should().Be(1);
-
-            var prop = properties.First();
-            prop.Key.Should().Be("custom");
-            ((string)prop.Value).Should().Be("custom");
 
             var fields = QueryHelpers.ParseQuery(handler.Body);
             fields.Count.Should().Be(2);
 
             fields["client_id"].First().Should().Be("client");
-            fields["request"].First().Should().Be("request_object");
+            fields["request"].First().Should().Be("request object value");
         }
 
         [Fact]
@@ -169,8 +158,10 @@ namespace IdentityModel.UnitTests
             var handler = new NetworkHandler(document, HttpStatusCode.OK);
 
             var client = new HttpClient(handler);
-            var response = await client.PushAuthorizationAsync(new PushedAuthorizationRequest(clientId: "client", responseType: "code")
+            var response = await client.PushAuthorizationAsync(new PushedAuthorizationRequest
             {
+                ClientId = "client",
+                ResponseType = "code",
                 Address = Endpoint,
                 AcrValues = "idp:example",
                 Scope = "scope1 scope2",
@@ -210,5 +201,19 @@ namespace IdentityModel.UnitTests
             act.Should().Throw<ArgumentException>().And.ParamName.Should().Be("response_type");
         }
 
+        [Fact]
+        public void Pushed_authorization_with_request_uri_should_fail()
+        {
+            var document = File.ReadAllText(FileName.Create("success_par_response.json"));
+            var handler = new NetworkHandler(document, HttpStatusCode.OK);
+            var client = new HttpClient(handler);
+
+            Request.Parameters.Add(OidcConstants.AuthorizeRequest.RequestUri, "not allowed");
+
+
+            Func<Task> act = async () => await client.PushAuthorizationAsync(Request);
+
+            act.Should().Throw<ArgumentException>().And.ParamName.Should().Be("request_uri");
+        }
     }
 }
