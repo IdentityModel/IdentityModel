@@ -136,39 +136,44 @@ public class Parameters : List<KeyValuePair<string, string>>
     }
 
     /// <summary>
-    /// Adds a required parameter
+    /// Ensures that a required parameter is present, adding it if necessary.
     /// </summary>
     /// <param name="key">The key.</param>
     /// <param name="value">The value.</param>
-    /// <param name="allowDuplicates">Allow multiple values of the same parameter.</param>
+    /// <param name="allowDuplicates">Allow multiple distinct values for a duplicated parameter key.</param>
     /// <param name="allowEmptyValue">Allow an empty value.</param>
     /// <exception cref="ArgumentNullException"></exception>
     /// <exception cref="InvalidOperationException"></exception>
     /// <exception cref="ArgumentException"></exception>
-    public void  AddRequired(string key, string? value, bool allowDuplicates = false, bool allowEmptyValue = false)
+    public void AddRequired(string key, string? value, bool allowDuplicates = false, bool allowEmptyValue = false)
     {
         if (key.IsMissing()) throw new ArgumentNullException(nameof(key));
 
         var valuePresent = value.IsPresent();
         var parameterPresent = ContainsKey(key);
 
-        if (!valuePresent)
+        if(!valuePresent && !parameterPresent && !allowEmptyValue)
         {
-            if(parameterPresent)
+            // Don't throw if we have a value already in the parameters
+            // to make it more convenient for callers.
+            throw new ArgumentException("Parameter is required", key);
+        }
+        else if (valuePresent && parameterPresent && !allowDuplicates)
+        {
+            if(this[key].Contains(value))
             {
+                // The parameters are already in the desired state (the required
+                // parameter key already has the specified value), so we don't
+                // throw an error
                 return;
             }
-            if(!allowEmptyValue)
-            {
-                throw new ArgumentException("Parameter is required", key);
-            }
-        }
-        else if (parameterPresent && !allowDuplicates)
-        {
             throw new InvalidOperationException($"Duplicate parameter: {key}");
         }
 
-        Add(key, value!);
+        if (valuePresent || allowEmptyValue)
+        {
+            Add(key, value!);
+        }
     }
         
     /// <summary>
