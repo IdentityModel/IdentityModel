@@ -147,5 +147,31 @@ namespace IdentityModel.UnitTests
             response.Error.Should().BeNull();
             response.Exception.Should().BeNull();
         }
+
+        [Fact]
+        public async Task Non_json_response_should_set_raw()
+        {
+            var document = File.ReadAllText(FileName.Create("success_userinfo_response.jwt"));
+            var handler = new NetworkHandler(document, HttpStatusCode.OK)
+            {
+                MediaType = "application/jwt"
+            };
+
+            var client = new HttpClient(handler);
+            var response = await client.GetUserInfoAsync(new UserInfoRequest
+            {
+                Address = Endpoint,
+                Token = "token"
+            });
+
+            response.IsError.Should().BeFalse();
+            response.ErrorType.Should().Be(ResponseErrorType.None);
+            response.HttpStatusCode.Should().Be(HttpStatusCode.OK);
+            response.Claims.Should().BeNull();
+
+            // This is just the literal content of the success_userinfo_response.jwt
+            var expectedContent = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJodHRwczovL2lkZW50aXR5LmV4YW1wbGUuY29tIiwiYXVkIjoiaHR0cHM6Ly9hcHAuZXhhbXBsZS5jb20iLCJzdWIiOiIyNDgyODk3NjEwMDEiLCJuYW1lIjoiSmFuZSBEb2UiLCJnaXZlbl9uYW1lIjoiSmFuZSIsImZhbWlseV9uYW1lIjoiRG9lIiwicHJlZmVycmVkX3VzZXJuYW1lIjoiai5kb2UiLCJlbWFpbCI6ImphbmVkb2VAZXhhbXBsZS5jb20iLCJwaWN0dXJlIjoiaHR0cDovL2V4YW1wbGUuY29tL2phbmVkb2UvbWUuanBnIn0.WmamfT6SSfVrJ6iBqPprRvbjKlQpd_8OcjLSbKbfMTQ";
+            response.Raw.Should().Be(expectedContent);
+        }
     }
 }
