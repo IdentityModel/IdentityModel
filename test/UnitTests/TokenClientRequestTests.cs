@@ -30,7 +30,7 @@ namespace IdentityModel.UnitTests
         }
 
         [Fact]
-        public async Task No_explicit_endpoint_address_should_use_base_addess()
+        public async Task No_explicit_endpoint_address_should_use_base_address()
         {
             var tokenClient = new TokenClient(_client, new TokenClientOptions { ClientId = "client" });
 

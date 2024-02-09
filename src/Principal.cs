@@ -12,7 +12,7 @@ namespace IdentityModel;
 public static class Principal
 {
     /// <summary>
-    /// Gets an anoymous ClaimsPrincipal.
+    /// Gets an anonymous ClaimsPrincipal.
     /// </summary>
     public static ClaimsPrincipal Anonymous => new ClaimsPrincipal(Identity.Anonymous);
 

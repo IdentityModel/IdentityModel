@@ -129,7 +129,7 @@ public class Parameters : List<KeyValuePair<string, string>>
     public void AddOptional(string key, string? value, bool allowDuplicates = false)
     {
         if (key.IsMissing()) throw new ArgumentNullException(nameof(key));
-            
+        if (value.IsMissing()) return;
         if (allowDuplicates == false)
         {
             if (ContainsKey(key))
@@ -138,18 +138,15 @@ public class Parameters : List<KeyValuePair<string, string>>
             }
         }
 
-        if (value.IsPresent())
-        {
-            Add(key, value!);
-        }
+        Add(key, value!);
     }
 
     /// <summary>
-    /// Adds a required parameter
+    /// Ensures that a required parameter is present, adding it if necessary.
     /// </summary>
     /// <param name="key">The key.</param>
     /// <param name="value">The value.</param>
-    /// <param name="allowDuplicates">Allow multiple values of the same parameter.</param>
+    /// <param name="allowDuplicates">Allow multiple distinct values for a duplicated parameter key.</param>
     /// <param name="allowEmptyValue">Allow an empty value.</param>
     /// <exception cref="ArgumentNullException"></exception>
     /// <exception cref="InvalidOperationException"></exception>
@@ -157,22 +154,31 @@ public class Parameters : List<KeyValuePair<string, string>>
     public void AddRequired(string key, string? value, bool allowDuplicates = false, bool allowEmptyValue = false)
     {
         if (key.IsMissing()) throw new ArgumentNullException(nameof(key));
-            
-        if (allowDuplicates == false)
+
+        var valuePresent = value.IsPresent();
+        var parameterPresent = ContainsKey(key);
+
+        if(!valuePresent && !parameterPresent && !allowEmptyValue)
         {
-            if (ContainsKey(key))
-            {
-                throw new InvalidOperationException($"Duplicate parameter: {key}");
-            }
+            // Don't throw if we have a value already in the parameters
+            // to make it more convenient for callers.
+            throw new ArgumentException("Parameter is required", key);
         }
-            
-        if (value.IsPresent() || allowEmptyValue)
+        else if (valuePresent && parameterPresent && !allowDuplicates)
+        {
+            if(this[key].Contains(value))
+            {
+                // The parameters are already in the desired state (the required
+                // parameter key already has the specified value), so we don't
+                // throw an error
+                return;
+            }
+            throw new InvalidOperationException($"Duplicate parameter: {key}");
+        }
+
+        if (valuePresent || allowEmptyValue)
         {
             Add(key, value!);
-        }
-        else
-        {
-            throw new ArgumentException("Parameter is required", key);
         }
     }
         

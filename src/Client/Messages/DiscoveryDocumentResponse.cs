@@ -76,6 +76,7 @@ public class DiscoveryDocumentResponse : ProtocolResponse
     public string? EndSessionEndpoint => TryGetString(OidcConstants.Discovery.EndSessionEndpoint);
     public string? CheckSessionIframe => TryGetString(OidcConstants.Discovery.CheckSessionIframe);
     public string? RegistrationEndpoint => TryGetString(OidcConstants.Discovery.RegistrationEndpoint);
+    public string? PushedAuthorizationRequestEndpoint => TryGetString(OidcConstants.Discovery.PushedAuthorizationRequestEndpoint);
     public bool? FrontChannelLogoutSupported => TryGetBoolean(OidcConstants.Discovery.FrontChannelLogoutSupported);
     public bool? FrontChannelLogoutSessionSupported => TryGetBoolean(OidcConstants.Discovery.FrontChannelLogoutSessionSupported);
     public IEnumerable<string> GrantTypesSupported => TryGetStringArray(OidcConstants.Discovery.GrantTypesSupported);
@@ -88,7 +89,8 @@ public class DiscoveryDocumentResponse : ProtocolResponse
     public IEnumerable<string> TokenEndpointAuthenticationMethodsSupported => TryGetStringArray(OidcConstants.Discovery.TokenEndpointAuthenticationMethodsSupported);
     public IEnumerable<string> BackchannelTokenDeliveryModesSupported => TryGetStringArray(OidcConstants.Discovery.BackchannelTokenDeliveryModesSupported);
     public bool? BackchannelUserCodeParameterSupported => TryGetBoolean(OidcConstants.Discovery.BackchannelUserCodeParameterSupported);
-    
+    public bool? RequirePushedAuthorizationRequests => TryGetBoolean(OidcConstants.Discovery.RequirePushedAuthorizationRequests);
+
     // generic
     public JsonElement TryGetValue(string name) => Json.TryGetValue(name);
     public string? TryGetString(string name) => Json.TryGetString(name);

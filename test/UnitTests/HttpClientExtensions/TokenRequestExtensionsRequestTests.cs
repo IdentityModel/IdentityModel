@@ -70,7 +70,7 @@ namespace IdentityModel.UnitTests
         }
 
         [Fact]
-        public async Task No_explicit_endpoint_address_should_use_base_addess()
+        public async Task No_explicit_endpoint_address_should_use_base_address()
         {
             var response = await _client.RequestClientCredentialsTokenAsync(new ClientCredentialsTokenRequest
                 { ClientId = "client" });
