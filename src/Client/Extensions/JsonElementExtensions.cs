@@ -145,4 +145,27 @@ public static class JsonElementExtensions
 
         return values;
     }
+
+    /// <summary>
+    /// Converts a string to a JsonElement
+    /// </summary>
+    public static JsonElement AsJsonElement(this string s) =>
+        s is null ?
+        JsonDocument.Parse("null").RootElement :
+        JsonDocument.Parse($"\"{s}\"").RootElement;
+
+    /// <summary>
+    /// Converts a boolean to a JsonElement
+    /// </summary>
+    public static JsonElement AsJsonElement(this bool b) => JsonDocument.Parse(b.ToString().ToLowerInvariant()).RootElement;
+    
+    /// <summary>
+    /// Converts an int to a JsonElement
+    /// </summary>
+    public static JsonElement AsJsonElement(this int x) => JsonDocument.Parse(x.ToString()).RootElement;
+
+    /// <summary>
+    /// Converts a long to a JsonElement
+    /// </summary>
+    public static JsonElement AsJsonElement(this long x) => JsonDocument.Parse(x.ToString()).RootElement;
 }
