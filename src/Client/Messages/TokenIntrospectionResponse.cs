@@ -25,19 +25,23 @@ public class TokenIntrospectionResponse : ProtocolResponse
     {
         if (!IsError)
         {
-            var issuer = Json.TryGetString("iss");
-            var claims = Json.ToClaims(issuer, "scope").ToList();
+            if(Json == null)
+            {
+                throw new InvalidOperationException("Json is null"); // TODO better exception
+            }
+            var issuer = Json?.TryGetString("iss");
+            var claims = Json?.ToClaims(issuer, "scope").ToList() ?? new List<Claim>();
 
             // due to a bug in identityserver - we need to be able to deal with the scope list both in array as well as space-separated list format
-            var scope = Json.TryGetValue("scope");
+            var scope = Json?.TryGetValue("scope");
 
             // scope element exists
             // if (scope != null)
             // {
             // it's an array
-            if (scope.ValueKind == JsonValueKind.Array)
+            if (scope?.ValueKind == JsonValueKind.Array)
             {
-                foreach (var item in scope.EnumerateArray())
+                foreach (var item in scope?.EnumerateArray() ?? Enumerable.Empty<JsonElement>())
                 {
                     claims.Add(new Claim("scope", item.ToString(), ClaimValueTypes.String, issuer));
                 }
@@ -45,7 +49,7 @@ public class TokenIntrospectionResponse : ProtocolResponse
             else
             {
                 // it's a string
-                var scopeString = scope.ToString();
+                var scopeString = scope.ToString() ?? "";
 
                 var scopes = scopeString.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
                 foreach (var scopeValue in scopes)
@@ -67,7 +71,7 @@ public class TokenIntrospectionResponse : ProtocolResponse
     /// <value>
     ///   <c>true</c> if the token is active; otherwise, <c>false</c>.
     /// </value>
-    public bool IsActive => Json.TryGetBoolean("active") ?? false;
+    public bool IsActive => Json?.TryGetBoolean("active") ?? false;
 
     /// <summary>
     /// Gets the claims.

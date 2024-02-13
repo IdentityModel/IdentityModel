@@ -69,7 +69,7 @@ namespace IdentityModel.UnitTests
             });
 
             disco.IsError.Should().BeTrue();
-            disco.Json.ValueKind.Should().Be(JsonValueKind.Undefined);
+            disco.Json?.ValueKind.Should().Be(JsonValueKind.Undefined);
             disco.ErrorType.Should().Be(ResponseErrorType.Exception);
             disco.Error.Should().StartWith("Error connecting to");
             disco.Error.Should().EndWith("HTTPS required.");
@@ -132,7 +132,7 @@ namespace IdentityModel.UnitTests
             });
 
             disco.IsError.Should().BeTrue();
-            disco.Json.ValueKind.Should().Be(JsonValueKind.Undefined);
+            disco.Json?.ValueKind.Should().Be(JsonValueKind.Undefined);
             disco.ErrorType.Should().Be(ResponseErrorType.PolicyViolation);
             disco.Error.Should().StartWith("Issuer name does not match authority");
         }
@@ -229,7 +229,7 @@ namespace IdentityModel.UnitTests
             });
 
             disco.IsError.Should().BeTrue();
-            disco.Json.ValueKind.Should().Be(JsonValueKind.Undefined);
+            disco.Json?.ValueKind.Should().Be(JsonValueKind.Undefined);
             disco.ErrorType.Should().Be(ResponseErrorType.PolicyViolation);
             disco.Error.Should().StartWith("Endpoint does not use HTTPS");
         }
@@ -256,7 +256,7 @@ namespace IdentityModel.UnitTests
             });
 
             disco.IsError.Should().BeTrue();
-            disco.Json.ValueKind.Should().Be(JsonValueKind.Undefined);
+            disco.Json?.ValueKind.Should().Be(JsonValueKind.Undefined);
             disco.ErrorType.Should().Be(ResponseErrorType.PolicyViolation);
             disco.Error.Should().StartWith("Endpoint belongs to different authority");
         }
@@ -315,7 +315,7 @@ namespace IdentityModel.UnitTests
             });
 
             disco.IsError.Should().BeTrue();
-            disco.Json.ValueKind.Should().Be(JsonValueKind.Undefined);
+            disco.Json?.ValueKind.Should().Be(JsonValueKind.Undefined);
             disco.ErrorType.Should().Be(ResponseErrorType.PolicyViolation);
             disco.Error.Should().StartWith("Endpoint is on a different host than authority");
         }
@@ -394,7 +394,7 @@ namespace IdentityModel.UnitTests
             });
 
             disco.IsError.Should().BeTrue();
-            disco.Json.ValueKind.Should().Be(JsonValueKind.Undefined);
+            disco.Json?.ValueKind.Should().Be(JsonValueKind.Undefined);
             disco.ErrorType.Should().Be(ResponseErrorType.PolicyViolation);
             disco.Error.Should().StartWith("Endpoint does not use HTTPS");
         }

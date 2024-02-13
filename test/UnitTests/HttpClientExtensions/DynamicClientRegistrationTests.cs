@@ -89,7 +89,7 @@ namespace IdentityModel.UnitTests
             // Spec requires that a software statement be echoed back unchanged
             response.SoftwareStatement.Should().Be(SoftwareStatement);
 
-            response.Json.TryGetString(OidcConstants.ClientMetadata.TokenEndpointAuthenticationMethod)
+            response.Json?.TryGetString(OidcConstants.ClientMetadata.TokenEndpointAuthenticationMethod)
                 .Should()
                 .Be(OidcConstants.EndpointAuthenticationMethods.BasicAuthentication);
         }

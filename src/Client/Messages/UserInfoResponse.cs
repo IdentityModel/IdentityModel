@@ -21,9 +21,9 @@ public class UserInfoResponse : ProtocolResponse
     /// <returns></returns>
     protected override Task InitializeAsync(object? initializationData = null)
     {
-        if (!IsError)
+        if (!IsError && Json.HasValue)
         {
-            Claims = Json.ToClaims();
+            Claims = Json.Value.ToClaims();
         }
         else
         {

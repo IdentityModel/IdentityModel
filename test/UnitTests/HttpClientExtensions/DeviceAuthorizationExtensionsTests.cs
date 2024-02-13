@@ -314,8 +314,8 @@ namespace IdentityModel.UnitTests
             response.HttpStatusCode.Should().Be(HttpStatusCode.Unauthorized);
             response.Error.Should().Be("Unauthorized");
 
-            response.Json.TryGetString("foo").Should().Be("foo");
-            response.Json.TryGetString("bar").Should().Be("bar");
+            response.Json?.TryGetString("foo").Should().Be("foo");
+            response.Json?.TryGetString("bar").Should().Be("bar");
         }
     }
 }

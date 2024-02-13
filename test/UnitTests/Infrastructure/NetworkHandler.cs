@@ -4,6 +4,7 @@
 using System;
 using System.Net;
 using System.Net.Http;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -25,6 +26,7 @@ namespace IdentityModel.UnitTests
         private readonly string _document;
         private readonly Func<HttpRequestMessage, string> _selector;
         private readonly Func<HttpRequestMessage, HttpResponseMessage> _action;
+        public string MediaType { get; set; } = "application/json";
 
         public HttpRequestMessage Request { get; private set; }
         public string Body { get; private set; }
@@ -85,11 +87,11 @@ namespace IdentityModel.UnitTests
             {
                 if (_selector != null)
                 {
-                    response.Content = new StringContent(_selector(request));
+                    response.Content = new StringContent(_selector(request), Encoding.UTF8, MediaType);
                 }
                 else
                 {
-                    response.Content = new StringContent(_document);
+                    response.Content = new StringContent(_document, Encoding.UTF8, MediaType);
                 }
             }
 

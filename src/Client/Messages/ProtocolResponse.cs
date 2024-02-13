@@ -22,8 +22,9 @@ public class ProtocolResponse
     /// <typeparam name="T">Specific protocol response type</typeparam>
     /// <param name="httpResponse">The HTTP response.</param>
     /// <param name="initializationData">The initialization data.</param>
+    /// <param name="skipJson">Disables parsing of json</param>
     /// <returns></returns>
-    public static async Task<T> FromHttpResponseAsync<T>(HttpResponseMessage httpResponse, object? initializationData = null) where T: ProtocolResponse, new()
+    public static async Task<T> FromHttpResponseAsync<T>(HttpResponseMessage httpResponse, object? initializationData = null, bool skipJson = false) where T: ProtocolResponse, new()
     {
         var response = new T
         {
@@ -46,6 +47,7 @@ public class ProtocolResponse
             response.ErrorType = ResponseErrorType.Http;
 
             if (content.IsPresent())
+            if (!skipJson && content.IsPresent())
             {
                 try
                 {
@@ -66,7 +68,7 @@ public class ProtocolResponse
         // either 200 or 400 - both cases need a JSON response (if present), otherwise error
         try
         {
-            if (content.IsPresent())
+            if (!skipJson && content.IsPresent())
             {
                 response.Json = JsonDocument.Parse(content!).RootElement;
             }
@@ -85,7 +87,10 @@ public class ProtocolResponse
             }
         }
 
-        await response.InitializeAsync(initializationData).ConfigureAwait();
+        if (!skipJson)
+        {
+            await response.InitializeAsync(initializationData).ConfigureAwait();
+        }
         return response;
     }
 
@@ -140,7 +145,7 @@ public class ProtocolResponse
     /// <value>
     /// The json.
     /// </value>
-    public JsonElement Json { get; protected set; }
+    public JsonElement? Json { get; protected set; }
 
     /// <summary>
     /// Gets the exception (if present).
@@ -222,7 +227,7 @@ public class ProtocolResponse
     /// </summary>
     /// <param name="name">The name.</param>
     /// <returns></returns>
-    public string? TryGet(string name) => Json.TryGetString(name);
+    public string? TryGet(string name) => Json?.TryGetString(name);
 
     /// <summary>
     /// The returned DPoP nonce header.

@@ -182,7 +182,7 @@ namespace IdentityModel.UnitTests
             disco.IsError.Should().BeFalse();
 
             disco.TryGetValue(OidcConstants.Discovery.AuthorizationEndpoint).Should().NotBeNull();
-            disco.TryGetValue("unknown").ValueKind.Should().Be(JsonValueKind.Undefined);
+            disco.TryGetValue("unknown")?.ValueKind.Should().Be(JsonValueKind.Undefined);
 
             disco.TryGetString(OidcConstants.Discovery.AuthorizationEndpoint).Should().Be("https://demo.identityserver.io/connect/authorize");
             disco.TryGetString("unknown").Should().BeNull();
@@ -253,7 +253,7 @@ namespace IdentityModel.UnitTests
             disco.MtlsEndpointAliases.Should().NotBeNull();
 
             disco.MtlsEndpointAliases.TokenEndpoint.Should().Be("https://mtls.identityserver.io/connect/token");
-            disco.MtlsEndpointAliases.Json.TryGetString(OidcConstants.Discovery.TokenEndpoint).Should().Be("https://mtls.identityserver.io/connect/token");
+            disco.MtlsEndpointAliases.Json?.TryGetString(OidcConstants.Discovery.TokenEndpoint).Should().Be("https://mtls.identityserver.io/connect/token");
             
             disco.MtlsEndpointAliases.RevocationEndpoint.Should().Be("https://mtls.identityserver.io/connect/revocation");
             disco.MtlsEndpointAliases.IntrospectionEndpoint.Should().Be("https://mtls.identityserver.io/connect/introspect");
@@ -276,7 +276,7 @@ namespace IdentityModel.UnitTests
             disco.HttpStatusCode.Should().Be(HttpStatusCode.InternalServerError);
             disco.Error.Should().Contain("Internal Server Error");
             disco.Raw.Should().Be("not_json");
-            disco.Json.ValueKind.Should().Be(JsonValueKind.Undefined);
+            disco.Json?.ValueKind.Should().Be(JsonValueKind.Undefined);
         }
 
         [Fact]
@@ -302,8 +302,8 @@ namespace IdentityModel.UnitTests
             disco.HttpStatusCode.Should().Be(HttpStatusCode.InternalServerError);
             disco.Error.Should().Contain("Internal Server Error");
 
-            disco.Json.TryGetString("foo").Should().Be("foo");
-            disco.Json.TryGetString("bar").Should().Be("bar");
+            disco.Json?.TryGetString("foo").Should().Be("foo");
+            disco.Json?.TryGetString("bar").Should().Be("bar");
         }
 
         [Fact]
@@ -346,7 +346,7 @@ namespace IdentityModel.UnitTests
             disco.HttpStatusCode.Should().Be(HttpStatusCode.InternalServerError);
             disco.Error.Should().Contain("Internal Server Error");
             disco.Raw.Should().Be("not_json");
-            disco.Json.ValueKind.Should().Be(JsonValueKind.Undefined);
+            disco.Json?.ValueKind.Should().Be(JsonValueKind.Undefined);
         }
 
         [Fact]
@@ -395,8 +395,8 @@ namespace IdentityModel.UnitTests
             disco.HttpStatusCode.Should().Be(HttpStatusCode.InternalServerError);
             disco.Error.Should().Contain("Internal Server Error");
 
-            disco.Json.TryGetString("foo").Should().Be("foo");
-            disco.Json.TryGetString("bar").Should().Be("bar");
+            disco.Json?.TryGetString("foo").Should().Be("foo");
+            disco.Json?.TryGetString("bar").Should().Be("bar");
         }
     }
 }
