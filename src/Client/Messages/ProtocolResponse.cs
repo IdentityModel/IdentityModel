@@ -145,7 +145,7 @@ public class ProtocolResponse
     /// <value>
     /// The json.
     /// </value>
-    public JsonElement Json { get; protected set; }
+    public JsonElement? Json { get; protected set; }
 
     /// <summary>
     /// Gets the exception (if present).
@@ -227,7 +227,7 @@ public class ProtocolResponse
     /// </summary>
     /// <param name="name">The name.</param>
     /// <returns></returns>
-    public string? TryGet(string name) => Json.TryGetString(name);
+    public string? TryGet(string name) => Json?.TryGetString(name);
 
     /// <summary>
     /// The returned DPoP nonce header.

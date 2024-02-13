@@ -41,7 +41,7 @@ public class DiscoveryDocumentResponse : ProtocolResponse
         }
 
         MtlsEndpointAliases =
-            new MtlsEndpointAliases(Json.TryGetValue(OidcConstants.Discovery.MtlsEndpointAliases));
+            new MtlsEndpointAliases(Json?.TryGetValue(OidcConstants.Discovery.MtlsEndpointAliases));
 
         return Task.CompletedTask;
     }
@@ -92,10 +92,10 @@ public class DiscoveryDocumentResponse : ProtocolResponse
     public bool? RequirePushedAuthorizationRequests => TryGetBoolean(OidcConstants.Discovery.RequirePushedAuthorizationRequests);
 
     // generic
-    public JsonElement TryGetValue(string name) => Json.TryGetValue(name);
-    public string? TryGetString(string name) => Json.TryGetString(name);
-    public bool? TryGetBoolean(string name) => Json.TryGetBoolean(name);
-    public IEnumerable<string> TryGetStringArray(string name) => Json.TryGetStringArray(name);
+    public JsonElement? TryGetValue(string name) => Json?.TryGetValue(name);
+    public string? TryGetString(string name) => Json?.TryGetString(name);
+    public bool? TryGetBoolean(string name) => Json?.TryGetBoolean(name);
+    public IEnumerable<string> TryGetStringArray(string name) => Json?.TryGetStringArray(name) ?? Array.Empty<string>();
 
     private string Validate(DiscoveryPolicy policy)
     {
@@ -161,8 +161,13 @@ public class DiscoveryDocumentResponse : ProtocolResponse
     /// <param name="json">The json.</param>
     /// <param name="policy">The policy.</param>
     /// <returns></returns>
-    public string ValidateEndpoints(JsonElement json, DiscoveryPolicy policy)
+    public string ValidateEndpoints(JsonElement? json, DiscoveryPolicy policy)
     {
+        if(json == null)
+        {
+            throw new ArgumentNullException(nameof(json));
+        }
+
         // allowed hosts
         var allowedHosts = new HashSet<string>(policy.AdditionalEndpointBaseAddresses.Select(e => new Uri(e).Authority))
         {
@@ -175,7 +180,8 @@ public class DiscoveryDocumentResponse : ProtocolResponse
             policy.Authority
         };
             
-        foreach (var element in json.EnumerateObject())
+        // Can't actually be null, because we check that and throw at the beginning of the method
+        foreach (var element in json?.EnumerateObject()!) 
         {
             if (element.Name.EndsWith("endpoint", StringComparison.OrdinalIgnoreCase) ||
                 element.Name.Equals(OidcConstants.Discovery.JwksUri, StringComparison.OrdinalIgnoreCase) ||

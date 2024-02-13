@@ -15,7 +15,7 @@ public class PushedAuthorizationResponse : ProtocolResponse
     /// between 5 and 600 seconds).
     /// </summary>
     public int? ExpiresIn => 
-        Json.TryGetInt(OidcConstants.PushedAuthorizationRequestResponse.ExpiresIn);
+        Json?.TryGetInt(OidcConstants.PushedAuthorizationRequestResponse.ExpiresIn);
 
 
     /// <summary>
@@ -27,5 +27,5 @@ public class PushedAuthorizationResponse : ProtocolResponse
     /// authorization request data available to other parties via this URI.
     /// </summary>
     public string? RequestUri =>
-        Json.TryGetString(OidcConstants.PushedAuthorizationRequestResponse.RequestUri);
+        Json?.TryGetString(OidcConstants.PushedAuthorizationRequestResponse.RequestUri);
 }

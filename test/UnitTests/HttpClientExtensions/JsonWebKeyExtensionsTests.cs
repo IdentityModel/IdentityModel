@@ -157,7 +157,7 @@ namespace IdentityModel.UnitTests
             jwk.HttpStatusCode.Should().Be(HttpStatusCode.InternalServerError);
             jwk.Error.Should().Contain("Internal Server Error");
             jwk.Raw.Should().Be("not_json");
-            jwk.Json.ValueKind.Should().Be(JsonValueKind.Undefined);
+            jwk.Json?.ValueKind.Should().Be(JsonValueKind.Undefined);
         }
 
         [Fact]
@@ -183,8 +183,8 @@ namespace IdentityModel.UnitTests
             jwk.HttpStatusCode.Should().Be(HttpStatusCode.InternalServerError);
             jwk.Error.Should().Contain("Internal Server Error");
 
-            jwk.Json.TryGetString("foo").Should().Be("foo");
-            jwk.Json.TryGetString("bar").Should().Be("bar");
+            jwk.Json?.TryGetString("foo").Should().Be("foo");
+            jwk.Json?.TryGetString("bar").Should().Be("bar");
         }
     }
 }
