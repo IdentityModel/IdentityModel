@@ -24,7 +24,7 @@ public class ProtocolResponse
     /// <param name="initializationData">The initialization data.</param>
     /// <param name="skipJson">Disables parsing of json</param>
     /// <returns></returns>
-    public static async Task<T> FromHttpResponseAsync<T>(HttpResponseMessage httpResponse, object? initializationData = null, bool skipJson = false) where T: ProtocolResponse, new()
+    public static async Task<T> FromHttpResponseAsync<T>(HttpResponseMessage? httpResponse, object? initializationData = null, bool skipJson = false) where T: ProtocolResponse, new()
     {
         var response = new T
         {
@@ -35,14 +35,17 @@ public class ProtocolResponse
         string? content = null;
         try
         {
-            content = await httpResponse.Content.ReadAsStringAsync().ConfigureAwait();
-            response.Raw = content;
+            if (httpResponse != null)
+            {
+                content = await httpResponse.Content.ReadAsStringAsync().ConfigureAwait();
+                response.Raw = content;
+            }
         }
         catch { }
 
         // some HTTP error - try to parse body as JSON but allow non-JSON as well
-        if (httpResponse.IsSuccessStatusCode == false &&
-            httpResponse.StatusCode != HttpStatusCode.BadRequest)
+        if (httpResponse?.IsSuccessStatusCode != true &&
+            httpResponse?.StatusCode != HttpStatusCode.BadRequest)
         {
             response.ErrorType = ResponseErrorType.Http;
 
@@ -129,7 +132,7 @@ public class ProtocolResponse
     /// <value>
     /// The HTTP response.
     /// </value>
-    public HttpResponseMessage HttpResponse { get; protected set; } = default!;
+    public HttpResponseMessage? HttpResponse { get; protected set; }
         
     /// <summary>
     /// Gets the raw protocol response (if present).

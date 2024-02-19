@@ -13,13 +13,13 @@ namespace IdentityModel.Client;
 public class JsonWebKeySetResponse : ProtocolResponse
 {
     /// <summary>
-    /// Intializes the key set
+    /// Initializes the key set
     /// </summary>
     /// <param name="initializationData"></param>
     /// <returns></returns>
     protected override Task InitializeAsync(object? initializationData = null)
     {
-        if (!HttpResponse.IsSuccessStatusCode)
+        if (HttpResponse?.IsSuccessStatusCode != true)
         {
             ErrorMessage = initializationData as string;
         }
