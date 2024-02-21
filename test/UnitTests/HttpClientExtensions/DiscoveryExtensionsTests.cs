@@ -398,5 +398,78 @@ namespace IdentityModel.UnitTests
             disco.Json?.TryGetString("foo").Should().Be("foo");
             disco.Json?.TryGetString("bar").Should().Be("bar");
         }
+
+        [Fact]
+        public async Task Exception_at_jwk_should_be_handled_correctly()
+        {
+            var handler = new NetworkHandler(request =>
+            {
+                if (!request.RequestUri.AbsoluteUri.Contains("jwk"))
+                {
+                    var discoFileName = FileName.Create("discovery.json");
+                    var document = File.ReadAllText(discoFileName);
+
+                    return new HttpResponseMessage(HttpStatusCode.OK)
+                    {
+                        Content = new StringContent(document)
+                    };
+                }
+                else
+                {
+                    throw new Exception("jwk failure");
+                }
+            });
+
+            var client = new HttpClient(handler)
+            {
+                BaseAddress = new Uri(_endpoint)
+            };
+
+            var disco = await client.GetDiscoveryDocumentAsync();
+
+            disco.IsError.Should().BeTrue();
+            disco.ErrorType.Should().Be(ResponseErrorType.Exception);
+            disco.Error.Should().Contain("jwk failure");
+            disco.Error.Should().NotContain("Object reference not set to an instance of an object");
+        }
+
+         [Fact]
+        public async Task Http_error_at_jwk_with_no_content_should_be_handled_correctly()
+        {
+            var handler = new NetworkHandler(request =>
+            {
+                HttpResponseMessage response;
+
+                if (!request.RequestUri.AbsoluteUri.Contains("jwk"))
+                {
+                    var discoFileName = FileName.Create("discovery.json");
+                    var document = File.ReadAllText(discoFileName);
+
+                    response = new HttpResponseMessage(HttpStatusCode.OK)
+                    {
+                        Content = new StringContent(document)
+                    };
+                }
+                else
+                {
+                    response = new HttpResponseMessage(HttpStatusCode.InternalServerError);
+                }
+
+                return response;
+            });
+
+            var client = new HttpClient(handler)
+            {
+                BaseAddress = new Uri(_endpoint)
+            };
+
+            var disco = await client.GetDiscoveryDocumentAsync();
+
+            disco.IsError.Should().BeTrue();
+            disco.ErrorType.Should().Be(ResponseErrorType.Http);
+            disco.HttpStatusCode.Should().Be(HttpStatusCode.InternalServerError);
+            disco.Error.Should().Contain("Internal Server Error");
+            disco.Json?.ValueKind.Should().Be(JsonValueKind.Undefined);
+        }
     }
 }

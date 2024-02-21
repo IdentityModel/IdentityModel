@@ -32,21 +32,32 @@ public class ProtocolResponse
         };
 
         // try to read content
-        string? content = null;
+        var content = string.Empty;
         try
         {
-            content = await httpResponse.Content.ReadAsStringAsync().ConfigureAwait();
+            // In .NET, empty content is represented in an HttpResponse with the EmptyContent type,
+            // the Content property is not nullable, and ReadAsStringAsync returns the empty string.
+            //
+            // BUT, in .NET Framework, empty content is represented with a null, and attempting to
+            // call ReadAsStringAsync would throw a NRE.
+            if (httpResponse.Content != null)
+            {
+                content = await httpResponse.Content.ReadAsStringAsync().ConfigureAwait();
+            }
             response.Raw = content;
         }
-        catch { }
+        catch (Exception ex)
+        {
+            response.ErrorType = ResponseErrorType.Exception;
+            response.Exception = ex;
+        }
 
         // some HTTP error - try to parse body as JSON but allow non-JSON as well
-        if (httpResponse.IsSuccessStatusCode == false &&
+        if (httpResponse.IsSuccessStatusCode != true &&
             httpResponse.StatusCode != HttpStatusCode.BadRequest)
         {
             response.ErrorType = ResponseErrorType.Http;
 
-            if (content.IsPresent())
             if (!skipJson && content.IsPresent())
             {
                 try
@@ -129,7 +140,7 @@ public class ProtocolResponse
     /// <value>
     /// The HTTP response.
     /// </value>
-    public HttpResponseMessage HttpResponse { get; protected set; } = default!;
+    public HttpResponseMessage? HttpResponse { get; protected set; }
         
     /// <summary>
     /// Gets the raw protocol response (if present).

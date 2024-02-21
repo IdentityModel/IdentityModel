@@ -11,7 +11,7 @@ using System.Threading.Tasks;
 namespace IdentityModel.Client;
 
 /// <summary>
-/// HttpClient extentions for OIDC discovery
+/// HttpClient extensions for OIDC discovery
 /// </summary>
 public static class HttpClientJsonWebKeySetExtensions
 {

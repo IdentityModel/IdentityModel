@@ -277,7 +277,9 @@ namespace IdentityModel.UnitTests
             disco.IsError.Should().BeTrue();
             disco.Json?.ValueKind.Should().Be(JsonValueKind.Undefined);
             disco.ErrorType.Should().Be(ResponseErrorType.PolicyViolation);
-            disco.Error.Should().StartWith("Endpoint belongs to different authority");
+            disco.Error.Should().StartWith("Invalid base address for endpoint");
+            disco.Error.Should().Contain(endpointBase);
+            disco.Error.Should().Contain(authority);
         }
 
         [Theory]

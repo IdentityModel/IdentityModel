@@ -67,6 +67,7 @@ public sealed class AuthorityUrlValidationStrategy : IAuthorityValidationStrateg
 
         }
 
-        return AuthorityValidationResult.CreateError($"Endpoint belongs to different authority: {endpoint}");
+        var expectedBaseAddresses = string.Join(",", allowedAuthorities);
+        return AuthorityValidationResult.CreateError($"Invalid base address for endpoint {endpoint}. Valid base addresses: {expectedBaseAddresses}.");
     }
 }

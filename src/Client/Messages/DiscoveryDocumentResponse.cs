@@ -22,7 +22,7 @@ public class DiscoveryDocumentResponse : ProtocolResponse
 
     protected override Task InitializeAsync(object? initializationData = null)
     {
-        if (!HttpResponse.IsSuccessStatusCode)
+        if (HttpResponse?.IsSuccessStatusCode != true)
         {
             ErrorMessage = initializationData as string;
             return Task.CompletedTask;
