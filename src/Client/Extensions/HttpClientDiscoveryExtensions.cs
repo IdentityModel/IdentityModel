@@ -102,7 +102,21 @@ public static class HttpClientDiscoveryExtensions
 
                     if (jwkResponse.IsError)
                     {
-                        return await ProtocolResponse.FromHttpResponseAsync<DiscoveryDocumentResponse>(jwkResponse.HttpResponse, $"Error connecting to {jwkUrl}: {jwkResponse.HttpErrorReason}").ConfigureAwait();
+                        if (jwkResponse.Exception != null)
+                        {
+                            return ProtocolResponse.FromException<DiscoveryDocumentResponse>(jwkResponse.Exception, jwkResponse.Error);
+                        }
+                        else if(jwkResponse.HttpResponse != null)
+                        {
+                            return await ProtocolResponse.FromHttpResponseAsync<DiscoveryDocumentResponse>(jwkResponse.HttpResponse, $"Error connecting to {jwkUrl}: {jwkResponse.HttpErrorReason}").ConfigureAwait();
+                        }
+                        // If IsError is true, but we have neither an Exception nor an HttpResponse, something very weird is going on
+                        // I don't think it is actually possible for this to occur, but just in case...
+                        else
+                        {
+                            return ProtocolResponse.FromException<DiscoveryDocumentResponse>(
+                                new ArgumentNullException(nameof(jwkResponse.HttpResponse)), $"Unknown error retrieving JWKS - neither an exception nor an HttpResponse is available");
+                        }
                     }
 
                     disco.KeySet = jwkResponse.KeySet;
