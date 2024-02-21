@@ -41,12 +41,11 @@ public class ProtocolResponse
         catch { }
 
         // some HTTP error - try to parse body as JSON but allow non-JSON as well
-        if (httpResponse.IsSuccessStatusCode == false &&
+        if (httpResponse.IsSuccessStatusCode != true &&
             httpResponse.StatusCode != HttpStatusCode.BadRequest)
         {
             response.ErrorType = ResponseErrorType.Http;
 
-            if (content.IsPresent())
             if (!skipJson && content.IsPresent())
             {
                 try
@@ -129,7 +128,7 @@ public class ProtocolResponse
     /// <value>
     /// The HTTP response.
     /// </value>
-    public HttpResponseMessage HttpResponse { get; protected set; } = default!;
+    public HttpResponseMessage? HttpResponse { get; protected set; }
         
     /// <summary>
     /// Gets the raw protocol response (if present).
