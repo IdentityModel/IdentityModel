@@ -37,7 +37,7 @@
 
   <!--Conditional compilation-->
   <PropertyGroup Condition=" '$(OS)' == 'Windows_NT' ">
-    <TargetFrameworks>net461;net472;netstandard2.0;net6.0</TargetFrameworks>
+    <TargetFrameworks>net462;net472;netstandard2.0;net6.0</TargetFrameworks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(OS)' != 'Windows_NT' ">
     <TargetFrameworks>netstandard2.0;net6.0</TargetFrameworks>
@@ -51,19 +51,11 @@
   <!--Conditional Package references -->
   
   <!-- System.Text.Json is automatically included in net6.0, so we don't take an explicit dependency on it in the net6.0 build. -->
-  <!-- System.Text.Json version 7.0.0 dropped support for net461, so we use the older version there. -->
-  <!-- The netstandard2.0 build can be used in a class library consumed by an application targeting net461, so we use the older version there too.-->
-  <ItemGroup Condition="'$(TargetFramework)' == 'net461'">
-    <PackageReference Include="System.Text.Json" Version="6.0.0" />
-  </ItemGroup>
-    <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.0'">
-    <PackageReference Include="System.Text.Json" Version="6.0.0" />
-  </ItemGroup>  
-  <ItemGroup Condition="'$(TargetFramework)' == 'net472'">
+  <ItemGroup Condition="'$(TargetFramework)' != 'net6.0'">
     <PackageReference Include="System.Text.Json" Version="8.0.0" />
-  </ItemGroup>   	
+  </ItemGroup>
 	
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net461' or '$(TargetFramework)' == 'net472'">
+  <ItemGroup Condition=" '$(TargetFramework)' == 'net462' or '$(TargetFramework)' == 'net472'">
     <Reference Include="System.Net.Http" />
   </ItemGroup>
 
