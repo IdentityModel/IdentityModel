@@ -36,11 +36,11 @@
   </PropertyGroup>
 
   <!--Conditional compilation-->
-  <PropertyGroup Condition=" '$(OS)' == 'Windows_NT' ">
-    <TargetFrameworks>net462;net472;netstandard2.0;net6.0</TargetFrameworks>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(OS)' != 'Windows_NT' ">
+  <PropertyGroup>
     <TargetFrameworks>netstandard2.0;net6.0</TargetFrameworks>
+  </PropertyGroup>
+  <PropertyGroup Condition="$([MSBuild]::IsOSPlatform('Windows'))">
+    <TargetFrameworks>net462;net472;$(TargetFrameworks)</TargetFrameworks>
   </PropertyGroup>
   
   <ItemGroup>
