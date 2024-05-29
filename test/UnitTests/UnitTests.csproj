@@ -3,6 +3,7 @@
         <IsPackable>false</IsPackable>
         <AssemblyOriginatorKeyFile>../../key.snk</AssemblyOriginatorKeyFile>
         <SignAssembly>true</SignAssembly>
+        <DeterministicSourcePaths>false</DeterministicSourcePaths>
     </PropertyGroup>
 
     <!--Conditional compilation-->
@@ -17,12 +18,6 @@
     <PropertyGroup Condition=" '$(NETCoreSdkPortableRuntimeIdentifier)' == 'osx-arm64' ">
         <TargetFrameworks>net6.0</TargetFrameworks>
     </PropertyGroup>
-
-    <ItemGroup>
-        <None Update="documents\*">
-            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-        </None>
-    </ItemGroup>
 
     <ItemGroup>
         <ProjectReference Include="..\..\src\IdentityModel.csproj" />
@@ -40,7 +35,7 @@
     </ItemGroup>
 
     <ItemGroup Condition=" '$(TargetFramework)' == 'net462' or $(TargetFramework) == 'net472'">
-        <PackageReference Include="Microsoft.Extensions.PlatformAbstractions" Version="1.1.0" />
+        <Reference Include="System.Net.Http" />
         <PackageReference Include="Microsoft.AspNetCore.WebUtilities" Version="2.2.0" />
     </ItemGroup>
 </Project>
