@@ -219,7 +219,7 @@ namespace IdentityModel.UnitTests
         }
 
         [Fact]
-        public void Request_without_token_should_fail()
+        public async Task Request_without_token_should_fail()
         {
             var document = File.ReadAllText(FileName.Create("success_introspection_response.json"));
             var handler = new NetworkHandler(document, HttpStatusCode.OK);
@@ -231,7 +231,7 @@ namespace IdentityModel.UnitTests
 
             Func<Task> act = async () => await client.IntrospectTokenAsync(new TokenIntrospectionRequest());
 
-            act.Should().Throw<ArgumentException>().And.ParamName.Should().Be("token");
+            (await act.Should().ThrowAsync<ArgumentException>()).WithParameterName("token");
         }
 
         [Fact]

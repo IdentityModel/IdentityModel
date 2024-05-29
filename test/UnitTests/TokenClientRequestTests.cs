@@ -78,13 +78,13 @@ namespace IdentityModel.UnitTests
         }
 
         [Fact]
-        public void Device_request_without_device_code_should_fail()
+        public async Task Device_request_without_device_code_should_fail()
         {
             var tokenClient = new TokenClient(_client, new TokenClientOptions { ClientId = "device" });
 
             Func<Task> act = async () => await tokenClient.RequestDeviceTokenAsync(null);
 
-            act.Should().Throw<ArgumentException>().And.ParamName.Should().Be("device_code");
+            (await act.Should().ThrowAsync<ArgumentException>()).WithParameterName("device_code");
         }
 
         [Fact]
@@ -131,13 +131,13 @@ namespace IdentityModel.UnitTests
         }
 
         [Fact]
-        public void Password_request_without_username_should_fail()
+        public async Task Password_request_without_username_should_fail()
         {
             var tokenClient = new TokenClient(_client, new TokenClientOptions());
 
             Func<Task> act = async () => await tokenClient.RequestPasswordTokenAsync(userName: null);
 
-            act.Should().Throw<ArgumentException>().And.ParamName.Should().Be("username");
+            (await act.Should().ThrowAsync<ArgumentException>()).WithParameterName("username");
         }
 
         [Fact]
@@ -164,23 +164,23 @@ namespace IdentityModel.UnitTests
         }
 
         [Fact]
-        public void Code_request_without_code_should_fail()
+        public async Task Code_request_without_code_should_fail()
         {
             var tokenClient = new TokenClient(_client, new TokenClientOptions());
 
             Func<Task> act = async () => await tokenClient.RequestAuthorizationCodeTokenAsync(code: null, redirectUri: "uri", codeVerifier: "verifier");
 
-            act.Should().Throw<ArgumentException>().And.ParamName.Should().Be("code");
+            (await act.Should().ThrowAsync<ArgumentException>()).WithParameterName("code");
         }
 
         [Fact]
-        public void Code_request_without_redirect_uri_should_fail()
+        public async Task Code_request_without_redirect_uri_should_fail()
         {
             var tokenClient = new TokenClient(_client, new TokenClientOptions());
 
             Func<Task> act = async () => await tokenClient.RequestAuthorizationCodeTokenAsync(code: "code", redirectUri: null, codeVerifier: "verifier");
 
-            act.Should().Throw<ArgumentException>().And.ParamName.Should().Be("redirect_uri");
+            (await act.Should().ThrowAsync<ArgumentException>()).WithParameterName("redirect_uri");
         }
 
         [Fact]
@@ -204,23 +204,23 @@ namespace IdentityModel.UnitTests
         }
 
         [Fact]
-        public void Refresh_request_without_refresh_token_should_fail()
+        public async Task Refresh_request_without_refresh_token_should_fail()
         {
             var tokenClient = new TokenClient(_client, new TokenClientOptions());
 
             Func<Task> act = async () => await tokenClient.RequestRefreshTokenAsync(refreshToken: null, scope: "scope");
 
-            act.Should().Throw<ArgumentException>().And.ParamName.Should().Be("refresh_token");
+            (await act.Should().ThrowAsync<ArgumentException>()).WithParameterName("refresh_token");
         }
 
         [Fact]
-        public void Setting_no_grant_type_should_fail()
+        public async Task Setting_no_grant_type_should_fail()
         {
             var tokenClient = new TokenClient(_client, new TokenClientOptions());
 
             Func<Task> act = async () => await tokenClient.RequestTokenAsync(grantType: null);
 
-            act.Should().Throw<ArgumentException>().And.ParamName.Should().Be("grant_type");
+            (await act.Should().ThrowAsync<ArgumentException>()).WithParameterName("grant_type");
         }
 
         [Fact]
