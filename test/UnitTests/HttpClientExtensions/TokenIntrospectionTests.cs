@@ -3,12 +3,13 @@
 
 using FluentAssertions;
 using IdentityModel.Client;
-using Microsoft.AspNetCore.WebUtilities;
 using System;
+using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Security.Claims;
+using System.Text.Json;
 using System.Threading.Tasks;
 using Xunit;
 
@@ -33,24 +34,22 @@ namespace IdentityModel.UnitTests
             request.Headers.Add("custom", "custom");
             request.Properties.Add("custom", "custom");
 
-            var response = await client.IntrospectTokenAsync(request);
+            _ = await client.IntrospectTokenAsync(request);
 
             var httpRequest = handler.Request;
 
             httpRequest.Method.Should().Be(HttpMethod.Post);
             httpRequest.RequestUri.Should().Be(new Uri(Endpoint));
             httpRequest.Content.Should().NotBeNull();
-
-            var headers = httpRequest.Headers;
-            headers.Count().Should().Be(2);
-            headers.Should().Contain(h => h.Key == "custom" && h.Value.First() == "custom");
-
-            var properties = httpRequest.Properties;
-            properties.Count.Should().Be(1);
-
-            var prop = properties.First();
-            prop.Key.Should().Be("custom");
-            ((string)prop.Value).Should().Be("custom");
+            httpRequest.Headers.Should().BeEquivalentTo(new Dictionary<string, string[]>
+            {
+                ["Accept"] = new[] { "application/json" },
+                ["custom"] = new[] { "custom" },
+            });
+            httpRequest.Properties.Should().BeEquivalentTo(new Dictionary<string, string>
+            {
+                ["custom"] = "custom",
+            });
         }
 
         [Fact]
@@ -73,29 +72,22 @@ namespace IdentityModel.UnitTests
             response.ErrorType.Should().Be(ResponseErrorType.None);
             response.HttpStatusCode.Should().Be(HttpStatusCode.OK);
             response.IsActive.Should().BeTrue();
-            response.Claims.Should().NotBeEmpty();
-
-            var audiences = response.Claims.Where(c => c.Type == "aud").ToList();
-            audiences.Count().Should().Be(2);
-            audiences.First().Value.Should().Be("https://idsvr4/resources");
-            audiences.Skip(1).First().Value.Should().Be("api1");
-
-            response.Claims.First(c => c.Type == "iss").Value.Should().Be("https://idsvr4");
-            response.Claims.First(c => c.Type == "nbf").Value.Should().Be("1475824871");
-            response.Claims.First(c => c.Type == "exp").Value.Should().Be("1475828471");
-            response.Claims.First(c => c.Type == "client_id").Value.Should().Be("client");
-            response.Claims.First(c => c.Type == "sub").Value.Should().Be("1");
-            response.Claims.First(c => c.Type == "auth_time").Value.Should().Be("1475824871");
-            response.Claims.First(c => c.Type == "idp").Value.Should().Be("local");
-            response.Claims.First(c => c.Type == "amr").Value.Should().Be("password");
-            response.Claims.First(c => c.Type == "active").Value.Should().Be("true");
-
-            var scopes = response.Claims.Where(c => c.Type == "scope").ToList();
-            scopes.Count().Should().Be(2);
-            scopes.First().Value.Should().Be("api1");
-            scopes.First().Issuer.Should().Be("https://idsvr4");
-            scopes.Skip(1).First().Value.Should().Be("api2");
-            scopes.Skip(1).First().Issuer.Should().Be("https://idsvr4");
+            response.Claims.Should().BeEquivalentTo(new[]
+            {
+                new Claim("aud", "https://idsvr4/resources", ClaimValueTypes.String, "https://idsvr4"),
+                new Claim("aud", "api1", ClaimValueTypes.String, "https://idsvr4"),
+                new Claim("iss", "https://idsvr4", ClaimValueTypes.String, "https://idsvr4"),
+                new Claim("nbf", "1475824871", ClaimValueTypes.String, "https://idsvr4"),
+                new Claim("exp", "1475828471", ClaimValueTypes.String, "https://idsvr4"),
+                new Claim("client_id", "client", ClaimValueTypes.String, "https://idsvr4"),
+                new Claim("sub", "1", ClaimValueTypes.String, "https://idsvr4"),
+                new Claim("auth_time", "1475824871", ClaimValueTypes.String, "https://idsvr4"),
+                new Claim("idp", "local", ClaimValueTypes.String, "https://idsvr4"),
+                new Claim("amr", "password", ClaimValueTypes.String, "https://idsvr4"),
+                new Claim("active", "true", ClaimValueTypes.String, "https://idsvr4"),
+                new Claim("scope", "api1", ClaimValueTypes.String, "https://idsvr4"),
+                new Claim("scope", "api2", ClaimValueTypes.String, "https://idsvr4"),
+            });
         }
 
         [Fact]
@@ -118,26 +110,21 @@ namespace IdentityModel.UnitTests
             response.ErrorType.Should().Be(ResponseErrorType.None);
             response.HttpStatusCode.Should().Be(HttpStatusCode.OK);
             response.IsActive.Should().BeTrue();
-            response.Claims.Should().NotBeEmpty();
-
-            var audiences = response.Claims.Where(c => c.Type == "aud").ToList();
-            audiences.Count().Should().Be(2);
-            audiences.First().Value.Should().Be("https://idsvr4/resources");
-            audiences.Skip(1).First().Value.Should().Be("api1");
-
-            response.Claims.First(c => c.Type == "nbf").Value.Should().Be("1475824871");
-            response.Claims.First(c => c.Type == "exp").Value.Should().Be("1475828471");
-            response.Claims.First(c => c.Type == "client_id").Value.Should().Be("client");
-            response.Claims.First(c => c.Type == "sub").Value.Should().Be("1");
-            response.Claims.First(c => c.Type == "auth_time").Value.Should().Be("1475824871");
-            response.Claims.First(c => c.Type == "idp").Value.Should().Be("local");
-            response.Claims.First(c => c.Type == "amr").Value.Should().Be("password");
-            response.Claims.First(c => c.Type == "active").Value.Should().Be("true");
-
-            var scopes = response.Claims.Where(c => c.Type == "scope").ToList();
-            scopes.Count().Should().Be(2);
-            scopes.First().Value.Should().Be("api1");
-            scopes.Skip(1).First().Value.Should().Be("api2");
+            response.Claims.Should().BeEquivalentTo(new[]
+            {
+                new Claim("aud", "https://idsvr4/resources", ClaimValueTypes.String, "LOCAL AUTHORITY"),
+                new Claim("aud", "api1", ClaimValueTypes.String, "LOCAL AUTHORITY"),
+                new Claim("nbf", "1475824871", ClaimValueTypes.String, "LOCAL AUTHORITY"),
+                new Claim("exp", "1475828471", ClaimValueTypes.String, "LOCAL AUTHORITY"),
+                new Claim("client_id", "client", ClaimValueTypes.String, "LOCAL AUTHORITY"),
+                new Claim("sub", "1", ClaimValueTypes.String, "LOCAL AUTHORITY"),
+                new Claim("auth_time", "1475824871", ClaimValueTypes.String, "LOCAL AUTHORITY"),
+                new Claim("idp", "local", ClaimValueTypes.String, "LOCAL AUTHORITY"),
+                new Claim("amr", "password", ClaimValueTypes.String, "LOCAL AUTHORITY"),
+                new Claim("active", "true", ClaimValueTypes.String, "LOCAL AUTHORITY"),
+                new Claim("scope", "api1", ClaimValueTypes.String, "LOCAL AUTHORITY"),
+                new Claim("scope", "api2", ClaimValueTypes.String, "LOCAL AUTHORITY"),
+            });
         }
 
         [Fact]
@@ -162,29 +149,22 @@ namespace IdentityModel.UnitTests
             response.ErrorType.Should().Be(ResponseErrorType.None);
             response.HttpStatusCode.Should().Be(HttpStatusCode.OK);
             response.IsActive.Should().BeTrue();
-            response.Claims.Should().NotBeEmpty();
-
-            var audiences = response.Claims.Where(c => c.Type == "aud").ToList();
-            audiences.Count().Should().Be(2);
-            audiences.First().Value.Should().Be("https://idsvr4/resources");
-            audiences.Skip(1).First().Value.Should().Be("api1");
-
-            response.Claims.First(c => c.Type == "iss").Value.Should().Be("https://idsvr4");
-            response.Claims.First(c => c.Type == "nbf").Value.Should().Be("1475824871");
-            response.Claims.First(c => c.Type == "exp").Value.Should().Be("1475828471");
-            response.Claims.First(c => c.Type == "client_id").Value.Should().Be("client");
-            response.Claims.First(c => c.Type == "sub").Value.Should().Be("1");
-            response.Claims.First(c => c.Type == "auth_time").Value.Should().Be("1475824871");
-            response.Claims.First(c => c.Type == "idp").Value.Should().Be("local");
-            response.Claims.First(c => c.Type == "amr").Value.Should().Be("password");
-            response.Claims.First(c => c.Type == "active").Value.Should().Be("true");
-
-            var scopes = response.Claims.Where(c => c.Type == "scope").ToList();
-            scopes.Count().Should().Be(2);
-            scopes.First().Value.Should().Be("api1");
-            scopes.First().Issuer.Should().Be("https://idsvr4");
-            scopes.Skip(1).First().Value.Should().Be("api2");
-            scopes.Skip(1).First().Issuer.Should().Be("https://idsvr4");
+            response.Claims.Should().BeEquivalentTo(new[]
+            {
+                new Claim("aud", "https://idsvr4/resources", ClaimValueTypes.String, "https://idsvr4"),
+                new Claim("aud", "api1", ClaimValueTypes.String, "https://idsvr4"),
+                new Claim("iss", "https://idsvr4", ClaimValueTypes.String, "https://idsvr4"),
+                new Claim("nbf", "1475824871", ClaimValueTypes.String, "https://idsvr4"),
+                new Claim("exp", "1475828471", ClaimValueTypes.String, "https://idsvr4"),
+                new Claim("client_id", "client", ClaimValueTypes.String, "https://idsvr4"),
+                new Claim("sub", "1", ClaimValueTypes.String, "https://idsvr4"),
+                new Claim("auth_time", "1475824871", ClaimValueTypes.String, "https://idsvr4"),
+                new Claim("idp", "local", ClaimValueTypes.String, "https://idsvr4"),
+                new Claim("amr", "password", ClaimValueTypes.String, "https://idsvr4"),
+                new Claim("active", "true", ClaimValueTypes.String, "https://idsvr4"),
+                new Claim("scope", "api1", ClaimValueTypes.String, "https://idsvr4"),
+                new Claim("scope", "api2", ClaimValueTypes.String, "https://idsvr4"),
+            });
 
             // repeat
             response = await client.IntrospectTokenAsync(request);
@@ -193,29 +173,22 @@ namespace IdentityModel.UnitTests
             response.ErrorType.Should().Be(ResponseErrorType.None);
             response.HttpStatusCode.Should().Be(HttpStatusCode.OK);
             response.IsActive.Should().BeTrue();
-            response.Claims.Should().NotBeEmpty();
-
-            audiences = response.Claims.Where(c => c.Type == "aud").ToList();
-            audiences.Count().Should().Be(2);
-            audiences.First().Value.Should().Be("https://idsvr4/resources");
-            audiences.Skip(1).First().Value.Should().Be("api1");
-
-            response.Claims.First(c => c.Type == "iss").Value.Should().Be("https://idsvr4");
-            response.Claims.First(c => c.Type == "nbf").Value.Should().Be("1475824871");
-            response.Claims.First(c => c.Type == "exp").Value.Should().Be("1475828471");
-            response.Claims.First(c => c.Type == "client_id").Value.Should().Be("client");
-            response.Claims.First(c => c.Type == "sub").Value.Should().Be("1");
-            response.Claims.First(c => c.Type == "auth_time").Value.Should().Be("1475824871");
-            response.Claims.First(c => c.Type == "idp").Value.Should().Be("local");
-            response.Claims.First(c => c.Type == "amr").Value.Should().Be("password");
-            response.Claims.First(c => c.Type == "active").Value.Should().Be("true");
-
-            scopes = response.Claims.Where(c => c.Type == "scope").ToList();
-            scopes.Count().Should().Be(2);
-            scopes.First().Value.Should().Be("api1");
-            scopes.First().Issuer.Should().Be("https://idsvr4");
-            scopes.Skip(1).First().Value.Should().Be("api2");
-            scopes.Skip(1).First().Issuer.Should().Be("https://idsvr4");
+            response.Claims.Should().BeEquivalentTo(new[]
+            {
+                new Claim("aud", "https://idsvr4/resources", ClaimValueTypes.String, "https://idsvr4"),
+                new Claim("aud", "api1", ClaimValueTypes.String, "https://idsvr4"),
+                new Claim("iss", "https://idsvr4", ClaimValueTypes.String, "https://idsvr4"),
+                new Claim("nbf", "1475824871", ClaimValueTypes.String, "https://idsvr4"),
+                new Claim("exp", "1475828471", ClaimValueTypes.String, "https://idsvr4"),
+                new Claim("client_id", "client", ClaimValueTypes.String, "https://idsvr4"),
+                new Claim("sub", "1", ClaimValueTypes.String, "https://idsvr4"),
+                new Claim("auth_time", "1475824871", ClaimValueTypes.String, "https://idsvr4"),
+                new Claim("idp", "local", ClaimValueTypes.String, "https://idsvr4"),
+                new Claim("amr", "password", ClaimValueTypes.String, "https://idsvr4"),
+                new Claim("active", "true", ClaimValueTypes.String, "https://idsvr4"),
+                new Claim("scope", "api1", ClaimValueTypes.String, "https://idsvr4"),
+                new Claim("scope", "api2", ClaimValueTypes.String, "https://idsvr4"),
+            });
         }
 
         [Fact]
@@ -250,13 +223,14 @@ namespace IdentityModel.UnitTests
             response.IsError.Should().BeTrue();
             response.ErrorType.Should().Be(ResponseErrorType.Exception);
             response.Raw.Should().Be("invalid");
-            response.Exception.Should().NotBeNull();
+            response.Exception.Should().BeAssignableTo<JsonException>();
         }
 
         [Fact]
         public async Task Exception_should_be_handled_correctly()
         {
-            var handler = new NetworkHandler(new Exception("exception"));
+            var exception = new Exception("exception");
+            var handler = new NetworkHandler(exception);
 
             var client = new HttpClient(handler);
             var response = await client.IntrospectTokenAsync(new TokenIntrospectionRequest
@@ -268,7 +242,7 @@ namespace IdentityModel.UnitTests
             response.IsError.Should().BeTrue();
             response.ErrorType.Should().Be(ResponseErrorType.Exception);
             response.Error.Should().Be("exception");
-            response.Exception.Should().NotBeNull();
+            response.Exception.Should().BeSameAs(exception);
         }
 
         [Fact]
@@ -306,29 +280,22 @@ namespace IdentityModel.UnitTests
             response.ErrorType.Should().Be(ResponseErrorType.None);
             response.HttpStatusCode.Should().Be(HttpStatusCode.OK);
             response.IsActive.Should().BeTrue();
-            response.Claims.Should().NotBeEmpty();
-
-            var audiences = response.Claims.Where(c => c.Type == "aud").ToList();
-            audiences.Count().Should().Be(2);
-            audiences.First().Value.Should().Be("https://idsvr4/resources");
-            audiences.Skip(1).First().Value.Should().Be("api1");
-
-            response.Claims.First(c => c.Type == "iss").Value.Should().Be("https://idsvr4");
-            response.Claims.First(c => c.Type == "nbf").Value.Should().Be("1475824871");
-            response.Claims.First(c => c.Type == "exp").Value.Should().Be("1475828471");
-            response.Claims.First(c => c.Type == "client_id").Value.Should().Be("client");
-            response.Claims.First(c => c.Type == "sub").Value.Should().Be("1");
-            response.Claims.First(c => c.Type == "auth_time").Value.Should().Be("1475824871");
-            response.Claims.First(c => c.Type == "idp").Value.Should().Be("local");
-            response.Claims.First(c => c.Type == "amr").Value.Should().Be("password");
-            response.Claims.First(c => c.Type == "active").Value.Should().Be("true");
-
-            var scopes = response.Claims.Where(c => c.Type == "scope").ToList();
-            scopes.Count().Should().Be(2);
-            scopes.First().Value.Should().Be("api1");
-            scopes.First().Issuer.Should().Be("https://idsvr4");
-            scopes.Skip(1).First().Value.Should().Be("api2");
-            scopes.Skip(1).First().Issuer.Should().Be("https://idsvr4");
+            response.Claims.Should().BeEquivalentTo(new[]
+            {
+                new Claim("aud", "https://idsvr4/resources", ClaimValueTypes.String, "https://idsvr4"),
+                new Claim("aud", "api1", ClaimValueTypes.String, "https://idsvr4"),
+                new Claim("iss", "https://idsvr4", ClaimValueTypes.String, "https://idsvr4"),
+                new Claim("nbf", "1475824871", ClaimValueTypes.String, "https://idsvr4"),
+                new Claim("exp", "1475828471", ClaimValueTypes.String, "https://idsvr4"),
+                new Claim("client_id", "client", ClaimValueTypes.String, "https://idsvr4"),
+                new Claim("sub", "1", ClaimValueTypes.String, "https://idsvr4"),
+                new Claim("auth_time", "1475824871", ClaimValueTypes.String, "https://idsvr4"),
+                new Claim("idp", "local", ClaimValueTypes.String, "https://idsvr4"),
+                new Claim("amr", "password", ClaimValueTypes.String, "https://idsvr4"),
+                new Claim("active", "true", ClaimValueTypes.String, "https://idsvr4"),
+                new Claim("scope", "api1", ClaimValueTypes.String, "https://idsvr4"),
+                new Claim("scope", "api2", ClaimValueTypes.String, "https://idsvr4"),
+            });
         }
 
         [Fact]
@@ -345,18 +312,14 @@ namespace IdentityModel.UnitTests
                 Token = "token",
                 Parameters =
                 {
-                    { "scope", "scope1 scope2" },
-                    { "foo", "bar" }
+                    { "scope", "scope1" },
+                    { "scope", "scope2" },
+                    { "foo", "bar baz" }
                 }
             });
 
             // check request
-            var fields = QueryHelpers.ParseQuery(handler.Body);
-            fields.Count.Should().Be(3);
-            
-            fields["token"].First().Should().Be("token");
-            fields["scope"].First().Should().Be("scope1 scope2");
-            fields["foo"].First().Should().Be("bar");
+            handler.Body.Should().Be("scope=scope1&scope=scope2&foo=bar+baz&token=token");
 
             // check response
             response.IsError.Should().BeFalse();
