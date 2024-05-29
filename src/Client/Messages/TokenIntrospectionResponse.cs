@@ -3,6 +3,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Security.Claims;
 using System.Text.Json;
@@ -11,11 +12,34 @@ using System.Threading.Tasks;
 namespace IdentityModel.Client;
 
 /// <summary>
-/// Models an OAuth 2.0 introspection response
+/// Models an OAuth 2.0 introspection response as defined by <a href="https://datatracker.ietf.org/doc/html/rfc7662">RFC 7662 - OAuth 2.0 Token Introspection</a>
 /// </summary>
 /// <seealso cref="IdentityModel.Client.ProtocolResponse" />
 public class TokenIntrospectionResponse : ProtocolResponse
 {
+    private readonly Lazy<DateTimeOffset?> _expiration;
+    private readonly Lazy<DateTimeOffset?> _issuedAt;
+    private readonly Lazy<DateTimeOffset?> _notBefore;
+
+    /// <summary>
+    /// Initializes a new instance of the <see cref="TokenIntrospectionResponse"/> class.
+    /// </summary>
+    public TokenIntrospectionResponse()
+    {
+        _expiration = new Lazy<DateTimeOffset?>(() => GetTime(JwtClaimTypes.Expiration));
+        _issuedAt = new Lazy<DateTimeOffset?>(() => GetTime(JwtClaimTypes.IssuedAt));
+        _notBefore = new Lazy<DateTimeOffset?>(() => GetTime(JwtClaimTypes.NotBefore));
+    }
+
+    private DateTimeOffset? GetTime(string claimType)
+    {
+        var claimValue = Claims.FirstOrDefault(e => e.Type == claimType)?.Value;
+        if (claimValue == null) return null;
+
+        var seconds = long.Parse(claimValue, NumberStyles.AllowLeadingSign, NumberFormatInfo.InvariantInfo);
+        return DateTimeOffset.FromUnixTimeSeconds(seconds);
+    }
+
     /// <summary>
     /// Allows to initialize instance specific data.
     /// </summary>
@@ -72,6 +96,30 @@ public class TokenIntrospectionResponse : ProtocolResponse
     ///   <c>true</c> if the token is active; otherwise, <c>false</c>.
     /// </value>
     public bool IsActive => Json?.TryGetBoolean("active") ?? false;
+
+    /// <summary>
+    /// Gets the time on or after which the token must not be accepted for processing.
+    /// </summary>
+    /// <value>
+    /// The expiration time of the token or null if the <c>exp</c> claim is missing.
+    /// </value>
+    public DateTimeOffset? Expiration => _expiration.Value;
+
+    /// <summary>
+    /// Gets the time when the token was issued.
+    /// </summary>
+    /// <value>
+    /// The issuance time of the token or null if the <c>iat</c> claim is missing.
+    /// </value>
+    public DateTimeOffset? IssuedAt => _issuedAt.Value;
+
+    /// <summary>
+    /// Gets the time before which the token must not be accepted for processing.
+    /// </summary>
+    /// <value>
+    /// The validity start time of the token or null if the <c>nbf</c> claim is missing.
+    /// </value>
+    public DateTimeOffset? NotBefore => _notBefore.Value;
 
     /// <summary>
     /// Gets the claims.

@@ -1,4 +1,4 @@
-﻿// Copyright (c) Brock Allen & Dominick Baier. All rights reserved.
+// Copyright (c) Brock Allen & Dominick Baier. All rights reserved.
 // Licensed under the Apache License, Version 2.0. See LICENSE in the project root for license information.
 
 using FluentAssertions;
@@ -11,6 +11,7 @@ using System.Net.Http;
 using System.Security.Claims;
 using System.Text.Json;
 using System.Threading.Tasks;
+using FluentAssertions.Extensions;
 using Xunit;
 
 namespace IdentityModel.UnitTests
@@ -88,6 +89,9 @@ namespace IdentityModel.UnitTests
                 new Claim("scope", "api1", ClaimValueTypes.String, "https://idsvr4"),
                 new Claim("scope", "api2", ClaimValueTypes.String, "https://idsvr4"),
             });
+            response.IssuedAt.Should().BeNull();
+            response.NotBefore.Should().Be(7.October(2016).At(7, 21, 11).WithOffset(0.Hours()));
+            response.Expiration.Should().Be(7.October(2016).At(8, 21, 11).WithOffset(0.Hours()));
         }
 
         [Fact]
@@ -125,6 +129,9 @@ namespace IdentityModel.UnitTests
                 new Claim("scope", "api1", ClaimValueTypes.String, "LOCAL AUTHORITY"),
                 new Claim("scope", "api2", ClaimValueTypes.String, "LOCAL AUTHORITY"),
             });
+            response.IssuedAt.Should().BeNull();
+            response.NotBefore.Should().Be(7.October(2016).At(7, 21, 11).WithOffset(0.Hours()));
+            response.Expiration.Should().Be(7.October(2016).At(8, 21, 11).WithOffset(0.Hours()));
         }
 
         [Fact]
@@ -165,6 +172,9 @@ namespace IdentityModel.UnitTests
                 new Claim("scope", "api1", ClaimValueTypes.String, "https://idsvr4"),
                 new Claim("scope", "api2", ClaimValueTypes.String, "https://idsvr4"),
             });
+            response.IssuedAt.Should().BeNull();
+            response.NotBefore.Should().Be(7.October(2016).At(7, 21, 11).WithOffset(0.Hours()));
+            response.Expiration.Should().Be(7.October(2016).At(8, 21, 11).WithOffset(0.Hours()));
 
             // repeat
             response = await client.IntrospectTokenAsync(request);
@@ -189,6 +199,9 @@ namespace IdentityModel.UnitTests
                 new Claim("scope", "api1", ClaimValueTypes.String, "https://idsvr4"),
                 new Claim("scope", "api2", ClaimValueTypes.String, "https://idsvr4"),
             });
+            response.IssuedAt.Should().BeNull();
+            response.NotBefore.Should().Be(7.October(2016).At(7, 21, 11).WithOffset(0.Hours()));
+            response.Expiration.Should().Be(7.October(2016).At(8, 21, 11).WithOffset(0.Hours()));
         }
 
         [Fact]
@@ -296,6 +309,9 @@ namespace IdentityModel.UnitTests
                 new Claim("scope", "api1", ClaimValueTypes.String, "https://idsvr4"),
                 new Claim("scope", "api2", ClaimValueTypes.String, "https://idsvr4"),
             });
+            response.IssuedAt.Should().BeNull();
+            response.NotBefore.Should().Be(7.October(2016).At(7, 21, 11).WithOffset(0.Hours()));
+            response.Expiration.Should().Be(7.October(2016).At(8, 21, 11).WithOffset(0.Hours()));
         }
 
         [Fact]
