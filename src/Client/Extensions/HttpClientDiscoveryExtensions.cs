@@ -42,7 +42,7 @@ public static class HttpClientDiscoveryExtensions
         }
         else if (client is HttpClient httpClient)
         {
-            address = httpClient.BaseAddress!.AbsoluteUri;
+            address = httpClient.BaseAddress!.GetLeftPart(UriPartial.Authority);
         }
         else
         {

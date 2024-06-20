@@ -74,12 +74,15 @@ namespace IdentityModel.UnitTests
         }
 
 
-        [Fact]
-        public async Task Base_address_should_work()
+        [Theory]
+        [InlineData("https://demo.identityserver.io")]
+        [InlineData("https://demo.identityserver.io/api/v1/")]
+        [InlineData("https://demo.identityserver.io/.well-known/openid-configuration")]
+        public async Task Base_address_should_work(string baseAddress)
         {
             var client = new HttpClient(_successHandler)
             {
-                BaseAddress = new Uri(_endpoint)
+                BaseAddress = new Uri(baseAddress)
             };
 
             var disco = await client.GetDiscoveryDocumentAsync();
