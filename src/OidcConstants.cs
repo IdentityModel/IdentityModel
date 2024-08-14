@@ -395,6 +395,7 @@ public static class OidcConstants
         public const string MultiFactorAuthentication = "mfa";
         public const string OneTimePassword = "otp";
         public const string PersonalIdentificationOrPattern = "pin";
+        public const string ProofOfPossessionKey = "pop";
         public const string Password = "pwd";
         public const string RiskBasedAuthentication = "rba";
         public const string RetinaScanBiometric = "retina";
