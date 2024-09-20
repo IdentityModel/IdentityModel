@@ -415,7 +415,7 @@ public static class OidcConstants
         public static class Symmetric
         {
             public const string HS256 = "HS256";
-            public const string HS384 = "HS284";
+            public const string HS384 = "HS384";
             public const string HS512 = "HS512";
         }
 
