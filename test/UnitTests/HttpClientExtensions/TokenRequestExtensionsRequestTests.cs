@@ -221,13 +221,13 @@ namespace IdentityModel.UnitTests
 
 
         [Fact]
-        public void Explicit_null_parameters_should_not_fail_()
+        public async Task Explicit_null_parameters_should_not_fail_()
         {
             Func<Task> act = async () =>
                 await _client.RequestClientCredentialsTokenAsync(new ClientCredentialsTokenRequest
                     { ClientId = "client", Parameters = null });
 
-            act.Should().NotThrow();
+            await act.Should().NotThrowAsync();
         }
 
         [Fact]
@@ -250,12 +250,12 @@ namespace IdentityModel.UnitTests
         }
 
         [Fact]
-        public void Device_request_without_device_code_should_fail()
+        public async Task Device_request_without_device_code_should_fail()
         {
             Func<Task> act = async () =>
                 await _client.RequestDeviceTokenAsync(new DeviceTokenRequest { ClientId = "device" });
 
-            act.Should().Throw<ArgumentException>().And.ParamName.Should().Be("device_code");
+            (await act.Should().ThrowAsync<ArgumentException>()).WithParameterName("device_code");
         }
 
         [Fact]
@@ -314,11 +314,11 @@ namespace IdentityModel.UnitTests
         }
 
         [Fact]
-        public void Password_request_without_username_should_fail()
+        public async Task Password_request_without_username_should_fail()
         {
             Func<Task> act = async () => await _client.RequestPasswordTokenAsync(new PasswordTokenRequest());
 
-            act.Should().Throw<ArgumentException>().And.ParamName.Should().Be("username");
+            (await act.Should().ThrowAsync<ArgumentException>()).WithParameterName("username");
         }
 
         [Fact]
@@ -355,7 +355,7 @@ namespace IdentityModel.UnitTests
         }
 
         [Fact]
-        public void Code_request_without_code_should_fail()
+        public async Task Code_request_without_code_should_fail()
         {
             Func<Task> act = async () => await _client.RequestAuthorizationCodeTokenAsync(
                 new AuthorizationCodeTokenRequest
@@ -363,11 +363,11 @@ namespace IdentityModel.UnitTests
                     RedirectUri = "uri"
                 });
 
-            act.Should().Throw<ArgumentException>().And.ParamName.Should().Be("code");
+            (await act.Should().ThrowAsync<ArgumentException>()).WithParameterName("code");
         }
 
         [Fact]
-        public void Code_request_without_redirect_uri_should_fail()
+        public async Task Code_request_without_redirect_uri_should_fail()
         {
             Func<Task> act = async () => await _client.RequestAuthorizationCodeTokenAsync(
                 new AuthorizationCodeTokenRequest
@@ -375,7 +375,7 @@ namespace IdentityModel.UnitTests
                     Code = "code"
                 });
 
-            act.Should().Throw<ArgumentException>().And.ParamName.Should().Be("redirect_uri");
+            (await act.Should().ThrowAsync<ArgumentException>()).WithParameterName("redirect_uri");
         }
 
         [Fact]
@@ -408,11 +408,11 @@ namespace IdentityModel.UnitTests
         }
 
         [Fact]
-        public void Refresh_request_without_refresh_token_should_fail()
+        public async Task Refresh_request_without_refresh_token_should_fail()
         {
             Func<Task> act = async () => await _client.RequestRefreshTokenAsync(new RefreshTokenRequest());
 
-            act.Should().Throw<ArgumentException>().And.ParamName.Should().Be("refresh_token");
+            (await act.Should().ThrowAsync<ArgumentException>()).WithParameterName("refresh_token");
         }
 
         [Fact]
@@ -492,11 +492,11 @@ namespace IdentityModel.UnitTests
         }
 
         [Fact]
-        public void Setting_no_grant_type_should_fail()
+        public async Task Setting_no_grant_type_should_fail()
         {
             Func<Task> act = async () => await _client.RequestTokenAsync(new TokenRequest());
 
-            act.Should().Throw<ArgumentException>().And.ParamName.Should().Be("grant_type");
+            (await act.Should().ThrowAsync<ArgumentException>()).WithParameterName("grant_type");
         }
 
         [Fact]

@@ -3,44 +3,30 @@
         <IsPackable>false</IsPackable>
         <AssemblyOriginatorKeyFile>../../key.snk</AssemblyOriginatorKeyFile>
         <SignAssembly>true</SignAssembly>
+        <DeterministicSourcePaths>false</DeterministicSourcePaths>
     </PropertyGroup>
 
     <!--Conditional compilation-->
-    <PropertyGroup Condition=" '$(OS)' == 'Windows_NT' ">
-        <TargetFrameworks>net462;net472;net6.0;net7.0;net8.0</TargetFrameworks>
-    </PropertyGroup>
-
-    <PropertyGroup Condition=" '$(OS)' != 'Windows_NT' and '$(NETCoreSdkPortableRuntimeIdentifier)' != 'osx-arm64' ">
+    <PropertyGroup>
         <TargetFrameworks>net6.0;net7.0;net8.0</TargetFrameworks>
     </PropertyGroup>
-
-    <PropertyGroup Condition=" '$(NETCoreSdkPortableRuntimeIdentifier)' == 'osx-arm64' ">
-        <TargetFrameworks>net6.0</TargetFrameworks>
+    <PropertyGroup Condition="$([MSBuild]::IsOSPlatform('Windows'))">
+        <TargetFrameworks>net462;net472;$(TargetFrameworks)</TargetFrameworks>
     </PropertyGroup>
-
-    <ItemGroup>
-        <None Update="documents\*">
-            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-        </None>
-    </ItemGroup>
 
     <ItemGroup>
         <ProjectReference Include="..\..\src\IdentityModel.csproj" />
     </ItemGroup>
 
     <ItemGroup>
-        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.9.0" />
-        <PackageReference Include="xunit.runner.visualstudio" Version="2.5.7" />
-        <PackageReference Include="xunit" Version="2.7.0" />
-        <PackageReference Include="FluentAssertions" Version="5.10.3" />
-    </ItemGroup>
-
-    <ItemGroup Condition=" '$(TargetFramework)' == 'net6.0' or $(TargetFramework) == 'net7.0' or $(TargetFramework) == 'net8.0'">
         <PackageReference Include="Microsoft.AspNetCore.WebUtilities" Version="2.2.0" />
+        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.10.0" />
+        <PackageReference Include="xunit.runner.visualstudio" Version="2.8.1" PrivateAssets="All" />
+        <PackageReference Include="xunit" Version="2.8.1" />
+        <PackageReference Include="FluentAssertions" Version="6.12.0" />
     </ItemGroup>
 
     <ItemGroup Condition=" '$(TargetFramework)' == 'net462' or $(TargetFramework) == 'net472'">
-        <PackageReference Include="Microsoft.Extensions.PlatformAbstractions" Version="1.1.0" />
-        <PackageReference Include="Microsoft.AspNetCore.WebUtilities" Version="2.2.0" />
+        <Reference Include="System.Net.Http" />
     </ItemGroup>
 </Project>

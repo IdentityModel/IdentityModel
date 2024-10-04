@@ -188,7 +188,7 @@ namespace IdentityModel.UnitTests
         }
 
         [Fact]
-        public void Pushed_authorization_without_response_type_should_fail()
+        public async Task Pushed_authorization_without_response_type_should_fail()
         {
             var document = File.ReadAllText(FileName.Create("success_par_response.json"));
             var handler = new NetworkHandler(document, HttpStatusCode.OK);
@@ -198,11 +198,11 @@ namespace IdentityModel.UnitTests
 
             Func<Task> act = async () => await client.PushAuthorizationAsync(Request);
 
-            act.Should().Throw<ArgumentException>().And.ParamName.Should().Be("response_type");
+            (await act.Should().ThrowAsync<ArgumentException>()).WithParameterName("response_type");
         }
 
         [Fact]
-        public void Pushed_authorization_with_request_uri_should_fail()
+        public async Task Pushed_authorization_with_request_uri_should_fail()
         {
             var document = File.ReadAllText(FileName.Create("success_par_response.json"));
             var handler = new NetworkHandler(document, HttpStatusCode.OK);
@@ -213,7 +213,7 @@ namespace IdentityModel.UnitTests
 
             Func<Task> act = async () => await client.PushAuthorizationAsync(Request);
 
-            act.Should().Throw<ArgumentException>().And.ParamName.Should().Be("request_uri");
+            (await act.Should().ThrowAsync<ArgumentException>()).WithParameterName("request_uri");
         }
     }
 }
