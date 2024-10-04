@@ -44,7 +44,7 @@
   </PropertyGroup>
   
   <ItemGroup>
-    <PackageReference Include="minver" Version="4.3.0" PrivateAssets="All" />
+    <PackageReference Include="minver" Version="5.0.0" PrivateAssets="All" />
     <PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="All" />
   </ItemGroup>
 
