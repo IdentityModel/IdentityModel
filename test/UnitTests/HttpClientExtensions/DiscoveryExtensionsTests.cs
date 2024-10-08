@@ -91,6 +91,26 @@ namespace IdentityModel.UnitTests
         }
 
         [Fact]
+        public async Task Null_client_base_address_should_throw()
+        {
+            var client = new HttpClient(_successHandler) { BaseAddress = null };
+
+            Func<Task> act = () => client.GetDiscoveryDocumentAsync();
+
+            await act.Should().ThrowAsync<ArgumentException>().WithMessage("Either the address parameter or the HttpClient BaseAddress must not be null.");
+        }
+
+        [Fact]
+        public async Task Null_discovery_document_address_should_throw()
+        {
+            var client = new HttpClient(_successHandler) { BaseAddress = null };
+
+            Func<Task> act = () => client.GetDiscoveryDocumentAsync(new DiscoveryDocumentRequest());
+
+            await act.Should().ThrowAsync<ArgumentException>().WithMessage("Either the DiscoveryDocumentRequest Address or the HttpClient BaseAddress must not be null.");
+        }
+
+        [Fact]
         public async Task Explicit_address_should_work()
         {
             var client = new HttpClient(_successHandler);

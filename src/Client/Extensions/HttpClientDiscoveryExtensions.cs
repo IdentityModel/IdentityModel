@@ -23,6 +23,8 @@ public static class HttpClientDiscoveryExtensions
     /// <returns></returns>
     public static async Task<DiscoveryDocumentResponse> GetDiscoveryDocumentAsync(this HttpClient client, string? address = null, CancellationToken cancellationToken = default)
     {
+        if (address == null && client.BaseAddress == null)
+            throw new ArgumentException("Either the address parameter or the HttpClient BaseAddress must not be null.");
         return await client.GetDiscoveryDocumentAsync(new DiscoveryDocumentRequest { Address = address }, cancellationToken).ConfigureAwait();
     }
 
@@ -40,13 +42,13 @@ public static class HttpClientDiscoveryExtensions
         {
             address = request.Address!;
         }
-        else if (client is HttpClient httpClient)
+        else if (client is HttpClient httpClient && httpClient.BaseAddress != null)
         {
             address = httpClient.BaseAddress!.GetLeftPart(UriPartial.Authority);
         }
         else
         {
-            throw new ArgumentException("An address is required.");
+            throw new ArgumentException("Either the DiscoveryDocumentRequest Address or the HttpClient BaseAddress must not be null.");
         }
 
         var parsed = DiscoveryEndpoint.ParseUrl(address, request.Policy.DiscoveryDocumentPath);
