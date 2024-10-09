@@ -52,7 +52,7 @@
 
   <!-- System.Text.Json is automatically included in net6.0, so we don't take an explicit dependency on it in the net6.0 build. -->
   <ItemGroup Condition="'$(TargetFramework)' != 'net6.0'">
-    <PackageReference Include="System.Text.Json" Version="8.0.4" />
+    <PackageReference Include="System.Text.Json" Version="8.0.5" />
   </ItemGroup>
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'net462' or '$(TargetFramework)' == 'net472'">
